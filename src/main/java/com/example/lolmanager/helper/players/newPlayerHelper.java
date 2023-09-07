@@ -175,14 +175,17 @@ public class newPlayerHelper {
                     String[] date = (selected.getDateOfBirth()).split("-");
                     try {
                         birthdayYear = date[0];
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                     if (selected.getLocalId() != null && selected.getLocalId() != 0) {
                         try {
                             birthdayMonth = date[1];
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) {
+                        }
                         try {
                             birthdayDay = date[2];
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) {
+                        }
                     }
 
                 }
@@ -295,7 +298,7 @@ public class newPlayerHelper {
 
         int counter = 1;
         Player found = getTournament().getPlayers().get(name);
-        while (found != null){
+        while (found != null) {
             name = getPlayerNameField().getText() + " " + ++counter;
             found = getTournament().getPlayers().get(name);
         }
@@ -318,7 +321,7 @@ public class newPlayerHelper {
                 getRemarksField().getText()
         );
         getTournament().getPlayersObs().add(player);
-        if (counter > 1){
+        if (counter > 1) {
             info("player with that name already exists - was added as " + name);
         }
 

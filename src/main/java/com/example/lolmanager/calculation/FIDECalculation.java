@@ -22,7 +22,7 @@ public class FIDECalculation {
     public static float[] getExpectedResult(int rating1, int rating2) {
         float[] expected;
         int difference = rating1 - rating2;
-        if (difference < 0){
+        if (difference < 0) {
             expected = getExpectedResult(rating2, rating1);
             expected[0] = -expected[0];
             expected[1] = -expected[1];

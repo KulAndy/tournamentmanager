@@ -9,16 +9,16 @@ import java.time.ZoneId;
 public class TournamentOperation {
     public static void loadTournament(Tournament tournament, MainController controller) {
         controller.getTourName().setText(tournament.getName());
-        LocalDate localStartDate ;
-        LocalDate localEndDate ;
-        if (tournament.getStartDate() == null){
+        LocalDate localStartDate;
+        LocalDate localEndDate;
+        if (tournament.getStartDate() == null) {
             localStartDate = LocalDate.now();
-        }else {
+        } else {
             localStartDate = tournament.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         }
-        if (tournament.getEndDate() == null){
+        if (tournament.getEndDate() == null) {
             localEndDate = LocalDate.now();
-        }else {
+        } else {
             localEndDate = tournament.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         }
         controller.getTourStartDate().setValue(localStartDate);

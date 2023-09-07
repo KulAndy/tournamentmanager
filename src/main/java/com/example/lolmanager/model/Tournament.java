@@ -43,7 +43,7 @@ public class Tournament implements Serializable {
     private PairingComparator pairingComparator;
     private ResultsComparator resultsComparator;
 
-    public Tournament(TrfTournament trfTournament){
+    public Tournament(TrfTournament trfTournament) {
         setName(trfTournament.getName());
         setPlace(trfTournament.getCity());
         setStartDate(trfTournament.getStartDate());
@@ -92,12 +92,12 @@ public class Tournament implements Serializable {
         setControlAddition(timeAddition);
         setSystem(trfTournament.getSystem());
 
-        int totalTime = basicTime + increment + (controlMove== 0 ? 0 : timeAddition );
-        if (totalTime >= 60){
+        int totalTime = basicTime + increment + (controlMove == 0 ? 0 : timeAddition);
+        if (totalTime >= 60) {
             setType(Type.STANDARD);
         } else if (totalTime <= 10) {
             setType(Type.BLITZ);
-        }else {
+        } else {
             setType(Type.RAPID);
         }
 
@@ -105,7 +105,7 @@ public class Tournament implements Serializable {
         ArrayList<ArrayList<Game>> rounds = new ArrayList<>();
         PlayerList players = new PlayerList();
         ArrayList<ArrayList<Integer>> roundIds = new ArrayList<>();
-        for (TrfTournament.TrfPlayer player: trfPlayers){
+        for (TrfTournament.TrfPlayer player : trfPlayers) {
             players.add(
                     new Player(
                             player.getName(),
@@ -121,23 +121,23 @@ public class Tournament implements Serializable {
             );
         }
 
-        for (TrfTournament.TrfPlayer player: trfPlayers){
+        for (TrfTournament.TrfPlayer player : trfPlayers) {
             ArrayList<TrfTournament.TrfRound> playerRounds = player.getRounds();
-            for (int i = 0; i < playerRounds.size() ; i++) {
-                if (roundIds.size() <= i){
+            for (int i = 0; i < playerRounds.size(); i++) {
+                if (roundIds.size() <= i) {
                     roundIds.add(new ArrayList<>());
                 }
-                if (rounds.size() <= i){
+                if (rounds.size() <= i) {
                     rounds.add(new ArrayList<>());
                 }
-                if (!roundIds.get(i).contains(player.getStartRank())){
+                if (!roundIds.get(i).contains(player.getStartRank())) {
                     TrfTournament.TrfRound round = playerRounds.get(i);
                     Player white;
                     Player black;
                     char whiteResult;
                     char blackResult;
                     int opponentId = round.getOpponentId();
-                    if (round.getColor() == 'b'){
+                    if (round.getColor() == 'b') {
                         black = players.get(player.getStartRank() - 1);
                         blackResult = player.getRounds().get(i).getResult();
                         if (opponentId == 0) {
@@ -156,11 +156,11 @@ public class Tournament implements Serializable {
                                 }
                             }
 
-                        }else{
+                        } else {
                             white = players.get(round.getOpponentId() - 1);
                             whiteResult = trfPlayers.get(round.getOpponentId() - 1).getRounds().get(i).getResult();
                         }
-                    }else{
+                    } else {
                         white = players.get(player.getStartRank() - 1);
                         whiteResult = player.getRounds().get(i).getResult();
                         if (opponentId == 0) {
@@ -179,7 +179,7 @@ public class Tournament implements Serializable {
                                 }
                             }
 
-                        }else{
+                        } else {
                             blackResult = trfPlayers.get(round.getOpponentId() - 1).getRounds().get(i).getResult();
                             black = players.get(round.getOpponentId() - 1);
                         }
@@ -192,7 +192,7 @@ public class Tournament implements Serializable {
                         case '=', 'H' -> game.setWhiteResult(Result.DRAW);
                         default -> game.setWhiteResult(Result.LOSE);
                     }
-                    switch (whiteResult){
+                    switch (whiteResult) {
                         case '1', '0', '=', 'W', 'D', 'L' -> whiteForfeit = false;
                     }
 
@@ -201,7 +201,7 @@ public class Tournament implements Serializable {
                         case '=', 'H' -> game.setBlackResult(Result.DRAW);
                         default -> game.setBlackResult(Result.LOSE);
                     }
-                    switch (blackResult){
+                    switch (blackResult) {
                         case '1', '0', '=', 'W', 'D', 'L' -> blackForfeit = false;
                     }
 
@@ -214,8 +214,8 @@ public class Tournament implements Serializable {
 
         }
 
-        for (ArrayList<Game> round : rounds){
-            for (Game game: round){
+        for (ArrayList<Game> round : rounds) {
+            for (Game game : round) {
                 game.getWhite().addRound(game);
                 game.getBlack().addRound(game);
             }
@@ -235,7 +235,7 @@ public class Tournament implements Serializable {
     public Tournament(
     ) {
         this(
-                "", new Date(),new Date(), "", (short) 0, (short) 0, (byte) 0, (byte) 0, Type.STANDARD, TournamentSystem.SWISS, (byte) 0,
+                "", new Date(), new Date(), "", (short) 0, (short) 0, (byte) 0, (byte) 0, Type.STANDARD, TournamentSystem.SWISS, (byte) 0,
                 "", "", "", new PlayerList());
 
     }
@@ -307,12 +307,12 @@ public class Tournament implements Serializable {
                 }
             }
 
-            for (Player player: getPlayersObs()){
+            for (Player player : getPlayersObs()) {
                 player.getRounds().clear();
             }
 
-            for (ArrayList<Game> round: getRoundsObs()){
-                for(Game game: round){
+            for (ArrayList<Game> round : getRoundsObs()) {
+                for (Game game : round) {
                     game.getWhite().addRound(game);
                     game.getBlack().addRound(game);
                 }
@@ -351,7 +351,6 @@ public class Tournament implements Serializable {
     public void setResultsComparator(ResultsComparator resultsComparator) {
         this.resultsComparator = resultsComparator;
     }
-
 
 
     public void addPair(Game game) {

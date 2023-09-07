@@ -38,18 +38,18 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
         setComparator(new StartListComparator());
     }
 
-    public PlayerList(List<Player> players){
+    public PlayerList(List<Player> players) {
         this.addAll(players);
         uuid2startNo.clear();
-        for (Player player: this){
+        for (Player player : this) {
             uuid2startNo.put(player.getPlayerid(), uuid2startNo.size() + 1);
         }
     }
 
-    public boolean addAll(List<Player> players){
+    public boolean addAll(List<Player> players) {
         super.addAll(players);
         uuid2startNo.clear();
-        for (Player player: this){
+        for (Player player : this) {
             uuid2startNo.put(player.getPlayerid(), uuid2startNo.size() + 1);
         }
         return true;
@@ -66,7 +66,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     }
 
     @Override
-    public boolean add(Player player){
+    public boolean add(Player player) {
         String name = player.getName();
         switch (name) {
             case "bye" -> setBye(player);
@@ -189,7 +189,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
 
         super.sort(comparator);
         uuid2startNo.clear();
-        for (Player player: this){
+        for (Player player : this) {
             uuid2startNo.put(player.getPlayerid(), uuid2startNo.size() + 1);
         }
     }
@@ -199,7 +199,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
 
         super.sort(comparator);
         uuid2startNo.clear();
-        for (Player player: this){
+        for (Player player : this) {
             uuid2startNo.put(player.getPlayerid(), uuid2startNo.size() + 1);
         }
     }

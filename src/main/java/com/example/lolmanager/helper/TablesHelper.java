@@ -13,9 +13,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class TablesHelper {
-    private PolandTableHelper polandTablesHelper;
-    private FideTableHelper fideTableHelper;
-    private ResultTableHelper resultTableHelper;
+    private final PolandTableHelper polandTablesHelper;
+    private final FideTableHelper fideTableHelper;
+    private final ResultTableHelper resultTableHelper;
 
     public TablesHelper(Tournament tournament,
                         TableView<Player> rtgPolTable,
@@ -41,7 +41,7 @@ public class TablesHelper {
 
     ) {
         this.polandTablesHelper = new PolandTableHelper(
-                tournament, rtgPolTable, rtPolId,  rtPolTitle, rtPolName,  rtPolGames, rtPolPoints,  rtPolAverage, rtPolPerformance,  rtPolNorm, rtPolRemarks
+                tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks
         );
 
         this.fideTableHelper = new FideTableHelper(

@@ -51,7 +51,7 @@ public class Player implements Serializable {
 
     public Player(String name) {
         this(
-                Federation.FIDE, "", name, Title.bk,  1000,  1000,
+                Federation.FIDE, "", name, Title.bk, 1000, 1000,
                 null, null, null, null, null, null, null, null, null
         );
     }
@@ -65,14 +65,14 @@ public class Player implements Serializable {
 
     public Player(String name, Title title) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null),  1000,
+                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), 1000,
                 null, null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Title title, Sex sex) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex),  1000,
+                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), 1000,
                 null, null, sex, null, null, null, null, null, null
         );
     }
@@ -185,7 +185,7 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return  "playerID " + getPlayerid() +
+        return "playerID " + getPlayerid() +
                 ", name: " + getName() +
                 ", FED: " + getFederation() +
                 ", state: " + getState() +
@@ -203,13 +203,13 @@ public class Player implements Serializable {
                 ;
     }
 
-    public void addRound(Game game){
+    public void addRound(Game game) {
         rounds.add(game);
     }
 
-    public Title getPlayerNorm(){
+    public Title getPlayerNorm() {
         Title norm = getNorm(getRatingPerformance(), getPlayedGamedNumber(), getSex());
-        if (norm != null && PZSzachCalculation.getTitleValue(norm, getSex()) > PZSzachCalculation.getTitleValue(getTitle(), getSex() )){
+        if (norm != null && PZSzachCalculation.getTitleValue(norm, getSex()) > PZSzachCalculation.getTitleValue(getTitle(), getSex())) {
             return norm;
         }
         return null;
@@ -233,27 +233,29 @@ public class Player implements Serializable {
         return koya;
     }
 
-    public int getRatingPerformance(){
+    public int getRatingPerformance() {
         return PZSzachCalculation.getRatingPerformance(this);
     }
 
 
-    public int getRatingDelta(){
+    public int getRatingDelta() {
         return PZSzachCalculation.getRatingDelta(this);
     }
 
-    public int getAverageRating(){
+    public int getAverageRating() {
         return PZSzachCalculation.getAverageRating(this);
     }
 
-    public int getAverageFideRating(){ return FIDECalculation.getAverageRating(getOpponents());}
+    public int getAverageFideRating() {
+        return FIDECalculation.getAverageRating(getOpponents());
+    }
 
-    public float getFideChange(){
+    public float getFideChange() {
         float chg = 0.0F;
-        for (Game game: getFideRounds()){
-            if (game.getWhite() == this){
+        for (Game game : getFideRounds()) {
+            if (game.getWhite() == this) {
                 chg += FIDECalculation.getExpectedResult(this.getFideRating(), game.getBlack().getFideRating())[0];
-            }else {
+            } else {
                 chg += FIDECalculation.getExpectedResult(this.getFideRating(), game.getWhite().getFideRating())[0];
             }
         }
@@ -283,7 +285,7 @@ public class Player implements Serializable {
         for (Game round : getRounds()) {
             Result result = getRoundResult(round);
             Color color = getRoundColor(round);
-            if (result != null){
+            if (result != null) {
                 switch (result) {
                     case WIN -> {
                         if (color == Color.WHITE) {
@@ -306,16 +308,16 @@ public class Player implements Serializable {
         return berger;
     }
 
-    public float getBucholzCut1(){
+    public float getBucholzCut1() {
         float bucholz = getBucholz();
         float minPoints = Float.MAX_VALUE;
-        for (Player player:getOpponents()){
+        for (Player player : getOpponents()) {
             minPoints = Float.min(player.getPoints(), minPoints);
         }
 
-        if (minPoints == Float.MAX_VALUE){
+        if (minPoints == Float.MAX_VALUE) {
             return bucholz;
-        }else {
+        } else {
             return bucholz - minPoints;
         }
     }
@@ -323,16 +325,15 @@ public class Player implements Serializable {
     public float getBucholz() {
         float bucholz = 0;
         String[] reservedNames = {"bye", "haslfbye", "unpaired"};
-        for (Game round: getRounds()){
+        for (Game round : getRounds()) {
             Player opponent = getOpponent(round);
-            if (Arrays.asList(reservedNames).contains(opponent.getName())){
+            if (Arrays.asList(reservedNames).contains(opponent.getName())) {
                 bucholz += 0.5 * (getRounds().size() - getRounds().indexOf(round) - 1);
-            }
-            else if (
+            } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
-            ){
+            ) {
                 bucholz += opponent.getPoints();
-            }else{
+            } else {
                 bucholz += opponent.getPZSzachPoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber());
             }
         }
@@ -373,25 +374,25 @@ public class Player implements Serializable {
         return blacks;
     }
 
-    public Float getPZSzachPoints(){
+    public Float getPZSzachPoints() {
         float points = 0;
-        for (Game game : getFideRounds()){
+        for (Game game : getFideRounds()) {
             points += getPointInGame(game);
         }
         return points;
     }
 
     private float getPointInGame(Game game) {
-        if (game.getWhite() == this){
+        if (game.getWhite() == this) {
             return game.getPointsForWhite();
-        }else {
+        } else {
             return game.getPointsForBlack();
         }
     }
 
-    public Float getFidePoints(){
+    public Float getFidePoints() {
         float points = 0;
-        for (Game game : getFideRounds()){
+        for (Game game : getFideRounds()) {
             points += getPointInGame(game);
         }
         return points;
@@ -400,7 +401,7 @@ public class Player implements Serializable {
 
     public Float getPoints() {
         float points = 0f;
-        for (Game round: getRounds()){
+        for (Game round : getRounds()) {
             points += getRoundPoints(round);
         }
         return points;
@@ -420,13 +421,13 @@ public class Player implements Serializable {
         return getFideRounds().size();
     }
 
-    public  ArrayList<Game> getFideRounds(){
+    public ArrayList<Game> getFideRounds() {
         ArrayList<Game> rounds = getRounds();
         ArrayList<Game> fideRounds = new ArrayList<>();
-        for (Game round : rounds){
-            if (!round.isForfeit()){
+        for (Game round : rounds) {
+            if (!round.isForfeit()) {
                 Player opponent = getOpponent(round);
-                if (opponent.getFideRating() != null && opponent.getFideRating() > 1000){
+                if (opponent.getFideRating() != null && opponent.getFideRating() > 1000) {
                     fideRounds.add(round);
                 }
             }
@@ -440,7 +441,7 @@ public class Player implements Serializable {
         for (int i = 0; i < n && i < getRounds().size(); i++) {
             Game round = getRounds().get(i);
             Result result = getRoundResult(round);
-            if (result == null){
+            if (result == null) {
                 return 0;
             }
             switch (result) {

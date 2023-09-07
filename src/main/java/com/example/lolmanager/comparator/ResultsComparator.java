@@ -15,7 +15,8 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
     private Tournament.Tiebreak.TbMethod criteria3;
     private Tournament.Tiebreak.TbMethod criteria4;
     private Tournament.Tiebreak.TbMethod criteria5;
-    public ResultsComparator(){
+
+    public ResultsComparator() {
         this(
                 Tournament.Tiebreak.TbMethod.POINTS,
                 Tournament.Tiebreak.TbMethod.BUCHOLZ_CUT1,
@@ -24,7 +25,8 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
                 Tournament.Tiebreak.TbMethod.PROGRESS
         );
     }
-    public ResultsComparator(Tournament.Tiebreak tiebreak){
+
+    public ResultsComparator(Tournament.Tiebreak tiebreak) {
         this(
                 tiebreak.getTiebreak1(),
                 tiebreak.getTiebreak2(),

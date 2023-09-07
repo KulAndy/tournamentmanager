@@ -25,18 +25,19 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static com.example.lolmanager.helper.GeneralHelper.*;
+import static com.example.lolmanager.helper.GeneralHelper.error;
+import static com.example.lolmanager.helper.GeneralHelper.warning;
 
 
 public class FileOperation {
@@ -586,7 +587,7 @@ public class FileOperation {
 
     }
 
-    private void importJson(File file){
+    private void importJson(File file) {
         String fileName = "tournament.json";
 
         try (FileInputStream fis = new FileInputStream(file);
@@ -602,17 +603,18 @@ public class FileOperation {
                         outputStream.write(buffer, 0, bytesRead);
                     }
 
-                    String content = new String(outputStream.toByteArray(), "UTF-8");
+                    String content = outputStream.toString(StandardCharsets.UTF_8);
                     Gson gson = new Gson();
-                    Type tournamentType = new TypeToken<Tournament>() {}.getType();
+                    Type tournamentType = new TypeToken<Tournament>() {
+                    }.getType();
                     Tournament tournament = gson.fromJson(content, tournamentType);
                     PlayerList players = tournament.getPlayers();
-                    for (Player player: players){
+                    for (Player player : players) {
                         player.getRounds().clear();
                     }
 
-                    for (ArrayList<Game> round: tournament.getRounds()){
-                        for (Game game: round){
+                    for (ArrayList<Game> round : tournament.getRounds()) {
+                        for (Game game : round) {
                             Player white = players.get(game.getWhiteUUDI());
                             Player black = players.get(game.getBlackUUID());
                             game.setWhite(white);

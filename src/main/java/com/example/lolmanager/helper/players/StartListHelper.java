@@ -86,7 +86,7 @@ public class StartListHelper {
         getFideCol().setOnEditCommit(event -> {
             try {
                 Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
-                player.setFideRating( event.getNewValue());
+                player.setFideRating(event.getNewValue());
                 Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
                 playerStatic.setFideRating(event.getNewValue());
             } catch (Exception ignored) {

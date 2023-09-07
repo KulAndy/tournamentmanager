@@ -1,6 +1,9 @@
 package com.example.lolmanager.helper.tables;
 
-import com.example.lolmanager.model.*;
+import com.example.lolmanager.model.Game;
+import com.example.lolmanager.model.Player;
+import com.example.lolmanager.model.Title;
+import com.example.lolmanager.model.Tournament;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;

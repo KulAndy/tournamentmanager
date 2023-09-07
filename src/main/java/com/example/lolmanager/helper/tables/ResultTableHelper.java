@@ -56,7 +56,7 @@ public class ResultTableHelper {
 
 
         setResultStartNo(resultStartNo);
-        getResultStartNo().setCellValueFactory(cellData->{
+        getResultStartNo().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
             int rowIndex = getTournament().getPlayersObs().indexOf(player) + 1;
             return new SimpleIntegerProperty(rowIndex).asObject();

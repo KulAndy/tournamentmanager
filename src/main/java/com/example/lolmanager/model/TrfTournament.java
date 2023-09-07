@@ -1,6 +1,9 @@
 package com.example.lolmanager.model;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,21 +24,26 @@ public class TrfTournament {
     private String allottedTimes;
     private ArrayList<TrfPlayer> players = new ArrayList<>();
 
-    public TrfTournament(String trfPath){
+    public TrfTournament(String trfPath) {
         this(new File(trfPath));
     }
-    public TrfTournament(File trfFile){
+
+    public TrfTournament(File trfFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(trfFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String contentType = line.substring(0,3);
+                String contentType = line.substring(0, 3);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy/MM/dd");
-                switch (contentType){
-                    case "012": setName(line.substring(3).trim());break;
-                    case "022": setCity(line.substring(3).trim());break;
+                switch (contentType) {
+                    case "012":
+                        setName(line.substring(3).trim());
+                        break;
+                    case "022":
+                        setCity(line.substring(3).trim());
+                        break;
                     case "032": {
-                        try{
+                        try {
                             setFederation(Federation.valueOf(line.substring(3).trim()));
                         } catch (IllegalArgumentException e) {
                             setFederation(Federation.FIDE);
@@ -48,92 +56,115 @@ public class TrfTournament {
                         } catch (ParseException e) {
                             try {
                                 setStartDate(dateFormat2.parse(line.substring(3).trim()));
-                            } catch (ParseException ignored) {}
+                            } catch (ParseException ignored) {
+                            }
                         }
                         break;
                     }
-                    case "052":{
-                        try{
+                    case "052": {
+                        try {
                             setEndDate(dateFormat.parse(line.substring(3).trim()));
                         } catch (ParseException e) {
                             try {
                                 setEndDate(dateFormat2.parse(line.substring(3).trim()));
-                            } catch (ParseException ignored) {}
+                            } catch (ParseException ignored) {
+                            }
                         }
                         break;
                     }
                     case "092": {
-                        if (line.substring(3).trim().toLowerCase().contains("robin")){
+                        if (line.substring(3).trim().toLowerCase().contains("robin")) {
                             setSystem(Tournament.TournamentSystem.ROUND_ROBIN);
-                        }else {
+                        } else {
                             setSystem(Tournament.TournamentSystem.SWISS);
                         }
                         break;
                     }
-                    case "102": setChiefArbiter(line.substring(3).trim());break;
-                    case "112": setDeputyChiefArbiter(line.substring(3).trim());break;
-                    case "122": setAllottedTimes(line.substring(3).trim());break;
-                    case "132":{
+                    case "102":
+                        setChiefArbiter(line.substring(3).trim());
+                        break;
+                    case "112":
+                        setDeputyChiefArbiter(line.substring(3).trim());
+                        break;
+                    case "122":
+                        setAllottedTimes(line.substring(3).trim());
+                        break;
+                    case "132": {
                         String[] roundDates = line.substring(3).trim().split(" +");
                         SimpleDateFormat roundDateFormatter = new SimpleDateFormat("yy-MM-dd");
-                        for (String roundDate: roundDates){
-                            try{
+                        for (String roundDate : roundDates) {
+                            try {
                                 getRoundDates().add(dateFormat.parse(roundDate));
                             } catch (ParseException e) {
-                                try{
+                                try {
                                     getRoundDates().add(roundDateFormatter.parse(roundDate));
-                                } catch (ParseException ignored) {}
+                                } catch (ParseException ignored) {
+                                }
                             }
                         }
                         break;
                     }
-                    case "001":{
-                        int startNo = Integer.parseInt(line.substring(4,8).trim());
+                    case "001": {
+                        int startNo = Integer.parseInt(line.substring(4, 8).trim());
                         Player.Sex playerSex = line.charAt(9) == 'w' ? Player.Sex.FEMALE : Player.Sex.MALE;
-                        Title playerTitle = Title.getTitle(line.substring(10,13));
-                        String playerName = line.substring(14,47).trim();
-                        Integer playerRating = Integer.parseInt(line.substring(48,52).trim());
-                        Federation playerFederation;
+                        Title playerTitle = Title.getTitle(line.substring(10, 13));
+                        String playerName = line.substring(14, 47).trim();
+                        Integer playerRating;
                         try{
-                            playerFederation = Federation.valueOf(line.substring(53,56));
+                            playerRating = Integer.parseInt(line.substring(48, 52).trim());
+                        } catch (NumberFormatException e) {
+                            playerRating = 1000;
+                        }
+                        Federation playerFederation;
+                        try {
+                            playerFederation = Federation.valueOf(line.substring(53, 56));
                         } catch (IllegalArgumentException e) {
                             playerFederation = Federation.FIDE;
                         }
-                        int playerFideId = Optional.of(Integer.parseInt(line.substring(57,68).trim())).orElse(0);
-                        String[] birthElems = new String[0];
+                        int playerFideId;
                         try{
-                            birthElems = line.substring(69,79).split("/");
+                            playerFideId = Integer.parseInt(line.substring(57, 68).trim());
+                        } catch (NumberFormatException e) {
+                            playerFideId = 0;
+                        }
+                        String[] birthElems = new String[0];
+                        try {
+                            birthElems = line.substring(69, 79).split("/");
                         } catch (Exception e) {
-                            try{
-                                birthElems = line.substring(69,79).split("-");
-                            } catch (Exception ignored) {}
+                            try {
+                                birthElems = line.substring(69, 79).split("-");
+                            } catch (Exception ignored) {
+                            }
                         }
                         short playerYearOfBirth = 0;
                         byte playerMonthOfBirth = 0;
                         byte playerDayOfBirth = 0;
-                        if (birthElems.length == 3){
+                        if (birthElems.length == 3) {
                             try {
                                 playerYearOfBirth = Short.parseShort(birthElems[0].trim());
                                 playerMonthOfBirth = Byte.parseByte(birthElems[1].trim());
                                 playerDayOfBirth = Byte.parseByte(birthElems[1].trim());
-                            } catch (Exception ignored) {}
+                            } catch (Exception ignored) {
+                            }
                         }
-                        float playerPoints = Optional.of(Float.parseFloat(line.substring(80,84).replace(',','.'))).orElse(0f);
+                        float playerPoints = Optional.of(Float.parseFloat(line.substring(80, 84).replace(',', '.'))).orElse(0f);
                         ArrayList<TrfRound> playerRounds = new ArrayList<>();
                         String roundsRaw = line.substring(91);
                         ArrayList<String> rawRoundsList = new ArrayList<>();
-                        try{
+                        try {
                             int counter = 0;
-                            while (true){
+                            while (true) {
                                 String rawRound = roundsRaw.substring(counter * 10, counter++ * 10 + 9);
                                 rawRoundsList.add(rawRound);
                             }
-                        } catch (Exception ignored) {}
-                        for (String rawRound:rawRoundsList){
+                        } catch (Exception ignored) {
+                        }
+                        for (String rawRound : rawRoundsList) {
                             int opponentId = 0;
-                            try{
-                                opponentId = Integer.parseInt(rawRound.substring(0,4).trim());
-                            } catch (NumberFormatException ignored) {}
+                            try {
+                                opponentId = Integer.parseInt(rawRound.substring(0, 4).trim());
+                            } catch (NumberFormatException ignored) {
+                            }
                             char color = rawRound.charAt(5);
                             char result = rawRound.charAt(7);
                             playerRounds.add(new TrfRound(opponentId, color, result));
@@ -160,185 +191,6 @@ public class TrfTournament {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    public class TrfPlayer{
-        private int startRank;
-        private Player.Sex sex;
-        private Title title;
-        private String name;
-        private Integer rating;
-        private Federation federation;
-        private int fideNo;
-        private short yearOfBirth;
-        private byte monthOfBirth;
-        private byte dayOfBirth;
-        private float points;
-        private ArrayList<TrfRound> rounds;
-        public TrfPlayer(int startRank, Player.Sex sex, Title title, String name, Integer rating, Federation federation, int fideNo, short yearOfBirth, byte monthOfBirth, byte dayOfBirth, float points, ArrayList<TrfRound> rounds) {
-            setStartRank(startRank);
-            setSex(sex);
-            setTitle(title);
-            setName(name);
-            setRating(rating);
-            setFederation(federation);
-            setFideNo(fideNo);
-            setYearOfBirth(yearOfBirth);
-            setMonthOfBirth(monthOfBirth);
-            setDayOfBirth(dayOfBirth);
-            setPoints(points);
-            setRounds(rounds);
-        }
-
-        @Override
-        public String toString(){
-            StringBuilder result = new StringBuilder();
-            Field[] fields = this.getClass().getDeclaredFields();
-            try {
-                for (Field field : fields) {
-                    field.setAccessible(true); // Make private fields accessible
-                    String fieldName = field.getName();
-                    Object fieldValue = field.get(this);
-                    result.append(fieldName).append(": ").append(fieldValue).append(", ");
-                }
-            } catch (IllegalAccessException e) {
-            }
-            return result.toString();
-        }
-
-        public int getStartRank() {
-            return startRank;
-        }
-
-        public void setStartRank(int startRank) {
-            this.startRank = startRank;
-        }
-
-        public Player.Sex getSex() {
-            return sex;
-        }
-
-        public void setSex(Player.Sex sex) {
-            this.sex = sex;
-        }
-
-        public Title getTitle() {
-            return title;
-        }
-
-        public void setTitle(Title title) {
-            this.title = title;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getRating() {
-            return rating;
-        }
-
-        public void setRating(Integer rating) {
-            this.rating = rating;
-        }
-
-        public Federation getFederation() {
-            return federation;
-        }
-
-        public void setFederation(Federation federation) {
-            this.federation = federation;
-        }
-
-        public short getYearOfBirth() {
-            return yearOfBirth;
-        }
-        public int getFideNo() {
-            return fideNo;
-        }
-
-        public void setFideNo(int fideNo) {
-            this.fideNo = fideNo;
-        }
-
-
-        public void setYearOfBirth(short yearOfBirth) {
-            this.yearOfBirth = yearOfBirth;
-        }
-
-        public byte getMonthOfBirth() {
-            return monthOfBirth;
-        }
-
-        public void setMonthOfBirth(byte monthOfBirth) {
-            this.monthOfBirth = monthOfBirth;
-        }
-
-        public byte getDayOfBirth() {
-            return dayOfBirth;
-        }
-
-        public void setDayOfBirth(byte dayOfBirth) {
-            this.dayOfBirth = dayOfBirth;
-        }
-
-        public float getPoints() {
-            return points;
-        }
-
-        public void setPoints(float points) {
-            this.points = points;
-        }
-        public ArrayList<TrfRound> getRounds() {
-            return rounds;
-        }
-
-        public void setRounds(ArrayList<TrfRound> rounds) {
-            this.rounds = rounds;
-        }
-
-    }
-
-    public class TrfRound{
-
-        private int opponentId;
-        private char color;
-        private char result;
-        public TrfRound(int opponentId, char color, char result) {
-            setOpponentId(opponentId);
-            setColor(color);
-            setResult(result);
-        }
-
-        public int getOpponentId() {
-            return opponentId;
-        }
-
-        public void setOpponentId(int opponentId) {
-            this.opponentId = opponentId;
-        }
-
-        public char getColor() {
-            return color;
-        }
-
-        public void setColor(char color) {
-            this.color = color;
-        }
-
-        public char getResult() {
-            return result;
-        }
-
-        public void setResult(char result) {
-            this.result = result;
-        }
-
     }
 
     public String getName() {
@@ -420,12 +272,194 @@ public class TrfTournament {
     public void setPlayers(ArrayList<TrfPlayer> players) {
         this.players = players;
     }
+
     public String getAllottedTimes() {
         return allottedTimes;
     }
 
     public void setAllottedTimes(String allottedTimes) {
         this.allottedTimes = allottedTimes;
+    }
+
+    public class TrfPlayer {
+        private int startRank;
+        private Player.Sex sex;
+        private Title title;
+        private String name;
+        private Integer rating;
+        private Federation federation;
+        private int fideNo;
+        private short yearOfBirth;
+        private byte monthOfBirth;
+        private byte dayOfBirth;
+        private float points;
+        private ArrayList<TrfRound> rounds;
+
+        public TrfPlayer(int startRank, Player.Sex sex, Title title, String name, Integer rating, Federation federation, int fideNo, short yearOfBirth, byte monthOfBirth, byte dayOfBirth, float points, ArrayList<TrfRound> rounds) {
+            setStartRank(startRank);
+            setSex(sex);
+            setTitle(title);
+            setName(name);
+            setRating(rating);
+            setFederation(federation);
+            setFideNo(fideNo);
+            setYearOfBirth(yearOfBirth);
+            setMonthOfBirth(monthOfBirth);
+            setDayOfBirth(dayOfBirth);
+            setPoints(points);
+            setRounds(rounds);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder result = new StringBuilder();
+            Field[] fields = this.getClass().getDeclaredFields();
+            try {
+                for (Field field : fields) {
+                    field.setAccessible(true); // Make private fields accessible
+                    String fieldName = field.getName();
+                    Object fieldValue = field.get(this);
+                    result.append(fieldName).append(": ").append(fieldValue).append(", ");
+                }
+            } catch (IllegalAccessException e) {
+            }
+            return result.toString();
+        }
+
+        public int getStartRank() {
+            return startRank;
+        }
+
+        public void setStartRank(int startRank) {
+            this.startRank = startRank;
+        }
+
+        public Player.Sex getSex() {
+            return sex;
+        }
+
+        public void setSex(Player.Sex sex) {
+            this.sex = sex;
+        }
+
+        public Title getTitle() {
+            return title;
+        }
+
+        public void setTitle(Title title) {
+            this.title = title;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getRating() {
+            return rating;
+        }
+
+        public void setRating(Integer rating) {
+            this.rating = rating;
+        }
+
+        public Federation getFederation() {
+            return federation;
+        }
+
+        public void setFederation(Federation federation) {
+            this.federation = federation;
+        }
+
+        public short getYearOfBirth() {
+            return yearOfBirth;
+        }
+
+        public void setYearOfBirth(short yearOfBirth) {
+            this.yearOfBirth = yearOfBirth;
+        }
+
+        public int getFideNo() {
+            return fideNo;
+        }
+
+        public void setFideNo(int fideNo) {
+            this.fideNo = fideNo;
+        }
+
+        public byte getMonthOfBirth() {
+            return monthOfBirth;
+        }
+
+        public void setMonthOfBirth(byte monthOfBirth) {
+            this.monthOfBirth = monthOfBirth;
+        }
+
+        public byte getDayOfBirth() {
+            return dayOfBirth;
+        }
+
+        public void setDayOfBirth(byte dayOfBirth) {
+            this.dayOfBirth = dayOfBirth;
+        }
+
+        public float getPoints() {
+            return points;
+        }
+
+        public void setPoints(float points) {
+            this.points = points;
+        }
+
+        public ArrayList<TrfRound> getRounds() {
+            return rounds;
+        }
+
+        public void setRounds(ArrayList<TrfRound> rounds) {
+            this.rounds = rounds;
+        }
+
+    }
+
+    public class TrfRound {
+
+        private int opponentId;
+        private char color;
+        private char result;
+
+        public TrfRound(int opponentId, char color, char result) {
+            setOpponentId(opponentId);
+            setColor(color);
+            setResult(result);
+        }
+
+        public int getOpponentId() {
+            return opponentId;
+        }
+
+        public void setOpponentId(int opponentId) {
+            this.opponentId = opponentId;
+        }
+
+        public char getColor() {
+            return color;
+        }
+
+        public void setColor(char color) {
+            this.color = color;
+        }
+
+        public char getResult() {
+            return result;
+        }
+
+        public void setResult(char result) {
+            this.result = result;
+        }
+
     }
 
 }

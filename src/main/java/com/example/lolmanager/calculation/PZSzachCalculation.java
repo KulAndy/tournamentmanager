@@ -16,20 +16,20 @@ public class PZSzachCalculation {
         int n = 1;
         int wins = 0;
         int loses = 0;
-        for (Game game : player.getRounds()){
-            if (!game.isForfeit()){
-                if (game.getWhite() == player){
-                    if (game.getWhiteResult() != null){
-                        if (game.getWhiteResult() == Result.WIN){
+        for (Game game : player.getRounds()) {
+            if (!game.isForfeit()) {
+                if (game.getWhite() == player) {
+                    if (game.getWhiteResult() != null) {
+                        if (game.getWhiteResult() == Result.WIN) {
                             wins++;
                         } else if (game.getWhiteResult() == Result.LOSE) {
                             loses++;
                         }
                         n++;
                     }
-                }else{
-                    if (game.getBlackResult() != null){
-                        if (game.getBlackResult() == Result.WIN){
+                } else {
+                    if (game.getBlackResult() != null) {
+                        if (game.getBlackResult() == Result.WIN) {
                             wins++;
                         } else if (game.getBlackResult() == Result.LOSE) {
                             loses++;
@@ -39,24 +39,24 @@ public class PZSzachCalculation {
                 }
             }
         }
-        return (400/n) * (wins - loses);
+        return (400 / n) * (wins - loses);
     }
 
     public static int getAverageRating(Player player) {
         int sum = player.getLocalRating();
         int count = 1;
-        for (Game round: player.getRounds()){
-            if (!round.isForfeit()){
-                if (round.getWhite() == player){
+        for (Game round : player.getRounds()) {
+            if (!round.isForfeit()) {
+                if (round.getWhite() == player) {
                     sum += round.getBlack().getLocalRating();
-                }else{
+                } else {
                     sum += round.getWhite().getLocalRating();
                 }
                 count++;
             }
         }
 
-        return  sum / count;
+        return sum / count;
     }
 
 
@@ -163,17 +163,17 @@ public class PZSzachCalculation {
         }
     }
 
-    public static Title getNorm(int ratingPerformance, int gamesNo, Player.Sex sex){
-        if (gamesNo >= 9){
-            if (getNorm9Rounds(ratingPerformance, sex) != null){
+    public static Title getNorm(int ratingPerformance, int gamesNo, Player.Sex sex) {
+        if (gamesNo >= 9) {
+            if (getNorm9Rounds(ratingPerformance, sex) != null) {
                 return getNorm9Rounds(ratingPerformance, sex);
             }
-            if (getNorm7Rounds(ratingPerformance, sex) != null){
+            if (getNorm7Rounds(ratingPerformance, sex) != null) {
                 return getNorm7Rounds(ratingPerformance, sex);
             }
             return getNorm5Rounds(ratingPerformance, sex);
         } else if (gamesNo >= 7) {
-            if (getNorm7Rounds(ratingPerformance, sex) != null){
+            if (getNorm7Rounds(ratingPerformance, sex) != null) {
                 return getNorm7Rounds(ratingPerformance, sex);
             }
             return getNorm5Rounds(ratingPerformance, sex);
@@ -183,15 +183,15 @@ public class PZSzachCalculation {
         return null;
     }
 
-    private static Title getNorm5Rounds(int ratingPerformance, Player.Sex sex){
-        if (sex == Player.Sex.FEMALE){
-            if (ratingPerformance >= 1150){
+    private static Title getNorm5Rounds(int ratingPerformance, Player.Sex sex) {
+        if (sex == Player.Sex.FEMALE) {
+            if (ratingPerformance >= 1150) {
                 return Title.IV;
             } else if (ratingPerformance >= 1000) {
                 return Title.V;
             }
-        }else {
-            if (ratingPerformance >= 1300){
+        } else {
+            if (ratingPerformance >= 1300) {
                 return Title.IV;
             } else if (ratingPerformance >= 1050) {
                 return Title.V;
@@ -200,17 +200,17 @@ public class PZSzachCalculation {
         return null;
     }
 
-    private static Title getNorm7Rounds(int ratingPerformance, Player.Sex sex){
-        if (sex == Player.Sex.FEMALE){
-            if (ratingPerformance >= 1800){
+    private static Title getNorm7Rounds(int ratingPerformance, Player.Sex sex) {
+        if (sex == Player.Sex.FEMALE) {
+            if (ratingPerformance >= 1800) {
                 return Title.I;
             } else if (ratingPerformance >= 1600) {
                 return Title.II;
             } else if (ratingPerformance >= 1350) {
                 return Title.III;
             }
-        }else {
-            if (ratingPerformance >= 1800){
+        } else {
+            if (ratingPerformance >= 1800) {
                 return Title.II;
             } else if (ratingPerformance >= 1550) {
                 return Title.III;
@@ -219,15 +219,15 @@ public class PZSzachCalculation {
         return null;
     }
 
-    private static Title getNorm9Rounds(int ratingPerformance, Player.Sex sex){
-        if (sex == Player.Sex.FEMALE){
-            if (ratingPerformance >= 2200){
+    private static Title getNorm9Rounds(int ratingPerformance, Player.Sex sex) {
+        if (sex == Player.Sex.FEMALE) {
+            if (ratingPerformance >= 2200) {
                 return Title.M;
             } else if (ratingPerformance >= 2000) {
                 return Title.K;
             }
-        }else {
-            if (ratingPerformance >= 2400){
+        } else {
+            if (ratingPerformance >= 2400) {
                 return Title.M;
             } else if (ratingPerformance >= 2200) {
                 return Title.K;

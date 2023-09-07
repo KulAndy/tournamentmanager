@@ -465,7 +465,7 @@ public class MainController implements Initializable {
         );
 
         tablesHelper = new TablesHelper(
-                tournament, rtgPolTable, rtPolId,  rtPolTitle, rtPolName,  rtPolGames, rtPolPoints,  rtPolAverage, rtPolPerformance,  rtPolNorm, rtPolRemarks,
+                tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks,
                 rtgFideTable, rtgFideName, rtgFideId, rtgFideTitle, rtgFideFed, rtgFideElo, rtgFidePoints, rtgFideGames, rtgFideAverage, rtgFideChg, rtgFideNorm,
                 resultFiltered, resultFilter, resultsTable,
                 resultPlace, resultStartNo, resultTitle, resultName,
@@ -491,7 +491,7 @@ public class MainController implements Initializable {
         openMenu.setOnAction(e -> getFileOperation().open());
         openButton.setOnAction(e -> getFileOperation().open());
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, programName));
-        trfRaport.setOnAction(e->FIDEOperation.trfRaport(getTournament()));
+        trfRaport.setOnAction(e -> FIDEOperation.trfRaport(getTournament()));
         downloadFideMenu.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
                     .exceptionally(ex -> {
@@ -514,7 +514,7 @@ public class MainController implements Initializable {
                     });
         });
 
-        importTrf.setOnAction(e->FIDEOperation.importTrfReport(this));
+        importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
 
     }
 

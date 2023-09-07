@@ -179,7 +179,7 @@ public class FIDEOperation {
 
                 players.add(new Player(
                         Federation.POL, WZSZACH, NAZWISKO_IMIE, Title.getTitle(TYTUL),
-                         1000,  switch (type) {
+                        1000, switch (type) {
                     case BLITZ -> _KOL_CZL_R_FIDE_BL;
                     case RAPID -> _KOL_CZL_R_FIDE_SZ;
                     default -> ELO;
@@ -261,7 +261,7 @@ public class FIDEOperation {
                                 Federation.POL, WZSZACH,
                                 NAZWISKO_IMIE, TYTUL,
                                 PZSzachCalculation.getTitleValue(TYTUL, sex),
-                                 switch (type) {
+                                switch (type) {
                                     case RAPID -> _KOL_CZL_R_FIDE_SZ;
                                     case BLITZ -> _KOL_CZL_R_FIDE_BL;
                                     default -> ELO;
@@ -280,11 +280,11 @@ public class FIDEOperation {
         return players;
     }
 
-    public static void trfRaport(Tournament tournament){
+    public static void trfRaport(Tournament tournament) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         StringBuilder trf = new StringBuilder();
         trf.append("012 ").append(tournament.getName());
-        trf.append("\n022" ).append(tournament.getPlace());
+        trf.append("\n022").append(tournament.getPlace());
         trf.append("\n032 ").append("POL");
         trf.append("\n042 ").append(dateFormat.format(tournament.getStartDate()));
         trf.append("\n052 ").append(dateFormat.format(tournament.getEndDate()));
@@ -332,20 +332,20 @@ public class FIDEOperation {
                     .append(" ")
                     .append(player.getFederation() == null ? "   " : player.getFederation())
                     .append(" ")
-                    .append("%11s".formatted((player.getFideId() != null && player.getFideId() > 0 ) ? player.getFideId() : ""  ))
+                    .append("%11s".formatted((player.getFideId() != null && player.getFideId() > 0) ? player.getFideId() : ""))
                     .append(" ")
                     .append(player.getDateOfBirth())
                     .append(" ")
-                    .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ?  0.0 : player.getPoints()))
+                    .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
                     .append("     ")
             ;
 
             ArrayList<Game> rounds = player.getRounds();
-            for (Game game: rounds){
+            for (Game game : rounds) {
                 Player opponent = player.getOpponent(game);
                 trf.append("  ");
-                if (game.isForfeit()){
-                    switch (opponent.getName()){
+                if (game.isForfeit()) {
+                    switch (opponent.getName()) {
                         case "bye", "unpaired" -> {
                             trf.append("0000 - ").append("U");
                         }
@@ -355,32 +355,32 @@ public class FIDEOperation {
                         default -> {
                             trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
                                     .append(" ");
-                            switch (player.getRoundColor(game)){
+                            switch (player.getRoundColor(game)) {
                                 case WHITE -> trf.append("w ");
                                 case BLACK -> trf.append("b ");
                             }
-                            if (game.getWhiteResult() == null && game.getBlackResult() == null){
+                            if (game.getWhiteResult() == null && game.getBlackResult() == null) {
                                 trf.append(" ");
-                            }else{
-                                if (player.getRoundResult(game) == Result.WIN){
+                            } else {
+                                if (player.getRoundResult(game) == Result.WIN) {
                                     trf.append("+");
-                                }else {
+                                } else {
                                     trf.append("-");
                                 }
                             }
                         }
                     }
-                }else {
+                } else {
                     trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
                             .append(" ");
-                    switch (player.getRoundColor(game)){
+                    switch (player.getRoundColor(game)) {
                         case WHITE -> trf.append("w ");
                         case BLACK -> trf.append("b ");
                     }
-                    if (player.getRoundResult(game) == null){
+                    if (player.getRoundResult(game) == null) {
                         trf.append(" ");
-                    }else {
-                        switch (player.getRoundResult(game)){
+                    } else {
+                        switch (player.getRoundResult(game)) {
                             case WIN -> trf.append("1");
                             case DRAW -> trf.append("=");
                             default -> trf.append("0");
@@ -394,7 +394,7 @@ public class FIDEOperation {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create New File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf raports", "*.txt") );
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf raports", "*.txt"));
         File newFile = fileChooser.showSaveDialog(new Stage());
 
         if (newFile != null) {
@@ -414,14 +414,14 @@ public class FIDEOperation {
         }
     }
 
-    public static void importTrfReport(MainController controller){
+    public static void importTrfReport(MainController controller) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf raports", "*.txt") );
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf raports", "*.txt"));
         File selectedFile = fileChooser.showOpenDialog(new Stage());
 
         if (selectedFile != null) {
-            try{
+            try {
                 Tournament tournament = new Tournament(new TrfTournament(selectedFile));
                 TournamentOperation.loadTournament(tournament, controller);
             } catch (Exception e) {

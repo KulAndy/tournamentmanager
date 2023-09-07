@@ -86,11 +86,6 @@ public class Game implements Serializable {
         return forfeit;
     }
 
-
-    public void setForfeit(Boolean forfeit) {
-        this.forfeit = forfeit;
-    }
-
     public void swapPlayers() {
         UUID tmp1 = whiteUUDI;
         whiteUUDI = blackUUID;
@@ -100,6 +95,7 @@ public class Game implements Serializable {
         whiteName = blackName;
         blackName = tmp2;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -121,6 +117,7 @@ public class Game implements Serializable {
                 " - " + getPointsForBlack() +
                 " " + getBlackName();
     }
+
     public String getWhiteName() {
         return whiteName;
     }
@@ -157,6 +154,9 @@ public class Game implements Serializable {
         return forfeit;
     }
 
+    public void setForfeit(Boolean forfeit) {
+        this.forfeit = forfeit;
+    }
 
     public Result getWhiteResult() {
         return whiteResult;
