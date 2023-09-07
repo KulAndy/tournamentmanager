@@ -1,0 +1,471 @@
+package com.example.lolmanager.helper.round;
+
+import com.example.lolmanager.model.Game;
+import com.example.lolmanager.model.Player;
+import com.example.lolmanager.model.Tournament;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.*;
+
+import java.util.ArrayList;
+
+import static com.example.lolmanager.helper.GeneralHelper.*;
+
+public class ManualPairingHelper {
+    private Tournament tournament;
+    private ComboBox<Integer> roundUpdateSelect;
+    private TextField whiteSearch;
+    private TextField blackSearch;
+    private ListView<Player> whiteList;
+    private ListView<Player> blackList;
+    private CheckBox autoColorCheckbox;
+    private Button pairRestButton;
+    private Button pairButton;
+    private Button whithdrawButton;
+    private Button byePairButton;
+    private Button halfByePairButton;
+    private Button clearManualButton;
+    private Button unpairButton;
+    private Button upPairingButton;
+    private Button downPairButton;
+    private Button swapColorPairButton;
+    private Button applyManualButton;
+    private ListView<Game> pairsList;
+    private ObservableList<Player> paired = FXCollections.observableArrayList();
+    private FilteredList<Player> pairedFilter;
+    private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList(1);
+    private ObservableList<Game> manualRound = FXCollections.observableArrayList();
+
+    public ManualPairingHelper(
+            Tournament tournament,
+            ComboBox<Integer> roundUpdateSelect, TextField whiteSearch, TextField blackSearch,
+            ListView<Player> whiteList, ListView<Player> blackList, CheckBox autoColorCheckbox, Button pairRestButton,
+            Button pairButton, Button whithdrawButton, Button byePairButton, Button halfByePairButton, Button clearManualButton,
+            Button unpairButton, Button upPairingButton, Button downPairButton, Button swapColorPairButton,
+            Button applyManualButton, ListView<Game> pairsList
+    ) {
+        setTournament(tournament);
+        setPairsList(pairsList);
+        getPairsList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
+
+        getPairsList().setItems(manualRound);
+        getPairsList().setCellFactory(param -> new ListCell<Game>() {
+            @Override
+            protected void updateItem(Game item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && item != null) {
+                    String white = String.format("%-4d %-3s %35s", item.getWhite().getFideRating(), item.getWhite().getTitle(), item.getWhite().getName());
+                    String black;
+                    if (
+                            item.getBlack() == getTournament().getPlayers().getBye()
+                                    || item.getBlack() == getTournament().getPlayers().getHalfbye()
+                                    || item.getBlack() == getTournament().getPlayers().getUnpaired()
+                    ) {
+                        black = String.format("%-35s", item.getBlack().getName());
+                    } else {
+                        black = String.format("%-35s %-3s %-4d", item.getBlack().getName(), item.getBlack().getTitle(), item.getBlack().getFideRating());
+                    }
+                    String text = String.format("%3d.  %s - %s ", getIndex() + 1, white, black);
+                    setText(text);
+                } else {
+                    setText(null);
+                }
+            }
+        });
+        setRoundUpdateSelect(roundUpdateSelect);
+        getRoundUpdateSelect().setItems(roundsNumbersObs);
+        getRoundUpdateSelect().valueProperty().addListener((ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) -> {
+            try {
+                setManualRound(FXCollections.observableArrayList(getTournament().getRoundsObs().get(newValue - 1)));
+            } catch (Exception e) {
+                setManualRound(FXCollections.observableArrayList());
+            }
+            getPairsList().setItems(getManualRound());
+            paired.clear();
+            for (Game game : getManualRound()) {
+                Player white = game.getWhite();
+                Player black = game.getBlack();
+                Player bye = getTournament().getPlayers().getBye();
+                Player halfbye = getTournament().getPlayers().getHalfbye();
+                if (white != null && white != bye && white != halfbye) {
+                    paired.add(white);
+                }
+                if (black != null && black != bye && black != halfbye && white != black) {
+                    paired.add(black);
+                }
+            }
+        });
+
+        getRoundUpdateSelect().setValue(1);
+        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
+            ArrayList<Integer> rounds = new ArrayList<>();
+            for (int i = 1; i <= getTournament().getRoundsObs().size() + 1; i++) {
+                rounds.add(i);
+            }
+            roundsNumbersObs = FXCollections.observableArrayList(rounds);
+            getRoundUpdateSelect().setItems(roundsNumbersObs);
+        });
+
+        setWhiteSearch(whiteSearch);
+        setBlackSearch(blackSearch);
+        setWhiteList(whiteList);
+        setBlackList(blackList);
+        setAutoColorCheckbox(autoColorCheckbox);
+        setPairRestButton(pairRestButton);
+        setPairButton(pairButton);
+
+        getPairButton().setOnAction(e -> {
+            Player white = getWhiteList().getSelectionModel().getSelectedItem();
+            Player black = getBlackList().getSelectionModel().getSelectedItem();
+            if (white == black) {
+                error("Player cannot be paired with himself !!!");
+            } else if (white == null || black == null) {
+                warning("Two players are needed for pairing");
+            } else {
+                manualRound.add(new Game(white, black));
+                paired.add(white);
+                paired.add(black);
+            }
+            manualRound.sort(getTournament().getPairingComparator());
+        });
+
+        setWhithdrawButton(whithdrawButton);
+        getWhithdrawButton().setOnAction(e -> {
+            Player white = getWhiteList().getSelectionModel().getSelectedItem();
+            Player black = getBlackList().getSelectionModel().getSelectedItem();
+            if (white != null) {
+                paired.add(white);
+                manualRound.add(new Game(white, getTournament().getPlayers().getUnpaired()));
+            }
+            if (black != null && black != white) {
+                paired.add(black);
+                manualRound.add(new Game(black, getTournament().getPlayers().getUnpaired()));
+            }
+            manualRound.sort(getTournament().getPairingComparator());
+
+        });
+        setByePairButton(byePairButton);
+        getByePairButton().setOnAction(e -> {
+            Player white = getWhiteList().getSelectionModel().getSelectedItem();
+            Player black = getBlackList().getSelectionModel().getSelectedItem();
+            if (white != null) {
+                paired.add(white);
+                manualRound.add(new Game(white, getTournament().getPlayers().getBye()));
+            }
+            if (black != null && black != white) {
+                paired.add(black);
+                manualRound.add(new Game(black, getTournament().getPlayers().getBye()));
+            }
+            manualRound.sort(getTournament().getPairingComparator());
+        });
+        setHalfByePairButton(halfByePairButton);
+        getHalfByePairButton().setOnAction(e -> {
+            Player white = getWhiteList().getSelectionModel().getSelectedItem();
+            Player black = getBlackList().getSelectionModel().getSelectedItem();
+            if (white != null) {
+                paired.add(white);
+                manualRound.add(new Game(white, getTournament().getPlayers().getHalfbye()));
+            }
+            if (black != null && black != white) {
+                paired.add(black);
+                manualRound.add(new Game(black, getTournament().getPlayers().getHalfbye()));
+            }
+            manualRound.sort(getTournament().getPairingComparator());
+        });
+
+        setClearManualButton(clearManualButton);
+        getClearManualButton().setOnAction(e -> {
+            getWhiteList().getSelectionModel().clearSelection();
+            getBlackList().getSelectionModel().clearSelection();
+            getPairsList().getSelectionModel().clearSelection();
+        });
+        setUnpairButton(unpairButton);
+        getUnpairButton().setOnAction(e -> {
+            Game game = pairsList.getSelectionModel().getSelectedItem();
+            manualRound.remove(game);
+            paired.removeAll(game.getWhite(), game.getBlack());
+        });
+
+        setUpPairingButton(upPairingButton);
+        getUpPairingButton().setOnAction(e -> {
+            int index = pairsList.getSelectionModel().getSelectedIndex();
+            if (index > 0) {
+                Game game1 = getManualRound().get(index);
+                Game game2 = getManualRound().get(index - 1);
+                Game pom = game1;
+                getManualRound().set(index, game2);
+                getManualRound().set(index - 1, pom);
+                getPairsList().getSelectionModel().select(index - 1);
+            }
+        });
+        setDownPairButton(downPairButton);
+        getDownPairButton().setOnAction(e -> {
+            int index = pairsList.getSelectionModel().getSelectedIndex();
+            if (index < manualRound.size() - 1) {
+                Game game1 = getManualRound().get(index);
+                Game game2 = getManualRound().get(index + 1);
+                if (
+                        game2.getBlack() != getTournament().getPlayers().getHalfbye()
+                                && game2.getBlack() != getTournament().getPlayers().getBye()
+                                && game2.getBlack() != getTournament().getPlayers().getUnpaired()
+                ) {
+                    Game pom = game1;
+                    getManualRound().set(index, game2);
+                    getManualRound().set(index + 1, pom);
+                    getPairsList().getSelectionModel().select(index + 1);
+                }
+            }
+        });
+
+        setSwapColorPairButton(swapColorPairButton);
+        getSwapColorPairButton().setOnAction(e -> {
+            Game game = getPairsList().getSelectionModel().getSelectedItem();
+            Player black = game.getBlack();
+            if (black != getTournament().getPlayers().getBye() && black != getTournament().getPlayers().getHalfbye() && black != getTournament().getPlayers().getUnpaired()) {
+                game.swapPlayers();
+            } else {
+                warning("Cannot swap colors for bye/halfbye");
+            }
+            getPairsList().getSelectionModel().clearSelection();
+        });
+        setApplyManualButton(applyManualButton);
+        getApplyManualButton().setOnAction(e -> {
+            int currentRound = getRoundUpdateSelect().getValue();
+            ArrayList<Game> pom = new ArrayList<>(manualRound);
+            if (pom.size() == 0) {
+                warning("Round cannot be empty");
+            } else if (paired.size() < getTournament().getPlayersObs().size()) {
+                confirm("Not every player was paired")
+                        .thenAccept(result -> {
+                            if (result) {
+                                if (getTournament().getRoundsObs().size() >= currentRound) {
+                                    getTournament().getRoundsObs().set(currentRound - 1, pom);
+                                } else {
+                                    getTournament().getRoundsObs().add(pom);
+                                }
+                            }
+                        });
+            } else {
+                if (getTournament().getRoundsObs().size() >= currentRound) {
+                    getTournament().getRoundsObs().set(currentRound - 1, pom);
+                } else {
+                    getTournament().getRoundsObs().add(pom);
+                }
+            }
+        });
+
+        setPairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !paired.contains(item)));
+        paired.addListener((ListChangeListener<Player>) change -> {
+            pairedFilter.setPredicate(item -> !paired.contains(item));
+        });
+
+        getWhiteList().setItems(getPairedFilter());
+        getWhiteList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
+        getWhiteList().setCellFactory(param -> new ListCell<Player>() {
+            @Override
+            protected void updateItem(Player item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && item != null) {
+                    int index = getTournament().getPlayersObs().indexOf(item) + 1;
+                    String text = String.format("%3d.  %-50s %3s %4d ", index, item.getName(), item.getTitle(), item.getFideRating());
+                    setText(text);
+                } else {
+                    setText(null);
+                }
+            }
+        });
+
+        getBlackList().setItems(getPairedFilter());
+        getBlackList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
+        getBlackList().setCellFactory(param -> new ListCell<Player>() {
+            @Override
+            protected void updateItem(Player item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && item != null) {
+                    int index = getTournament().getPlayersObs().indexOf(item) + 1;
+                    String text = String.format("%3d.  %-50s %3s %4d ", index, item.getName(), item.getTitle(), item.getFideRating());
+                    setText(text);
+                } else {
+                    setText(null);
+                }
+            }
+        });
+    }
+
+
+    public Tournament getTournament() {
+        return tournament;
+    }
+
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
+    }
+
+    public ComboBox<Integer> getRoundUpdateSelect() {
+        return roundUpdateSelect;
+    }
+
+    public void setRoundUpdateSelect(ComboBox<Integer> roundUpdateSelect) {
+        this.roundUpdateSelect = roundUpdateSelect;
+    }
+
+    public TextField getWhiteSearch() {
+        return whiteSearch;
+    }
+
+    public void setWhiteSearch(TextField whiteSearch) {
+        this.whiteSearch = whiteSearch;
+    }
+
+    public TextField getBlackSearch() {
+        return blackSearch;
+    }
+
+    public void setBlackSearch(TextField blackSearch) {
+        this.blackSearch = blackSearch;
+    }
+
+    public ListView<Player> getWhiteList() {
+        return whiteList;
+    }
+
+    public void setWhiteList(ListView<Player> whiteList) {
+        this.whiteList = whiteList;
+    }
+
+    public ListView<Player> getBlackList() {
+        return blackList;
+    }
+
+    public void setBlackList(ListView<Player> blackList) {
+        this.blackList = blackList;
+    }
+
+    public CheckBox getAutoColorCheckbox() {
+        return autoColorCheckbox;
+    }
+
+    public void setAutoColorCheckbox(CheckBox autoColorCheckbox) {
+        this.autoColorCheckbox = autoColorCheckbox;
+    }
+
+    public Button getPairRestButton() {
+        return pairRestButton;
+    }
+
+    public void setPairRestButton(Button pairRestButton) {
+        this.pairRestButton = pairRestButton;
+    }
+
+    public Button getPairButton() {
+        return pairButton;
+    }
+
+    public void setPairButton(Button pairButton) {
+        this.pairButton = pairButton;
+    }
+
+    public Button getWhithdrawButton() {
+        return whithdrawButton;
+    }
+
+    public void setWhithdrawButton(Button whithdrawButton) {
+        this.whithdrawButton = whithdrawButton;
+    }
+
+    public Button getByePairButton() {
+        return byePairButton;
+    }
+
+    public void setByePairButton(Button byePairButton) {
+        this.byePairButton = byePairButton;
+    }
+
+    public Button getClearManualButton() {
+        return clearManualButton;
+    }
+
+    public void setClearManualButton(Button clearManualButton) {
+        this.clearManualButton = clearManualButton;
+    }
+
+    public Button getUnpairButton() {
+        return unpairButton;
+    }
+
+    public void setUnpairButton(Button unpairButton) {
+        this.unpairButton = unpairButton;
+    }
+
+    public Button getUpPairingButton() {
+        return upPairingButton;
+    }
+
+    public void setUpPairingButton(Button upPairingButton) {
+        this.upPairingButton = upPairingButton;
+    }
+
+    public Button getDownPairButton() {
+        return downPairButton;
+    }
+
+    public void setDownPairButton(Button downPairButton) {
+        this.downPairButton = downPairButton;
+    }
+
+    public Button getSwapColorPairButton() {
+        return swapColorPairButton;
+    }
+
+    public void setSwapColorPairButton(Button swapColorPairButton) {
+        this.swapColorPairButton = swapColorPairButton;
+    }
+
+    public Button getApplyManualButton() {
+        return applyManualButton;
+    }
+
+    public void setApplyManualButton(Button applyManualButton) {
+        this.applyManualButton = applyManualButton;
+    }
+
+    public ListView<Game> getPairsList() {
+        return pairsList;
+    }
+
+    public void setPairsList(ListView<Game> pairsList) {
+        this.pairsList = pairsList;
+    }
+
+    public FilteredList<Player> getPairedFilter() {
+        return pairedFilter;
+    }
+
+    public void setPairedFilter(FilteredList<Player> pairedFilter) {
+        this.pairedFilter = pairedFilter;
+    }
+
+    public void setPaired(ObservableList<Player> paired) {
+        this.paired = paired;
+    }
+
+    public ObservableList<Game> getManualRound() {
+        return manualRound;
+    }
+
+    public void setManualRound(ObservableList<Game> manualRound) {
+        this.manualRound = manualRound;
+    }
+
+    public Button getHalfByePairButton() {
+        return halfByePairButton;
+    }
+
+    public void setHalfByePairButton(Button halfByePairButton) {
+        this.halfByePairButton = halfByePairButton;
+    }
+
+}
