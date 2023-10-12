@@ -34,6 +34,10 @@ public class TrfTournament {
         try (BufferedReader reader = new BufferedReader(new FileReader(trfFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
                 String contentType = line.substring(0, 3);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy/MM/dd");
