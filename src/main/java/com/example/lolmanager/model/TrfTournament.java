@@ -460,7 +460,7 @@ public class TrfTournament {
         public TrfRound(int opponentId, char color, char result) {
             setOpponentId(opponentId);
             setColor(color );
-            setResult(result == ' ' ? '\0' : color);
+            setResult(result == ' ' ? '\0' : result);
         }
 
         @Override
