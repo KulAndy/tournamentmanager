@@ -49,6 +49,7 @@ public class Tournament implements Serializable {
         setStartDate(trfTournament.getStartDate());
         setEndDate(trfTournament.getEndDate());
         setArbiter(trfTournament.getChiefArbiter());
+        setRoundsNumber(trfTournament.getRoundsNo());
         String allottedTimes = trfTournament.getAllottedTimes();
 
         String basicTimeRegex = "\\d+\\s*min"; // Matches basic time in minutes
@@ -188,6 +189,7 @@ public class Tournament implements Serializable {
                     boolean whiteForfeit = true;
                     boolean blackForfeit = true;
                     switch (whiteResult) {
+                        case '\0' -> game.setWhiteResult(null);
                         case '+', 'W', '1', 'U', 'F' -> game.setWhiteResult(Result.WIN);
                         case '=', 'H' -> game.setWhiteResult(Result.DRAW);
                         default -> game.setWhiteResult(Result.LOSE);
@@ -197,6 +199,7 @@ public class Tournament implements Serializable {
                     }
 
                     switch (blackResult) {
+                        case '\0' -> game.setBlackResult(null);
                         case '+', 'W', '1', 'U', 'F' -> game.setBlackResult(Result.WIN);
                         case '=', 'H' -> game.setBlackResult(Result.DRAW);
                         default -> game.setBlackResult(Result.LOSE);
@@ -210,6 +213,7 @@ public class Tournament implements Serializable {
                     roundIds.get(i).add(round.getOpponentId());
                     rounds.get(i).add(game);
                 }
+
             }
 
         }

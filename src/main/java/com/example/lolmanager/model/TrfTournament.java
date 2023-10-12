@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class TrfTournament {
     private String allottedTimes;
     private ArrayList<TrfPlayer> players = new ArrayList<>();
 
-    private int roundsNo = 0;
+    private byte roundsNo = 0;
 
     public TrfTournament(String trfPath) {
         this(new File(trfPath));
@@ -108,7 +109,7 @@ public class TrfTournament {
                                 }
                             }
                         }
-                        setRoundsNo(roundDates.length);
+                        setRoundsNo((byte) roundDates.length);
                         break;
                     }
                     case "001": {
@@ -156,7 +157,9 @@ public class TrfTournament {
                         }
                         float playerPoints = Optional.of(Float.parseFloat(line.substring(80, 84).replace(',', '.'))).orElse(0f);
                         ArrayList<TrfRound> playerRounds = new ArrayList<>();
-                        String roundsRaw = line.substring(91);
+                        StringBuilder roundsRaw = new StringBuilder(line.substring(91));
+                        int fill = (10 - (roundsRaw.length() % 10)) % 10;
+                        roundsRaw.append(" ".repeat(fill));
                         ArrayList<String> rawRoundsList = new ArrayList<>();
                         try {
                             int counter = 0;
@@ -192,6 +195,15 @@ public class TrfTournament {
                         ));
                         break;
                     }
+                }
+            }
+
+            if (getRoundsNo() == 0){
+                if (getRoundsNo() == 0) {
+                    Optional<Integer> maxRounds = players.stream()
+                            .map(player -> player.getRounds().size())
+                            .max(Comparator.naturalOrder());
+                    setRoundsNo((maxRounds.orElse(0)).byteValue());
                 }
             }
 
@@ -288,11 +300,11 @@ public class TrfTournament {
         this.allottedTimes = allottedTimes;
     }
 
-    public int getRoundsNo() {
+    public byte getRoundsNo() {
         return roundsNo;
     }
 
-    public void setRoundsNo(int roundsNo) {
+    public void setRoundsNo(byte roundsNo) {
         this.roundsNo = roundsNo;
     }
 
@@ -447,8 +459,13 @@ public class TrfTournament {
 
         public TrfRound(int opponentId, char color, char result) {
             setOpponentId(opponentId);
-            setColor(color);
-            setResult(result);
+            setColor(color );
+            setResult(result == ' ' ? '\0' : color);
+        }
+
+        @Override
+        public String toString(){
+            return opponentId + " " + color + " " + result;
         }
 
         public int getOpponentId() {
