@@ -15,4 +15,3 @@ Class-Path: ikonli-javafx-12.3.1.jar SparseBitSet-1.2.jar commons-loggin
  -20-linux.jar gson-2.8.9.jar maven-scm-provider-svn-commons-1.4.jar log
  4j-api-2.18.0.jar commons-math3-3.6.1.jar maven-scm-provider-svnexe-1.4
  .jar
-

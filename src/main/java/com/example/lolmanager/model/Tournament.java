@@ -593,9 +593,13 @@ public class Tournament implements Serializable {
     public enum TournamentSystem implements Serializable {
         SWISS,
         ROUND_ROBIN,
-        CUP,
+        CUP;
 
-
+        @Override
+        public String toString() {
+            String value = super.toString();
+            return value.replaceAll("_", " ");
+        }
     }
 
     public static class Tiebreak implements Serializable {

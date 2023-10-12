@@ -117,7 +117,7 @@ public class TrfTournament {
                         Title playerTitle = Title.getTitle(line.substring(10, 13));
                         String playerName = line.substring(14, 47).trim();
                         Integer playerRating;
-                        try{
+                        try {
                             playerRating = Integer.parseInt(line.substring(48, 52).trim());
                         } catch (NumberFormatException e) {
                             playerRating = 1000;
@@ -129,7 +129,7 @@ public class TrfTournament {
                             playerFederation = Federation.FIDE;
                         }
                         int playerFideId;
-                        try{
+                        try {
                             playerFideId = Integer.parseInt(line.substring(57, 68).trim());
                         } catch (NumberFormatException e) {
                             playerFideId = 0;
@@ -286,6 +286,14 @@ public class TrfTournament {
 
     public void setAllottedTimes(String allottedTimes) {
         this.allottedTimes = allottedTimes;
+    }
+
+    public int getRoundsNo() {
+        return roundsNo;
+    }
+
+    public void setRoundsNo(int roundsNo) {
+        this.roundsNo = roundsNo;
     }
 
     public class TrfPlayer {
@@ -467,14 +475,6 @@ public class TrfTournament {
             this.result = result;
         }
 
-    }
-
-    public int getRoundsNo() {
-        return roundsNo;
-    }
-
-    public void setRoundsNo(int roundsNo) {
-        this.roundsNo = roundsNo;
     }
 
 }

@@ -290,7 +290,7 @@ public class FIDEOperation {
         trf.append("\n062 ").append(tournament.getPlayers().size());
         trf.append("\n072 ").append(tournament.getPlayers().stream().filter(player -> player.getFideRating() > 1000).count());
         trf.append("\n092 ").append(tournament.getSystem()).append(" SYSTEM");
-        trf.append("\n112 ").append(tournament.getArbiter());
+        trf.append("\n102 ").append(tournament.getArbiter());
 
         StringBuilder controlTime = new StringBuilder();
         controlTime.append(tournament.getType()).append(": ");

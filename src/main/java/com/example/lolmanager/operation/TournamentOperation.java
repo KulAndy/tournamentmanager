@@ -3,7 +3,6 @@ package com.example.lolmanager.operation;
 import com.example.lolmanager.MainController;
 import com.example.lolmanager.model.Tournament;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
