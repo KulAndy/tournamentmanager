@@ -3,8 +3,10 @@ package com.example.lolmanager.operation;
 import com.example.lolmanager.MainController;
 import com.example.lolmanager.model.Tournament;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 
 public class TournamentOperation {
     public static void loadTournament(Tournament tournament, MainController controller) {
@@ -22,7 +24,9 @@ public class TournamentOperation {
             localEndDate = tournament.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         }
         controller.getTourStartDate().setValue(localStartDate);
+        controller.getTournament().setStartDate(Date.from(localStartDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         controller.getTourEndDate().setValue(localEndDate);
+        controller.getTournament().setEndDate(Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         controller.getTourPlace().setText(tournament.getPlace());
         controller.getTourGameTime().setText(String.valueOf(tournament.getGameTime()));
         controller.getTourIncrement().setText(String.valueOf(tournament.getIncrement()));

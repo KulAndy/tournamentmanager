@@ -47,7 +47,7 @@ public class Tournament implements Serializable {
         setName(trfTournament.getName());
         setPlace(trfTournament.getCity());
         setStartDate(trfTournament.getStartDate());
-        setEndDate(endDate);
+        setEndDate(trfTournament.getEndDate());
         setArbiter(trfTournament.getChiefArbiter());
         String allottedTimes = trfTournament.getAllottedTimes();
 

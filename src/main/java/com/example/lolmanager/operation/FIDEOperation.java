@@ -17,8 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.example.lolmanager.helper.GeneralHelper.error;
-import static com.example.lolmanager.helper.GeneralHelper.warning;
+import static com.example.lolmanager.helper.GeneralHelper.*;
 import static com.example.lolmanager.operation.FileOperation.*;
 
 public class FIDEOperation {
@@ -281,19 +280,20 @@ public class FIDEOperation {
     }
 
     public static void trfRaport(Tournament tournament) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         StringBuilder trf = new StringBuilder();
         trf.append("012 ").append(tournament.getName());
-        trf.append("\n022").append(tournament.getPlace());
+        trf.append("\n022 ").append(tournament.getPlace());
         trf.append("\n032 ").append("POL");
         trf.append("\n042 ").append(dateFormat.format(tournament.getStartDate()));
         trf.append("\n052 ").append(dateFormat.format(tournament.getEndDate()));
         trf.append("\n062 ").append(tournament.getPlayers().size());
         trf.append("\n072 ").append(tournament.getPlayers().stream().filter(player -> player.getFideRating() > 1000).count());
-        trf.append("\n092 ").append(tournament.getType());
+        trf.append("\n092 ").append(tournament.getSystem()).append(" SYSTEM");
         trf.append("\n112 ").append(tournament.getArbiter());
 
         StringBuilder controlTime = new StringBuilder();
+        controlTime.append(tournament.getType()).append(": ");
         controlTime.append(tournament.getGameTime()).append(" min");
         if (tournament.getControlMove() > 0) {
             controlTime.append("/").append(tournament.getControlMove()).append(" moves")
@@ -327,7 +327,7 @@ public class FIDEOperation {
                     .append("%3s".formatted(
                             fideTitles.contains(player.getTitle()) ? player.getTitle() : ""
                     ))
-                    .append(" ")
+                    .append("%-34s".formatted(player.getName()))
                     .append(player.getFideRating())
                     .append(" ")
                     .append(player.getFederation() == null ? "   " : player.getFederation())
@@ -424,6 +424,7 @@ public class FIDEOperation {
             try {
                 Tournament tournament = new Tournament(new TrfTournament(selectedFile));
                 TournamentOperation.loadTournament(tournament, controller);
+                info("Imported successfully");
             } catch (Exception e) {
                 e.printStackTrace();
                 error("An error eccured");

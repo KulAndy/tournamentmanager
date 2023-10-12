@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Locale;
+
 public class Main extends Application {
     private String programName = "lol manager";
     private String programExtension = "lol";
@@ -17,6 +19,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Locale.setDefault(new Locale("en", "US"));
+
         FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("main-view.fxml"));
         Parent root = fxmlLoader.load();
 

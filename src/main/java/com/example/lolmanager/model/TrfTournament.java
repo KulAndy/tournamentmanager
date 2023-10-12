@@ -24,6 +24,8 @@ public class TrfTournament {
     private String allottedTimes;
     private ArrayList<TrfPlayer> players = new ArrayList<>();
 
+    private int roundsNo = 0;
+
     public TrfTournament(String trfPath) {
         this(new File(trfPath));
     }
@@ -102,6 +104,7 @@ public class TrfTournament {
                                 }
                             }
                         }
+                        setRoundsNo(roundDates.length);
                         break;
                     }
                     case "001": {
@@ -143,7 +146,7 @@ public class TrfTournament {
                             try {
                                 playerYearOfBirth = Short.parseShort(birthElems[0].trim());
                                 playerMonthOfBirth = Byte.parseByte(birthElems[1].trim());
-                                playerDayOfBirth = Byte.parseByte(birthElems[1].trim());
+                                playerDayOfBirth = Byte.parseByte(birthElems[2].trim());
                             } catch (Exception ignored) {
                             }
                         }
@@ -460,6 +463,14 @@ public class TrfTournament {
             this.result = result;
         }
 
+    }
+
+    public int getRoundsNo() {
+        return roundsNo;
+    }
+
+    public void setRoundsNo(int roundsNo) {
+        this.roundsNo = roundsNo;
     }
 
 }

@@ -119,7 +119,7 @@ public class Player implements Serializable {
     public Player(String name, Sex sex, Title title, Integer rating, Federation federation, int fideNo, short yearOfBirth, byte monthOfBirth, byte dayOfBirth) {
         this(
                 federation, "", name, title, PZSzachCalculation.getTitleValue(title, sex), rating,
-                null, yearOfBirth + "-" + (monthOfBirth < 10 ? "0" + monthOfBirth : monthOfBirth) + "-" + (dayOfBirth < 10 ? "0" + dayOfBirth : dayOfBirth), sex, null, null, null, null, fideNo, null
+                null, yearOfBirth + "/" + (monthOfBirth < 10 ? "0" + monthOfBirth : monthOfBirth) + "/" + (dayOfBirth < 10 ? "0" + dayOfBirth : dayOfBirth), sex, null, null, null, null, fideNo, null
         );
     }
 
@@ -658,16 +658,16 @@ public class Player implements Serializable {
     }
 
     public String getDateOfBirth() {
-        return YearOfBirth + "-" +
+        return YearOfBirth + "/" +
                 (MonthOfBirth < 10 ? "0" + MonthOfBirth : MonthOfBirth)
-                + "-" +
+                + "/" +
                 (DayOfBirth < 10 ? "0" + DayOfBirth : DayOfBirth);
     }
 
     public void setDateOfBirth(String dateOfBirth) {
         if (dateOfBirth != null) {
             try {
-                String[] date = dateOfBirth.split("-");
+                String[] date = dateOfBirth.split("/");
                 try {
                     setYearOfBirth(Integer.parseInt(date[0]));
                 } catch (Exception ignored) {
@@ -680,7 +680,25 @@ public class Player implements Serializable {
                     setDayOfBirth(Byte.parseByte(date[2]));
                 } catch (Exception ignored) {
                 }
-            } catch (Exception ignored) {
+            } catch (Exception err) {
+                try {
+                    String[] date = dateOfBirth.split("/");
+                    try {
+                        setYearOfBirth(Integer.parseInt(date[0]));
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        setMonthOfBirth(Byte.parseByte(date[1]));
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        setDayOfBirth(Byte.parseByte(date[2]));
+                    } catch (Exception ignored) {
+                    }
+                } catch (Exception ignored) {
+
+                }
+
             }
         }
     }
