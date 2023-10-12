@@ -24,7 +24,7 @@ public class RoundsHelper {
                     Button applyResultButton, TableView<Game> gamesView, TableColumn<Game, Integer> leftBoardNo, TableColumn<Game, Float> whitePoints,
                     TableColumn<Game, Integer> whiteRating, TableColumn<Game, String> whitePlayer, TableColumn<Game, Void> gameResult,
                     TableColumn<Game, String> blackPlayer, TableColumn<Game, Integer> blackRating, TableColumn<Game, Float> blackPoints,
-                    TableColumn<Game, Integer> rightBoardNo
+                    TableColumn<Game, Integer> rightBoardNo, Button deleteRound
             ) {
         setManualPairingHelper(new ManualPairingHelper(
                 tournament, roundUpdateSelect, whiteSearch, blackSearch, whiteList, blackList,
@@ -37,7 +37,7 @@ public class RoundsHelper {
                 roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
                 blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
-                blackRating, blackPoints, rightBoardNo
+                blackRating, blackPoints, rightBoardNo, deleteRound
         ));
 
 

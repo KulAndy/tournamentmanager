@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
+import static com.example.lolmanager.helper.GeneralHelper.confirm;
 import static com.example.lolmanager.helper.GeneralHelper.error;
 
 public class ResultEnterHelper {
@@ -45,6 +46,7 @@ public class ResultEnterHelper {
     private TableColumn<Game, Integer> rightBoardNo;
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList();
     private ObservableList<Game> currentRound = FXCollections.observableArrayList();
+    private Button deleteRound;
 
     public ResultEnterHelper(
             Tournament tournament,
@@ -53,7 +55,7 @@ public class ResultEnterHelper {
             Button applyResultButton, TableView<Game> gamesView, TableColumn<Game, Integer> leftBoardNo, TableColumn<Game, Float> whitePoints,
             TableColumn<Game, Integer> whiteRating, TableColumn<Game, String> whitePlayer, TableColumn<Game, Void> gameResult,
             TableColumn<Game, String> blackPlayer, TableColumn<Game, Integer> blackRating, TableColumn<Game, Float> blackPoints,
-            TableColumn<Game, Integer> rightBoardNo
+            TableColumn<Game, Integer> rightBoardNo, Button deleteRound
     ) {
         setTournament(tournament);
         setRoundsViewSelect(roundsViewSelect);
@@ -93,6 +95,7 @@ public class ResultEnterHelper {
         setBlackWinResult(blackWinResult);
         setWhiteWinForfeitResult(whiteWinForfeitResult);
         setBlackWinForfeitResult(blackWinForfeitResult);
+        setDeleteRound(deleteRound);
         setApplyResultButton(applyResultButton);
         getApplyResultButton().setOnAction(e -> {
             boolean forfeitIncompatible = false;
@@ -100,21 +103,23 @@ public class ResultEnterHelper {
             for (int i = 0; i < currentRound.size(); i++) {
                 TextField textField1 = (TextField) getGamesView().lookup("#result" + i + "white");
                 TextField textField2 = (TextField) getGamesView().lookup("#result" + i + "black");
-                Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
-                Result whiteResult = (Result) objects1[0];
-                boolean forfeit1 = (boolean) objects1[1];
-                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                Result blackResult = (Result) objects2[0];
-                boolean forfeit2 = (boolean) objects2[1];
-                if (forfeit1 != forfeit2) {
-                    forfeitIncompatible = true;
-                }
+                if(textField1 != null && textField2 != null){
+                    Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
+                    Result whiteResult = (Result) objects1[0];
+                    boolean forfeit1 = (boolean) objects1[1];
+                    Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                    Result blackResult = (Result) objects2[0];
+                    boolean forfeit2 = (boolean) objects2[1];
+                    if (forfeit1 != forfeit2) {
+                        forfeitIncompatible = true;
+                    }
 
-                if (
-                        whiteResult == Result.WIN && (blackResult == Result.WIN || blackResult == Result.DRAW)
-                                || whiteResult == Result.DRAW && blackResult == Result.WIN
-                ) {
-                    pointsOverflow = true;
+                    if (
+                            whiteResult == Result.WIN && (blackResult == Result.WIN || blackResult == Result.DRAW)
+                                    || whiteResult == Result.DRAW && blackResult == Result.WIN
+                    ) {
+                        pointsOverflow = true;
+                    }
                 }
             }
 
@@ -128,16 +133,18 @@ public class ResultEnterHelper {
                 for (int i = 0; i < currentRound.size(); i++) {
                     TextField textField1 = (TextField) getGamesView().lookup("#result" + i + "white");
                     TextField textField2 = (TextField) getGamesView().lookup("#result" + i + "black");
-                    Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
-                    Result whiteResult = (Result) objects1[0];
-                    boolean forfeit1 = (boolean) objects1[1];
-                    Object[] objects2 = Result.getResultFromPoints(textField2.getText().trim());
-                    Result blackResult = (Result) objects2[0];
-                    boolean forfeit2 = (boolean) objects2[1];
-                    Game game = getTournament().getRoundsObs().get(currentRoundNo.get() - 1).get(i);
-                    game.setWhiteResult(whiteResult);
-                    game.setBlackResult(blackResult);
-                    game.setForfeit(forfeit1 && forfeit2);
+                    if(textField1 != null && textField2 != null) {
+                        Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
+                        Result whiteResult = (Result) objects1[0];
+                        boolean forfeit1 = (boolean) objects1[1];
+                        Object[] objects2 = Result.getResultFromPoints(textField2.getText().trim());
+                        Result blackResult = (Result) objects2[0];
+                        boolean forfeit2 = (boolean) objects2[1];
+                        Game game = getTournament().getRoundsObs().get(currentRoundNo.get() - 1).get(i);
+                        game.setWhiteResult(whiteResult);
+                        game.setBlackResult(blackResult);
+                        game.setForfeit(forfeit1 && forfeit2);
+                    }
                 }
                 int lastRoundIndex = getTournament().getRoundsObs().size() - 1;
                 ArrayList<Game> lastRoundElem = new ArrayList<>(getTournament().getRoundsObs().get(lastRoundIndex));
@@ -253,6 +260,57 @@ public class ResultEnterHelper {
             Game game = cellData.getValue();
             int rowIndex = getGamesView().getItems().indexOf(game) + 1;
             return new SimpleIntegerProperty(rowIndex).asObject();
+        });
+
+
+        firstRound.setOnAction(e->{
+            if(roundsNumbersObs.size() > 0){
+                getRoundsViewSelect().getSelectionModel().selectFirst();
+            }
+        });
+
+        nextRound.setOnAction(e->{
+            if(roundsNumbersObs.size() > 0){
+                getRoundsViewSelect().getSelectionModel().selectNext();
+            }
+        });
+
+        previousRound.setOnAction(e->{
+            if(roundsNumbersObs.size() > 0){
+                getRoundsViewSelect().getSelectionModel().selectPrevious();
+            }
+        });
+
+        lastRound.setOnAction(e->{
+            if(roundsNumbersObs.size() > 0){
+                getRoundsViewSelect().getSelectionModel().selectLast();
+            }
+        });
+
+        deleteRound.setOnAction(e->{
+            int index = getRoundsViewSelect().getSelectionModel().getSelectedIndex();
+            int last = getRoundsViewSelect().getItems().size() - 1;
+            if(index == last){
+                if(roundsNumbersObs.size() > 1){
+                    getRoundsViewSelect().getSelectionModel().selectPrevious();
+                }else{
+                    getRoundsViewSelect().setValue(null);
+                }
+                getTournament().getRoundsObs().remove(index);
+            }else{
+                confirm("This will also remove subsequent rounds")
+                        .thenAccept(result -> {
+                    if (result) {
+                        if(roundsNumbersObs.size() > 1){
+                            getRoundsViewSelect().getSelectionModel().selectPrevious();
+                        }else{
+                            getRoundsViewSelect().setValue(null);
+                        }
+                        getTournament().getRoundsObs().remove(index, last + 1);
+                    }
+                });
+                ;
+            }
         });
     }
 
@@ -448,5 +506,12 @@ public class ResultEnterHelper {
         this.currentRound = currentRound;
     }
 
+    public Button getDeleteRound() {
+        return deleteRound;
+    }
+
+    public void setDeleteRound(Button deleteRound) {
+        this.deleteRound = deleteRound;
+    }
 
 }

@@ -316,6 +316,9 @@ public class MainController implements Initializable {
     @FXML
     private Button applyResultButton;
     @FXML
+    private Button deleteRound;
+
+    @FXML
     private TableView<Game> gamesView;
     @FXML
     private TableColumn<Game, Integer> leftBoardNo;
@@ -460,7 +463,7 @@ public class MainController implements Initializable {
                 applyManualButton, pairsList, roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
                 blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
-                blackRating, blackPoints, rightBoardNo
+                blackRating, blackPoints, rightBoardNo, deleteRound
 
         );
 
