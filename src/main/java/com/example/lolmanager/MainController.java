@@ -519,6 +519,14 @@ public class MainController implements Initializable {
 
         importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
 
+        importSwsx.setOnAction(e->{
+            File swsx = FileOperation.selectSwsx();
+            if(swsx != null){
+                SwsxTournament swsxTournament = new SwsxTournament(swsx);
+                System.out.println(swsxTournament);
+            }
+        });
+
     }
 
     public ShortcutsHelper getShortcutsHelper() {

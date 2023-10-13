@@ -168,7 +168,31 @@ public class StartListComparator implements Comparator<Player>, Serializable {
             value = value.replace('_', ' ');
             return value;
         }
+
+        public static SortCriteria getSortCriteria(String symbol){
+            switch (symbol){
+                case "1" -> {
+                    return FIDE_RATING;
+                }
+                case "2" -> {
+                    return LOCAL_RATING;
+                }
+                case "3" -> {
+                    return TITLE;
+                }
+                case "4" -> {
+                    return ALPHABETIC;
+                }
+                case "5" -> {
+                    return RANDOM;
+                }
+                case "7" -> {
+                    return CLUB;
+                }
+                default -> {
+                    return null;
+                }
+            }
+        }
     }
-
-
 }

@@ -591,7 +591,23 @@ public class Tournament implements Serializable {
         STANDARD,
         RAPID,
         BLITZ,
-        OTHER
+        OTHER;
+        public static Type getType(String symbol){
+            switch (symbol){
+                case "2" -> {
+                    return RAPID;
+                }
+                case "3" -> {
+                    return BLITZ;
+                }
+                case "4" -> {
+                    return OTHER;
+                }
+                default -> {
+                    return STANDARD;
+                }
+            }
+        }
     }
 
     public enum TournamentSystem implements Serializable {
@@ -759,7 +775,51 @@ public class Tournament implements Serializable {
             MODIFIED_BUCHOLZ,
             SONNEN_BERGER,
             PROGRESS,
-            KOYA
+            KOYA;
+
+            public static TbMethod getTbMethod(String symbol){
+                switch (symbol){
+                    case "11" -> {
+                        return POINTS;
+                    }
+                    case "1" -> {
+                        return BUCHOLZ;
+                    }
+                    case "2", "23" -> {
+                        return MEDIA_BUCHOLZ;
+                    }
+                    case "28" -> {
+                        return BUCHOLZ_CUT1;
+                    }
+                    case "3" -> {
+                        return PROGRESS;
+                    }
+                    case "4" -> {
+                        return WONS;
+                    }
+                    case "5" -> {
+                        return AVERAGE_OPPONENTS_RATING;
+                    }
+                    case "29" -> {
+                        return AVERAGE_OPPONENTS_RATING_CUT1;
+                    }
+                    case "6" -> {
+                        return SONNEN_BERGER;
+                    }
+                    case "7" -> {
+                        return KOYA;
+                    }
+                    case "8" -> {
+                        return DUEL;
+                    }
+                    case "22" -> {
+                        return RATING_PERFORMENCE_PZSZACH;
+                    }
+                    default -> {
+                        return null;
+                    }
+                }
+            }
 
         }
     }

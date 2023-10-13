@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.example.lolmanager.helper.GeneralHelper.*;
+import static com.example.lolmanager.model.Tournament.Type.BLITZ;
+import static com.example.lolmanager.model.Tournament.Type.RAPID;
 import static com.example.lolmanager.operation.FileOperation.*;
 
 public class FIDEOperation {

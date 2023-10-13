@@ -50,6 +50,13 @@ public class FileOperation {
         this.fileStage = new Stage();
     }
 
+    public static File selectSwsx() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("swsx files", "*.swsx"));
+        return fileChooser.showOpenDialog(new Stage());
+    }
+
     public static String[] searchProvince(Federation countryCode) {
         Connection connection = null;
         try {
