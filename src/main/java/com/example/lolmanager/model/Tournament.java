@@ -43,6 +43,198 @@ public class Tournament implements Serializable {
     private PairingComparator pairingComparator;
     private ResultsComparator resultsComparator;
 
+    public Tournament(SwsxTournament swsxTournament) {
+        setName(swsxTournament.getName());
+        setPlace(swsxTournament.getPlace());
+        setStartDate(swsxTournament.getStartDate());
+        setEndDate(swsxTournament.getEndDate());
+        if(!swsxTournament.getReportFide().getChiefArbiter().getFullName().isEmpty()){
+            setArbiter(swsxTournament.getReportFide().getChiefArbiter().getFullName());
+        }else if(!swsxTournament.getReportPol().getChiefArbiter().getFullName().isEmpty()){
+            setArbiter(swsxTournament.getReportPol().getChiefArbiter().getFullName());
+        }else{
+            setArbiter(swsxTournament.getArbiter());
+        }
+
+        setRoundsNumber(swsxTournament.getRoundsNo());
+        String allottedTimes = swsxTournament.getRate();
+
+        String basicTimeRegex = "(\\d+)'|'*(\\d+)'*"; // Matches basic time in minutes
+        String controlMoveRegex = "(\\d+)\\s*/"; // Matches control move
+        String controlAdditionRegex = "(\\d+)\\+'"; // Matches control addition
+        String incrementRegex = "(\\d+)''|''(\\d+)"; // Matches increment
+
+        Pattern basicTimePattern = Pattern.compile(basicTimeRegex);
+        Pattern controlMovePattern = Pattern.compile(controlMoveRegex);
+        Pattern controlAdditionPattern = Pattern.compile(controlAdditionRegex);
+        Pattern incrementPattern = Pattern.compile(incrementRegex);
+
+        Matcher basicTimeMatcher = basicTimePattern.matcher(allottedTimes);
+        Matcher controlMoveMatcher = controlMovePattern.matcher(allottedTimes);
+        Matcher controlAdditionMatcher = controlAdditionPattern.matcher(allottedTimes);
+        Matcher incrementMatcher = incrementPattern.matcher(allottedTimes);
+
+        short basicTime = 0;
+        short increment = 0;
+        byte controlMove = 0;
+        byte timeAddition = 0;
+
+        if (basicTimeMatcher.find()) {
+            String basicTimeString = basicTimeMatcher.group(1) != null ? basicTimeMatcher.group(1) : basicTimeMatcher.group(2);
+            if (basicTimeString != null) {
+                basicTime = Short.parseShort(basicTimeString);
+            }
+        }
+
+        if (controlMoveMatcher.find()) {
+            String controlMoveString = controlMoveMatcher.group(1);
+            if (controlMoveString != null) {
+                controlMove = Byte.parseByte(controlMoveString);
+            }
+        }
+
+        if (controlAdditionMatcher.find()) {
+            String controlAdditionString = controlAdditionMatcher.group(1);
+            if (controlAdditionString != null) {
+                controlAddition = Byte.parseByte(controlAdditionString);
+            }
+        }
+
+        if (incrementMatcher.find()) {
+            String incrementString = incrementMatcher.group(1) != null ? incrementMatcher.group(1) : incrementMatcher.group(2);
+            if (incrementString != null) {
+                increment = Short.parseShort(incrementString);
+            }
+        }
+
+        setGameTime(basicTime);
+        setIncrement(increment);
+        setControlMove(controlMove);
+        setControlAddition(controlAddition);
+        setSystem(swsxTournament.getSystem());
+        int totalTime = basicTime + increment + (controlMove == 0 ? 0 : timeAddition);
+        if (totalTime >= 60) {
+            setType(Type.STANDARD);
+        } else if (totalTime <= 10) {
+            setType(Type.BLITZ);
+        } else {
+            setType(Type.RAPID);
+        }
+
+        ArrayList<SwsxTournament.SwsxPlayer> swsxPlayers = swsxTournament.getPlayers();
+        ArrayList<ArrayList<Game>> rounds = new ArrayList<>();
+        PlayerList players = new PlayerList();
+        ArrayList<ArrayList<UUID>> roundIds = new ArrayList<>();
+        for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
+            Player playerTmp = new Player(
+                    player.getFullName(),
+                    player.getSex(),
+                    player.getTitle(),
+                    (int) (getType() == Type.BLITZ ? player.getFideRatingBlitz() :
+                            getType() == Type.RAPID ? player.getFideRatingRapid() :
+                                    player.getFideRatingClassic()),
+                    player.getFederation(),
+                    player.getFideId(),
+                    player.getYearOfBorn(),
+                    player.getMonthOfBorn(),
+                    player.getDayOfBorn()
+            );
+            playerTmp.setLocalId(player.getPolId());
+            playerTmp.setPlayerid(player.getPlayerId());
+
+            players.add(playerTmp);
+        }
+
+        for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
+            ArrayList<SwsxTournament.SwsxRound> playerRounds = player.getRounds();
+            for (int i = 0; i < playerRounds.size(); i++) {
+                if(roundIds.size()<=i){
+                    roundIds.add(new ArrayList<>());
+                }
+
+                if(rounds.size() <= i){
+                    rounds.add(new ArrayList<>());
+                }
+
+                if (!roundIds.get(i).contains(player.getPlayerId())) {
+                    SwsxTournament.SwsxRound round = playerRounds.get(i);
+                    Player white;
+                    Player black;
+                    Result whiteResult;
+                    Result blackResult;
+                    long longNumber = ((int)round.getOpponentId()) & 0xFFFFFFFFL;
+                    UUID opponentId = new UUID(0, longNumber);
+                    boolean forfeit = true;
+                    if(round.getColor() == Player.Color.BLACK){
+                        black = players.get(player.getPlayerId());
+                        blackResult = player.getRounds().get(i).getResult();
+                        if(round.getStatus() == 1){
+                            white = players.get(opponentId);
+                            whiteResult = swsxPlayers.get(players.indexOf(white)).getRounds().get(i).getResult();
+                            forfeit = false;
+                        }else if(round.getStatus() == 2){
+                            white = players.getBye();
+                            if(round.getPoints() == 0.5f){
+                                whiteResult = Result.DRAW;
+                                blackResult = Result.DRAW;
+                            }else{
+                                whiteResult = Result.LOSE;
+                                blackResult = Result.WIN;
+                            }
+                        }else{
+                            white = players.getUnpaired();
+                            whiteResult = Result.WIN;
+                            blackResult = Result.LOSE;
+                        }
+                    }else{
+                        white = players.get(player.getPlayerId());
+                        whiteResult = player.getRounds().get(i).getResult();
+                        if(round.getStatus() == 1){
+                            black = players.get(opponentId);
+                            blackResult = swsxPlayers.get(players.indexOf(black)).getRounds().get(i).getResult();
+                            forfeit = false;
+                        }else if(round.getStatus() == 2){
+                            black = players.getBye();
+                            if(round.getPoints() == 0.5f){
+                                whiteResult = Result.DRAW;
+                                blackResult = Result.DRAW;
+                            }else{
+                                whiteResult = Result.WIN;
+                                blackResult = Result.LOSE;
+                            }
+                        }else{
+                            black = players.getUnpaired();
+                            whiteResult = Result.LOSE;
+                            blackResult = Result.WIN;
+                        }
+                    }
+                    Game game = new Game(white, black, whiteResult, blackResult, forfeit);
+                    roundIds.get(i).add(player.getPlayerId());
+                    roundIds.get(i).add(opponentId);
+                    rounds.get(i).add(game);
+
+
+                }
+            }
+        }
+
+        for (ArrayList<Game> round : rounds) {
+            for (Game game : round) {
+                game.getWhite().addRound(game);
+                game.getBlack().addRound(game);
+            }
+            round.sort(new PairingComparator());
+        }
+
+
+        setPlayers(players);
+        setRounds(rounds);
+
+        setPairingComparator(new PairingComparator(playersObs));
+        setResultsComparator(new ResultsComparator(getTiebreak()));
+    }
+
+
     public Tournament(TrfTournament trfTournament) {
         setName(trfTournament.getName());
         setPlace(trfTournament.getCity());
@@ -327,7 +519,6 @@ public class Tournament implements Serializable {
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
-
     @Override
     public String toString() {
         return "tournament\n" +

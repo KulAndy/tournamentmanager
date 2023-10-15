@@ -167,7 +167,7 @@ public class ResultEnterHelper {
         getWhitePoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
-            return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get())).asObject();
+            return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get()-1)).asObject();
         });
         setWhiteRating(whiteRating);
         getWhiteRating().setCellValueFactory(cellData -> {
@@ -248,12 +248,7 @@ public class ResultEnterHelper {
         getBlackPoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player black = game.getBlack();
-            return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get())).asObject();
-        });
-        getBlackPoints().setCellValueFactory(cellData -> {
-            Game game = cellData.getValue();
-            Player black = game.getBlack();
-            return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get())).asObject();
+            return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get()-1)).asObject();
         });
         setRightBoardNo(rightBoardNo);
         getRightBoardNo().setCellValueFactory(cellData -> {

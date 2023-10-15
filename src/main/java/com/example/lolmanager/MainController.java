@@ -6,6 +6,7 @@ import com.example.lolmanager.model.*;
 import com.example.lolmanager.operation.ExcelOperation;
 import com.example.lolmanager.operation.FIDEOperation;
 import com.example.lolmanager.operation.FileOperation;
+import com.example.lolmanager.operation.TournamentOperation;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -16,6 +17,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
+
+import static com.example.lolmanager.helper.GeneralHelper.info;
 
 public class MainController implements Initializable {
     private String programName = "";
@@ -523,7 +526,9 @@ public class MainController implements Initializable {
             File swsx = FileOperation.selectSwsx();
             if(swsx != null){
                 SwsxTournament swsxTournament = new SwsxTournament(swsx);
-                System.out.println(swsxTournament);
+                Tournament tournament = new Tournament(swsxTournament);
+                TournamentOperation.loadTournament(tournament, this);
+                info("Imported successfully");
             }
         });
 

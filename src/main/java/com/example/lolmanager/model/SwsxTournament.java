@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -49,6 +50,7 @@ public class SwsxTournament {
     private ArrayList<SwsxPlayer> players = new ArrayList<>();
     private TournamentReportPol reportPol;
     private TournamentReportFide reportFide;
+    private String rate;
 
     public SwsxTournament(File file){
         String xmlFileName = "tournament.xml";
@@ -98,6 +100,7 @@ public class SwsxTournament {
                 Element sort4Node = (Element) document.getElementsByTagName("sort4").item(0);
                 Element reportPolNode = (Element)  document.getElementsByTagName("tournament_report_pol").item(0);
                 Element reportFideNode = (Element)  document.getElementsByTagName("report_FIDE_data").item(0);
+                Element rateNode = (Element)  document.getElementsByTagName("rate_play").item(0);
 
                 String maxNorm = maxNormNode.getAttribute("value");
                 String rematch = rematchNode.getAttribute("value");
@@ -129,6 +132,7 @@ public class SwsxTournament {
                 String sort2 = sort2Node.getAttribute("value");
                 String sort3 = sort3Node.getAttribute("value");
                 String sort4 = sort4Node.getAttribute("value");
+                String rate = rateNode.getAttribute("value");
 
                 switch (maxNorm){
                     case "6" -> setMaxNorm(Title.M);
@@ -212,17 +216,17 @@ public class SwsxTournament {
                 setSort4(StartListComparator.SortCriteria.getSortCriteria(sort4));
                 setReportPol(new TournamentReportPol(reportPolNode));
                 setReportFide(new TournamentReportFide(reportFideNode));
+                setRate(rate);
 
                 XPathExpression expression = xPath.compile(".//list_of_players/cobarray_item");
                 NodeList cobarrayItems = (NodeList) expression.evaluate(document, XPathConstants.NODESET);
 
                 for (int i = 0; i < cobarrayItems.getLength(); i++) {
                     Element cobarrayItem = (Element) cobarrayItems.item(i);
-
-                    players.add(new SwsxPlayer(cobarrayItem));
+                    SwsxPlayer player = new SwsxPlayer(cobarrayItem);
+                    players.add(player);
                 }
                 is.close();
-                System.out.println(this);
             } else {
                 System.err.println("The specified XML file was not found in the ZIP archive.");
             }
@@ -251,6 +255,7 @@ public class SwsxTournament {
     public class TournamentReportPol{
         private Arbiter chiefArbiter;
         private String state;
+        private String rateOfPlay;
         private ArrayList<SwsxEvent> schedule = new ArrayList<>();
         private ArrayList<Arbiter> arbiters = new ArrayList<>();
         TournamentReportPol(Element report) throws XPathExpressionException {
@@ -260,6 +265,7 @@ public class SwsxTournament {
             Element chiefArbiterNameNode = (Element) report.getElementsByTagName("chief_arbiter_name").item(0);
             Element chiefArbiterTitleNode = (Element) report.getElementsByTagName("chief_arbiter_title").item(0);
             Element chiefArbiterLicenseNode = (Element) report.getElementsByTagName("chief_arbiter_lic").item(0);
+            Element rateNode = (Element) report.getElementsByTagName("rate_of_play_it").item(0);
             Element stateNode = (Element) report.getElementsByTagName("state_number").item(0);
             NodeList scheduleListNode = (NodeList) report.getElementsByTagName("schedule_list").item(0);
 
@@ -271,6 +277,7 @@ public class SwsxTournament {
                             )
             );
             setState(stateNode.getAttribute("value"));
+            setRateOfPlay(rateNode.getAttribute("value"));
 
             for (int i = 0; i < scheduleListNode.getLength(); i++) {
                 Element cobarrayItem = (Element) scheduleListNode.item(i);
@@ -331,6 +338,14 @@ public class SwsxTournament {
 
         public void setState(String state) {
             this.state = state;
+        }
+
+        public String getRateOfPlay() {
+            return rateOfPlay;
+        }
+
+        public void setRateOfPlay(String rateOfPlay) {
+            this.rateOfPlay = rateOfPlay;
         }
 
         public ArrayList<SwsxEvent> getSchedule() {
@@ -500,8 +515,7 @@ public class SwsxTournament {
         byte dayOfBorn;
         byte monthOfBorn;
         short yearOfBorn;
-        short playerId;
-        short startNo;
+        UUID playerId;
         short fideRatingClassic;
         short fideRatingRapid;
         short fideRatingBlitz;
@@ -535,6 +549,7 @@ public class SwsxTournament {
             Element fedNode = (Element) cobarrayItem.getElementsByTagName("fed").item(0);
             Element licenceNode = (Element) cobarrayItem.getElementsByTagName("licence").item(0);
             Element clubNode = (Element) cobarrayItem.getElementsByTagName("club").item(0);
+            Element playerIdNode = (Element) cobarrayItem.getElementsByTagName("player_id").item(0);
 
             NodeList roundsNode = (NodeList) roundsExpression.evaluate(cobarrayItem, XPathConstants.NODESET);
 
@@ -553,6 +568,7 @@ public class SwsxTournament {
             String fed = fedNode.getAttribute("value");
             String licence = licenceNode.getAttribute("value");
             String club = clubNode.getAttribute("value");
+            String playerId = playerIdNode.getAttribute("value");
 
 
             setFullName(nameSurname);
@@ -582,6 +598,11 @@ public class SwsxTournament {
             }
             setLicense(licence);
             setClub(club);
+
+            long longNumber = Integer.parseInt(playerId) & 0xFFFFFFFFL;
+            UUID uuid = new UUID(0, longNumber);
+            setPlayerId(uuid);
+
 
             for (int j = 0; j < roundsNode.getLength(); j++) {
                 Element round = (Element) roundsNode.item(j);
@@ -691,20 +712,12 @@ public class SwsxTournament {
             this.yearOfBorn = yearOfBorn;
         }
 
-        public short getPlayerId() {
+        public UUID getPlayerId() {
             return playerId;
         }
 
-        public void setPlayerId(short playerId) {
+        public void setPlayerId(UUID playerId) {
             this.playerId = playerId;
-        }
-
-        public short getStartNo() {
-            return startNo;
-        }
-
-        public void setStartNo(short startNo) {
-            this.startNo = startNo;
         }
 
         public short getFideRatingClassic() {
@@ -1154,6 +1167,14 @@ public class SwsxTournament {
 
     public void setReportFide(TournamentReportFide reportFide) {
         this.reportFide = reportFide;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
     }
 
 }

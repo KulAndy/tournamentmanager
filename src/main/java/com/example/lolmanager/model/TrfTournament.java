@@ -451,7 +451,7 @@ public class TrfTournament {
 
     }
 
-    public class TrfRound {
+    public static class TrfRound {
 
         private int opponentId;
         private char color;
