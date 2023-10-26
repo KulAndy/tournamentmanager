@@ -51,28 +51,28 @@ public class Player implements Serializable {
 
     public Player(String name) {
         this(
-                Federation.FIDE, "", name, Title.bk, 1000, 1000,
+                Federation.FID, "", name, Title.bk, 1000, 1000,
                 null, null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Integer fiderating, Integer localRating) {
         this(
-                Federation.FIDE, "", name, Title.bk, localRating, fiderating,
+                Federation.FID, "", name, Title.bk, localRating, fiderating,
                 null, null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Title title) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), 1000,
+                Federation.FID, "", name, title, PZSzachCalculation.getTitleValue(title, null), 1000,
                 null, null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Title title, Sex sex) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), 1000,
+                Federation.FID, "", name, title, PZSzachCalculation.getTitleValue(title, sex), 1000,
                 null, null, sex, null, null, null, null, null, null
         );
     }
@@ -80,14 +80,14 @@ public class Player implements Serializable {
 
     public Player(String name, Integer fiderating, Title title) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), fiderating,
+                Federation.FID, "", name, title, PZSzachCalculation.getTitleValue(title, null), fiderating,
                 null, null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Integer fiderating, Title title, Sex sex) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), fiderating,
+                Federation.FID, "", name, title, PZSzachCalculation.getTitleValue(title, sex), fiderating,
                 null, null, sex, null, null, null, null, null, null
         );
     }

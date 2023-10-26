@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -320,6 +321,8 @@ public class MainController implements Initializable {
     private Button applyResultButton;
     @FXML
     private Button deleteRound;
+    @FXML
+    private Button enginePairButton;
 
     @FXML
     private TableView<Game> gamesView;
@@ -466,7 +469,7 @@ public class MainController implements Initializable {
                 applyManualButton, pairsList, roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
                 blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
-                blackRating, blackPoints, rightBoardNo, deleteRound
+                blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton
 
         );
 
@@ -497,7 +500,7 @@ public class MainController implements Initializable {
         openMenu.setOnAction(e -> getFileOperation().open());
         openButton.setOnAction(e -> getFileOperation().open());
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, programName));
-        trfRaport.setOnAction(e -> FIDEOperation.trfRaport(getTournament()));
+        trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         downloadFideMenu.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
                     .exceptionally(ex -> {
@@ -531,7 +534,6 @@ public class MainController implements Initializable {
                 info("Imported successfully");
             }
         });
-
     }
 
     public ShortcutsHelper getShortcutsHelper() {

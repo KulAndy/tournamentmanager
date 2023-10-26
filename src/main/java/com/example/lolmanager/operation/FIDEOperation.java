@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.example.lolmanager.helper.GeneralHelper.*;
-import static com.example.lolmanager.model.Tournament.Type.BLITZ;
-import static com.example.lolmanager.model.Tournament.Type.RAPID;
 import static com.example.lolmanager.operation.FileOperation.*;
 
 public class FIDEOperation {
@@ -281,7 +279,41 @@ public class FIDEOperation {
         return players;
     }
 
-    public static void trfRaport(Tournament tournament) {
+    public static void selectTrfReport(Tournament tournament) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Create New File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf reports", "*.txt"));
+        File newFile = fileChooser.showSaveDialog(new Stage());
+
+        try{
+            saveTrfReport(trfReport(tournament), newFile);
+            GeneralHelper.info("Created report");
+        } catch (Exception e) {
+            e.printStackTrace();
+            GeneralHelper.error("Couldn't create trf report");
+        }
+    }
+
+    public static void saveTrfReport(String trf, File file){
+        if (file != null) {
+            String filePath = file.getAbsolutePath();
+            if (!filePath.endsWith(".txt")) {
+                filePath += ".txt";
+            }
+            file = new File(filePath);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(trf);
+            } catch (IOException e) {
+                GeneralHelper.error("Couldn't create trf report");
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+    public static String trfReport(Tournament tournament) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         StringBuilder trf = new StringBuilder();
         trf.append("012 ").append(tournament.getName());
@@ -391,35 +423,18 @@ public class FIDEOperation {
 
                 }
             }
-
         }
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Create New File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf raports", "*.txt"));
-        File newFile = fileChooser.showSaveDialog(new Stage());
+        trf.append("\nXXR ").append(tournament.getRoundsNumber());
 
-        if (newFile != null) {
-            String filePath = newFile.getAbsolutePath();
-            if (!filePath.endsWith(".txt")) {
-                filePath += ".txt";
-            }
-            newFile = new File(filePath);
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(newFile))) {
-                writer.write(String.valueOf(trf));
-                GeneralHelper.info("Created raport");
-            } catch (IOException e) {
-                GeneralHelper.error("Couldn't create trf raport");
-                e.printStackTrace();
-            }
-
-        }
+        return trf.toString();
     }
+
 
     public static void importTrfReport(MainController controller) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf raports", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf reports", "*.txt"));
         File selectedFile = fileChooser.showOpenDialog(new Stage());
 
         if (selectedFile != null) {

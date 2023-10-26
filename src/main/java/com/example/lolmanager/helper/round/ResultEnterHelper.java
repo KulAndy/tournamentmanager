@@ -1,9 +1,6 @@
 package com.example.lolmanager.helper.round;
 
-import com.example.lolmanager.model.Game;
-import com.example.lolmanager.model.Player;
-import com.example.lolmanager.model.Result;
-import com.example.lolmanager.model.Tournament;
+import com.example.lolmanager.model.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,10 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.example.lolmanager.helper.GeneralHelper.confirm;
-import static com.example.lolmanager.helper.GeneralHelper.error;
+import static com.example.lolmanager.helper.GeneralHelper.*;
 
 public class ResultEnterHelper {
     private final IntegerProperty currentRoundNo = new SimpleIntegerProperty();
@@ -44,9 +41,11 @@ public class ResultEnterHelper {
     private TableColumn<Game, Integer> blackRating;
     private TableColumn<Game, Float> blackPoints;
     private TableColumn<Game, Integer> rightBoardNo;
+    private Button enginePairButton;
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList();
     private ObservableList<Game> currentRound = FXCollections.observableArrayList();
     private Button deleteRound;
+    private Engine engine = new JavafoWrapper();
 
     public ResultEnterHelper(
             Tournament tournament,
@@ -55,7 +54,7 @@ public class ResultEnterHelper {
             Button applyResultButton, TableView<Game> gamesView, TableColumn<Game, Integer> leftBoardNo, TableColumn<Game, Float> whitePoints,
             TableColumn<Game, Integer> whiteRating, TableColumn<Game, String> whitePlayer, TableColumn<Game, Void> gameResult,
             TableColumn<Game, String> blackPlayer, TableColumn<Game, Integer> blackRating, TableColumn<Game, Float> blackPoints,
-            TableColumn<Game, Integer> rightBoardNo, Button deleteRound
+            TableColumn<Game, Integer> rightBoardNo, Button deleteRound, Button enginePairButton
     ) {
         setTournament(tournament);
         setRoundsViewSelect(roundsViewSelect);
@@ -307,6 +306,19 @@ public class ResultEnterHelper {
                 ;
             }
         });
+
+        setEnginePairButton(enginePairButton);
+        getEnginePairButton().setOnAction(e->{
+            try {
+                ArrayList<Game> pairing = engine.generatePairing(getTournament());
+                getRoundsViewSelect().getSelectionModel().selectNext();
+                info("Paired successfully\nGenerated " + pairing.size() + " pairings");
+            } catch (IOException | InterruptedException ex) {
+                ex.printStackTrace();
+                System.out.println(ex.getMessage());
+            }
+            System.out.println("paired");
+        });
     }
 
     public ComboBox<Integer> getRoundsViewSelect() {
@@ -483,6 +495,14 @@ public class ResultEnterHelper {
 
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
+    }
+
+    public Button getEnginePairButton() {
+        return enginePairButton;
+    }
+
+    public void setEnginePairButton(Button enginePairButton) {
+        this.enginePairButton = enginePairButton;
     }
 
     public ObservableList<Integer> getRoundsNumbersObs() {

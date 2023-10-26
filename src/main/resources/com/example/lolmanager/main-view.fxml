@@ -483,12 +483,15 @@
                                                                         <Button fx:id="blackWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="- - +" />
                                                                         <Separator opacity="0.0" prefHeight="49.0" prefWidth="53.0" HBox.hgrow="ALWAYS" />
                                                                         <Separator opacity="0.0" prefHeight="31.0" prefWidth="36.0" />
-                                                      <VBox>
+                                                      <HBox>
                                                          <children>
-                                                                              <Button fx:id="applyResultButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="128.0" text="Apply" />
-                                                            <Button fx:id="deleteRound" mnemonicParsing="false" prefWidth="128.0" text="Delete" />
+                                                             <Button fx:id="applyResultButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Apply" />
+                                                            <Separator prefWidth="25.0" />
+                                                            <Button fx:id="enginePairButton" mnemonicParsing="false" text="Pair" />
+                                                            <Separator opacity="0.0" prefHeight="29.0" prefWidth="36.0" />
+                                                            <Button fx:id="deleteRound" mnemonicParsing="false" prefHeight="26.0" prefWidth="66.0" text="Delete" />
                                                          </children>
-                                                      </VBox>
+                                                      </HBox>
                                                                     </children>
                                                                 </HBox>
                                                                 <TableView fx:id="gamesView" nodeOrientation="LEFT_TO_RIGHT" prefHeight="568.0" prefWidth="1280.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">

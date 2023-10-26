@@ -162,7 +162,7 @@ public class newPlayerHelper {
         insertFromList.setOnAction(e -> {
             if (newPlayerHint.getSelectionModel().getSelectedItem() != null) {
                 Player selected = newPlayerHint.getSelectionModel().getSelectedItem();
-                Federation federation = (selected.getFederation() == null) ? Federation.FIDE : selected.getFederation();
+                Federation federation = (selected.getFederation() == null) ? Federation.FID : selected.getFederation();
                 String name = selected.getName();
                 String fideid = String.valueOf(selected.getFideId());
                 Title title = (selected.getTitle() == null) ? Title.bk : selected.getTitle();

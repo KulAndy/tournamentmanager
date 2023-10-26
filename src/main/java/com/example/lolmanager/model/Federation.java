@@ -75,7 +75,7 @@ public enum Federation implements Serializable {
     ESP,
     EST,
     ETH,
-    FIDE,
+    FID,
     FIN,
     FJI,
     FLK,
