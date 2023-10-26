@@ -252,8 +252,7 @@ public class SwsxTournament {
                 Object fieldValue = field.get(this);
                 result.append(fieldName).append(": ").append(fieldValue).append("\n");
             }
-        } catch (IllegalAccessException e) {
-        }
+        } catch (IllegalAccessException ignored) {}
         return result.toString();
     }
 
@@ -325,8 +324,7 @@ public class SwsxTournament {
                     Object fieldValue = field.get(this);
                     result.append(fieldName).append(": ").append(fieldValue).append("\n");
                 }
-            } catch (IllegalAccessException e) {
-            }
+            } catch (IllegalAccessException ignored) {}
             return result.toString();
         }
 

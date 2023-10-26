@@ -101,7 +101,6 @@ public class TiebreakHelper {
         try {
             Method setter = Player.class.getMethod("set" + Character.toUpperCase(plAttr.charAt(0)) + plAttr.substring(1), Float.class);
             Method getter1 = obj.getClass().getMethod("get" + Character.toUpperCase(tbAttr.charAt(0)) + tbAttr.substring(1));
-            Method getter2 = Player.class.getMethod("get" + Character.toUpperCase(plAttr.charAt(0)) + plAttr.substring(1));
             tf.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
                 try {
                     setter.invoke(null, getter1.invoke(obj));

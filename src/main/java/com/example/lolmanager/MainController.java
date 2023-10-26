@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
+import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
 
 public class MainController implements Initializable {
@@ -526,11 +527,17 @@ public class MainController implements Initializable {
 
         importSwsx.setOnAction(e -> {
             File swsx = FileOperation.selectSwsx();
-            if (swsx != null) {
-                SwsxTournament swsxTournament = new SwsxTournament(swsx);
-                Tournament tournament = new Tournament(swsxTournament);
-                TournamentOperation.loadTournament(tournament, this);
-                info("Imported successfully");
+            try {
+                if (swsx != null) {
+                    SwsxTournament swsxTournament = new SwsxTournament(swsx);
+                    Tournament tournament = new Tournament(swsxTournament);
+                    TournamentOperation.loadTournament(tournament, this);
+                    info("Imported successfully");
+                }else{
+                    error("An error eccured");
+                }
+            } catch (Exception ex) {
+                error("An error eccured");
             }
         });
     }

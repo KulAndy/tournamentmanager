@@ -67,7 +67,7 @@ public class ResultEnterHelper {
             }
             roundsNumbersObs = FXCollections.observableArrayList(rounds);
             getRoundsViewSelect().setItems(roundsNumbersObs);
-            if (getRoundsViewSelect().getValue() == null && rounds.size() > 0) {
+            if (getRoundsViewSelect().getValue() == null && !rounds.isEmpty()) {
                 getRoundsViewSelect().setValue(rounds.get(0));
             }
         });
@@ -182,7 +182,7 @@ public class ResultEnterHelper {
             return new SimpleStringProperty(white.getName());
         });
         setGameResult(gameResult);
-        getGameResult().setCellFactory(column -> new TableCell<Game, Void>() {
+        getGameResult().setCellFactory(column -> new TableCell<>() {
             private final HBox hbox = new HBox();
             private final TextField textField1 = new TextField();
             private final Label separator = new Label("-");
@@ -259,25 +259,25 @@ public class ResultEnterHelper {
 
 
         firstRound.setOnAction(e -> {
-            if (roundsNumbersObs.size() > 0) {
+            if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectFirst();
             }
         });
 
         nextRound.setOnAction(e -> {
-            if (roundsNumbersObs.size() > 0) {
+            if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectNext();
             }
         });
 
         previousRound.setOnAction(e -> {
-            if (roundsNumbersObs.size() > 0) {
+            if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectPrevious();
             }
         });
 
         lastRound.setOnAction(e -> {
-            if (roundsNumbersObs.size() > 0) {
+            if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectLast();
             }
         });
@@ -309,7 +309,7 @@ public class ResultEnterHelper {
 
         setEnginePairButton(enginePairButton);
         getEnginePairButton().setOnAction(e -> {
-            if(getTournament().getRounds().size() < getTournament().getRoundsNumber()){
+            if (getTournament().getRounds().size() < getTournament().getRoundsNumber()) {
 
                 try {
                     ArrayList<Game> pairing = engine.generatePairing(getTournament());
@@ -318,7 +318,7 @@ public class ResultEnterHelper {
                 } catch (IOException | InterruptedException ex) {
                     error("An error occurred during pairing");
                 }
-            }else{
+            } else {
                 error("Unable to pairing - number of rounds in tournament reached");
             }
         });
@@ -512,7 +512,9 @@ public class ResultEnterHelper {
         return roundsNumbersObs;
     }
 
-    public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {this.roundsNumbersObs = roundsNumbersObs;}
+    public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {
+        this.roundsNumbersObs = roundsNumbersObs;
+    }
 
     public ObservableList<Game> getCurrentRound() {
         return currentRound;

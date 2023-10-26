@@ -31,8 +31,8 @@ public class BasicInfoHelper {
 
     public BasicInfoHelper(
             Tournament tournament, TextField tourName, DatePicker tourStartDate, DatePicker tourEndDate, TextField tourPlace, TextField tourGameTime,
-            TextField tourIncrement, TextField tourControlMove, TextField tourControlAddition, ComboBox tourType, CheckBox tourRtPZSzach, CheckBox tourRtFIDE,
-            TextField tourNoRounds, ComboBox tourSystem, TextField tourArbiter, TextField tourOrganizer, TextField tourEmail
+            TextField tourIncrement, TextField tourControlMove, TextField tourControlAddition, ComboBox<Tournament.Type> tourType, CheckBox tourRtPZSzach, CheckBox tourRtFIDE,
+            TextField tourNoRounds, ComboBox<Tournament.TournamentSystem> tourSystem, TextField tourArbiter, TextField tourOrganizer, TextField tourEmail
     ) {
         setTournament(tournament);
         setTourName(tourName);
@@ -172,11 +172,11 @@ public class BasicInfoHelper {
         this.tourControlAddition = tourControlAddition;
     }
 
-    public ComboBox getTourType() {
+    public ComboBox<Tournament.Type> getTourType() {
         return tourType;
     }
 
-    public void setTourType(ComboBox tourType) {
+    public void setTourType(ComboBox<Tournament.Type> tourType) {
         this.tourType = tourType;
     }
 
@@ -204,11 +204,11 @@ public class BasicInfoHelper {
         this.tourNoRounds = tourNoRounds;
     }
 
-    public ComboBox getTourSystem() {
+    public ComboBox<Tournament.TournamentSystem> getTourSystem() {
         return tourSystem;
     }
 
-    public void setTourSystem(ComboBox tourSystem) {
+    public void setTourSystem(ComboBox<Tournament.TournamentSystem> tourSystem) {
         this.tourSystem = tourSystem;
     }
 

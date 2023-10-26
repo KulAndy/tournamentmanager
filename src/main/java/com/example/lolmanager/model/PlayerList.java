@@ -22,19 +22,6 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
         add("halfbye");
         add("unpaired");
 
-        Title[] titles = Title.values();
-        Player.Sex[] sexes = Player.Sex.values();
-        int minValue = 1000;
-        int maxValue = 2600;
-
-        Random random = new Random(System.currentTimeMillis());
-
-//        for (int i = 0; i < 10; i++) {
-//            add("test" + i, random.nextInt(maxValue - minValue + 1) + minValue,
-//                    titles[random.nextInt(titles.length)], sexes[random.nextInt(sexes.length)]);
-//            get(i).setLocalId(random.nextInt(100000));
-//        }
-
         setComparator(new StartListComparator());
     }
 
@@ -46,13 +33,12 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
         }
     }
 
-    public boolean addAll(List<Player> players) {
+    public void addAll(List<Player> players) {
         super.addAll(players);
         uuid2startNo.clear();
         for (Player player : this) {
             uuid2startNo.put(player.getPlayerid(), uuid2startNo.size() + 1);
         }
-        return true;
     }
 
     @Override

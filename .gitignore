@@ -16,6 +16,7 @@
 /rapid_rating_list.xml
 /rejestr_czlonkow.csv
 /rejestr_czlonkow.db
+/.idea/vcs.xml
 /standard_rating_list.db
 /standard_rating_list.xml
 /.idea/uiDesigner.xml
@@ -33,3 +34,5 @@
 /rapid_rating_list.xml
 /rejestr_czlonkow.csv
 /rejestr_czlonkow.db
+/pairing.txt
+/report.txt

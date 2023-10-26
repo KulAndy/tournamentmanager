@@ -14,8 +14,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
@@ -80,10 +78,10 @@ public class newPlayerHelper {
         setInsertFromList(insertFromList);
         setNewPlayerHint(newPlayerHint);
 
-        getNewPlayerHint().setCellFactory(new Callback<ListView<Player>, ListCell<Player>>() {
+        getNewPlayerHint().setCellFactory(new Callback<>() {
             @Override
             public ListCell<Player> call(ListView<Player> param) {
-                return new ListCell<Player>() {
+                return new ListCell<>() {
                     @Override
                     protected void updateItem(Player item, boolean empty) {
                         super.updateItem(item, empty);
@@ -148,13 +146,11 @@ public class newPlayerHelper {
         playerNameField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             try {
                 CompletableFuture.supplyAsync(() -> FIDEOperation.searchPlayer(newValue.trim(), tournament.getType()))
-                        .thenAcceptAsync(players -> {
-                            Platform.runLater(() -> {
-                                ObservableList<Player> options = FXCollections.observableArrayList(players);
-                                options.sort(Comparator.comparing(player -> player.getName().replaceAll("[\\s,]", ""), String.CASE_INSENSITIVE_ORDER));
-                                newPlayerHint.setItems(options);
-                            });
-                        });
+                        .thenAcceptAsync(players -> Platform.runLater(() -> {
+                            ObservableList<Player> options = FXCollections.observableArrayList(players);
+                            options.sort(Comparator.comparing(player -> player.getName().replaceAll("[\\s,]", ""), String.CASE_INSENSITIVE_ORDER));
+                            newPlayerHint.setItems(options);
+                        }));
             } catch (Exception ignored) {
             }
         });
@@ -220,13 +216,9 @@ public class newPlayerHelper {
             }
         });
 
-        getAddPlayerButton().setOnAction(event -> {
-            addPlayer();
-        });
+        getAddPlayerButton().setOnAction(event -> addPlayer());
 
-        getClearPlayerButton().setOnAction(event -> {
-            resetForm();
-        });
+        getClearPlayerButton().setOnAction(event -> resetForm());
         getAddClearPlayerButton().setOnAction(event -> {
             addPlayer();
             resetForm();
@@ -255,7 +247,7 @@ public class newPlayerHelper {
     }
 
     private void addPlayer() {
-        Integer localRtg;
+        int localRtg;
         try {
             localRtg = Integer.parseInt(getLocalRtgField().getText());
         } catch (Exception e) {
@@ -273,8 +265,6 @@ public class newPlayerHelper {
         } catch (Exception e) {
             phone = null;
         }
-        String pattern = "dd-MM-yyyy";
-        DateFormat dateFormat = new SimpleDateFormat(pattern);
         String date;
         if (getYearOfBirth().getText().isEmpty()) {
             date = null;

@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class GeneralHelper {
-    public static void bindTextFieldStringProperty(TextField tf, Object obj, String attr) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static void bindTextFieldStringProperty(TextField tf, Object obj, String attr) {
         tf.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             if (newValue != null) {
                 try {
@@ -161,36 +161,27 @@ public class GeneralHelper {
 
 
     private static Class<?> typeToClass(String type) {
-        switch (type) {
-            case "byte":
-                return byte.class;
-            case "short":
-                return short.class;
-            default:
-                return int.class;
-        }
+        return switch (type) {
+            case "byte" -> byte.class;
+            case "short" -> short.class;
+            default -> int.class;
+        };
     }
 
     private static Object convertToType(String value, String type) {
-        switch (type) {
-            case "byte":
-                return Byte.parseByte(value);
-            case "short":
-                return Short.parseShort(value);
-            default:
-                return Integer.parseInt(value);
-        }
+        return switch (type) {
+            case "byte" -> Byte.parseByte(value);
+            case "short" -> Short.parseShort(value);
+            default -> Integer.parseInt(value);
+        };
     }
 
     private static int getMaxValue(String type) {
-        switch (type) {
-            case "byte":
-                return Byte.MAX_VALUE;
-            case "short":
-                return Short.MAX_VALUE;
-            default:
-                return Integer.MAX_VALUE;
-        }
+        return switch (type) {
+            case "byte" -> Byte.MAX_VALUE;
+            case "short" -> Short.MAX_VALUE;
+            default -> Integer.MAX_VALUE;
+        };
     }
 
     static void logTournamentValue(Object obj, String attr) {

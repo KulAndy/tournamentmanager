@@ -54,12 +54,14 @@ public class JavafoWrapper implements Engine {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try{
+        try {
             outputFile.delete();
-        } catch (Exception ignored) {}
-        try{
+        } catch (Exception ignored) {
+        }
+        try {
             reportFile.delete();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         return null;
     }

@@ -62,16 +62,15 @@ public class HomeTabHelper {
         );
         tourSystem.valueProperty().addListener(
                 (ObservableValue<? extends Tournament.TournamentSystem> observable, Tournament.TournamentSystem oldValue, Tournament.TournamentSystem newValue) -> {
-                    Object obj = tournament;
                     String attr = "system";
                     if (newValue != null) {
                         try {
-                            Method setter = getSetter(obj, attr, Tournament.TournamentSystem.class);
-                            setter.invoke(obj, newValue);
+                            Method setter = getSetter(tournament, attr, Tournament.TournamentSystem.class);
+                            setter.invoke(tournament, newValue);
                             if (tourFIDEMode.isSelected()) {
                                 getTiebreakHelper().setupFIDEMode();
                             }
-                            logTournamentValue(obj, attr);
+                            logTournamentValue(tournament, attr);
                         } catch (Exception ignored) {
                         }
 

@@ -224,7 +224,7 @@ public class Player implements Serializable {
                 if (result == Result.WIN) {
                     koya++;
                 } else if (result == Result.DRAW) {
-                    koya += 0.5;
+                    koya += 0.5F;
                 }
 
             }
@@ -271,7 +271,7 @@ public class Player implements Serializable {
             if (result != null) {
                 switch (result) {
                     case WIN -> points++;
-                    case DRAW -> points += 0.5;
+                    case DRAW -> points += 0.5F;
                 }
             }
             progress += points;
@@ -328,13 +328,13 @@ public class Player implements Serializable {
         for (Game round : getRounds()) {
             Player opponent = getOpponent(round);
             if (Arrays.asList(reservedNames).contains(opponent.getName())) {
-                bucholz += 0.5 * (getRounds().size() - getRounds().indexOf(round) - 1);
+                bucholz += (float) (0.5 * (getRounds().size() - getRounds().indexOf(round) - 1));
             } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
             ) {
                 bucholz += opponent.getPoints();
             } else {
-                bucholz += opponent.getPZSzachPoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber());
+                bucholz += (float) (opponent.getPZSzachPoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber()));
             }
         }
         return bucholz;
@@ -446,7 +446,7 @@ public class Player implements Serializable {
             }
             switch (result) {
                 case WIN -> points++;
-                case DRAW -> points += 0.5;
+                case DRAW -> points += 0.5F;
             }
         }
         return points;

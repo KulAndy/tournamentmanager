@@ -52,24 +52,24 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
 
     @Override
     public int compare(Player player1, Player player2) {
-        int result = 0;
-        result = compare(player1, player2, criteria1);
+        int result;
+        result = compare(player1, player2, getCriteria1());
         if (result != 0) {
             return -result;
         }
-        result = compare(player1, player2, criteria2);
+        result = compare(player1, player2, getCriteria2());
         if (result != 0) {
             return -result;
         }
-        result = compare(player1, player2, criteria3);
+        result = compare(player1, player2, getCriteria3());
         if (result != 0) {
             return -result;
         }
-        result = compare(player1, player2, criteria4);
+        result = compare(player1, player2, getCriteria4());
         if (result != 0) {
             return -result;
         }
-        result = compare(player1, player2, criteria5);
+        result = compare(player1, player2, getCriteria5());
         return -result;
     }
 

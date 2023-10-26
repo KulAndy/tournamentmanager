@@ -56,16 +56,12 @@ public class ManualPairingHelper {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     String white = String.format("%-4d %-3s %35s", item.getWhite().getFideRating(), item.getWhite().getTitle(), item.getWhite().getName());
-                    String black;
-                    if (
+                    String black =
                             item.getBlack() == getTournament().getPlayers().getBye()
                                     || item.getBlack() == getTournament().getPlayers().getHalfbye()
                                     || item.getBlack() == getTournament().getPlayers().getUnpaired()
-                    ) {
-                        black = String.format("%-35s", item.getBlack().getName());
-                    } else {
-                        black = String.format("%-35s %-3s %-4d", item.getBlack().getName(), item.getBlack().getTitle(), item.getBlack().getFideRating());
-                    }
+                                    ? String.format("%-35s", item.getBlack().getName())
+                                    : String.format("%-35s %-3s %-4d", item.getBlack().getName(), item.getBlack().getTitle(), item.getBlack().getFideRating());
                     String text = String.format("%3d.  %s - %s ", getIndex() + 1, white, black);
                     setText(text);
                 } else {
@@ -190,7 +186,7 @@ public class ManualPairingHelper {
         setSwapColorPairButton(swapColorPairButton);
         getSwapColorPairButton().setOnAction(e -> {
             Game game = getPairsList().getSelectionModel().getSelectedItem();
-            if (game !=null){
+            if (game != null) {
 
                 Player black = game.getBlack();
                 if (black != getTournament().getPlayers().getBye() && black != getTournament().getPlayers().getHalfbye() && black != getTournament().getPlayers().getUnpaired()) {
@@ -205,7 +201,7 @@ public class ManualPairingHelper {
         getApplyManualButton().setOnAction(e -> {
             int currentRound = getRoundUpdateSelect().getValue();
             ArrayList<Game> pom = new ArrayList<>(manualRound);
-            if (pom.size() == 0) {
+            if (pom.isEmpty()) {
                 warning("Round cannot be empty");
             } else if (paired.size() < getTournament().getPlayersObs().size()) {
                 confirm("Not every player was paired")

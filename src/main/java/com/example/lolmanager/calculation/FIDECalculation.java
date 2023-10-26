@@ -135,7 +135,7 @@ public class FIDECalculation {
         return expected;
     }
 
-    public static float getRatingPerformence(ArrayList<Player> players, float points) {
+    public static float getRatingPerformance(ArrayList<Player> players, float points) {
         float averageRating = getAverageRating(players);
         float percent = points / players.size();
         return averageRating + getDP(percent);

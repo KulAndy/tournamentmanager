@@ -13,9 +13,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class TablesHelper {
-    private final PolandTableHelper polandTablesHelper;
-    private final FideTableHelper fideTableHelper;
-    private final ResultTableHelper resultTableHelper;
+    private PolandTableHelper polandTablesHelper;
+    private FideTableHelper fideTableHelper;
+    private ResultTableHelper resultTableHelper;
 
     public TablesHelper(Tournament tournament,
                         TableView<Player> rtgPolTable,
@@ -40,20 +40,45 @@ public class TablesHelper {
 
 
     ) {
-        this.polandTablesHelper = new PolandTableHelper(
+        setPolandTablesHelper(new PolandTableHelper(
                 tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks
-        );
+        ));
 
-        this.fideTableHelper = new FideTableHelper(
+        setFideTableHelper(new FideTableHelper(
                 tournament, rtgFideTable, rtgFideName, rtgFideId, rtgFideTitle, rtgFideFed, rtgFideElo, rtgFidePoints, rtgFideGames, rtgFideAverage, rtgFideChg, rtgFideNorm
-        );
+        ));
 
-        this.resultTableHelper = new ResultTableHelper(
+        setResultTableHelper(new ResultTableHelper(
                 tournament,
                 resultFiltered, resultFilter, resultsTable,
                 resultPlace, resultStartNo, resultTitle, resultName,
                 resultElo, resultLocal, resultFed, resultPoints,
                 resultBuchCut, resultBuch, resultBerger, resultProgress
-        );
+        ));
     }
+
+    public PolandTableHelper getPolandTablesHelper() {
+        return polandTablesHelper;
+    }
+
+    public void setPolandTablesHelper(PolandTableHelper polandTablesHelper) {
+        this.polandTablesHelper = polandTablesHelper;
+    }
+
+    public FideTableHelper getFideTableHelper() {
+        return fideTableHelper;
+    }
+
+    public void setFideTableHelper(FideTableHelper fideTableHelper) {
+        this.fideTableHelper = fideTableHelper;
+    }
+
+    public ResultTableHelper getResultTableHelper() {
+        return resultTableHelper;
+    }
+
+    public void setResultTableHelper(ResultTableHelper resultTableHelper) {
+        this.resultTableHelper = resultTableHelper;
+    }
+
 }
