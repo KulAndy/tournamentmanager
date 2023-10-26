@@ -593,10 +593,8 @@
                                                                         </HBox>
                                                                         <Button fx:id="clearManualButton" mnemonicParsing="false" text="Clear status" GridPane.columnIndex="5" />
                                                                         <Button fx:id="unpairButton" mnemonicParsing="false" text="Unpair" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                                        <Button fx:id="upPairingButton" mnemonicParsing="false" text="Up" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                        <Button fx:id="downPairButton" mnemonicParsing="false" text="Down" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                                        <Button fx:id="swapColorPairButton" mnemonicParsing="false" text="Swap colors" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-                                                                        <Button fx:id="applyManualButton" mnemonicParsing="false" text="Apply" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                                        <Button fx:id="swapColorPairButton" mnemonicParsing="false" text="Swap colors" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                        <Button fx:id="applyManualButton" mnemonicParsing="false" text="Apply" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                         <ListView fx:id="pairsList" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="1" GridPane.rowSpan="5" />
                                                                     </children>
                                                                 </GridPane>

@@ -29,8 +29,6 @@ public class ManualPairingHelper {
     private Button halfByePairButton;
     private Button clearManualButton;
     private Button unpairButton;
-    private Button upPairingButton;
-    private Button downPairButton;
     private Button swapColorPairButton;
     private Button applyManualButton;
     private ListView<Game> pairsList;
@@ -44,7 +42,7 @@ public class ManualPairingHelper {
             ComboBox<Integer> roundUpdateSelect, TextField whiteSearch, TextField blackSearch,
             ListView<Player> whiteList, ListView<Player> blackList, CheckBox autoColorCheckbox, Button pairRestButton,
             Button pairButton, Button whithdrawButton, Button byePairButton, Button halfByePairButton, Button clearManualButton,
-            Button unpairButton, Button upPairingButton, Button downPairButton, Button swapColorPairButton,
+            Button unpairButton, Button swapColorPairButton,
             Button applyManualButton, ListView<Game> pairsList
     ) {
         setTournament(tournament);
@@ -52,7 +50,7 @@ public class ManualPairingHelper {
         getPairsList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
 
         getPairsList().setItems(manualRound);
-        getPairsList().setCellFactory(param -> new ListCell<Game>() {
+        getPairsList().setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Game item, boolean empty) {
                 super.updateItem(item, empty);
@@ -102,7 +100,7 @@ public class ManualPairingHelper {
         getRoundUpdateSelect().setValue(1);
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
             ArrayList<Integer> rounds = new ArrayList<>();
-            for (int i = 1; i <= getTournament().getRoundsObs().size() + 1; i++) {
+            for (int i = 1; i <= getTournament().getRoundsObs().size() + 1 && i <= getTournament().getRoundsNumber(); i++) {
                 rounds.add(i);
             }
             roundsNumbersObs = FXCollections.observableArrayList(rounds);
@@ -189,47 +187,19 @@ public class ManualPairingHelper {
             paired.removeAll(game.getWhite(), game.getBlack());
         });
 
-        setUpPairingButton(upPairingButton);
-        getUpPairingButton().setOnAction(e -> {
-            int index = pairsList.getSelectionModel().getSelectedIndex();
-            if (index > 0) {
-                Game game1 = getManualRound().get(index);
-                Game game2 = getManualRound().get(index - 1);
-                Game pom = game1;
-                getManualRound().set(index, game2);
-                getManualRound().set(index - 1, pom);
-                getPairsList().getSelectionModel().select(index - 1);
-            }
-        });
-        setDownPairButton(downPairButton);
-        getDownPairButton().setOnAction(e -> {
-            int index = pairsList.getSelectionModel().getSelectedIndex();
-            if (index < manualRound.size() - 1) {
-                Game game1 = getManualRound().get(index);
-                Game game2 = getManualRound().get(index + 1);
-                if (
-                        game2.getBlack() != getTournament().getPlayers().getHalfbye()
-                                && game2.getBlack() != getTournament().getPlayers().getBye()
-                                && game2.getBlack() != getTournament().getPlayers().getUnpaired()
-                ) {
-                    Game pom = game1;
-                    getManualRound().set(index, game2);
-                    getManualRound().set(index + 1, pom);
-                    getPairsList().getSelectionModel().select(index + 1);
-                }
-            }
-        });
-
         setSwapColorPairButton(swapColorPairButton);
         getSwapColorPairButton().setOnAction(e -> {
             Game game = getPairsList().getSelectionModel().getSelectedItem();
-            Player black = game.getBlack();
-            if (black != getTournament().getPlayers().getBye() && black != getTournament().getPlayers().getHalfbye() && black != getTournament().getPlayers().getUnpaired()) {
-                game.swapPlayers();
-            } else {
-                warning("Cannot swap colors for bye/halfbye");
+            if (game !=null){
+
+                Player black = game.getBlack();
+                if (black != getTournament().getPlayers().getBye() && black != getTournament().getPlayers().getHalfbye() && black != getTournament().getPlayers().getUnpaired()) {
+                    game.swapPlayers();
+                } else {
+                    warning("Cannot swap colors for bye/halfbye");
+                }
+                getPairsList().getSelectionModel().clearSelection();
             }
-            getPairsList().getSelectionModel().clearSelection();
         });
         setApplyManualButton(applyManualButton);
         getApplyManualButton().setOnAction(e -> {
@@ -258,13 +228,11 @@ public class ManualPairingHelper {
         });
 
         setPairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !paired.contains(item)));
-        paired.addListener((ListChangeListener<Player>) change -> {
-            pairedFilter.setPredicate(item -> !paired.contains(item));
-        });
+        paired.addListener((ListChangeListener<Player>) change -> pairedFilter.setPredicate(item -> !paired.contains(item)));
 
         getWhiteList().setItems(getPairedFilter());
         getWhiteList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
-        getWhiteList().setCellFactory(param -> new ListCell<Player>() {
+        getWhiteList().setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Player item, boolean empty) {
                 super.updateItem(item, empty);
@@ -280,7 +248,7 @@ public class ManualPairingHelper {
 
         getBlackList().setItems(getPairedFilter());
         getBlackList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
-        getBlackList().setCellFactory(param -> new ListCell<Player>() {
+        getBlackList().setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Player item, boolean empty) {
                 super.updateItem(item, empty);
@@ -398,22 +366,6 @@ public class ManualPairingHelper {
 
     public void setUnpairButton(Button unpairButton) {
         this.unpairButton = unpairButton;
-    }
-
-    public Button getUpPairingButton() {
-        return upPairingButton;
-    }
-
-    public void setUpPairingButton(Button upPairingButton) {
-        this.upPairingButton = upPairingButton;
-    }
-
-    public Button getDownPairButton() {
-        return downPairButton;
-    }
-
-    public void setDownPairButton(Button downPairButton) {
-        this.downPairButton = downPairButton;
     }
 
     public Button getSwapColorPairButton() {

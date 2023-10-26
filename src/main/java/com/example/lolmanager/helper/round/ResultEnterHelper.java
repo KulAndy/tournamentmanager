@@ -309,15 +309,18 @@ public class ResultEnterHelper {
 
         setEnginePairButton(enginePairButton);
         getEnginePairButton().setOnAction(e -> {
-            try {
-                ArrayList<Game> pairing = engine.generatePairing(getTournament());
-                getRoundsViewSelect().getSelectionModel().selectLast();
-                info("Paired successfully\nGenerated " + pairing.size() + " pairings");
-            } catch (IOException | InterruptedException ex) {
-                ex.printStackTrace();
-                System.out.println(ex.getMessage());
+            if(getTournament().getRounds().size() < getTournament().getRoundsNumber()){
+
+                try {
+                    ArrayList<Game> pairing = engine.generatePairing(getTournament());
+                    getRoundsViewSelect().getSelectionModel().selectLast();
+                    info("Paired successfully\nGenerated " + pairing.size() + " pairings");
+                } catch (IOException | InterruptedException ex) {
+                    error("An error occurred during pairing");
+                }
+            }else{
+                error("Unable to pairing - number of rounds in tournament reached");
             }
-            System.out.println("paired");
         });
     }
 

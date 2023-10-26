@@ -17,7 +17,7 @@ public class RoundsHelper {
                     ComboBox<Integer> roundUpdateSelect, TextField whiteSearch, TextField blackSearch,
                     ListView<Player> whiteList, ListView<Player> blackList, CheckBox autoColorCheckbox, Button pairRestButton,
                     Button pairButton, Button whithdrawButton, Button byePairButton, Button halfByePairButton, Button clearManualButton,
-                    Button unpairButton, Button upPairingButton, Button downPairButton, Button swapColorPairButton,
+                    Button unpairButton, Button swapColorPairButton,
                     Button applyManualButton, ListView<Game> pairsList,
                     ComboBox<Integer> roundsViewSelect, Button firstRound, Button previousRound, Button nextRound, Button lastRound,
                     Button whiteWinResult, Button drawResult, Button blackWinResult, Button whiteWinForfeitResult, Button blackWinForfeitResult,
@@ -29,7 +29,7 @@ public class RoundsHelper {
         setManualPairingHelper(new ManualPairingHelper(
                 tournament, roundUpdateSelect, whiteSearch, blackSearch, whiteList, blackList,
                 autoColorCheckbox, pairRestButton, pairButton, whithdrawButton, byePairButton, halfByePairButton,
-                clearManualButton, unpairButton, upPairingButton, downPairButton, swapColorPairButton,
+                clearManualButton, unpairButton, swapColorPairButton,
                 applyManualButton, pairsList
         ));
         setResultEnterHelper(new ResultEnterHelper(

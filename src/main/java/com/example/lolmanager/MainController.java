@@ -464,7 +464,7 @@ public class MainController implements Initializable {
         roundsHelper = new RoundsHelper(
                 tournament, roundUpdateSelect, whiteSearch, blackSearch, whiteList, blackList,
                 autoColorCheckbox, pairRestButton, pairButton, whithdrawButton, byePairButton, halfByePairButton,
-                clearManualButton, unpairButton, upPairingButton, downPairButton, swapColorPairButton,
+                clearManualButton, unpairButton, swapColorPairButton,
                 applyManualButton, pairsList, roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
                 blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,

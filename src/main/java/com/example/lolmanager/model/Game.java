@@ -87,13 +87,18 @@ public class Game implements Serializable {
     }
 
     public void swapPlayers() {
-        UUID tmp1 = whiteUUDI;
-        whiteUUDI = blackUUID;
-        blackUUID = tmp1;
-
-        String tmp2 = whiteName;
-        whiteName = blackName;
-        blackName = tmp2;
+        Player white = getWhite();
+        Player black = getBlack();
+        Result whiteResult = getWhiteResult();
+        Result blackResult = getBlackResult();
+        setWhite(black);
+        setBlack(white);
+        setWhiteUUDI(getWhite().getPlayerid());
+        setBlackUUID(getBlack().getPlayerid());
+        setWhiteName(getWhite().getName());
+        setBlackName(getBlack().getName());
+        setWhiteResult(blackResult);
+        setBlackResult(whiteResult);
     }
 
     @Override
