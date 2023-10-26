@@ -78,9 +78,9 @@ public class PairingComparator implements Comparator<Game>, Serializable {
             } else {
                 float sumResult1 = white1.getPointInRound(roundNo) + black1.getPointInRound(roundNo);
                 float sumResult2 = white2.getPointInRound(roundNo) + black2.getPointInRound(roundNo);
-                if(sumResult1 != sumResult2){
+                if (sumResult1 != sumResult2) {
                     return -Float.compare(sumResult1, sumResult2);
-                }else{
+                } else {
                     int minStr1 = Integer.min(
                             playersObs.contains(white1) ? playersObs.indexOf(white1) : Integer.MAX_VALUE,
                             playersObs.contains(black1) ? playersObs.indexOf(black1) : Integer.MAX_VALUE

@@ -198,7 +198,7 @@ public class TrfTournament {
                 }
             }
 
-            if (getRoundsNo() == 0){
+            if (getRoundsNo() == 0) {
                 if (getRoundsNo() == 0) {
                     Optional<Integer> maxRounds = players.stream()
                             .map(player -> player.getRounds().size())
@@ -459,12 +459,12 @@ public class TrfTournament {
 
         public TrfRound(int opponentId, char color, char result) {
             setOpponentId(opponentId);
-            setColor(color );
+            setColor(color);
             setResult(result == ' ' ? '\0' : result);
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return opponentId + " " + color + " " + result;
         }
 

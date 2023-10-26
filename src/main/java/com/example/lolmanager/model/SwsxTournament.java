@@ -1,10 +1,15 @@
 package com.example.lolmanager.model;
-import com.example.lolmanager.comparator.StartListComparator;
-import org.w3c.dom.*;
 
-import javax.xml.parsers.*;
+import com.example.lolmanager.comparator.StartListComparator;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.*;
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,7 +57,7 @@ public class SwsxTournament {
     private TournamentReportFide reportFide;
     private String rate;
 
-    public SwsxTournament(File file){
+    public SwsxTournament(File file) {
         String xmlFileName = "tournament.xml";
         try (ZipFile zipFile = new ZipFile(file)) {
             ZipEntry entry = zipFile.getEntry(xmlFileName);
@@ -98,9 +103,9 @@ public class SwsxTournament {
                 Element sort2Node = (Element) document.getElementsByTagName("sort2").item(0);
                 Element sort3Node = (Element) document.getElementsByTagName("sort3").item(0);
                 Element sort4Node = (Element) document.getElementsByTagName("sort4").item(0);
-                Element reportPolNode = (Element)  document.getElementsByTagName("tournament_report_pol").item(0);
-                Element reportFideNode = (Element)  document.getElementsByTagName("report_FIDE_data").item(0);
-                Element rateNode = (Element)  document.getElementsByTagName("rate_play").item(0);
+                Element reportPolNode = (Element) document.getElementsByTagName("tournament_report_pol").item(0);
+                Element reportFideNode = (Element) document.getElementsByTagName("report_FIDE_data").item(0);
+                Element rateNode = (Element) document.getElementsByTagName("rate_play").item(0);
 
                 String maxNorm = maxNormNode.getAttribute("value");
                 String rematch = rematchNode.getAttribute("value");
@@ -134,7 +139,7 @@ public class SwsxTournament {
                 String sort4 = sort4Node.getAttribute("value");
                 String rate = rateNode.getAttribute("value");
 
-                switch (maxNorm){
+                switch (maxNorm) {
                     case "6" -> setMaxNorm(Title.M);
                     case "5" -> setMaxNorm(Title.K);
                     case "4" -> setMaxNorm(Title.I);
@@ -146,12 +151,12 @@ public class SwsxTournament {
                 setRematch(rematch.equals("1"));
                 setName(name);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                try{
+                try {
                     setStartDate(dateFormat.parse(startDate));
                 } catch (ParseException e) {
                     setStartDate(dateFormat.parse("1899/12/31"));
                 }
-                try{
+                try {
                     setEndDate(dateFormat.parse(endDate));
                 } catch (ParseException e) {
                     setEndDate(dateFormat.parse("1899/12/31"));
@@ -162,44 +167,44 @@ public class SwsxTournament {
                 setSystem(!system.toLowerCase().contains("robin") ? Tournament.TournamentSystem.SWISS : Tournament.TournamentSystem.ROUND_ROBIN);
                 setArbiterEmail(arbiterEmail);
                 setOrganizerEmail(organizerEmail);
-                try{
+                try {
                     setRoundsNo(Byte.parseByte(roundsNo));
                 } catch (NumberFormatException e) {
-                    setRoundsNo((byte)0);
+                    setRoundsNo((byte) 0);
                 }
-                try{
+                try {
                     setCurrentRound(Byte.parseByte(currentRound));
                 } catch (NumberFormatException e) {
-                    setCurrentRound((byte)0);
+                    setCurrentRound((byte) 0);
                 }
-                try{
+                try {
                     setEloFloor(Short.parseShort(eloFloor));
                 } catch (NumberFormatException e) {
                     setEloFloor((short) 1000);
                 }
-                try{
+                try {
                     setMinGamesForElo(Byte.parseByte(minGamesForElo));
                 } catch (NumberFormatException e) {
-                    setMinGamesForElo((byte)5);
+                    setMinGamesForElo((byte) 5);
                 }
-                try{
+                try {
                     setPointsForForfeitWin(Float.parseFloat(pointsForForfeitWin.replaceAll(",", ".")));
                 } catch (NumberFormatException e) {
                     setPointsForForfeitWin(1F);
                 }
-                try{
+                try {
                     setPointsForForfeitLose(-Float.parseFloat(pointsForForfeitLose.replaceAll(",", ".")));
                 } catch (NumberFormatException e) {
                     setPointsForForfeitLose(0F);
                 }
-                try{
+                try {
                     setPointsForBye(Float.parseFloat(pointsForBye.replaceAll(",", ".")));
                 } catch (NumberFormatException e) {
                     setPointsForBye(1F);
                 }
-                setPointsForHalfBye(getPointsForBye()/2);
+                setPointsForHalfBye(getPointsForBye() / 2);
                 setTwoFederations(twoFederations.equals("1"));
-                try{
+                try {
                     setMinGamesForTitle(Byte.parseByte(minGamesForTitle));
                 } catch (NumberFormatException e) {
                     setMinGamesForTitle((byte) 5);
@@ -252,12 +257,13 @@ public class SwsxTournament {
         return result.toString();
     }
 
-    public class TournamentReportPol{
+    public class TournamentReportPol {
         private Arbiter chiefArbiter;
         private String state;
         private String rateOfPlay;
         private ArrayList<SwsxEvent> schedule = new ArrayList<>();
         private ArrayList<Arbiter> arbiters = new ArrayList<>();
+
         TournamentReportPol(Element report) throws XPathExpressionException {
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
@@ -274,7 +280,7 @@ public class SwsxTournament {
                             chiefArbiterNameNode.getAttribute("value"),
                             ArbiterTitle.getAribterTitle(chiefArbiterTitleNode.getAttribute("value")),
                             chiefArbiterLicenseNode.getAttribute("value")
-                            )
+                    )
             );
             setState(stateNode.getAttribute("value"));
             setRateOfPlay(rateNode.getAttribute("value"));
@@ -301,7 +307,7 @@ public class SwsxTournament {
                  ); i++) {
                 arbiters.add(new Arbiter(
                         ((Element) nameList.item(i)).getAttribute("value"),
-                        ArbiterTitle.getAribterTitle(((Element)titleList.item(i)).getAttribute("value")),
+                        ArbiterTitle.getAribterTitle(((Element) titleList.item(i)).getAttribute("value")),
                         ((Element) licenseList.item(i)).getAttribute("value"),
                         ((Element) workList.item(i)).getAttribute("value")
                 ));
@@ -366,13 +372,14 @@ public class SwsxTournament {
 
     }
 
-    public class TournamentReportFide{
+    public class TournamentReportFide {
         private String name;
         private String place;
         private Federation federation;
         private Arbiter chiefArbiter;
         private String rateOfPlay;
-        TournamentReportFide(Element report){
+
+        TournamentReportFide(Element report) {
             Element nameNode = (Element) report.getElementsByTagName("tournament_name").item(0);
             Element placeNode = (Element) report.getElementsByTagName("tournament_place").item(0);
             Element fedNode = (Element) report.getElementsByTagName("tournament_fed").item(0);
@@ -381,12 +388,12 @@ public class SwsxTournament {
 
             setName(nameNode.getAttribute("value"));
             setPlace(placeNode.getAttribute("value"));
-            try{
+            try {
                 setFederation(Federation.valueOf(fedNode.getAttribute("value")));
             } catch (IllegalArgumentException e) {
                 setFederation(Federation.FID);
             }
-            setChiefArbiter(new Arbiter( chiefNode.getAttribute("value") ));
+            setChiefArbiter(new Arbiter(chiefNode.getAttribute("value")));
             setRateOfPlay(rateNode.getAttribute("value"));
 
         }
@@ -448,7 +455,7 @@ public class SwsxTournament {
         }
     }
 
-    public class SwsxEvent{
+    public class SwsxEvent {
         Date date;
         String name;
         EventType type;
@@ -459,23 +466,24 @@ public class SwsxTournament {
             Element typeNode = (Element) element.getElementsByTagName("type").item(0);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             setName(nameNode.getAttribute("value"));
-            switch (typeNode.getAttribute("value")){
+            switch (typeNode.getAttribute("value")) {
                 case "0" -> setType(EventType.BRIEFING);
                 case "2" -> setType(EventType.ENDING);
                 default -> setType(EventType.ROUND);
             }
 
-            try{
+            try {
                 setDate(
                         dateFormat.parse(dateNode.getAttribute("year" + "/" +
-                         dateNode.getAttribute("month") + "/" +
-                         dateNode.getAttribute("day")))
+                                dateNode.getAttribute("month") + "/" +
+                                dateNode.getAttribute("day")))
                 );
             } catch (ParseException e) {
                 setDate(Date.from(LocalDate.of(1899, 12, 31).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
             }
 
         }
+
         public Date getDate() {
             return date;
         }
@@ -501,14 +509,14 @@ public class SwsxTournament {
         }
 
 
-        enum EventType{
+        enum EventType {
             BRIEFING,
             ROUND,
             ENDING
         }
     }
 
-    public class SwsxPlayer{
+    public class SwsxPlayer {
         boolean forfeitFromTournament;
         Player.Sex sex;
         Float manualTiebreak;
@@ -529,6 +537,7 @@ public class SwsxTournament {
         String fullName;
         String state;
         ArrayList<SwsxRound> rounds = new ArrayList<>();
+
         SwsxPlayer(Element cobarrayItem) throws XPathExpressionException {
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
@@ -572,7 +581,7 @@ public class SwsxTournament {
 
 
             setFullName(nameSurname);
-            try{
+            try {
                 setFideId(Integer.parseInt(codeFide));
             } catch (NumberFormatException e) {
                 setFideId(0);
@@ -585,7 +594,7 @@ public class SwsxTournament {
             setFideRatingBlitz(Short.parseShort(ratingFideB));
             setLocalRating(Short.parseShort(localRating));
             setSex(sex.equals("0") ? Player.Sex.FEMALE : Player.Sex.MALE);
-            try{
+            try {
                 setPolId(Integer.parseInt(idcr.replaceAll("PL-", "")));
             } catch (NumberFormatException e) {
                 setPolId(0);
@@ -622,13 +631,13 @@ public class SwsxTournament {
                 String pairNo = pair_noNode.getAttribute("value");
 
                 Player.Color color;
-                switch (colorPieces){
+                switch (colorPieces) {
                     case "1" -> color = Player.Color.WHITE;
                     case "2" -> color = Player.Color.BLACK;
                     default -> color = null;
                 }
                 Result result;
-                switch (resultSymbol){
+                switch (resultSymbol) {
                     case "1" -> result = Result.WIN;
                     case "2" -> result = Result.LOSE;
                     case "3" -> result = Result.DRAW;
@@ -636,31 +645,31 @@ public class SwsxTournament {
                 }
 
 
-                rounds.add(new SwsxRound(color, Byte.parseByte(playerStatus), result, Float.parseFloat(resultPoints.replaceAll(",", ".")) ,Short.parseShort(opponentId), Short.parseShort(pairNo) ) );
+                rounds.add(new SwsxRound(color, Byte.parseByte(playerStatus), result, Float.parseFloat(resultPoints.replaceAll(",", ".")), Short.parseShort(opponentId), Short.parseShort(pairNo)));
             }
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return
-             "\n===============================\n" +
-            "Name/Surname: " + getFullName() + "\n" +
-            "Code FIDE: " + getFideId() + "\n" +
-            "Date of Birth (Year): " + getYearOfBorn() + "\n" +
-            "Date of Birth (Month): " + getMonthOfBorn()+ "\n" +
-            "Date of Birth (Day): " + getDayOfBorn() + "\n" +
-            "Rating FIDE: " + getFideRatingClassic() + "\n" +
-            "Rating FIDE R: " + getFideRatingRapid() + "\n" +
-            "Rating FIDE B: " + getFideRatingBlitz() + "\n" +
-            "Local Rating: " + getLocalRating() + "\n" +
-            "Sex: " + getSex() + "\n" +
-            "IDCR: " + getPolId() + "\n" +
-            "Title: " + getTitle() + "\n" +
-            "FED: " + getFederation() + "\n" +
-            "Licence: " + getLicense()+ "\n" +
-            "Club: " + getClub() + "\n" +
-            "rounds: " + getRounds() + "\n" +
-            "===============================";
+                    "\n===============================\n" +
+                            "Name/Surname: " + getFullName() + "\n" +
+                            "Code FIDE: " + getFideId() + "\n" +
+                            "Date of Birth (Year): " + getYearOfBorn() + "\n" +
+                            "Date of Birth (Month): " + getMonthOfBorn() + "\n" +
+                            "Date of Birth (Day): " + getDayOfBorn() + "\n" +
+                            "Rating FIDE: " + getFideRatingClassic() + "\n" +
+                            "Rating FIDE R: " + getFideRatingRapid() + "\n" +
+                            "Rating FIDE B: " + getFideRatingBlitz() + "\n" +
+                            "Local Rating: " + getLocalRating() + "\n" +
+                            "Sex: " + getSex() + "\n" +
+                            "IDCR: " + getPolId() + "\n" +
+                            "Title: " + getTitle() + "\n" +
+                            "FED: " + getFederation() + "\n" +
+                            "Licence: " + getLicense() + "\n" +
+                            "Club: " + getClub() + "\n" +
+                            "rounds: " + getRounds() + "\n" +
+                            "===============================";
 
         }
 
@@ -827,13 +836,14 @@ public class SwsxTournament {
 
     }
 
-    public class SwsxRound{
+    public class SwsxRound {
         Player.Color color;
         byte status;
         Result result;
         Float points;
         short opponentId;
         short pairNo;
+
         public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo) {
             setColor(color);
             setStatus(status);
@@ -844,7 +854,7 @@ public class SwsxTournament {
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             return color + " " + status + " " + result + " " + opponentId + " " + pairNo;
         }
 
@@ -898,6 +908,7 @@ public class SwsxTournament {
         }
 
     }
+
     public Title getMaxNorm() {
         return maxNorm;
     }
@@ -1161,6 +1172,7 @@ public class SwsxTournament {
     public void setReportPol(TournamentReportPol reportPol) {
         this.reportPol = reportPol;
     }
+
     public TournamentReportFide getReportFide() {
         return reportFide;
     }

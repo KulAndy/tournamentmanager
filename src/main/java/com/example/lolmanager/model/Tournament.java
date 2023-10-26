@@ -48,11 +48,11 @@ public class Tournament implements Serializable {
         setPlace(swsxTournament.getPlace());
         setStartDate(swsxTournament.getStartDate());
         setEndDate(swsxTournament.getEndDate());
-        if(!swsxTournament.getReportFide().getChiefArbiter().getFullName().isEmpty()){
+        if (!swsxTournament.getReportFide().getChiefArbiter().getFullName().isEmpty()) {
             setArbiter(swsxTournament.getReportFide().getChiefArbiter().getFullName());
-        }else if(!swsxTournament.getReportPol().getChiefArbiter().getFullName().isEmpty()){
+        } else if (!swsxTournament.getReportPol().getChiefArbiter().getFullName().isEmpty()) {
             setArbiter(swsxTournament.getReportPol().getChiefArbiter().getFullName());
-        }else{
+        } else {
             setArbiter(swsxTournament.getArbiter());
         }
 
@@ -148,11 +148,11 @@ public class Tournament implements Serializable {
         for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
             ArrayList<SwsxTournament.SwsxRound> playerRounds = player.getRounds();
             for (int i = 0; i < playerRounds.size(); i++) {
-                if(roundIds.size()<=i){
+                if (roundIds.size() <= i) {
                     roundIds.add(new ArrayList<>());
                 }
 
-                if(rounds.size() <= i){
+                if (rounds.size() <= i) {
                     rounds.add(new ArrayList<>());
                 }
 
@@ -162,47 +162,47 @@ public class Tournament implements Serializable {
                     Player black;
                     Result whiteResult;
                     Result blackResult;
-                    long longNumber = ((int)round.getOpponentId()) & 0xFFFFFFFFL;
+                    long longNumber = ((int) round.getOpponentId()) & 0xFFFFFFFFL;
                     UUID opponentId = new UUID(0, longNumber);
                     boolean forfeit = true;
-                    if(round.getColor() == Player.Color.BLACK){
+                    if (round.getColor() == Player.Color.BLACK) {
                         black = players.get(player.getPlayerId());
                         blackResult = player.getRounds().get(i).getResult();
-                        if(round.getStatus() == 1){
+                        if (round.getStatus() == 1) {
                             white = players.get(opponentId);
                             whiteResult = swsxPlayers.get(players.indexOf(white)).getRounds().get(i).getResult();
                             forfeit = false;
-                        }else if(round.getStatus() == 2){
+                        } else if (round.getStatus() == 2) {
                             white = players.getBye();
-                            if(round.getPoints() == 0.5f){
+                            if (round.getPoints() == 0.5f) {
                                 whiteResult = Result.DRAW;
                                 blackResult = Result.DRAW;
-                            }else{
+                            } else {
                                 whiteResult = Result.LOSE;
                                 blackResult = Result.WIN;
                             }
-                        }else{
+                        } else {
                             white = players.getUnpaired();
                             whiteResult = Result.WIN;
                             blackResult = Result.LOSE;
                         }
-                    }else{
+                    } else {
                         white = players.get(player.getPlayerId());
                         whiteResult = player.getRounds().get(i).getResult();
-                        if(round.getStatus() == 1){
+                        if (round.getStatus() == 1) {
                             black = players.get(opponentId);
                             blackResult = swsxPlayers.get(players.indexOf(black)).getRounds().get(i).getResult();
                             forfeit = false;
-                        }else if(round.getStatus() == 2){
+                        } else if (round.getStatus() == 2) {
                             black = players.getBye();
-                            if(round.getPoints() == 0.5f){
+                            if (round.getPoints() == 0.5f) {
                                 whiteResult = Result.DRAW;
                                 blackResult = Result.DRAW;
-                            }else{
+                            } else {
                                 whiteResult = Result.WIN;
                                 blackResult = Result.LOSE;
                             }
-                        }else{
+                        } else {
                             black = players.getUnpaired();
                             whiteResult = Result.LOSE;
                             blackResult = Result.WIN;
@@ -519,6 +519,7 @@ public class Tournament implements Serializable {
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
+
     @Override
     public String toString() {
         return "tournament\n" +
@@ -783,8 +784,9 @@ public class Tournament implements Serializable {
         RAPID,
         BLITZ,
         OTHER;
-        public static Type getType(String symbol){
-            switch (symbol){
+
+        public static Type getType(String symbol) {
+            switch (symbol) {
                 case "2" -> {
                     return RAPID;
                 }
@@ -968,8 +970,8 @@ public class Tournament implements Serializable {
             PROGRESS,
             KOYA;
 
-            public static TbMethod getTbMethod(String symbol){
-                switch (symbol){
+            public static TbMethod getTbMethod(String symbol) {
+                switch (symbol) {
                     case "11" -> {
                         return POINTS;
                     }

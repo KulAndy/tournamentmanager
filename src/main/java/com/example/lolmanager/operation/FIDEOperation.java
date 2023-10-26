@@ -285,7 +285,7 @@ public class FIDEOperation {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf reports", "*.txt"));
         File newFile = fileChooser.showSaveDialog(new Stage());
 
-        try{
+        try {
             saveTrfReport(trfReport(tournament), newFile);
             GeneralHelper.info("Created report");
         } catch (Exception e) {
@@ -294,7 +294,7 @@ public class FIDEOperation {
         }
     }
 
-    public static void saveTrfReport(String trf, File file){
+    public static void saveTrfReport(String trf, File file) {
         if (file != null) {
             String filePath = file.getAbsolutePath();
             if (!filePath.endsWith(".txt")) {

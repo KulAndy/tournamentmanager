@@ -169,8 +169,8 @@ public class StartListComparator implements Comparator<Player>, Serializable {
             return value;
         }
 
-        public static SortCriteria getSortCriteria(String symbol){
-            switch (symbol){
+        public static SortCriteria getSortCriteria(String symbol) {
+            switch (symbol) {
                 case "1" -> {
                     return FIDE_RATING;
                 }

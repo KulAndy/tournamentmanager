@@ -14,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -525,9 +524,9 @@ public class MainController implements Initializable {
 
         importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
 
-        importSwsx.setOnAction(e->{
+        importSwsx.setOnAction(e -> {
             File swsx = FileOperation.selectSwsx();
-            if(swsx != null){
+            if (swsx != null) {
                 SwsxTournament swsxTournament = new SwsxTournament(swsx);
                 Tournament tournament = new Tournament(swsxTournament);
                 TournamentOperation.loadTournament(tournament, this);

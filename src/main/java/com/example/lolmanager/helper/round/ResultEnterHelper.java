@@ -1,5 +1,6 @@
 package com.example.lolmanager.helper.round;
 
+import com.example.lolmanager.comparator.PairingComparator;
 import com.example.lolmanager.model.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
@@ -45,7 +46,7 @@ public class ResultEnterHelper {
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList();
     private ObservableList<Game> currentRound = FXCollections.observableArrayList();
     private Button deleteRound;
-    private Engine engine = new JavafoWrapper();
+    private final Engine engine = new JavafoWrapper();
 
     public ResultEnterHelper(
             Tournament tournament,
@@ -99,10 +100,10 @@ public class ResultEnterHelper {
         getApplyResultButton().setOnAction(e -> {
             boolean forfeitIncompatible = false;
             boolean pointsOverflow = false;
-            for (int i = 0; i < currentRound.size(); i++) {
+            for (int i = 0; i < getCurrentRound().size(); i++) {
                 TextField textField1 = (TextField) getGamesView().lookup("#result" + i + "white");
                 TextField textField2 = (TextField) getGamesView().lookup("#result" + i + "black");
-                if(textField1 != null && textField2 != null){
+                if (textField1 != null && textField2 != null) {
                     Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
                     Result whiteResult = (Result) objects1[0];
                     boolean forfeit1 = (boolean) objects1[1];
@@ -129,10 +130,10 @@ public class ResultEnterHelper {
             } else if (pointsOverflow) {
                 error("Points overflow - in one game both players total has more than points for winning");
             } else {
-                for (int i = 0; i < currentRound.size(); i++) {
+                for (int i = 0; i < getCurrentRound().size(); i++) {
                     TextField textField1 = (TextField) getGamesView().lookup("#result" + i + "white");
                     TextField textField2 = (TextField) getGamesView().lookup("#result" + i + "black");
-                    if(textField1 != null && textField2 != null) {
+                    if (textField1 != null && textField2 != null) {
                         Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
                         Result whiteResult = (Result) objects1[0];
                         boolean forfeit1 = (boolean) objects1[1];
@@ -153,7 +154,7 @@ public class ResultEnterHelper {
         });
 
         setGamesView(gamesView);
-        getGamesView().setItems(currentRound);
+        getGamesView().setItems(getCurrentRound());
 
         setLeftBoardNo(leftBoardNo);
         getLeftBoardNo().setCellValueFactory(cellData -> {
@@ -166,7 +167,7 @@ public class ResultEnterHelper {
         getWhitePoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
-            return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get()-1)).asObject();
+            return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
         setWhiteRating(whiteRating);
         getWhiteRating().setCellValueFactory(cellData -> {
@@ -247,7 +248,7 @@ public class ResultEnterHelper {
         getBlackPoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player black = game.getBlack();
-            return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get()-1)).asObject();
+            return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
         setRightBoardNo(rightBoardNo);
         getRightBoardNo().setCellValueFactory(cellData -> {
@@ -257,61 +258,60 @@ public class ResultEnterHelper {
         });
 
 
-        firstRound.setOnAction(e->{
-            if(roundsNumbersObs.size() > 0){
+        firstRound.setOnAction(e -> {
+            if (roundsNumbersObs.size() > 0) {
                 getRoundsViewSelect().getSelectionModel().selectFirst();
             }
         });
 
-        nextRound.setOnAction(e->{
-            if(roundsNumbersObs.size() > 0){
+        nextRound.setOnAction(e -> {
+            if (roundsNumbersObs.size() > 0) {
                 getRoundsViewSelect().getSelectionModel().selectNext();
             }
         });
 
-        previousRound.setOnAction(e->{
-            if(roundsNumbersObs.size() > 0){
+        previousRound.setOnAction(e -> {
+            if (roundsNumbersObs.size() > 0) {
                 getRoundsViewSelect().getSelectionModel().selectPrevious();
             }
         });
 
-        lastRound.setOnAction(e->{
-            if(roundsNumbersObs.size() > 0){
+        lastRound.setOnAction(e -> {
+            if (roundsNumbersObs.size() > 0) {
                 getRoundsViewSelect().getSelectionModel().selectLast();
             }
         });
 
-        deleteRound.setOnAction(e->{
+        deleteRound.setOnAction(e -> {
             int index = getRoundsViewSelect().getSelectionModel().getSelectedIndex();
             int last = getRoundsViewSelect().getItems().size() - 1;
-            if(index == last){
-                if(roundsNumbersObs.size() > 1){
+            if (index == last) {
+                if (roundsNumbersObs.size() > 1) {
                     getRoundsViewSelect().getSelectionModel().selectPrevious();
-                }else{
+                } else {
                     getRoundsViewSelect().setValue(null);
                 }
                 getTournament().getRoundsObs().remove(index);
-            }else{
+            } else {
                 confirm("This will also remove subsequent rounds")
                         .thenAccept(result -> {
-                    if (result) {
-                        if(roundsNumbersObs.size() > 1){
-                            getRoundsViewSelect().getSelectionModel().selectPrevious();
-                        }else{
-                            getRoundsViewSelect().setValue(null);
-                        }
-                        getTournament().getRoundsObs().remove(index, last + 1);
-                    }
-                });
-                ;
+                            if (result) {
+                                if (roundsNumbersObs.size() > 1) {
+                                    getRoundsViewSelect().getSelectionModel().selectPrevious();
+                                } else {
+                                    getRoundsViewSelect().setValue(null);
+                                }
+                                getTournament().getRoundsObs().remove(index, last + 1);
+                            }
+                        });
             }
         });
 
         setEnginePairButton(enginePairButton);
-        getEnginePairButton().setOnAction(e->{
+        getEnginePairButton().setOnAction(e -> {
             try {
                 ArrayList<Game> pairing = engine.generatePairing(getTournament());
-                getRoundsViewSelect().getSelectionModel().selectNext();
+                getRoundsViewSelect().getSelectionModel().selectLast();
                 info("Paired successfully\nGenerated " + pairing.size() + " pairings");
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
@@ -509,9 +509,7 @@ public class ResultEnterHelper {
         return roundsNumbersObs;
     }
 
-    public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {
-        this.roundsNumbersObs = roundsNumbersObs;
-    }
+    public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {this.roundsNumbersObs = roundsNumbersObs;}
 
     public ObservableList<Game> getCurrentRound() {
         return currentRound;
@@ -519,6 +517,7 @@ public class ResultEnterHelper {
 
     public void setCurrentRound(ObservableList<Game> currentRound) {
         this.currentRound = currentRound;
+        this.currentRound.sort(new PairingComparator(getTournament().getPlayersObs()));
     }
 
     public Button getDeleteRound() {

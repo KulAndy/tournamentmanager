@@ -10,30 +10,30 @@ public enum ArbiterTitle {
     TRZECIA,
     MŁODZIEŻOWA;
 
-    public static ArbiterTitle getAribterTitle(String symbol){
-        switch (symbol.toLowerCase()){
+    public static ArbiterTitle getAribterTitle(String symbol) {
+        switch (symbol.toLowerCase()) {
             case "ia" -> {
                 return IA;
             }
-            case "fa"->{
+            case "fa" -> {
                 return FA;
             }
             case "p", "państwowa" -> {
                 return PAŃSTWOWA;
             }
-            case "i", "pierwsza" ->{
+            case "i", "pierwsza" -> {
                 return PIERWSZA;
             }
-            case "ii", "druga" ->{
+            case "ii", "druga" -> {
                 return DRUGA;
             }
-            case "iii", "trzecia" ->{
+            case "iii", "trzecia" -> {
                 return TRZECIA;
             }
-            case "m", "młodzieżowa"->{
+            case "m", "młodzieżowa" -> {
                 return MŁODZIEŻOWA;
             }
-            case "na"->{
+            case "na" -> {
                 return NA;
             }
             default -> {

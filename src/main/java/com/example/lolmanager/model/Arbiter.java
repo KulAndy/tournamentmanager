@@ -6,14 +6,16 @@ public class Arbiter {
     String license;
 
     String workDescription;
-    public Arbiter(String fullName){
+
+    public Arbiter(String fullName) {
         this(fullName, ArbiterTitle.NA);
     }
-    public Arbiter(String fullName, ArbiterTitle title){
+
+    public Arbiter(String fullName, ArbiterTitle title) {
         this(fullName, title, "");
     }
 
-    public Arbiter(String fullName, ArbiterTitle title, String license){
+    public Arbiter(String fullName, ArbiterTitle title, String license) {
         this(fullName, title, license, "Sędzia wypełniał bardzo dobrze swoje obowiązki");
     }
 
@@ -23,6 +25,7 @@ public class Arbiter {
         setLicense(license);
         setWorkDescription(workDescription);
     }
+
     public String getFullName() {
         return fullName;
     }
