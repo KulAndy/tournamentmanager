@@ -69,24 +69,18 @@ public class MainController implements Initializable {
     private Button nextRoundBth;
     @FXML
     private Button lastRoundBth;
-    @FXML
-    private Button updateRoundsBth;
-    @FXML
-    private Button playersBth;
-
 
     @FXML
     private Button downloadFideButton;
     @FXML
     private Button downloadPolButton;
 
-
     @FXML
     private TabPane mainTabPane;
     @FXML
     private Tab roundsTab;
     @FXML
-    private Tab manualTab;
+    private Tab enterResultsTab;
 
     private HomeTabHelper homeTabHelper;
     @FXML
@@ -488,7 +482,7 @@ public class MainController implements Initializable {
         setProgramExtension(programExtension);
         setFileOperation(new FileOperation(this));
         setupEvents();
-        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation()));
+        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(),roundsHelper ,roundsTab, enterResultsTab ));
 
     }
 

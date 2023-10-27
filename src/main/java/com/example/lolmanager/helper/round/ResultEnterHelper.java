@@ -47,6 +47,7 @@ public class ResultEnterHelper {
     private ObservableList<Game> currentRound = FXCollections.observableArrayList();
     private Button deleteRound;
     private final Engine engine = new JavafoWrapper();
+    private int pairEnterCounter = 0;
 
     public ResultEnterHelper(
             Tournament tournament,
@@ -91,10 +92,15 @@ public class ResultEnterHelper {
         setNextRound(nextRound);
         setLastRound(lastRound);
         setWhiteWinResult(whiteWinResult);
+        getWhiteWinResult().setOnAction(e->enterResult("1", "0"));
         setDrawResult(drawResult);
+        getDrawResult().setOnAction(e->enterResult("0.5", "0.5"));
         setBlackWinResult(blackWinResult);
+        getBlackWinResult().setOnAction(e->enterResult("0", "1"));
         setWhiteWinForfeitResult(whiteWinForfeitResult);
+        getWhiteWinForfeitResult().setOnAction(e->enterResult("+", "-"));
         setBlackWinForfeitResult(blackWinForfeitResult);
+        getBlackWinForfeitResult().setOnAction(e->enterResult("-", "+"));
         setDeleteRound(deleteRound);
         setApplyResultButton(applyResultButton);
         getApplyResultButton().setOnAction(e -> {
@@ -155,6 +161,12 @@ public class ResultEnterHelper {
 
         setGamesView(gamesView);
         getGamesView().setItems(getCurrentRound());
+        getGamesView().setOnMouseClicked(e->{
+            if (e.getClickCount() == 1) {
+                int rowIndex = getGamesView().getSelectionModel().selectedIndexProperty().get();
+                setPairEnterCounter(rowIndex);
+            }
+        });
 
         setLeftBoardNo(leftBoardNo);
         getLeftBoardNo().setCellValueFactory(cellData -> {
@@ -322,6 +334,19 @@ public class ResultEnterHelper {
                 error("Unable to pairing - number of rounds in tournament reached");
             }
         });
+    }
+
+    public void enterResult(String whiteResult, String blackResult){
+        TextField textField1 = (TextField) getGamesView().lookup("#result" + getPairEnterCounter() + "white");
+        TextField textField2 = (TextField) getGamesView().lookup("#result" + getPairEnterCounter() + "black");
+        if (textField1 == null || textField2 == null || textField1.isDisable() || textField2.isDisable()) {
+            return;
+        }
+        textField1.setText(whiteResult);
+        textField2.setText(blackResult);
+        setPairEnterCounter(getPairEnterCounter()+1);
+
+        System.out.println(whiteResult + " " + blackResult);
     }
 
     public ComboBox<Integer> getRoundsViewSelect() {
@@ -531,6 +556,14 @@ public class ResultEnterHelper {
 
     public void setDeleteRound(Button deleteRound) {
         this.deleteRound = deleteRound;
+    }
+
+    public int getPairEnterCounter() {
+        return pairEnterCounter;
+    }
+
+    public void setPairEnterCounter(int pairEnterCounter) {
+        this.pairEnterCounter = pairEnterCounter;
     }
 
 }
