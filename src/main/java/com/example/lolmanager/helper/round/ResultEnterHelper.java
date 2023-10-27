@@ -345,8 +345,6 @@ public class ResultEnterHelper {
         textField1.setText(whiteResult);
         textField2.setText(blackResult);
         setPairEnterCounter(getPairEnterCounter()+1);
-
-        System.out.println(whiteResult + " " + blackResult);
     }
 
     public ComboBox<Integer> getRoundsViewSelect() {
