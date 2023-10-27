@@ -561,7 +561,11 @@ public class ResultEnterHelper {
     }
 
     public void setPairEnterCounter(int pairEnterCounter) {
+
         this.pairEnterCounter = pairEnterCounter;
+        try{
+            getGamesView().getSelectionModel().select(pairEnterCounter);
+        }catch (Exception ignored){}
     }
 
 }
