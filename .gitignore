@@ -36,3 +36,6 @@
 /rejestr_czlonkow.db
 /pairing.txt
 /report.txt
+/dependency-reduced-pom.xml
+/nbactions.xml
+/nb-configuration.xml
