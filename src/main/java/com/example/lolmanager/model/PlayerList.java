@@ -128,9 +128,17 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     }
 
     public Player get(UUID uuid) {
-        for (Player player : this) {
-            if (Objects.equals(player.getPlayerid().toString(), uuid.toString())) {
-                return player;
+        if(Objects.equals(uuid.toString(), getBye().getPlayerid().toString())){
+            return getBye();
+        } else if (Objects.equals(uuid.toString(), getHalfbye().getPlayerid().toString())) {
+            return getHalfbye();
+        } else if (Objects.equals(uuid.toString(), getUnpaired().getPlayerid().toString())) {
+            return getUnpaired();
+        }else{
+            for (Player player : this) {
+                if (Objects.equals(player.getPlayerid().toString(), uuid.toString())) {
+                    return player;
+                }
             }
         }
         return null;

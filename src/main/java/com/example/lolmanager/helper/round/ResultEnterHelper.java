@@ -156,6 +156,7 @@ public class ResultEnterHelper {
                 ArrayList<Game> lastRoundElem = new ArrayList<>(getTournament().getRoundsObs().get(lastRoundIndex));
                 getTournament().getRoundsObs().remove(lastRoundIndex);
                 getTournament().getRoundsObs().add(lastRoundElem);
+                getRoundsViewSelect().setValue(lastRoundIndex+1);
             }
         });
 
@@ -322,13 +323,14 @@ public class ResultEnterHelper {
         setEnginePairButton(enginePairButton);
         getEnginePairButton().setOnAction(e -> {
             if (getTournament().getRounds().size() < getTournament().getRoundsNumber()) {
-
                 try {
                     ArrayList<Game> pairing = engine.generatePairing(getTournament());
                     getRoundsViewSelect().getSelectionModel().selectLast();
                     info("Paired successfully\nGenerated " + pairing.size() + " pairings");
                 } catch (IOException | InterruptedException ex) {
                     error("An error occurred during pairing");
+                    ex.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
             } else {
                 error("Unable to pairing - number of rounds in tournament reached");

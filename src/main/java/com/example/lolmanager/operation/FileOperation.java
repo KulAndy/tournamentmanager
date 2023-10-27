@@ -586,8 +586,6 @@ public class FileOperation {
             byte[] contentBytes = fileContent.getBytes();
             zipOut.write(contentBytes, 0, contentBytes.length);
             zipOut.closeEntry();
-
-            System.out.println("Zip file created successfully!");
         } catch (IOException e) {
             e.printStackTrace();
         }

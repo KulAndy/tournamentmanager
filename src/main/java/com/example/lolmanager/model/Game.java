@@ -184,7 +184,12 @@ public class Game implements Serializable {
     }
 
     public void setWhite(Player white) {
+
         this.white = white;
+        if (white != null) {
+            setWhiteUUDI(white.getPlayerid());
+            setWhiteName(white.getName());
+        }
     }
 
     public Player getBlack() {
@@ -193,6 +198,10 @@ public class Game implements Serializable {
 
     public void setBlack(Player black) {
         this.black = black;
+        if (black != null) {
+            setBlackUUID(black.getPlayerid());
+            setBlackName(black.getName());
+        }
     }
 
 }
