@@ -11,7 +11,7 @@ import static com.example.lolmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.lolmanager.operation.FIDEOperation.trfReport;
 
 public class JavafoWrapper implements Engine {
-    private static final String javaPath = "java.exe";
+    private static final String javaPath = "java";
     private static final String javafoPath = "./javafo.jar";
     private static final String outputFilePath = "./pairing.txt";
     private static final String reportFilePath = "./report.txt";
