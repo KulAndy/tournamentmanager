@@ -2,11 +2,18 @@ package com.example.lolmanager.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public interface Engine {
-    ArrayList<Game> generatePairing(Tournament tournament) throws IOException, InterruptedException;
+    static int generatePairing(Tournament tournamento) throws IOException, InterruptedException {
+        return 0;
+    }
 
-    boolean checkPairing(Tournament tournament, ArrayList<Integer> pairing);
+    static boolean checkPairing(Tournament tournament, ArrayList<Integer> pairing) {
+        return false;
+    }
 
-    Tournament generateRandomTournament();
+    static Tournament generateRandomTournament() {
+        return null;
+    }
 }

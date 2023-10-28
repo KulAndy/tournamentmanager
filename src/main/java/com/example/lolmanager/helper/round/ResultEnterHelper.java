@@ -46,7 +46,6 @@ public class ResultEnterHelper {
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList();
     private ObservableList<Game> currentRound = FXCollections.observableArrayList();
     private Button deleteRound;
-    private final Engine engine = new JavafoWrapper();
     private int pairEnterCounter = 0;
 
     public ResultEnterHelper(
@@ -324,9 +323,9 @@ public class ResultEnterHelper {
         getEnginePairButton().setOnAction(e -> {
             if (getTournament().getRounds().size() < getTournament().getRoundsNumber()) {
                 try {
-                    ArrayList<Game> pairing = engine.generatePairing(getTournament());
+                    int pairing = getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN ? RoundRobinEngine.generatePairing(getTournament()) : JavafoWrapper.generatePairing(getTournament());
                     getRoundsViewSelect().getSelectionModel().selectLast();
-                    info("Paired successfully\nGenerated " + pairing.size() + " pairings");
+                    info("Paired successfully\nGenerated " + pairing + " pairings");
                 } catch (IOException | InterruptedException ex) {
                     error("An error occurred during pairing");
                     ex.printStackTrace();
@@ -547,7 +546,9 @@ public class ResultEnterHelper {
 
     public void setCurrentRound(ObservableList<Game> currentRound) {
         this.currentRound = currentRound;
-        this.currentRound.sort(new PairingComparator(getTournament().getPlayersObs()));
+        if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS){
+            this.currentRound.sort(new PairingComparator(getTournament().getPlayersObs()));
+        }
     }
 
     public Button getDeleteRound() {

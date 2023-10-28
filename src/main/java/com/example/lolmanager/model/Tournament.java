@@ -223,7 +223,9 @@ public class Tournament implements Serializable {
                 game.getWhite().addRound(game);
                 game.getBlack().addRound(game);
             }
-            round.sort(new PairingComparator());
+            if (system == TournamentSystem.SWISS){
+                round.sort(new PairingComparator());
+            }
         }
 
 
@@ -415,7 +417,9 @@ public class Tournament implements Serializable {
                 game.getWhite().addRound(game);
                 game.getBlack().addRound(game);
             }
-            round.sort(new PairingComparator());
+            if (system == TournamentSystem.SWISS){
+                round.sort(new PairingComparator());
+            }
         }
 
 

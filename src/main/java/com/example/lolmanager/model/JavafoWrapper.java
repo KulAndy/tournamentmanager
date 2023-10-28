@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.lolmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.lolmanager.operation.FIDEOperation.trfReport;
@@ -16,7 +17,7 @@ public class JavafoWrapper implements Engine {
     private static final String outputFilePath = "./pairing.txt";
     private static final String reportFilePath = "./report.txt";
 
-    public ArrayList<Game> generatePairing(Tournament tournament) throws IOException, InterruptedException {
+    public static int generatePairing(Tournament tournament) throws IOException, InterruptedException {
         File outputFile = new File(outputFilePath);
         File reportFile = new File(reportFilePath);
         saveTrfReport(trfReport(tournament), reportFile);
@@ -50,7 +51,7 @@ public class JavafoWrapper implements Engine {
                 }
             }
             tournament.getRoundsObs().add(round);
-            return round;
+            return round.size();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,14 +64,14 @@ public class JavafoWrapper implements Engine {
         } catch (Exception ignored) {
         }
 
-        return null;
+        return 0;
     }
 
-    public boolean checkPairing(Tournament tournament, ArrayList<Integer> pairing) {
+    public static boolean checkPairing(Tournament tournament, ArrayList<Integer> pairing) {
         return false;
     }
 
-    public Tournament generateRandomTournament() {
+    public static Tournament generateRandomTournament() {
         return null;
     }
 }
