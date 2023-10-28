@@ -61,7 +61,6 @@ public class FIDEOperation {
             try {
                 players.addAll(searchInPolDb(name, type));
             } catch (SQLException e) {
-                File file = new File("rejestr_czlonkow.csv");
                 convertCsvToSqlite("rejestr_czlonkow.csv", "rejestr_czlonkow.db");
                 players.addAll(searchInPolDb(name, type));
             }

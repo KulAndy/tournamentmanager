@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.example.lolmanager.helper.GeneralHelper.*;
 
-public class newPlayerHelper {
+public class NewPlayerHelper {
     private Tournament tournament;
     private ComboBox<Federation> fedSelect;
     private ComboBox<String> stateSelect;
@@ -44,7 +44,7 @@ public class newPlayerHelper {
     private Button insertFromList;
     private ListView<Player> newPlayerHint;
 
-    public newPlayerHelper(
+    public NewPlayerHelper(
             Tournament tournament,
             ComboBox<Federation> fedSelect, ComboBox<String> stateSelect, TextField playerNameField,
             ComboBox<Title> playerTitleSelect, TextField localRtgField, TextField FIDERtgField,
@@ -167,24 +167,13 @@ public class newPlayerHelper {
                 String birthdayYear = "";
                 String birthdayMonth = "";
                 String birthdayDay = "";
-                if (selected.getDateOfBirth() != null) {
-                    String[] date = (selected.getDateOfBirth()).split("-");
-                    try {
-                        birthdayYear = date[0];
-                    } catch (Exception ignored) {
-                    }
-                    if (selected.getLocalId() != null && selected.getLocalId() != 0) {
-                        try {
-                            birthdayMonth = date[1];
-                        } catch (Exception ignored) {
-                        }
-                        try {
-                            birthdayDay = date[2];
-                        } catch (Exception ignored) {
-                        }
-                    }
-
+                String dateOfBirth = selected.getDateOfBirth();
+                if (dateOfBirth != null) {
+                    birthdayYear = dateOfBirth.substring(0,4);
+                    birthdayMonth = dateOfBirth.substring(5,7);
+                    birthdayDay = dateOfBirth.substring(8);
                 }
+
                 Player.Sex sex = selected.getSex();
                 String localID = "";
                 try {
@@ -203,10 +192,10 @@ public class newPlayerHelper {
                 if (!birthdayYear.isEmpty()) {
                     getYearOfBirth().setText(birthdayYear);
                 }
-                if (!birthdayMonth.isEmpty()) {
+                if (!birthdayMonth.isEmpty() && !(Integer.parseInt(birthdayMonth) == 0)) {
                     getMonthOfBirth().setText(birthdayMonth);
                 }
-                if (!birthdayDay.isEmpty()) {
+                if (!birthdayDay.isEmpty()  && !(Integer.parseInt(birthdayDay) == 0)) {
                     getDayOfBirth().setText(birthdayDay);
                 }
                 getSexSelect().setValue(sex);

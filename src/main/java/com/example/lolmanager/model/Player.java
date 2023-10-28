@@ -666,38 +666,16 @@ public class Player implements Serializable {
     public void setDateOfBirth(String dateOfBirth) {
         if (dateOfBirth != null) {
             try {
-                String[] date = dateOfBirth.split("/");
-                try {
-                    setYearOfBirth(Integer.parseInt(date[0]));
-                } catch (Exception ignored) {
-                }
-                try {
-                    setMonthOfBirth(Byte.parseByte(date[1]));
-                } catch (Exception ignored) {
-                }
-                try {
-                    setDayOfBirth(Byte.parseByte(date[2]));
-                } catch (Exception ignored) {
-                }
-            } catch (Exception err) {
-                try {
-                    String[] date = dateOfBirth.split("/");
-                    try {
-                        setYearOfBirth(Integer.parseInt(date[0]));
-                    } catch (Exception ignored) {
-                    }
-                    try {
-                        setMonthOfBirth(Byte.parseByte(date[1]));
-                    } catch (Exception ignored) {
-                    }
-                    try {
-                        setDayOfBirth(Byte.parseByte(date[2]));
-                    } catch (Exception ignored) {
-                    }
-                } catch (Exception ignored) {
-
-                }
-
+                setYearOfBirth(Integer.parseInt(dateOfBirth.substring(0,4)));
+            } catch (Exception ignored) {
+            }
+            try {
+                setMonthOfBirth(Byte.parseByte(dateOfBirth.substring(5,7)));
+            } catch (Exception ignored) {
+            }
+            try {
+                setDayOfBirth(Byte.parseByte(dateOfBirth.substring(8)));
+            } catch (Exception ignored) {
             }
         }
     }

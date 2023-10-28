@@ -3,7 +3,7 @@ package com.example.lolmanager.helper;
 import com.example.lolmanager.comparator.StartListComparator;
 import com.example.lolmanager.helper.players.PlayersSortHelper;
 import com.example.lolmanager.helper.players.StartListHelper;
-import com.example.lolmanager.helper.players.newPlayerHelper;
+import com.example.lolmanager.helper.players.NewPlayerHelper;
 import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;
@@ -14,7 +14,7 @@ public class PlayersHelper {
     private Tournament tournament;
     private StartListHelper startListHelper;
     private PlayersSortHelper playersSortHelper;
-    private newPlayerHelper newPlayerHelper;
+    private NewPlayerHelper newPlayerHelper;
 
     public PlayersHelper(
             Tournament tournament, TableView<Player> playersListTable,
@@ -51,7 +51,7 @@ public class PlayersHelper {
         );
 
         setNewPlayerHelper(
-                new newPlayerHelper(
+                new NewPlayerHelper(
                         tournament,
                         fedSelect, stateSelect, playerNameField,
                         playerTitleSelect, localRtgField, FIDERtgField,
@@ -89,11 +89,11 @@ public class PlayersHelper {
         this.startListHelper = startListHelper;
     }
 
-    public com.example.lolmanager.helper.players.newPlayerHelper getNewPlayerHelper() {
+    public NewPlayerHelper getNewPlayerHelper() {
         return newPlayerHelper;
     }
 
-    public void setNewPlayerHelper(com.example.lolmanager.helper.players.newPlayerHelper newPlayerHelper) {
+    public void setNewPlayerHelper(NewPlayerHelper newPlayerHelper) {
         this.newPlayerHelper = newPlayerHelper;
     }
 
