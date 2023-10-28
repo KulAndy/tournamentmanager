@@ -115,9 +115,9 @@ public class TrfTournament {
                     case "001": {
                         int startNo = Integer.parseInt(line.substring(4, 8).trim());
                         Player.Sex playerSex = line.charAt(9) == 'w' ? Player.Sex.FEMALE : Player.Sex.MALE;
-                        Title playerTitle = Title.getTitle(line.substring(10, 13));
+                        Title playerTitle = Title.getTitle(line.substring(10, 13).trim());
                         String playerName = line.substring(14, 47).trim();
-                        Integer playerRating;
+                        int playerRating;
                         try {
                             playerRating = Integer.parseInt(line.substring(48, 52).trim());
                         } catch (NumberFormatException e) {
