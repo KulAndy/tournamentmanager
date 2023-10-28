@@ -308,6 +308,49 @@ public class TrfTournament {
         this.roundsNo = roundsNo;
     }
 
+    public static class TrfRound {
+
+        private int opponentId;
+        private char color;
+        private char result;
+
+        public TrfRound(int opponentId, char color, char result) {
+            setOpponentId(opponentId);
+            setColor(color);
+            setResult(result == ' ' ? '\0' : result);
+        }
+
+        @Override
+        public String toString() {
+            return opponentId + " " + color + " " + result;
+        }
+
+        public int getOpponentId() {
+            return opponentId;
+        }
+
+        public void setOpponentId(int opponentId) {
+            this.opponentId = opponentId;
+        }
+
+        public char getColor() {
+            return color;
+        }
+
+        public void setColor(char color) {
+            this.color = color;
+        }
+
+        public char getResult() {
+            return result;
+        }
+
+        public void setResult(char result) {
+            this.result = result;
+        }
+
+    }
+
     public class TrfPlayer {
         private int startRank;
         private Player.Sex sex;
@@ -447,49 +490,6 @@ public class TrfTournament {
 
         public void setRounds(ArrayList<TrfRound> rounds) {
             this.rounds = rounds;
-        }
-
-    }
-
-    public static class TrfRound {
-
-        private int opponentId;
-        private char color;
-        private char result;
-
-        public TrfRound(int opponentId, char color, char result) {
-            setOpponentId(opponentId);
-            setColor(color);
-            setResult(result == ' ' ? '\0' : result);
-        }
-
-        @Override
-        public String toString() {
-            return opponentId + " " + color + " " + result;
-        }
-
-        public int getOpponentId() {
-            return opponentId;
-        }
-
-        public void setOpponentId(int opponentId) {
-            this.opponentId = opponentId;
-        }
-
-        public char getColor() {
-            return color;
-        }
-
-        public void setColor(char color) {
-            this.color = color;
-        }
-
-        public char getResult() {
-            return result;
-        }
-
-        public void setResult(char result) {
-            this.result = result;
         }
 
     }

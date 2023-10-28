@@ -162,13 +162,6 @@ public class StartListComparator implements Comparator<Player>, Serializable {
         ALPHABETIC,
         RANDOM;
 
-        @Override
-        public String toString() {
-            String value = super.toString();
-            value = value.replace('_', ' ');
-            return value;
-        }
-
         public static SortCriteria getSortCriteria(String symbol) {
             switch (symbol) {
                 case "1" -> {
@@ -193,6 +186,13 @@ public class StartListComparator implements Comparator<Player>, Serializable {
                     return null;
                 }
             }
+        }
+
+        @Override
+        public String toString() {
+            String value = super.toString();
+            value = value.replace('_', ' ');
+            return value;
         }
     }
 }

@@ -2,10 +2,9 @@ package com.example.lolmanager.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public interface Engine {
-    static int generatePairing(Tournament tournamento) throws IOException, InterruptedException {
+    static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
         return 0;
     }
 

@@ -482,7 +482,7 @@ public class MainController implements Initializable {
         setProgramExtension(programExtension);
         setFileOperation(new FileOperation(this));
         setupEvents();
-        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(),roundsHelper ,roundsTab, enterResultsTab ));
+        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, roundsTab, enterResultsTab));
 
     }
 
@@ -527,7 +527,7 @@ public class MainController implements Initializable {
                     Tournament tournament = new Tournament(swsxTournament);
                     TournamentOperation.loadTournament(tournament, this);
                     info("Imported successfully");
-                }else{
+                } else {
                     error("An error eccured");
                 }
             } catch (Exception ex) {

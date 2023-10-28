@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.example.lolmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.lolmanager.operation.FIDEOperation.trfReport;
@@ -17,7 +16,7 @@ public class JavafoWrapper implements Engine {
     private static final String outputFilePath = "./pairing.txt";
     private static final String reportFilePath = "./report.txt";
 
-    public static int generatePairing(Tournament tournament) throws IOException, InterruptedException {
+    public static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
         File outputFile = new File(outputFilePath);
         File reportFile = new File(reportFilePath);
         saveTrfReport(trfReport(tournament), reportFile);
@@ -43,7 +42,12 @@ public class JavafoWrapper implements Engine {
                 int blackId = Integer.parseInt(ids[1]);
                 Player white = tournament.getPlayers().get(whiteId - 1);
                 Player black = blackId == 0 ? tournament.getPlayers().getBye() : tournament.getPlayers().get(blackId - 1);
-                Game game = new Game(white, black);
+                Game game;
+                if (reversColors && blackId != 0) {
+                    game = new Game(black, white);
+                } else {
+                    game = new Game(white, black);
+                }
                 round.add(game);
                 white.addRound(game);
                 if (blackId != 0) {

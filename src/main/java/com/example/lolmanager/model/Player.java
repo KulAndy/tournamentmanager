@@ -237,7 +237,6 @@ public class Player implements Serializable {
         return PZSzachCalculation.getRatingPerformance(this);
     }
 
-
     public int getRatingDelta() {
         return PZSzachCalculation.getRatingDelta(this);
     }
@@ -398,11 +397,12 @@ public class Player implements Serializable {
         return points;
     }
 
-
     public Float getPoints() {
         float points = 0f;
         for (Game round : getRounds()) {
-            points += getRoundPoints(round);
+            if (!Float.isNaN(getRoundPoints(round))) {
+                points += getRoundPoints(round);
+            }
         }
         return points;
     }
@@ -434,7 +434,6 @@ public class Player implements Serializable {
         }
         return fideRounds;
     }
-
 
     public float getPointInRound(int n) {
         float points = 0;
@@ -849,6 +848,5 @@ public class Player implements Serializable {
         WHITE,
         BLACK
     }
-
 
 }

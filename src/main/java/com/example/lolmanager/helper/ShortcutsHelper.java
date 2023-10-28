@@ -17,7 +17,7 @@ public class ShortcutsHelper {
     private Tab roundsTab;
     private Tab enterResultsTab;
 
-    public ShortcutsHelper(Scene scene, FileOperation fileOperation,RoundsHelper roundsHelper, Tab roundsTab, Tab enterResultsTab) {
+    public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, Tab roundsTab, Tab enterResultsTab) {
         setScene(scene);
         setFileOperation(fileOperation);
         setRoundsHelper(roundsHelper);
@@ -57,9 +57,9 @@ public class ShortcutsHelper {
         }
     }
 
-    private void resultEnterShortcuts(KeyEvent e){
-        if(enterResultsTab != null && roundsTab != null && enterResultsTab.isSelected() && roundsTab.isSelected()){
-            switch (e.getCode()){
+    private void resultEnterShortcuts(KeyEvent e) {
+        if (enterResultsTab != null && roundsTab != null && enterResultsTab.isSelected() && roundsTab.isSelected()) {
+            switch (e.getCode()) {
                 case Z -> getRoundsHelper().getResultEnterHelper().enterResult("1", "0");
                 case X -> getRoundsHelper().getResultEnterHelper().enterResult("0.5", "0.5");
                 case C -> getRoundsHelper().getResultEnterHelper().enterResult("0", "1");

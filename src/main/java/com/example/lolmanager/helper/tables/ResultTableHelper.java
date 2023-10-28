@@ -100,11 +100,13 @@ public class ResultTableHelper {
         getTournament().getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
             SortedList<Player> sortedPlayersTmp2 = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
             setSortedPlayers(sortedPlayersTmp2);
+            getResultsTable().refresh();
         });
 
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
             SortedList<Player> sortedPlayersTmp2 = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
             setSortedPlayers(sortedPlayersTmp2);
+            getResultsTable().refresh();
         });
 
     }

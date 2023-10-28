@@ -91,15 +91,15 @@ public class ResultEnterHelper {
         setNextRound(nextRound);
         setLastRound(lastRound);
         setWhiteWinResult(whiteWinResult);
-        getWhiteWinResult().setOnAction(e->enterResult("1", "0"));
+        getWhiteWinResult().setOnAction(e -> enterResult("1", "0"));
         setDrawResult(drawResult);
-        getDrawResult().setOnAction(e->enterResult("0.5", "0.5"));
+        getDrawResult().setOnAction(e -> enterResult("0.5", "0.5"));
         setBlackWinResult(blackWinResult);
-        getBlackWinResult().setOnAction(e->enterResult("0", "1"));
+        getBlackWinResult().setOnAction(e -> enterResult("0", "1"));
         setWhiteWinForfeitResult(whiteWinForfeitResult);
-        getWhiteWinForfeitResult().setOnAction(e->enterResult("+", "-"));
+        getWhiteWinForfeitResult().setOnAction(e -> enterResult("+", "-"));
         setBlackWinForfeitResult(blackWinForfeitResult);
-        getBlackWinForfeitResult().setOnAction(e->enterResult("-", "+"));
+        getBlackWinForfeitResult().setOnAction(e -> enterResult("-", "+"));
         setDeleteRound(deleteRound);
         setApplyResultButton(applyResultButton);
         getApplyResultButton().setOnAction(e -> {
@@ -151,17 +151,20 @@ public class ResultEnterHelper {
                         game.setForfeit(forfeit1 && forfeit2);
                     }
                 }
-                int lastRoundIndex = getTournament().getRoundsObs().size() - 1;
-                ArrayList<Game> lastRoundElem = new ArrayList<>(getTournament().getRoundsObs().get(lastRoundIndex));
-                getTournament().getRoundsObs().remove(lastRoundIndex);
-                getTournament().getRoundsObs().add(lastRoundElem);
-                getRoundsViewSelect().setValue(lastRoundIndex+1);
+                int roundIndex = getRoundsViewSelect().getValue() - 1;
+                ArrayList<Game> roundElem = new ArrayList<>(getTournament().getRoundsObs().get(roundIndex));
+                getTournament().getRoundsObs().remove(roundIndex);
+                getTournament().getRoundsObs().add(roundIndex, roundElem);
+                getRoundsViewSelect().setValue(roundIndex + 1);
+
             }
+
+
         });
 
         setGamesView(gamesView);
         getGamesView().setItems(getCurrentRound());
-        getGamesView().setOnMouseClicked(e->{
+        getGamesView().setOnMouseClicked(e -> {
             if (e.getClickCount() == 1) {
                 int rowIndex = getGamesView().getSelectionModel().selectedIndexProperty().get();
                 setPairEnterCounter(rowIndex);
@@ -297,25 +300,35 @@ public class ResultEnterHelper {
         deleteRound.setOnAction(e -> {
             int index = getRoundsViewSelect().getSelectionModel().getSelectedIndex();
             int last = getRoundsViewSelect().getItems().size() - 1;
-            if (index == last) {
-                if (roundsNumbersObs.size() > 1) {
-                    getRoundsViewSelect().getSelectionModel().selectPrevious();
+            if (index >= 0) {
+                if (index == last) {
+                    if (roundsNumbersObs.size() > 1) {
+                        getRoundsViewSelect().getSelectionModel().selectPrevious();
+                        getTournament().getRoundsObs().remove(index);
+                    } else {
+                        getRoundsViewSelect().setValue(null);
+                        getCurrentRound().clear();
+                        getTournament().getRoundsObs().clear();
+                        getGamesView().refresh();
+                        System.out.println(getTournament().getRounds());
+                    }
                 } else {
-                    getRoundsViewSelect().setValue(null);
-                }
-                getTournament().getRoundsObs().remove(index);
-            } else {
-                confirm("This will also remove subsequent rounds")
-                        .thenAccept(result -> {
-                            if (result) {
-                                if (roundsNumbersObs.size() > 1) {
-                                    getRoundsViewSelect().getSelectionModel().selectPrevious();
-                                } else {
-                                    getRoundsViewSelect().setValue(null);
+                    confirm("This will also remove subsequent rounds")
+                            .thenAccept(result -> {
+                                if (result) {
+                                    if (roundsNumbersObs.size() > 1) {
+                                        getRoundsViewSelect().getSelectionModel().selectPrevious();
+                                        getTournament().getRoundsObs().remove(index, last + 1);
+                                    } else {
+                                        getRoundsViewSelect().setValue(null);
+                                        getCurrentRound().clear();
+                                        getTournament().getRoundsObs().clear();
+                                        getGamesView().refresh();
+                                        System.out.println(getTournament().getRounds());
+                                    }
                                 }
-                                getTournament().getRoundsObs().remove(index, last + 1);
-                            }
-                        });
+                            });
+                }
             }
         });
 
@@ -323,9 +336,31 @@ public class ResultEnterHelper {
         getEnginePairButton().setOnAction(e -> {
             if (getTournament().getRounds().size() < getTournament().getRoundsNumber()) {
                 try {
-                    int pairing = getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN ? RoundRobinEngine.generatePairing(getTournament()) : JavafoWrapper.generatePairing(getTournament());
-                    getRoundsViewSelect().getSelectionModel().selectLast();
-                    info("Paired successfully\nGenerated " + pairing + " pairings");
+                    if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
+                        TextInputDialog dialog = new TextInputDialog();
+                        dialog.setTitle("Number of replays");
+                        dialog.setHeaderText("Please enter a number of replays:");
+                        dialog.setContentText("Replays:");
+
+                        dialog.showAndWait().ifPresent(result -> {
+                            byte replays = Byte.parseByte(result);
+                            int pairing = 0;
+                            for (int i = 0; i < replays; i++) {
+                                try {
+                                    pairing += RoundRobinEngine.generatePairing(getTournament(), i % 2 == 1);
+                                    info("Paired successfully\nGenerated " + pairing + " pairings");
+                                } catch (IOException | InterruptedException ex) {
+                                    error("An error occurred during pairing");
+                                    ex.printStackTrace();
+                                    System.out.println(ex.getMessage());
+                                }
+                            }
+                        });
+                    } else {
+                        int pairing = JavafoWrapper.generatePairing(getTournament(), false);
+                        getRoundsViewSelect().getSelectionModel().selectLast();
+                        info("Paired successfully\nGenerated " + pairing + " pairings");
+                    }
                 } catch (IOException | InterruptedException ex) {
                     error("An error occurred during pairing");
                     ex.printStackTrace();
@@ -337,7 +372,7 @@ public class ResultEnterHelper {
         });
     }
 
-    public void enterResult(String whiteResult, String blackResult){
+    public void enterResult(String whiteResult, String blackResult) {
         TextField textField1 = (TextField) getGamesView().lookup("#result" + getPairEnterCounter() + "white");
         TextField textField2 = (TextField) getGamesView().lookup("#result" + getPairEnterCounter() + "black");
         if (textField1 == null || textField2 == null || textField1.isDisable() || textField2.isDisable()) {
@@ -345,7 +380,7 @@ public class ResultEnterHelper {
         }
         textField1.setText(whiteResult);
         textField2.setText(blackResult);
-        setPairEnterCounter(getPairEnterCounter()+1);
+        setPairEnterCounter(getPairEnterCounter() + 1);
     }
 
     public ComboBox<Integer> getRoundsViewSelect() {
@@ -546,7 +581,7 @@ public class ResultEnterHelper {
 
     public void setCurrentRound(ObservableList<Game> currentRound) {
         this.currentRound = currentRound;
-        if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS){
+        if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
             this.currentRound.sort(new PairingComparator(getTournament().getPlayersObs()));
         }
     }
@@ -566,9 +601,10 @@ public class ResultEnterHelper {
     public void setPairEnterCounter(int pairEnterCounter) {
 
         this.pairEnterCounter = pairEnterCounter;
-        try{
+        try {
             getGamesView().getSelectionModel().select(pairEnterCounter);
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
     }
 
 }

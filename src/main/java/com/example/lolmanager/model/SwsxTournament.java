@@ -252,8 +252,289 @@ public class SwsxTournament {
                 Object fieldValue = field.get(this);
                 result.append(fieldName).append(": ").append(fieldValue).append("\n");
             }
-        } catch (IllegalAccessException ignored) {}
+        } catch (IllegalAccessException ignored) {
+        }
         return result.toString();
+    }
+
+    public Title getMaxNorm() {
+        return maxNorm;
+    }
+
+    public void setMaxNorm(Title maxNorm) {
+        this.maxNorm = maxNorm;
+    }
+
+    public boolean isRematch() {
+        return rematch;
+    }
+
+    public void setRematch(boolean rematch) {
+        this.rematch = rematch;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getArbiter() {
+        return arbiter;
+    }
+
+    public void setArbiter(String arbiter) {
+        this.arbiter = arbiter;
+    }
+
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public Tournament.TournamentSystem getSystem() {
+        return system;
+    }
+
+    public void setSystem(Tournament.TournamentSystem system) {
+        this.system = system;
+    }
+
+    public String getArbiterEmail() {
+        return arbiterEmail;
+    }
+
+    public void setArbiterEmail(String arbiterEmail) {
+        this.arbiterEmail = arbiterEmail;
+    }
+
+    public String getOrganizerEmail() {
+        return organizerEmail;
+    }
+
+    public void setOrganizerEmail(String organizerEmail) {
+        this.organizerEmail = organizerEmail;
+    }
+
+    public byte getRoundsNo() {
+        return roundsNo;
+    }
+
+    public void setRoundsNo(byte roundsNo) {
+        this.roundsNo = roundsNo;
+    }
+
+    public byte getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setCurrentRound(byte currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public short getEloFloor() {
+        return eloFloor;
+    }
+
+    public void setEloFloor(short eloFloor) {
+        this.eloFloor = eloFloor;
+    }
+
+    public byte getMinGamesForElo() {
+        return minGamesForElo;
+    }
+
+    public void setMinGamesForElo(byte minGamesForElo) {
+        this.minGamesForElo = minGamesForElo;
+    }
+
+    public Float getPointsForForfeitWin() {
+        return pointsForForfeitWin;
+    }
+
+    public void setPointsForForfeitWin(Float pointsForForfeitWin) {
+        this.pointsForForfeitWin = pointsForForfeitWin;
+    }
+
+    public Float getPointsForForfeitLose() {
+        return pointsForForfeitLose;
+    }
+
+    public void setPointsForForfeitLose(Float pointsForForfeitLose) {
+        this.pointsForForfeitLose = pointsForForfeitLose;
+    }
+
+    public Float getPointsForBye() {
+        return pointsForBye;
+    }
+
+    public void setPointsForBye(Float pointsForBye) {
+        this.pointsForBye = pointsForBye;
+    }
+
+    public Float getPointsForHalfBye() {
+        return pointsForHalfBye;
+    }
+
+    public void setPointsForHalfBye(Float pointsForHalfBye) {
+        this.pointsForHalfBye = pointsForHalfBye;
+    }
+
+    public boolean isTwoFederations() {
+        return twoFederations;
+    }
+
+    public void setTwoFederations(boolean twoFederations) {
+        this.twoFederations = twoFederations;
+    }
+
+    public byte getMinGamesForTitle() {
+        return minGamesForTitle;
+    }
+
+    public void setMinGamesForTitle(byte minGamesForTitle) {
+        this.minGamesForTitle = minGamesForTitle;
+    }
+
+    public Tournament.Tiebreak.TbMethod getTiebreak0() {
+        return tiebreak0;
+    }
+
+    public void setTiebreak0(Tournament.Tiebreak.TbMethod tiebreak0) {
+        this.tiebreak0 = tiebreak0;
+    }
+
+    public Tournament.Tiebreak.TbMethod getTiebreak1() {
+        return tiebreak1;
+    }
+
+    public void setTiebreak1(Tournament.Tiebreak.TbMethod tiebreak1) {
+        this.tiebreak1 = tiebreak1;
+    }
+
+    public Tournament.Tiebreak.TbMethod getTiebreak2() {
+        return tiebreak2;
+    }
+
+    public void setTiebreak2(Tournament.Tiebreak.TbMethod tiebreak2) {
+        this.tiebreak2 = tiebreak2;
+    }
+
+    public Tournament.Tiebreak.TbMethod getTiebreak3() {
+        return tiebreak3;
+    }
+
+    public void setTiebreak3(Tournament.Tiebreak.TbMethod tiebreak3) {
+        this.tiebreak3 = tiebreak3;
+    }
+
+    public Tournament.Tiebreak.TbMethod getTiebreak4() {
+        return tiebreak4;
+    }
+
+    public void setTiebreak4(Tournament.Tiebreak.TbMethod tiebreak4) {
+        this.tiebreak4 = tiebreak4;
+    }
+
+    public StartListComparator.SortCriteria getSort0() {
+        return sort0;
+    }
+
+    public void setSort0(StartListComparator.SortCriteria sort0) {
+        this.sort0 = sort0;
+    }
+
+    public StartListComparator.SortCriteria getSort1() {
+        return sort1;
+    }
+
+    public void setSort1(StartListComparator.SortCriteria sort1) {
+        this.sort1 = sort1;
+    }
+
+    public StartListComparator.SortCriteria getSort2() {
+        return sort2;
+    }
+
+    public void setSort2(StartListComparator.SortCriteria sort2) {
+        this.sort2 = sort2;
+    }
+
+    public StartListComparator.SortCriteria getSort3() {
+        return sort3;
+    }
+
+    public void setSort3(StartListComparator.SortCriteria sort3) {
+        this.sort3 = sort3;
+    }
+
+    public StartListComparator.SortCriteria getSort4() {
+        return sort4;
+    }
+
+    public void setSort4(StartListComparator.SortCriteria sort4) {
+        this.sort4 = sort4;
+    }
+
+    public ArrayList<SwsxPlayer> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<SwsxPlayer> players) {
+        this.players = players;
+    }
+
+    public TournamentReportPol getReportPol() {
+        return reportPol;
+    }
+
+    public void setReportPol(TournamentReportPol reportPol) {
+        this.reportPol = reportPol;
+    }
+
+    public TournamentReportFide getReportFide() {
+        return reportFide;
+    }
+
+    public void setReportFide(TournamentReportFide reportFide) {
+        this.reportFide = reportFide;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
     }
 
     public class TournamentReportPol {
@@ -324,7 +605,8 @@ public class SwsxTournament {
                     Object fieldValue = field.get(this);
                     result.append(fieldName).append(": ").append(fieldValue).append("\n");
                 }
-            } catch (IllegalAccessException ignored) {}
+            } catch (IllegalAccessException ignored) {
+            }
             return result.toString();
         }
 
@@ -905,286 +1187,6 @@ public class SwsxTournament {
             this.pairNo = pairNo;
         }
 
-    }
-
-    public Title getMaxNorm() {
-        return maxNorm;
-    }
-
-    public void setMaxNorm(Title maxNorm) {
-        this.maxNorm = maxNorm;
-    }
-
-    public boolean isRematch() {
-        return rematch;
-    }
-
-    public void setRematch(boolean rematch) {
-        this.rematch = rematch;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getArbiter() {
-        return arbiter;
-    }
-
-    public void setArbiter(String arbiter) {
-        this.arbiter = arbiter;
-    }
-
-    public String getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(String organizer) {
-        this.organizer = organizer;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public Tournament.TournamentSystem getSystem() {
-        return system;
-    }
-
-    public void setSystem(Tournament.TournamentSystem system) {
-        this.system = system;
-    }
-
-    public String getArbiterEmail() {
-        return arbiterEmail;
-    }
-
-    public void setArbiterEmail(String arbiterEmail) {
-        this.arbiterEmail = arbiterEmail;
-    }
-
-    public String getOrganizerEmail() {
-        return organizerEmail;
-    }
-
-    public void setOrganizerEmail(String organizerEmail) {
-        this.organizerEmail = organizerEmail;
-    }
-
-    public byte getRoundsNo() {
-        return roundsNo;
-    }
-
-    public void setRoundsNo(byte roundsNo) {
-        this.roundsNo = roundsNo;
-    }
-
-    public byte getCurrentRound() {
-        return currentRound;
-    }
-
-    public void setCurrentRound(byte currentRound) {
-        this.currentRound = currentRound;
-    }
-
-    public short getEloFloor() {
-        return eloFloor;
-    }
-
-    public void setEloFloor(short eloFloor) {
-        this.eloFloor = eloFloor;
-    }
-
-    public byte getMinGamesForElo() {
-        return minGamesForElo;
-    }
-
-    public void setMinGamesForElo(byte minGamesForElo) {
-        this.minGamesForElo = minGamesForElo;
-    }
-
-    public Float getPointsForForfeitWin() {
-        return pointsForForfeitWin;
-    }
-
-    public void setPointsForForfeitWin(Float pointsForForfeitWin) {
-        this.pointsForForfeitWin = pointsForForfeitWin;
-    }
-
-    public Float getPointsForForfeitLose() {
-        return pointsForForfeitLose;
-    }
-
-    public void setPointsForForfeitLose(Float pointsForForfeitLose) {
-        this.pointsForForfeitLose = pointsForForfeitLose;
-    }
-
-    public Float getPointsForBye() {
-        return pointsForBye;
-    }
-
-    public void setPointsForBye(Float pointsForBye) {
-        this.pointsForBye = pointsForBye;
-    }
-
-    public Float getPointsForHalfBye() {
-        return pointsForHalfBye;
-    }
-
-    public void setPointsForHalfBye(Float pointsForHalfBye) {
-        this.pointsForHalfBye = pointsForHalfBye;
-    }
-
-    public boolean isTwoFederations() {
-        return twoFederations;
-    }
-
-    public void setTwoFederations(boolean twoFederations) {
-        this.twoFederations = twoFederations;
-    }
-
-    public byte getMinGamesForTitle() {
-        return minGamesForTitle;
-    }
-
-    public void setMinGamesForTitle(byte minGamesForTitle) {
-        this.minGamesForTitle = minGamesForTitle;
-    }
-
-    public Tournament.Tiebreak.TbMethod getTiebreak0() {
-        return tiebreak0;
-    }
-
-    public void setTiebreak0(Tournament.Tiebreak.TbMethod tiebreak0) {
-        this.tiebreak0 = tiebreak0;
-    }
-
-    public Tournament.Tiebreak.TbMethod getTiebreak1() {
-        return tiebreak1;
-    }
-
-    public void setTiebreak1(Tournament.Tiebreak.TbMethod tiebreak1) {
-        this.tiebreak1 = tiebreak1;
-    }
-
-    public Tournament.Tiebreak.TbMethod getTiebreak2() {
-        return tiebreak2;
-    }
-
-    public void setTiebreak2(Tournament.Tiebreak.TbMethod tiebreak2) {
-        this.tiebreak2 = tiebreak2;
-    }
-
-    public Tournament.Tiebreak.TbMethod getTiebreak3() {
-        return tiebreak3;
-    }
-
-    public void setTiebreak3(Tournament.Tiebreak.TbMethod tiebreak3) {
-        this.tiebreak3 = tiebreak3;
-    }
-
-    public Tournament.Tiebreak.TbMethod getTiebreak4() {
-        return tiebreak4;
-    }
-
-    public void setTiebreak4(Tournament.Tiebreak.TbMethod tiebreak4) {
-        this.tiebreak4 = tiebreak4;
-    }
-
-    public StartListComparator.SortCriteria getSort0() {
-        return sort0;
-    }
-
-    public void setSort0(StartListComparator.SortCriteria sort0) {
-        this.sort0 = sort0;
-    }
-
-    public StartListComparator.SortCriteria getSort1() {
-        return sort1;
-    }
-
-    public void setSort1(StartListComparator.SortCriteria sort1) {
-        this.sort1 = sort1;
-    }
-
-    public StartListComparator.SortCriteria getSort2() {
-        return sort2;
-    }
-
-    public void setSort2(StartListComparator.SortCriteria sort2) {
-        this.sort2 = sort2;
-    }
-
-    public StartListComparator.SortCriteria getSort3() {
-        return sort3;
-    }
-
-    public void setSort3(StartListComparator.SortCriteria sort3) {
-        this.sort3 = sort3;
-    }
-
-    public StartListComparator.SortCriteria getSort4() {
-        return sort4;
-    }
-
-    public void setSort4(StartListComparator.SortCriteria sort4) {
-        this.sort4 = sort4;
-    }
-
-    public ArrayList<SwsxPlayer> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(ArrayList<SwsxPlayer> players) {
-        this.players = players;
-    }
-
-    public TournamentReportPol getReportPol() {
-        return reportPol;
-    }
-
-    public void setReportPol(TournamentReportPol reportPol) {
-        this.reportPol = reportPol;
-    }
-
-    public TournamentReportFide getReportFide() {
-        return reportFide;
-    }
-
-    public void setReportFide(TournamentReportFide reportFide) {
-        this.reportFide = reportFide;
-    }
-
-    public String getRate() {
-        return rate;
-    }
-
-    public void setRate(String rate) {
-        this.rate = rate;
     }
 
 }
