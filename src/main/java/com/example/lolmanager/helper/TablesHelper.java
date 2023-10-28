@@ -7,10 +7,7 @@ import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;
 import com.example.lolmanager.model.Tournament;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 
 public class TablesHelper {
     private PolandTableHelper polandTablesHelper;
@@ -37,8 +34,6 @@ public class TablesHelper {
                         TableColumn<Player, Federation> resultFed, TableColumn<Player, Float> resultPoints,
                         TableColumn<Player, Float> resultBuchCut, TableColumn<Player, Float> resultBuch,
                         TableColumn<Player, Float> resultBerger, TableColumn<Player, Float> resultProgress
-
-
     ) {
         setPolandTablesHelper(new PolandTableHelper(
                 tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks

@@ -281,15 +281,14 @@ public class MainController implements Initializable {
     @FXML
     private Button unpairButton;
     @FXML
-    private Button upPairingButton;
-    @FXML
-    private Button downPairButton;
-    @FXML
     private Button swapColorPairButton;
     @FXML
     private Button applyManualButton;
     @FXML
     private ListView<Game> pairsList;
+    @FXML
+    ScrollPane allRoundsScroll;
+
 
     @FXML
     private ComboBox<Integer> roundsViewSelect;
@@ -463,8 +462,8 @@ public class MainController implements Initializable {
                 applyManualButton, pairsList, roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
                 blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
-                blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton
-
+                blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton,
+                allRoundsScroll
         );
 
         tablesHelper = new TablesHelper(

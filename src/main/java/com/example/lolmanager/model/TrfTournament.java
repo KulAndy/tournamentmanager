@@ -43,21 +43,16 @@ public class TrfTournament {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy/MM/dd");
                 switch (contentType) {
-                    case "012":
-                        setName(line.substring(3).trim());
-                        break;
-                    case "022":
-                        setCity(line.substring(3).trim());
-                        break;
-                    case "032": {
+                    case "012" -> setName(line.substring(3).trim());
+                    case "022" -> setCity(line.substring(3).trim());
+                    case "032" -> {
                         try {
                             setFederation(Federation.valueOf(line.substring(3).trim()));
                         } catch (IllegalArgumentException e) {
                             setFederation(Federation.FID);
                         }
-                        break;
                     }
-                    case "042": {
+                    case "042" -> {
                         try {
                             setStartDate(dateFormat.parse(line.substring(3).trim()));
                         } catch (ParseException e) {
@@ -66,9 +61,8 @@ public class TrfTournament {
                             } catch (ParseException ignored) {
                             }
                         }
-                        break;
                     }
-                    case "052": {
+                    case "052" -> {
                         try {
                             setEndDate(dateFormat.parse(line.substring(3).trim()));
                         } catch (ParseException e) {
@@ -77,26 +71,18 @@ public class TrfTournament {
                             } catch (ParseException ignored) {
                             }
                         }
-                        break;
                     }
-                    case "092": {
+                    case "092" -> {
                         if (line.substring(3).trim().toLowerCase().contains("robin")) {
                             setSystem(Tournament.TournamentSystem.ROUND_ROBIN);
                         } else {
                             setSystem(Tournament.TournamentSystem.SWISS);
                         }
-                        break;
                     }
-                    case "102":
-                        setChiefArbiter(line.substring(3).trim());
-                        break;
-                    case "112":
-                        setDeputyChiefArbiter(line.substring(3).trim());
-                        break;
-                    case "122":
-                        setAllottedTimes(line.substring(3).trim());
-                        break;
-                    case "132": {
+                    case "102" -> setChiefArbiter(line.substring(3).trim());
+                    case "112" -> setDeputyChiefArbiter(line.substring(3).trim());
+                    case "122" -> setAllottedTimes(line.substring(3).trim());
+                    case "132" -> {
                         String[] roundDates = line.substring(3).trim().split(" +");
                         SimpleDateFormat roundDateFormatter = new SimpleDateFormat("yy-MM-dd");
                         for (String roundDate : roundDates) {
@@ -110,9 +96,8 @@ public class TrfTournament {
                             }
                         }
                         setRoundsNo((byte) roundDates.length);
-                        break;
                     }
-                    case "001": {
+                    case "001" -> {
                         int startNo = Integer.parseInt(line.substring(4, 8).trim());
                         Player.Sex playerSex = line.charAt(9) == 'w' ? Player.Sex.FEMALE : Player.Sex.MALE;
                         Title playerTitle = Title.getTitle(line.substring(10, 13).trim());
@@ -193,7 +178,6 @@ public class TrfTournament {
                                 playerPoints,
                                 playerRounds
                         ));
-                        break;
                     }
                 }
             }
@@ -391,7 +375,7 @@ public class TrfTournament {
                     Object fieldValue = field.get(this);
                     result.append(fieldName).append(": ").append(fieldValue).append(", ");
                 }
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException ignored) {
             }
             return result.toString();
         }

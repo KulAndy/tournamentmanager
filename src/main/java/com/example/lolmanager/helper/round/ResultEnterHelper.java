@@ -334,7 +334,7 @@ public class ResultEnterHelper {
 
         setEnginePairButton(enginePairButton);
         getEnginePairButton().setOnAction(e -> {
-            if (getTournament().getRounds().size() < getTournament().getRoundsNumber()) {
+            if (getTournament().getRounds().size() < getTournament().getRoundsNumber() || getTournament().getSystem() != Tournament.TournamentSystem.SWISS) {
                 try {
                     if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
                         TextInputDialog dialog = new TextInputDialog();
@@ -345,16 +345,21 @@ public class ResultEnterHelper {
                         dialog.showAndWait().ifPresent(result -> {
                             byte replays = Byte.parseByte(result);
                             int pairing = 0;
+                            boolean success= true;
                             for (int i = 0; i < replays; i++) {
                                 try {
                                     pairing += RoundRobinEngine.generatePairing(getTournament(), i % 2 == 1);
-                                    info("Paired successfully\nGenerated " + pairing + " pairings");
                                 } catch (IOException | InterruptedException ex) {
-                                    error("An error occurred during pairing");
-                                    ex.printStackTrace();
-                                    System.out.println(ex.getMessage());
+                                    success = false;
+                                    break;
                                 }
                             }
+                            if (success){
+                                info("Paired successfully\nGenerated " + pairing + " pairings");
+                            }else{
+                                error("An error occurred during pairing");
+                            }
+                            getTournament().setRoundsNumber((byte) (replays * Math.round(getTournament().getPlayersObs().size())));
                         });
                     } else {
                         int pairing = JavafoWrapper.generatePairing(getTournament(), false);
