@@ -12,7 +12,11 @@ import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 
@@ -31,6 +35,11 @@ public class AllRoundsViewerHelper {
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change->{
             getContainer().getChildren().clear();
             for (int i = 0; i < getTournament().getRoundsObs().size(); i++ ) {
+                Text text = new Text("Round " + (i +1));
+                text.setTextAlignment(TextAlignment.CENTER);
+                HBox textContainer = new HBox(text);
+                textContainer.setAlignment(Pos.CENTER);
+                getContainer().getChildren().add(textContainer);
                 ArrayList<Game> round = getTournament().getRoundsObs().get(i);
                 TableView<Game> table = new TableView<>(FXCollections.observableArrayList(round));
                 table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -71,11 +80,43 @@ public class AllRoundsViewerHelper {
                     Game game = cellData.getValue();
                     StringBuilder resultString = new StringBuilder();
                     if (game.getWhiteResult() != null){
-                        resultString.append(game.getPointsForBlack());
+                        switch (game.getWhiteResult()){
+                            case WIN -> {
+                                if (game.isForfeit()){
+                                    resultString.append("+");
+                                }else {
+                                    resultString.append("1");
+                                }
+                            }
+                            case DRAW -> resultString.append("0.5");
+                            case LOSE -> {
+                                if (game.isForfeit()){
+                                    resultString.append("-");
+                                }else {
+                                    resultString.append("0");
+                                }
+                            }
+                        }
                     }
                     resultString.append(" - ");
                     if (game.getBlackResult() != null){
-                        resultString.append(game.getPointsForBlack());
+                        switch (game.getBlackResult()){
+                            case WIN -> {
+                                if (game.isForfeit()){
+                                    resultString.append("+");
+                                }else {
+                                    resultString.append("1");
+                                }
+                            }
+                            case DRAW -> resultString.append("0.5");
+                            case LOSE -> {
+                                if (game.isForfeit()){
+                                    resultString.append("-");
+                                }else {
+                                    resultString.append("0");
+                                }
+                            }
+                        }
                     }
                     return new SimpleStringProperty(resultString.toString());
                 });
