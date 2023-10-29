@@ -160,8 +160,8 @@ public class Tournament implements Serializable {
                     SwsxTournament.SwsxRound round = playerRounds.get(i);
                     Player white;
                     Player black;
-                    Result whiteResult;
-                    Result blackResult;
+                    Result whiteResult = null;
+                    Result blackResult = null;
                     long longNumber = ((int) round.getOpponentId()) & 0xFFFFFFFFL;
                     UUID opponentId = new UUID(0, longNumber);
                     boolean forfeit = true;
@@ -191,14 +191,28 @@ public class Tournament implements Serializable {
                         whiteResult = player.getRounds().get(i).getResult();
                         if (round.getStatus() == 1) {
                             black = players.get(opponentId);
-                            blackResult = swsxPlayers.get(players.indexOf(black)).getRounds().get(i).getResult();
+                            try {
+                                blackResult = swsxPlayers.get(players.indexOf(black)).getRounds().get(i).getResult();
+                            } catch (IndexOutOfBoundsException e) {
+                                if (black == players.getHalfbye()){
+                                    whiteResult = Result.DRAW;
+                                    blackResult = Result.DRAW;
+                                }else{
+                                    switch (whiteResult){
+                                        case LOSE -> blackResult = Result.WIN;
+                                        case DRAW -> blackResult = Result.DRAW;
+                                        default -> blackResult = Result.LOSE;
+                                    }
+                                }
+                            }
                             forfeit = false;
                         } else if (round.getStatus() == 2) {
-                            black = players.getBye();
                             if (round.getPoints() == 0.5f) {
+                                black = players.getHalfbye();
                                 whiteResult = Result.DRAW;
                                 blackResult = Result.DRAW;
                             } else {
+                                black = players.getBye();
                                 whiteResult = Result.WIN;
                                 blackResult = Result.LOSE;
                             }

@@ -531,6 +531,8 @@ public class MainController implements Initializable {
                 }
             } catch (Exception ex) {
                 error("An error eccured");
+                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         });
     }
