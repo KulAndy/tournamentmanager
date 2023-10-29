@@ -1,9 +1,9 @@
 package com.example.lolmanager.helper;
 
 import com.example.lolmanager.comparator.StartListComparator;
+import com.example.lolmanager.helper.players.NewPlayerHelper;
 import com.example.lolmanager.helper.players.PlayersSortHelper;
 import com.example.lolmanager.helper.players.StartListHelper;
-import com.example.lolmanager.helper.players.NewPlayerHelper;
 import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;

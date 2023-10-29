@@ -666,11 +666,11 @@ public class Player implements Serializable {
     public void setDateOfBirth(String dateOfBirth) {
         if (dateOfBirth != null) {
             try {
-                setYearOfBirth(Integer.parseInt(dateOfBirth.substring(0,4)));
+                setYearOfBirth(Integer.parseInt(dateOfBirth.substring(0, 4)));
             } catch (Exception ignored) {
             }
             try {
-                setMonthOfBirth(Byte.parseByte(dateOfBirth.substring(5,7)));
+                setMonthOfBirth(Byte.parseByte(dateOfBirth.substring(5, 7)));
             } catch (Exception ignored) {
             }
             try {

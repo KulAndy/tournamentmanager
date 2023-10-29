@@ -8,12 +8,12 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableArray;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -24,7 +24,8 @@ public class AllRoundsViewerHelper {
     private ScrollPane allRoundsScroll;
     private Tournament tournament;
     private VBox container = new VBox();
-    public AllRoundsViewerHelper(Tournament tournament, ScrollPane allRoundsScroll){
+
+    public AllRoundsViewerHelper(Tournament tournament, ScrollPane allRoundsScroll) {
         setAllRoundsScroll(allRoundsScroll);
         setTournament(tournament);
 
@@ -32,10 +33,10 @@ public class AllRoundsViewerHelper {
 
         getAllRoundsScroll().setContent(getContainer());
 
-        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change->{
+        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
             getContainer().getChildren().clear();
-            for (int i = 0; i < getTournament().getRoundsObs().size(); i++ ) {
-                Text text = new Text("Round " + (i +1));
+            for (int i = 0; i < getTournament().getRoundsObs().size(); i++) {
+                Text text = new Text("Round " + (i + 1));
                 text.setTextAlignment(TextAlignment.CENTER);
                 HBox textContainer = new HBox(text);
                 textContainer.setAlignment(Pos.CENTER);
@@ -79,40 +80,40 @@ public class AllRoundsViewerHelper {
                 result.setCellValueFactory(cellData -> {
                     Game game = cellData.getValue();
                     StringBuilder resultString = new StringBuilder();
-                    if (game.getWhiteResult() != null){
-                        switch (game.getWhiteResult()){
+                    if (game.getWhiteResult() != null) {
+                        switch (game.getWhiteResult()) {
                             case WIN -> {
-                                if (game.isForfeit()){
+                                if (game.isForfeit()) {
                                     resultString.append("+");
-                                }else {
+                                } else {
                                     resultString.append("1");
                                 }
                             }
                             case DRAW -> resultString.append("0.5");
                             case LOSE -> {
-                                if (game.isForfeit()){
+                                if (game.isForfeit()) {
                                     resultString.append("-");
-                                }else {
+                                } else {
                                     resultString.append("0");
                                 }
                             }
                         }
                     }
                     resultString.append(" - ");
-                    if (game.getBlackResult() != null){
-                        switch (game.getBlackResult()){
+                    if (game.getBlackResult() != null) {
+                        switch (game.getBlackResult()) {
                             case WIN -> {
-                                if (game.isForfeit()){
+                                if (game.isForfeit()) {
                                     resultString.append("+");
-                                }else {
+                                } else {
                                     resultString.append("1");
                                 }
                             }
                             case DRAW -> resultString.append("0.5");
                             case LOSE -> {
-                                if (game.isForfeit()){
+                                if (game.isForfeit()) {
                                     resultString.append("-");
-                                }else {
+                                } else {
                                     resultString.append("0");
                                 }
                             }
@@ -173,19 +174,6 @@ public class AllRoundsViewerHelper {
         column.setCellFactory(tc -> new CenterAlignedTableCell<>());
     }
 
-    private static class CenterAlignedTableCell<S, T> extends TableCell<S, T> {
-        @Override
-        protected void updateItem(T item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty || item == null) {
-                setText(null);
-            } else {
-                setText(item.toString());
-                setAlignment(Pos.CENTER);
-            }
-        }
-    }
-
     public ScrollPane getAllRoundsScroll() {
         return allRoundsScroll;
     }
@@ -208,6 +196,19 @@ public class AllRoundsViewerHelper {
 
     public void setContainer(VBox container) {
         this.container = container;
+    }
+
+    private static class CenterAlignedTableCell<S, T> extends TableCell<S, T> {
+        @Override
+        protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+            } else {
+                setText(item.toString());
+                setAlignment(Pos.CENTER);
+            }
+        }
     }
 
 }

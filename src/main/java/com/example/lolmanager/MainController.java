@@ -22,6 +22,8 @@ import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
 
 public class MainController implements Initializable {
+    @FXML
+    ScrollPane allRoundsScroll;
     private String programName = "";
     private String programExtension = "*";
     private Tournament tournament;
@@ -44,19 +46,16 @@ public class MainController implements Initializable {
     private MenuItem importSwsx;
     @FXML
     private MenuItem importPgn;
-
     @FXML
     private CheckMenuItem autosaveMenu;
     @FXML
     private MenuItem quitMenu;
-
     @FXML
     private MenuItem fideReg;
     @FXML
     private MenuItem downloadFideMenu;
     @FXML
     private MenuItem trfRaport;
-
     @FXML
     private Button saveButton;
     @FXML
@@ -69,19 +68,16 @@ public class MainController implements Initializable {
     private Button nextRoundBth;
     @FXML
     private Button lastRoundBth;
-
     @FXML
     private Button downloadFideButton;
     @FXML
     private Button downloadPolButton;
-
     @FXML
     private TabPane mainTabPane;
     @FXML
     private Tab roundsTab;
     @FXML
     private Tab enterResultsTab;
-
     private HomeTabHelper homeTabHelper;
     @FXML
     private TextField tourName;
@@ -115,7 +111,6 @@ public class MainController implements Initializable {
     private TextField tourOrganizer;
     @FXML
     private TextField tourEmail;
-
     @FXML
     private CheckBox tourFIDEMode;
     @FXML
@@ -146,7 +141,6 @@ public class MainController implements Initializable {
     private TextField pointsBye;
     @FXML
     private TextField pointsHalfBye;
-
     @FXML
     private TextField minInitGames;
     @FXML
@@ -165,9 +159,7 @@ public class MainController implements Initializable {
     private CheckBox twoOtherFeds;
     @FXML
     private TextField minTitleGames;
-
     private PlayersHelper playersHelper;
-
     @FXML
     private TableView<Player> playersListTable;
     @FXML
@@ -192,7 +184,6 @@ public class MainController implements Initializable {
     private TableColumn<Player, String> remarksCol;
     @FXML
     private TableColumn<Player, Void> deleteCol;
-
     @FXML
     private ComboBox<StartListComparator.SortCriteria> criteria1;
     @FXML
@@ -205,7 +196,6 @@ public class MainController implements Initializable {
     private ComboBox<StartListComparator.SortCriteria> criteria5;
     @FXML
     private Button applySortButton;
-
     @FXML
     private ComboBox<Federation> fedSelect;
     @FXML
@@ -250,10 +240,7 @@ public class MainController implements Initializable {
     private Button insertFromList;
     @FXML
     private ListView<Player> newPlayerHint;
-
-
     private RoundsHelper roundsHelper;
-
     @FXML
     private ComboBox<Integer> roundUpdateSelect;
     @FXML
@@ -286,10 +273,6 @@ public class MainController implements Initializable {
     private Button applyManualButton;
     @FXML
     private ListView<Game> pairsList;
-    @FXML
-    ScrollPane allRoundsScroll;
-
-
     @FXML
     private ComboBox<Integer> roundsViewSelect;
     @FXML

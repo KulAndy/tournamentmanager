@@ -169,8 +169,8 @@ public class NewPlayerHelper {
                 String birthdayDay = "";
                 String dateOfBirth = selected.getDateOfBirth();
                 if (dateOfBirth != null) {
-                    birthdayYear = dateOfBirth.substring(0,4);
-                    birthdayMonth = dateOfBirth.substring(5,7);
+                    birthdayYear = dateOfBirth.substring(0, 4);
+                    birthdayMonth = dateOfBirth.substring(5, 7);
                     birthdayDay = dateOfBirth.substring(8);
                 }
 
@@ -195,7 +195,7 @@ public class NewPlayerHelper {
                 if (!birthdayMonth.isEmpty() && !(Integer.parseInt(birthdayMonth) == 0)) {
                     getMonthOfBirth().setText(birthdayMonth);
                 }
-                if (!birthdayDay.isEmpty()  && !(Integer.parseInt(birthdayDay) == 0)) {
+                if (!birthdayDay.isEmpty() && !(Integer.parseInt(birthdayDay) == 0)) {
                     getDayOfBirth().setText(birthdayDay);
                 }
                 getSexSelect().setValue(sex);

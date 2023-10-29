@@ -345,7 +345,7 @@ public class ResultEnterHelper {
                         dialog.showAndWait().ifPresent(result -> {
                             byte replays = Byte.parseByte(result);
                             int pairing = 0;
-                            boolean success= true;
+                            boolean success = true;
                             for (int i = 0; i < replays; i++) {
                                 try {
                                     pairing += RoundRobinEngine.generatePairing(getTournament(), i % 2 == 1);
@@ -354,9 +354,9 @@ public class ResultEnterHelper {
                                     break;
                                 }
                             }
-                            if (success){
+                            if (success) {
                                 info("Paired successfully\nGenerated " + pairing + " pairings");
-                            }else{
+                            } else {
                                 error("An error occurred during pairing");
                             }
                             getTournament().setRoundsNumber((byte) (replays * Math.round(getTournament().getPlayersObs().size())));
