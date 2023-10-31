@@ -48,9 +48,9 @@ public class Tournament implements Serializable {
         setPlace(swsxTournament.getPlace());
         setStartDate(swsxTournament.getStartDate());
         setEndDate(swsxTournament.getEndDate());
-        if (!swsxTournament.getReportFide().getChiefArbiter().getFullName().isEmpty()) {
+        if (swsxTournament.getReportFide() != null && !swsxTournament.getReportFide().getChiefArbiter().getFullName().isEmpty()) {
             setArbiter(swsxTournament.getReportFide().getChiefArbiter().getFullName());
-        } else if (!swsxTournament.getReportPol().getChiefArbiter().getFullName().isEmpty()) {
+        } else if (swsxTournament.getReportPol() != null && !swsxTournament.getReportPol().getChiefArbiter().getFullName().isEmpty()) {
             setArbiter(swsxTournament.getReportPol().getChiefArbiter().getFullName());
         } else {
             setArbiter(swsxTournament.getArbiter());
@@ -222,6 +222,29 @@ public class Tournament implements Serializable {
                             blackResult = Result.WIN;
                         }
                     }
+                    if (white == players.getBye()){
+                        Player playerTmp = white;
+                        white = black;
+                        black = playerTmp;
+                        whiteResult = Result.WIN;
+                        blackResult = Result.LOSE;
+                        forfeit = true;
+                    } else if (white == players.getHalfbye()) {
+                        Player playerTmp = white;
+                        white = black;
+                        black = playerTmp;
+                        whiteResult = Result.DRAW;
+                        blackResult = Result.DRAW;
+                        forfeit = true;
+                    } else if (white == players.getUnpaired()) {
+                        Player playerTmp = white;
+                        white = black;
+                        black = playerTmp;
+                        whiteResult = Result.LOSE;
+                        blackResult = Result.WIN;
+                        forfeit = true;
+                    }
+
                     Game game = new Game(white, black, whiteResult, blackResult, forfeit);
                     roundIds.get(i).add(player.getPlayerId());
                     roundIds.get(i).add(opponentId);

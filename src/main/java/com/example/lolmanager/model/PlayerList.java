@@ -149,7 +149,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     }
 
     public void setBye(Player bye) {
-        bye.setPlayerid(1);
+        bye.setPlayerid(-1);
         this.bye = bye;
     }
 
@@ -158,7 +158,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     }
 
     public void setHalfbye(Player halfbye) {
-        halfbye.setPlayerid(2);
+        halfbye.setPlayerid(-2);
         this.halfbye = halfbye;
     }
 
@@ -167,7 +167,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     }
 
     public void setUnpaired(Player unpaired) {
-        unpaired.setPlayerid(3);
+        unpaired.setPlayerid(-3);
         this.unpaired = unpaired;
     }
 

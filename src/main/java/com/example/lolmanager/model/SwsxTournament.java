@@ -3,6 +3,7 @@ package com.example.lolmanager.model;
 import com.example.lolmanager.comparator.StartListComparator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -566,8 +567,11 @@ public class SwsxTournament {
             setRateOfPlay(rateNode.getAttribute("value"));
 
             for (int i = 0; i < scheduleListNode.getLength(); i++) {
-                Element cobarrayItem = (Element) scheduleListNode.item(i);
-                schedule.add(new SwsxEvent(cobarrayItem));
+                Node node = scheduleListNode.item(i);
+                if(node instanceof Element){
+                    Element cobarrayItem = (Element) node;
+                    schedule.add(new SwsxEvent(cobarrayItem));
+                }
             }
 
             XPathExpression namesExpression = xPath.compile(".//arbiters/cstring");
