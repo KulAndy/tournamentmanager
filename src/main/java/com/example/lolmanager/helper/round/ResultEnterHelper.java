@@ -158,8 +158,6 @@ public class ResultEnterHelper {
                 getRoundsViewSelect().setValue(roundIndex + 1);
 
             }
-
-
         });
 
         setGamesView(gamesView);
@@ -237,11 +235,11 @@ public class ResultEnterHelper {
                     } else {
                         textField1.setText(Result.getResultString(game.getWhiteResult(), game.isForfeit()));
                         textField2.setText(Result.getResultString(game.getBlackResult(), game.isForfeit()));
-                        textField1.setId("result" + getIndex() + "white");
-                        textField2.setId("result" + getIndex() + "black");
                         textField1.setDisable(false);
                         textField2.setDisable(false);
                     }
+                    textField1.setId("result" + getIndex() + "white");
+                    textField2.setId("result" + getIndex() + "black");
                     setGraphic(hbox);
                 }
             }
@@ -310,7 +308,6 @@ public class ResultEnterHelper {
                         getCurrentRound().clear();
                         getTournament().getRoundsObs().clear();
                         getGamesView().refresh();
-                        System.out.println(getTournament().getRounds());
                     }
                 } else {
                     confirm("This will also remove subsequent rounds")
@@ -324,7 +321,6 @@ public class ResultEnterHelper {
                                         getCurrentRound().clear();
                                         getTournament().getRoundsObs().clear();
                                         getGamesView().refresh();
-                                        System.out.println(getTournament().getRounds());
                                     }
                                 }
                             });

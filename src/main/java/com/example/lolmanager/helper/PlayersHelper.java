@@ -8,6 +8,7 @@ import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;
 import com.example.lolmanager.model.Tournament;
+import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 
 public class PlayersHelper {
@@ -27,12 +28,13 @@ public class PlayersHelper {
             ComboBox<StartListComparator.SortCriteria> criteria4,
             ComboBox<StartListComparator.SortCriteria> criteria5,
             Button applySortButton,
+            ComboBox<Player> playerSelect,
             ComboBox<Federation> fedSelect, ComboBox<String> stateSelect, TextField playerNameField,
             ComboBox<Title> playerTitleSelect, TextField localRtgField, TextField FIDERtgField,
             TextField clubField, TextField dayOfBirth, TextField monthOfBirth, TextField yearOfBirth,
             ComboBox<Player.Sex> sexSelect, TextField mailField, ComboBox<Short> phonePrefixSelect,
             TextField phoneNumber, TextField localIDField, TextField FIDEIDField, TextField remarksField,
-            Button addPlayerButton, Button clearPlayerButton, Button addClearPlayerButton,
+            Button addPlayerButton, Button updatePlayerBth, Button clearPlayerButton, Button addClearPlayerButton,
             Button insertFromList, ListView<Player> newPlayerHint
 
     ) {
@@ -53,15 +55,17 @@ public class PlayersHelper {
         setNewPlayerHelper(
                 new NewPlayerHelper(
                         tournament,
+                        playerSelect,
                         fedSelect, stateSelect, playerNameField,
                         playerTitleSelect, localRtgField, FIDERtgField,
                         clubField, dayOfBirth, monthOfBirth, yearOfBirth,
                         sexSelect, mailField, phonePrefixSelect,
                         phoneNumber, localIDField, FIDEIDField, remarksField,
-                        addPlayerButton, clearPlayerButton, addClearPlayerButton,
+                        addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
                         insertFromList, newPlayerHint
                 )
         );
+        updatePlayerBth.addEventHandler(ActionEvent.ACTION, e->playersListTable.refresh());
 
     }
 

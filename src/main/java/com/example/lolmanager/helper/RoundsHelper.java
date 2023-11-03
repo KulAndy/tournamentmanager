@@ -1,17 +1,20 @@
 package com.example.lolmanager.helper;
 
+import com.example.lolmanager.helper.players.WithdrawHelper;
 import com.example.lolmanager.helper.round.AllRoundsViewerHelper;
 import com.example.lolmanager.helper.round.ManualPairingHelper;
 import com.example.lolmanager.helper.round.ResultEnterHelper;
 import com.example.lolmanager.model.Game;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Tournament;
+import com.example.lolmanager.model.Withdraw;
 import javafx.scene.control.*;
 
 public class RoundsHelper {
     private ManualPairingHelper manualPairingHelper;
     private ResultEnterHelper resultEnterHelper;
     private AllRoundsViewerHelper allRoundsViewerHelper;
+    private WithdrawHelper withdrawHelper;
 
     public RoundsHelper
             (
@@ -27,7 +30,13 @@ public class RoundsHelper {
                     TableColumn<Game, Integer> whiteRating, TableColumn<Game, String> whitePlayer, TableColumn<Game, Void> gameResult,
                     TableColumn<Game, String> blackPlayer, TableColumn<Game, Integer> blackRating, TableColumn<Game, Float> blackPoints,
                     TableColumn<Game, Integer> rightBoardNo, Button deleteRound, Button enginePairButton,
-                    ScrollPane allRoundsScroll
+                    ScrollPane allRoundsScroll,
+                    ComboBox<Player> withdrawPlayerSelect, ComboBox<Withdraw.WithdrawType> withdrawTypeSelect,
+                    TextField withdrawRound, Button acceptWithdrawButton, TableView<Withdraw> withdrawTable,
+                    TableColumn<Withdraw, Integer> withdrawNoCol, TableColumn<Withdraw, String> withdrawNameCol,
+                    TableColumn<Withdraw, Withdraw.WithdrawType> withdrawTypeCol, TableColumn<Withdraw, Byte> withdrawRoundCol,
+                    TableColumn<Withdraw, Void> withdrawBackCol
+
             ) {
         setManualPairingHelper(new ManualPairingHelper(
                 tournament, roundUpdateSelect, whiteSearch, blackSearch, whiteList, blackList,
@@ -45,7 +54,9 @@ public class RoundsHelper {
 
         setAllRoundsViewerHelper(new AllRoundsViewerHelper(tournament, allRoundsScroll));
 
-
+        setWithdrawHelper(new WithdrawHelper(tournament, withdrawPlayerSelect,  withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
+                withdrawNoCol, withdrawNameCol, withdrawTypeCol, withdrawRoundCol, withdrawBackCol
+        ));
     }
 
     public ManualPairingHelper getManualPairingHelper() {
@@ -72,4 +83,11 @@ public class RoundsHelper {
         this.allRoundsViewerHelper = allRoundsViewerHelper;
     }
 
+    public WithdrawHelper getWithdrawHelper() {
+        return withdrawHelper;
+    }
+
+    public void setWithdrawHelper(WithdrawHelper withdrawHelper) {
+        this.withdrawHelper = withdrawHelper;
+    }
 }

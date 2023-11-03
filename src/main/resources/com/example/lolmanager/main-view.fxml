@@ -166,7 +166,7 @@
                                                                     <children>
                                                                         <Label alignment="CENTER" text="Name" textAlignment="RIGHT" />
                                                                         <Separator opacity="0.0" prefHeight="33.0" prefWidth="54.0" />
-                                                                        <TextField fx:id="tourName" prefWidth="411.0" />
+                                                                        <TextField fx:id="tourName" prefHeight="27.0" prefWidth="905.0" />
                                                                     </children>
                                                                 </HBox>
                                                                 <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -705,6 +705,7 @@
                                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                     </columnConstraints>
                                                                     <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -714,7 +715,7 @@
                                                                         <RowConstraints maxHeight="63.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                     <children>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="45.0" prefWidth="0.0" />
                                                                                 <Label text="Federation" />
@@ -722,14 +723,14 @@
                                                                                 <ComboBox fx:id="fedSelect" prefHeight="24.0" prefWidth="105.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                                                             <children>
                                                                                 <Label text="State" />
                                                                                 <Separator opacity="0.0" prefHeight="44.0" prefWidth="39.0" />
                                                                                 <ComboBox fx:id="stateSelect" prefHeight="24.0" prefWidth="95.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="5" GridPane.rowIndex="1">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="5" GridPane.rowIndex="2">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="50.0" prefWidth="0.0" />
                                                                                 <Label text="Name" />
@@ -737,7 +738,7 @@
                                                                                 <TextField fx:id="playerNameField" prefHeight="24.0" prefWidth="995.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="3">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="29.0" prefWidth="0.0" />
                                                                                 <Label text="Title" />
@@ -745,21 +746,21 @@
                                                                                 <ComboBox fx:id="playerTitleSelect" prefHeight="24.0" prefWidth="114.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
                                                                             <children>
                                                                                 <Label text="Local Rtg" />
                                                                                 <Separator opacity="0.0" prefHeight="34.0" prefWidth="0.0" />
                                                                                 <TextField fx:id="localRtgField" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                                                                             <children>
                                                                                 <Label text="FIDE Rtg" />
                                                                                 <Separator opacity="0.0" prefHeight="34.0" prefWidth="17.0" />
                                                                                 <TextField fx:id="FIDERtgField" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="6" GridPane.rowIndex="3">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="6" GridPane.rowIndex="4">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="63.0" prefWidth="0.0" />
                                                                                 <Label text="Club" />
@@ -767,7 +768,7 @@
                                                                                 <TextField fx:id="clubField" prefHeight="24.0" prefWidth="1122.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="5">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="104.0" prefWidth="0.0" />
                                                                                 <Label text="Date of birth" />
@@ -795,14 +796,14 @@
                                                                                 </VBox>
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5">
                                                                             <children>
                                                                                 <Label text="Sex" />
                                                                                 <Separator opacity="0.0" prefHeight="31.0" prefWidth="52.0" />
                                                                                 <ComboBox fx:id="sexSelect" prefHeight="24.0" prefWidth="107.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                                        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="5">
                                                                             <children>
                                                                                 <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0">
                                                                                     <children>
@@ -821,7 +822,7 @@
                                                                                 </HBox>
                                                                             </children>
                                                                         </VBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="6">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="73.0" prefWidth="0.0" />
                                                                                 <Label text="Local ID" />
@@ -829,14 +830,14 @@
                                                                                 <TextField fx:id="localIDField" prefHeight="24.0" prefWidth="189.0" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
                                                                             <children>
                                                                                 <Label text="FIDE ID" />
                                                                                 <Separator opacity="0.0" prefHeight="39.0" prefWidth="31.0" />
                                                                                 <TextField fx:id="FIDEIDField" />
                                                                             </children>
                                                                         </HBox>
-                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="6" GridPane.rowIndex="6">
+                                                                        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="6" GridPane.rowIndex="7">
                                                                             <children>
                                                                                 <Separator opacity="0.0" prefHeight="84.0" prefWidth="0.0" />
                                                                                 <Label text="Remarks" />
@@ -844,6 +845,13 @@
                                                                                 <TextField fx:id="remarksField" prefHeight="24.0" prefWidth="1138.0" />
                                                                             </children>
                                                                         </HBox>
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                                                         <children>
+                                                            <Separator opacity="0.0" prefHeight="33.0" prefWidth="15.0" />
+                                                            <Label text="Player" />
+                                                         </children>
+                                                      </HBox>
+                                                      <ComboBox fx:id="playerSelect" prefHeight="27.0" prefWidth="898.0" GridPane.columnIndex="1" GridPane.columnSpan="5" />
                                                                     </children>
                                                                 </GridPane>
                                                                 <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="1280.0" VBox.vgrow="NEVER">
@@ -853,6 +861,8 @@
                                                                         <Separator opacity="0.0" prefHeight="27.0" prefWidth="215.0" />
                                                                         <Button fx:id="addPlayerButton" mnemonicParsing="false" text="Add" />
                                                                         <Separator opacity="0.0" prefHeight="37.0" prefWidth="30.0" />
+                                                      <Button fx:id="updatePlayerBth" mnemonicParsing="false" text="Update" />
+                                                      <Separator opacity="0.0" prefHeight="25.0" prefWidth="25.0" />
                                                                         <Button fx:id="clearPlayerButton" mnemonicParsing="false" text="Clear" />
                                                                         <Separator opacity="0.0" prefHeight="13.0" prefWidth="33.0" />
                                                                         <Button fx:id="addClearPlayerButton" mnemonicParsing="false" text="Add and clear" />
@@ -873,16 +883,28 @@
                                                             <children>
                                                                 <HBox alignment="CENTER" prefHeight="40.0" prefWidth="1280.0">
                                                                     <children>
+                                                      <Label text="Player" />
+                                                      <Separator opacity="0.0" prefHeight="44.0" prefWidth="53.0" />
+                                                      <ComboBox fx:id="withdrawPlayerSelect" prefHeight="27.0" prefWidth="379.0" />
+                                                      <Separator opacity="0.0" prefHeight="28.0" prefWidth="32.0" />
+                                                      <Label text="Type" />
+                                                      <Separator opacity="0.0" prefHeight="35.0" prefWidth="30.0" />
+                                                      <ComboBox fx:id="withdrawTypeSelect" prefWidth="150.0" />
+                                                      <Separator opacity="0.0" prefHeight="40.0" prefWidth="27.0" />
+                                                      <Label text="from round" />
+                                                      <Separator opacity="0.0" prefHeight="36.0" prefWidth="16.0" />
+                                                      <TextField fx:id="withdrawRound" disable="true" />
+                                                      <Separator opacity="0.0" prefHeight="36.0" prefWidth="16.0" />
                                                                         <Button fx:id="acceptWithdrawButton" contentDisplay="CENTER" mnemonicParsing="false" text="Accept" />
                                                                     </children>
                                                                 </HBox>
-                                                                <TableView prefHeight="560.0" prefWidth="1280.0" VBox.vgrow="ALWAYS">
+                                                                <TableView fx:id="withdrawTable" prefHeight="560.0" prefWidth="1280.0" VBox.vgrow="ALWAYS">
                                                                     <columns>
-                                                                        <TableColumn prefWidth="75.0" text="S.No." />
-                                                                        <TableColumn prefWidth="425.0" text="Name" />
-                                                                        <TableColumn minWidth="0.0" prefWidth="188.0" text="from round" />
-                                                                        <TableColumn prefWidth="208.0" text="from tournament" />
-                                                                        <TableColumn prefWidth="158.0" text="bring back" />
+                                                                        <TableColumn fx:id="withdrawNoCol" prefWidth="75.0" text="S.No." />
+                                                                        <TableColumn fx:id="withdrawNameCol" prefWidth="425.0" text="Name" />
+                                                                        <TableColumn fx:id="withdrawTypeCol" prefWidth="208.0" text="Type" />
+                                                                        <TableColumn fx:id="withdrawRoundCol" minWidth="0.0" prefWidth="188.0" text="Round" />
+                                                                        <TableColumn fx:id="withdrawBackCol" prefWidth="158.0" text="Bring back" />
                                                                     </columns>
                                                                     <columnResizePolicy>
                                                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

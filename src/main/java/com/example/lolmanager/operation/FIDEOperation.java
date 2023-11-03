@@ -425,7 +425,13 @@ public class FIDEOperation {
         }
 
         trf.append("\nXXR ").append(tournament.getRoundsNumber());
-
+        trf.append("\nXXZ");
+        for (Withdraw withdraw : tournament.getWithdraws()){
+            if (withdraw.getType() == Withdraw.WithdrawType.TOURNAMENT || withdraw.getRoundNo() == tournament.getRounds().size() + 1){
+                trf.append("%4d".formatted(players.getUuid2startNo().get(withdraw.getPlayer().getPlayerid())));
+            }
+        }
+        trf.append("\n");
         return trf.toString();
     }
 

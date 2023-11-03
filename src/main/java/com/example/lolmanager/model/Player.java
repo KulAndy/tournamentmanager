@@ -771,10 +771,6 @@ public class Player implements Serializable {
         this.rounds = rounds;
     }
 
-    public String geteMail() {
-        return eMail;
-    }
-
     public void seteMail(String eMail) {
         this.eMail = eMail;
     }

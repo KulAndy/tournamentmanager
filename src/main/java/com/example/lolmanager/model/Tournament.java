@@ -42,6 +42,8 @@ public class Tournament implements Serializable {
     private transient ObservableList<ArrayList<Game>> roundsObs = FXCollections.observableArrayList();
     private PairingComparator pairingComparator;
     private ResultsComparator resultsComparator;
+    private ArrayList<Withdraw> withdraws = new ArrayList<>();
+    private transient ObservableList<Withdraw> withdrawsObs = FXCollections.observableArrayList();
 
     public Tournament(SwsxTournament swsxTournament) {
         setName(swsxTournament.getName());
@@ -563,6 +565,24 @@ public class Tournament implements Serializable {
 
         });
 
+        withdrawsObs.addListener((ListChangeListener<? super Withdraw>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getWithdraws().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getWithdraws().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getWithdraws().subList(from, to + 1).clear();
+                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
@@ -824,6 +844,22 @@ public class Tournament implements Serializable {
 
     public void setRoundsObs(ObservableList<ArrayList<Game>> roundsObs) {
         this.roundsObs = roundsObs;
+    }
+
+    public ArrayList<Withdraw> getWithdraws() {
+        return withdraws;
+    }
+
+    public void setWithdraws(ArrayList<Withdraw> withdraws) {
+        this.withdraws = withdraws;
+    }
+
+    public ObservableList<Withdraw> getWithdrawsObs() {
+        return withdrawsObs;
+    }
+
+    public void setWithdrawsObs(ObservableList<Withdraw> withdrawsObs) {
+        this.withdrawsObs = withdrawsObs;
     }
 
     public enum Type implements Serializable {

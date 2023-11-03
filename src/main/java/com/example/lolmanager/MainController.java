@@ -196,6 +196,9 @@ public class MainController implements Initializable {
     private ComboBox<StartListComparator.SortCriteria> criteria5;
     @FXML
     private Button applySortButton;
+
+    @FXML
+    private ComboBox<Player> playerSelect;
     @FXML
     private ComboBox<Federation> fedSelect;
     @FXML
@@ -233,6 +236,8 @@ public class MainController implements Initializable {
     @FXML
     private Button addPlayerButton;
     @FXML
+    private Button updatePlayerBth;
+    @FXML
     private Button clearPlayerButton;
     @FXML
     private Button addClearPlayerButton;
@@ -240,6 +245,28 @@ public class MainController implements Initializable {
     private Button insertFromList;
     @FXML
     private ListView<Player> newPlayerHint;
+
+    @FXML
+    private ComboBox<Player> withdrawPlayerSelect;
+    @FXML
+    private ComboBox<Withdraw.WithdrawType> withdrawTypeSelect;
+    @FXML
+    private TextField withdrawRound;
+    @FXML
+    private Button acceptWithdrawButton;
+    @FXML
+    private TableView<Withdraw> withdrawTable;
+    @FXML
+    private TableColumn<Withdraw, Integer> withdrawNoCol;
+    @FXML
+    private TableColumn<Withdraw, String> withdrawNameCol;
+    @FXML
+    private TableColumn<Withdraw, Withdraw.WithdrawType> withdrawTypeCol;
+    @FXML
+    private TableColumn<Withdraw, Byte> withdrawRoundCol;
+    @FXML
+    private TableColumn<Withdraw, Void> withdrawBackCol;
+
     private RoundsHelper roundsHelper;
     @FXML
     private ComboBox<Integer> roundUpdateSelect;
@@ -429,12 +456,13 @@ public class MainController implements Initializable {
                 localCol, clubCol, localIdCol, fideIdCol, remarksCol, deleteCol,
                 criteria1, criteria2, criteria3, criteria4, criteria5,
                 applySortButton,
+                playerSelect,
                 fedSelect, stateSelect, playerNameField,
                 playerTitleSelect, localRtgField, FIDERtgField,
                 clubField, dayOfBirth, monthOfBirth, yearOfBirth,
                 sexSelect, mailField, phonePrefixSelect,
                 phoneNumber, localIDField, FIDEIDField, remarksField,
-                addPlayerButton, clearPlayerButton, addClearPlayerButton,
+                addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
                 insertFromList, newPlayerHint
         );
 
@@ -446,7 +474,10 @@ public class MainController implements Initializable {
                 blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
                 blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton,
-                allRoundsScroll
+                allRoundsScroll,
+                withdrawPlayerSelect,  withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
+                withdrawNoCol, withdrawNameCol, withdrawTypeCol, withdrawRoundCol, withdrawBackCol
+
         );
 
         tablesHelper = new TablesHelper(
