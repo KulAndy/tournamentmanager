@@ -377,49 +377,47 @@ public class FIDEOperation {
             for (Game game : rounds) {
                 Player opponent = player.getOpponent(game);
                 trf.append("  ");
-                if (game.isForfeit()) {
-                    switch (opponent.getName()) {
-                        case "bye", "unpaired" -> {
-                            trf.append("0000 - ").append("U");
+                if (opponent == tournament.getPlayers().getBye()){
+                    trf.append("0000 - ").append("F");
+                } else if (opponent == tournament.getPlayers().getHalfbye()) {
+                    trf.append("0000 - ").append("H");
+                } else if (opponent == tournament.getPlayers().getUnpaired() || Objects.equals(opponent.getName(), "unpaired")) {
+                    trf.append("0000 - ").append("Z");
+                }else{
+                    if (game.isForfeit()) {
+                        trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
+                                .append(" ");
+                        switch (player.getRoundColor(game)) {
+                            case WHITE -> trf.append("w ");
+                            case BLACK -> trf.append("b ");
                         }
-                        case "halfbye" -> {
-                            trf.append("0000 - ").append("H");
-                        }
-                        default -> {
-                            trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
-                                    .append(" ");
-                            switch (player.getRoundColor(game)) {
-                                case WHITE -> trf.append("w ");
-                                case BLACK -> trf.append("b ");
-                            }
-                            if (game.getWhiteResult() == null && game.getBlackResult() == null) {
-                                trf.append(" ");
+                        if (game.getWhiteResult() == null && game.getBlackResult() == null) {
+                            trf.append(" ");
+                        } else {
+                            if (player.getRoundResult(game) == Result.WIN) {
+                                trf.append("+");
                             } else {
-                                if (player.getRoundResult(game) == Result.WIN) {
-                                    trf.append("+");
-                                } else {
-                                    trf.append("-");
-                                }
+                                trf.append("-");
                             }
                         }
-                    }
-                } else {
-                    trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
-                            .append(" ");
-                    switch (player.getRoundColor(game)) {
-                        case WHITE -> trf.append("w ");
-                        case BLACK -> trf.append("b ");
-                    }
-                    if (player.getRoundResult(game) == null) {
-                        trf.append(" ");
                     } else {
-                        switch (player.getRoundResult(game)) {
-                            case WIN -> trf.append("1");
-                            case DRAW -> trf.append("=");
-                            default -> trf.append("0");
+                        trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
+                                .append(" ");
+                        switch (player.getRoundColor(game)) {
+                            case WHITE -> trf.append("w ");
+                            case BLACK -> trf.append("b ");
                         }
-                    }
+                        if (player.getRoundResult(game) == null) {
+                            trf.append(" ");
+                        } else {
+                            switch (player.getRoundResult(game)) {
+                                case WIN -> trf.append("1");
+                                case DRAW -> trf.append("=");
+                                default -> trf.append("0");
+                            }
+                        }
 
+                    }
                 }
             }
         }

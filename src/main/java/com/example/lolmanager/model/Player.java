@@ -9,6 +9,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.example.lolmanager.calculation.PZSzachCalculation.getNorm;
@@ -471,12 +472,11 @@ public class Player implements Serializable {
     }
 
     public Player getOpponent(Game round) {
-        Color color = getRoundColor(round);
-        if (color == Color.WHITE) {
+        if (round.getWhite() == this){
             return round.getBlack();
-        } else if (color == Color.BLACK) {
+        } else if (round.getBlack() == this) {
             return round.getWhite();
-        } else {
+        }else {
             return null;
         }
     }
@@ -812,6 +812,21 @@ public class Player implements Serializable {
     public void setDayOfBirth(byte dayOfBirth) {
         DayOfBirth = dayOfBirth;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Player other = (Player) obj;
+
+        return Objects.equals(getPlayerid().toString(), other.getPlayerid().toString()) && Objects.equals(getName(), other.getName());
+    }
+
 
     public enum Sex {
         MALE,

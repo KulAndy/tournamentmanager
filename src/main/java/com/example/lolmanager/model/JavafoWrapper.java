@@ -67,9 +67,8 @@ public class JavafoWrapper implements Engine {
                                 round.add(new Game(player, tournament.getPlayers().getHalfbye(), Result.DRAW, Result.DRAW, true));
                             }
                     }
-                    default -> {
-                            round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
-                    }
+                    default -> round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
+
                 }
             }
             tournament.getRoundsObs().add(round);
