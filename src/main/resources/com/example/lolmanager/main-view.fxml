@@ -483,7 +483,6 @@
                                                                         <Separator opacity="0.0" prefHeight="31.0" prefWidth="36.0" />
                                                       <HBox>
                                                          <children>
-                                                             <Button fx:id="applyResultButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Apply" />
                                                             <Separator prefWidth="25.0" />
                                                             <Button fx:id="enginePairButton" mnemonicParsing="false" text="Pair" />
                                                             <Separator opacity="0.0" prefHeight="29.0" prefWidth="36.0" />

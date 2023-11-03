@@ -39,10 +39,10 @@ public enum Result implements Serializable {
 
     public static Object[] getResultFromPoints(String result) {
         return switch (result.trim()) {
-            case "+" -> new Object[]{WIN, true};
-            case "-" -> new Object[]{LOSE, true};
             case "1" -> new Object[]{WIN, false};
             case "1/2", "0.5", "0,5" -> new Object[]{DRAW, false};
+            case "+" -> new Object[]{WIN, true};
+            case "-" -> new Object[]{LOSE, true};
             case "" -> new Object[]{null, true};
             default -> new Object[]{LOSE, false};
         };

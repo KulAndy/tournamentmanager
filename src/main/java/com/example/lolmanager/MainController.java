@@ -321,8 +321,6 @@ public class MainController implements Initializable {
     @FXML
     private Button blackWinForfeitResult;
     @FXML
-    private Button applyResultButton;
-    @FXML
     private Button deleteRound;
     @FXML
     private Button enginePairButton;
@@ -471,7 +469,7 @@ public class MainController implements Initializable {
                 autoColorCheckbox, pairRestButton, pairButton, whithdrawButton, byePairButton, halfByePairButton,
                 clearManualButton, unpairButton, swapColorPairButton,
                 applyManualButton, pairsList, roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
-                blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
+                blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
                 blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton,
                 allRoundsScroll,
@@ -506,7 +504,7 @@ public class MainController implements Initializable {
         saveButton.setOnAction(e -> getFileOperation().save());
         openMenu.setOnAction(e -> getFileOperation().open());
         openButton.setOnAction(e -> getFileOperation().open());
-        fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, programName));
+        fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         downloadFideMenu.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
