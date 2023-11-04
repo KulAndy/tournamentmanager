@@ -39,8 +39,8 @@ public class ManualPairingHelper {
     private FilteredList<Player> blackPairedFilter;
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList(1);
     private ObservableList<Game> manualRound = FXCollections.observableArrayList();
-    private StringProperty whiteStart = new SimpleStringProperty("");
-    private StringProperty blackStart = new SimpleStringProperty("");
+    private final StringProperty whiteStart = new SimpleStringProperty("");
+    private final StringProperty blackStart = new SimpleStringProperty("");
 
     public ManualPairingHelper(
             Tournament tournament,
