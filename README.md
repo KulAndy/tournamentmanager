@@ -50,17 +50,17 @@ Skróty:
 
 Uruchamianie
 # 1. Zapomocą Idea IntelliJ
-- zainstaluj (Ideaa0[https://www.jetbrains.com/idea/download/?section=windows]
-- pobierz i rozpakuj ten (projekt)[https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip]
+- zainstaluj [Ideaa](https://www.jetbrains.com/idea/download/?section=windows)
+- pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - uruchom Idee
 - File > Open i wybierz rozpakowany projekt folder
 - w File > Project Structure > Project musi być SDK w wersji min 20 (inaczej kiliknij menu rozwijane > Add SDK)
 - Run > Run 'Main' lub najechać na Main, PPM > Run 'Main'
 
 # 2. Java i Maven
-- Zainstaluj najnowszą (Javę)[https://www.oracle.com/pl/java/technologies/downloads/], SDK min 20
-- Zainstaluje (Maven)[https://maven.apache.org/download.cgi] (w zależności od SDK Javy może nie być konieczne)
-- pobierz i rozpakuj ten (projekt)[https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip]
+- Zainstaluj najnowszą [Javę](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 20
+- Zainstaluje [Maven](https://maven.apache.org/download.cgi) (w zależności od SDK Javy może nie być konieczne)
+- pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - przejdź do rozpakowanego katalogu
 - w systemie windows
   - PPM > otwórz w terminalu / otwórz w oknie powershell
