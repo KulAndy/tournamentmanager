@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
@@ -267,6 +268,43 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Withdraw, Void> withdrawBackCol;
 
+    @FXML
+    private AnchorPane PlayerCard;
+    @FXML
+    private ComboBox<Player> playerCardSelect;
+    @FXML
+    private Label playerCardName;
+    @FXML
+    private Label playerCardTB1;
+    @FXML
+    private Label playerCardTB1Value;
+    @FXML
+    private Label playerCardTB2;
+    @FXML
+    private Label playerCardTB2Value;
+    @FXML
+    private Label playerCardTB3;
+    @FXML
+    private Label playerCardTB3Value;
+    @FXML
+    private Label playerCardTB4;
+    @FXML
+    private Label playerCardTB4Value;
+    @FXML
+    private Label playerCardTB5;
+    @FXML
+    private Label playerCardTB5Value;
+    @FXML
+    private Label playerCardElo;
+    @FXML
+    private Label playerCardEloValue;
+    @FXML
+    private Label playerCardPZSzach;
+    @FXML
+    private Label playerCardPZSzachValue;
+    @FXML
+    private ListView<Game> playerCardGames;
+
     private RoundsHelper roundsHelper;
     @FXML
     private ComboBox<Integer> roundUpdateSelect;
@@ -461,7 +499,14 @@ public class MainController implements Initializable {
                 sexSelect, mailField, phonePrefixSelect,
                 phoneNumber, localIDField, FIDEIDField, remarksField,
                 addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
-                insertFromList, newPlayerHint
+                insertFromList, newPlayerHint,
+                playerCardSelect,
+                PlayerCard,
+                playerCardName, playerCardTB1, playerCardTB1Value,
+                playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
+                playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
+                playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
+                playerCardGames
         );
 
         roundsHelper = new RoundsHelper(
@@ -486,6 +531,27 @@ public class MainController implements Initializable {
                 resultElo, resultLocal, resultFed, resultPoints,
                 resultBuchCut, resultBuch, resultBerger, resultProgress
         );
+
+        tourTB1.valueProperty().addListener(e->{
+            playerCardTB1.setText(String.valueOf(tourTB1.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB1.getValue()).toString());
+        });
+        tourTB2.valueProperty().addListener(e->{
+            playerCardTB2.setText(String.valueOf(tourTB2.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB2.getValue()).toString());
+        });
+        tourTB3.valueProperty().addListener(e->{
+            playerCardTB3.setText(String.valueOf(tourTB3.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB3.getValue()).toString());
+        });
+        tourTB4.valueProperty().addListener(e->{
+            playerCardTB4.setText(String.valueOf(tourTB4.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB4.getValue()).toString());
+        });
+        tourTB5.valueProperty().addListener(e->{
+            playerCardTB5.setText(String.valueOf(tourTB5.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB5.getValue()).toString());
+        });
     }
 
     public void init(Scene scene, String programName, String programExtension) {

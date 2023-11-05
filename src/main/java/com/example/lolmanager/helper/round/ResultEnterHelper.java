@@ -182,39 +182,43 @@ public class ResultEnterHelper {
                     textField1.setId("result" + getIndex() + "white");
                     textField2.setId("result" + getIndex() + "black");
                     textField1.textProperty().addListener(e->{
-                        Object[] objectsW = Result.getResultFromPoints(textField1.getText());
-                        Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                        Result resultW = (Result) objectsW[0];
-                        Result resultB = (Result) objects2[0];
-                        boolean forfeitW = (Boolean) objectsW[1];
-                        boolean forfeitB = (Boolean) objects2[1];
-                        if (resultW != null || textField1.getText().isEmpty()){
-                            getCurrentRound().get(getIndex()).setWhiteResult(resultW);
-                        }
-                        if (
-                                resultW != null && resultB != null
-                        ){
-                            getCurrentRound().get(getIndex()).setForfeit(forfeitW || forfeitB);
-                        } else if (textField1.getText().isEmpty() || textField2.getText().isEmpty()) {
-                            getCurrentRound().get(getIndex()).setForfeit(true);
+                        if (textField1.isFocused()){
+                            if (textField1.getText().isEmpty()){
+                                game.setWhiteResult(null);
+                                game.setForfeit(true);
+                            }else{
+                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
+                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                                Result resultW = (Result) objectsW[0];
+                                Result resultB = (Result) objects2[0];
+                                boolean forfeitW = (Boolean) objectsW[1];
+                                boolean forfeitB = (Boolean) objects2[1];
+
+                                if (resultW != null){
+                                    game.setWhiteResult(resultW);
+                                    game.setForfeit(forfeitW || forfeitB);
+                                }
+                            }
                         }
                     });
                     textField2.textProperty().addListener(e->{
-                        Object[] objectsW = Result.getResultFromPoints(textField1.getText());
-                        Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                        boolean forfeitW = (Boolean) objectsW[1];
-                        Result resultW = (Result) objectsW[0];
-                        Result resultB = (Result) objects2[0];
-                        boolean forfeitB = (Boolean) objects2[1];
-                        if (resultB != null || textField2.getText().isEmpty()){
-                            getCurrentRound().get(getIndex()).setBlackResult(resultB);
-                        }
-                        if (
-                                resultW != null && resultB != null
-                        ){
-                            getCurrentRound().get(getIndex()).setForfeit(forfeitW || forfeitB);
-                        } else if (textField1.getText().isEmpty() || textField2.getText().isEmpty()) {
-                            getCurrentRound().get(getIndex()).setForfeit(true);
+                        if (textField2.isFocused()) {
+                            if (textField2.getText().isEmpty()) {
+                                game.setBlackResult(null);
+                                game.setForfeit(true);
+                            } else {
+                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
+                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                                Result resultW = (Result) objectsW[0];
+                                Result resultB = (Result) objects2[0];
+                                boolean forfeitW = (Boolean) objectsW[1];
+                                boolean forfeitB = (Boolean) objects2[1];
+
+                                if (resultB != null) {
+                                    game.setBlackResult(resultB);
+                                    game.setForfeit(forfeitW || forfeitB);
+                                }
+                            }
                         }
                     });
                     setGraphic(hbox);

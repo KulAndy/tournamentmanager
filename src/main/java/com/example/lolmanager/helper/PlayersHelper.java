@@ -2,20 +2,20 @@ package com.example.lolmanager.helper;
 
 import com.example.lolmanager.comparator.StartListComparator;
 import com.example.lolmanager.helper.players.NewPlayerHelper;
+import com.example.lolmanager.helper.players.PlayerCardHelper;
 import com.example.lolmanager.helper.players.PlayersSortHelper;
 import com.example.lolmanager.helper.players.StartListHelper;
-import com.example.lolmanager.model.Federation;
-import com.example.lolmanager.model.Player;
-import com.example.lolmanager.model.Title;
-import com.example.lolmanager.model.Tournament;
+import com.example.lolmanager.model.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 
 public class PlayersHelper {
     private Tournament tournament;
     private StartListHelper startListHelper;
     private PlayersSortHelper playersSortHelper;
     private NewPlayerHelper newPlayerHelper;
+    private PlayerCardHelper playerCardHelper;
 
     public PlayersHelper(
             Tournament tournament, TableView<Player> playersListTable,
@@ -35,8 +35,14 @@ public class PlayersHelper {
             ComboBox<Player.Sex> sexSelect, TextField mailField, ComboBox<Short> phonePrefixSelect,
             TextField phoneNumber, TextField localIDField, TextField FIDEIDField, TextField remarksField,
             Button addPlayerButton, Button updatePlayerBth, Button clearPlayerButton, Button addClearPlayerButton,
-            Button insertFromList, ListView<Player> newPlayerHint
-
+            Button insertFromList, ListView<Player> newPlayerHint,
+            ComboBox<Player> playerCardSelect,
+            AnchorPane PlayerCard,
+            Label playerCardName, Label playerCardTB1, Label playerCardTB1Value,
+            Label playerCardTB2, Label playerCardTB2Value, Label playerCardTB3, Label playerCardTB3Value,
+            Label playerCardTB4, Label playerCardTB4Value, Label playerCardTB5, Label playerCardTB5Value,
+            Label playerCardElo, Label playerCardEloValue, Label playerCardPZSzach, Label playerCardPZSzachValue,
+            ListView<Game> playerCardGames
     ) {
         setTournament(tournament);
         setStartListHelper(new StartListHelper(
@@ -67,6 +73,17 @@ public class PlayersHelper {
         );
         updatePlayerBth.addEventHandler(ActionEvent.ACTION, e->playersListTable.refresh());
 
+        setPlayerCardHelper(
+                new PlayerCardHelper(
+                        tournament,
+                        PlayerCard, playerCardSelect,
+                        playerCardName, playerCardTB1, playerCardTB1Value,
+                        playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
+                        playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
+                        playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
+                        playerCardGames
+                )
+        );
     }
 
     public Tournament getTournament() {
@@ -101,4 +118,11 @@ public class PlayersHelper {
         this.newPlayerHelper = newPlayerHelper;
     }
 
+    public PlayerCardHelper getPlayerCardHelper() {
+        return playerCardHelper;
+    }
+
+    public void setPlayerCardHelper(PlayerCardHelper playerCardHelper) {
+        this.playerCardHelper = playerCardHelper;
+    }
 }
