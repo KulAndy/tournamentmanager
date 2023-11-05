@@ -915,6 +915,93 @@
                                                 </AnchorPane>
                                             </content>
                                         </Tab>
+                              <Tab text="Player Card">
+                                <content>
+                                  <AnchorPane fx:id="PlayerCard" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ScrollPane layoutX="6.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <GridPane prefHeight="613.0" prefWidth="1273.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="7">
+                                                         <children>
+                                                            <Label text="Player" />
+                                                            <Separator opacity="0.0" prefHeight="34.0" prefWidth="43.0" />
+                                                            <ComboBox fx:id="playerCardSelect" prefHeight="27.0" prefWidth="461.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardTB1" text="TB1" />
+                                                            <Label fx:id="playerCardTB1Value" text="0.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardTB2" text="TB2" />
+                                                            <Label fx:id="playerCardTB2Value" text="0.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardTB3" text="TB3" />
+                                                            <Label fx:id="playerCardTB3Value" text="0.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardTB4" text="TB4" />
+                                                            <Label fx:id="playerCardTB4Value" text="0.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardTB5" text="TB5" />
+                                                            <Label fx:id="playerCardTB5Value" text="0.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardElo" text="Rtg Perf FIDE" />
+                                                            <Label fx:id="playerCardEloValue" text="1000" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="6" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <Label fx:id="playerCardPZSzach" text="Rtg Perf PZSzach" />
+                                                            <Label fx:id="playerCardPZSzachValue" text="1000" />
+                                                         </children>
+                                                      </VBox>
+                                                      <ListView fx:id="playerCardGames" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="3" GridPane.rowSpan="6" />
+                                                      <Label fx:id="playerCardName" prefHeight="19.0" prefWidth="674.0" text="  Player" GridPane.columnSpan="7" GridPane.rowIndex="1" />
+                                                   </children>
+                                                </GridPane>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                                     </tabs>
                                 </TabPane>
                             </children>
