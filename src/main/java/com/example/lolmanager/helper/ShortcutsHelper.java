@@ -31,11 +31,6 @@ public class ShortcutsHelper {
             controlShortcuts(e);
             controlShiftShortcuts(e);
             resultEnterShortcuts(e);
-//            System.out.println("kod: " + e.getCode());
-//            System.out.println("ctrl: " + e.isControlDown());
-//            System.out.println("alt: " + e.isAltDown());
-//            System.out.println("shift: " + e.isShiftDown());
-//            System.out.println("meta: " + e.isMetaDown());
         });
     }
 

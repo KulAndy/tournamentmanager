@@ -42,6 +42,8 @@ public class Tournament implements Serializable {
     private transient ObservableList<ArrayList<Game>> roundsObs = FXCollections.observableArrayList();
     private PairingComparator pairingComparator;
     private ResultsComparator resultsComparator;
+    private ArrayList<Withdraw> withdraws = new ArrayList<>();
+    private transient ObservableList<Withdraw> withdrawsObs = FXCollections.observableArrayList();
 
     public Tournament(SwsxTournament swsxTournament) {
         setName(swsxTournament.getName());
@@ -170,14 +172,24 @@ public class Tournament implements Serializable {
                         blackResult = player.getRounds().get(i).getResult();
                         if (round.getStatus() == 1) {
                             white = players.get(opponentId);
-                            whiteResult = swsxPlayers.get(players.indexOf(white)).getRounds().get(i).getResult();
-                            forfeit = false;
+                            if (white == players.getBye()) {
+                                whiteResult = Result.LOSE;
+                            } else if (white == players.getHalfbye()) {
+                                whiteResult = Result.DRAW;
+                                blackResult = Result.DRAW;
+                            } else if (white == players.getUnpaired()) {
+                                whiteResult = Result.WIN;
+                            } else {
+                                whiteResult = swsxPlayers.get(players.indexOf(white)).getRounds().get(i).getResult();
+                                forfeit = false;
+                            }
                         } else if (round.getStatus() == 2) {
-                            white = players.getBye();
                             if (round.getPoints() == 0.5f) {
+                                white = players.getHalfbye();
                                 whiteResult = Result.DRAW;
                                 blackResult = Result.DRAW;
                             } else {
+                                white = players.getBye();
                                 whiteResult = Result.LOSE;
                                 blackResult = Result.WIN;
                             }
@@ -191,21 +203,17 @@ public class Tournament implements Serializable {
                         whiteResult = player.getRounds().get(i).getResult();
                         if (round.getStatus() == 1) {
                             black = players.get(opponentId);
-                            try {
+                            if (black == players.getBye()) {
+                                blackResult = Result.LOSE;
+                            } else if (black == players.getHalfbye()) {
+                                whiteResult = Result.DRAW;
+                                blackResult = Result.DRAW;
+                            } else if (black == players.getUnpaired()) {
+                                whiteResult = Result.WIN;
+                            } else {
                                 blackResult = swsxPlayers.get(players.indexOf(black)).getRounds().get(i).getResult();
-                            } catch (IndexOutOfBoundsException e) {
-                                if (black == players.getHalfbye()){
-                                    whiteResult = Result.DRAW;
-                                    blackResult = Result.DRAW;
-                                }else{
-                                    switch (whiteResult){
-                                        case LOSE -> blackResult = Result.WIN;
-                                        case DRAW -> blackResult = Result.DRAW;
-                                        default -> blackResult = Result.LOSE;
-                                    }
-                                }
+                                forfeit = false;
                             }
-                            forfeit = false;
                         } else if (round.getStatus() == 2) {
                             if (round.getPoints() == 0.5f) {
                                 black = players.getHalfbye();
@@ -222,24 +230,24 @@ public class Tournament implements Serializable {
                             blackResult = Result.WIN;
                         }
                     }
-                    if (white == players.getBye()){
-                        Player playerTmp = white;
+                    if (white == players.getBye() || white == players.getHalfbye() || white == players.getUnpaired()) {
+                        Player tmpPlayer = white;
+                        Result tmpResult = whiteResult;
                         white = black;
-                        black = playerTmp;
+                        black = tmpPlayer;
+                        whiteResult = blackResult;
+                        blackResult = tmpResult;
+                    }
+
+                    if (black == players.getBye()) {
                         whiteResult = Result.WIN;
                         blackResult = Result.LOSE;
                         forfeit = true;
-                    } else if (white == players.getHalfbye()) {
-                        Player playerTmp = white;
-                        white = black;
-                        black = playerTmp;
+                    } else if (black == players.getHalfbye()) {
                         whiteResult = Result.DRAW;
                         blackResult = Result.DRAW;
                         forfeit = true;
-                    } else if (white == players.getUnpaired()) {
-                        Player playerTmp = white;
-                        white = black;
-                        black = playerTmp;
+                    } else if (black == players.getUnpaired()) {
                         whiteResult = Result.LOSE;
                         blackResult = Result.WIN;
                         forfeit = true;
@@ -557,6 +565,24 @@ public class Tournament implements Serializable {
 
         });
 
+        withdrawsObs.addListener((ListChangeListener<? super Withdraw>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getWithdraws().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getWithdraws().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getWithdraws().subList(from, to + 1).clear();
+                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
@@ -818,6 +844,22 @@ public class Tournament implements Serializable {
 
     public void setRoundsObs(ObservableList<ArrayList<Game>> roundsObs) {
         this.roundsObs = roundsObs;
+    }
+
+    public ArrayList<Withdraw> getWithdraws() {
+        return withdraws;
+    }
+
+    public void setWithdraws(ArrayList<Withdraw> withdraws) {
+        this.withdraws = withdraws;
+    }
+
+    public ObservableList<Withdraw> getWithdrawsObs() {
+        return withdrawsObs;
+    }
+
+    public void setWithdrawsObs(ObservableList<Withdraw> withdrawsObs) {
+        this.withdrawsObs = withdrawsObs;
     }
 
     public enum Type implements Serializable {

@@ -7,7 +7,10 @@ import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;
 import com.example.lolmanager.model.Tournament;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 public class TablesHelper {
     private PolandTableHelper polandTablesHelper;

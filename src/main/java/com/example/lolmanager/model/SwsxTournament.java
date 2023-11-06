@@ -568,8 +568,7 @@ public class SwsxTournament {
 
             for (int i = 0; i < scheduleListNode.getLength(); i++) {
                 Node node = scheduleListNode.item(i);
-                if(node instanceof Element){
-                    Element cobarrayItem = (Element) node;
+                if (node instanceof Element cobarrayItem) {
                     schedule.add(new SwsxEvent(cobarrayItem));
                 }
             }
@@ -740,9 +739,9 @@ public class SwsxTournament {
     }
 
     public class SwsxEvent {
-        Date date;
-        String name;
-        EventType type;
+        private Date date;
+        private String name;
+        private EventType type;
 
         SwsxEvent(Element element) {
             Element nameNode = (Element) element.getElementsByTagName("event_name").item(0);
@@ -801,26 +800,26 @@ public class SwsxTournament {
     }
 
     public class SwsxPlayer {
-        boolean forfeitFromTournament;
-        Player.Sex sex;
-        Float manualTiebreak;
-        byte dayOfBorn;
-        byte monthOfBorn;
-        short yearOfBorn;
-        UUID playerId;
-        short fideRatingClassic;
-        short fideRatingRapid;
-        short fideRatingBlitz;
-        short localRating;
-        int fideId;
-        int polId;
-        Federation federation;
-        Title title;
-        String club;
-        String license;
-        String fullName;
-        String state;
-        ArrayList<SwsxRound> rounds = new ArrayList<>();
+        private boolean forfeitFromTournament;
+        private Player.Sex sex;
+        private Float manualTiebreak;
+        private byte dayOfBorn;
+        private byte monthOfBorn;
+        private short yearOfBorn;
+        private UUID playerId;
+        private short fideRatingClassic;
+        private short fideRatingRapid;
+        private short fideRatingBlitz;
+        private short localRating;
+        private int fideId;
+        private int polId;
+        private Federation federation;
+        private Title title;
+        private String club;
+        private String license;
+        private String fullName;
+        private String state;
+        private ArrayList<SwsxRound> rounds = new ArrayList<>();
 
         SwsxPlayer(Element cobarrayItem) throws XPathExpressionException {
             XPathFactory xPathFactory = XPathFactory.newInstance();
@@ -1121,12 +1120,12 @@ public class SwsxTournament {
     }
 
     public class SwsxRound {
-        Player.Color color;
-        byte status;
-        Result result;
-        Float points;
-        short opponentId;
-        short pairNo;
+        private Player.Color color;
+        private byte status;
+        private Result result;
+        private Float points;
+        private short opponentId;
+        private short pairNo;
 
         public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo) {
             setColor(color);

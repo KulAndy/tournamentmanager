@@ -12,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
 import java.util.Comparator;
@@ -21,6 +22,7 @@ import static com.example.lolmanager.helper.GeneralHelper.*;
 
 public class NewPlayerHelper {
     private Tournament tournament;
+    private ComboBox<Player> playerSelect;
     private ComboBox<Federation> fedSelect;
     private ComboBox<String> stateSelect;
     private TextField playerNameField;
@@ -39,6 +41,8 @@ public class NewPlayerHelper {
     private TextField FIDEIDField;
     private TextField remarksField;
     private Button addPlayerButton;
+
+    private Button updatePlayerBth;
     private Button clearPlayerButton;
     private Button addClearPlayerButton;
     private Button insertFromList;
@@ -46,15 +50,17 @@ public class NewPlayerHelper {
 
     public NewPlayerHelper(
             Tournament tournament,
+            ComboBox<Player> playerSelect,
             ComboBox<Federation> fedSelect, ComboBox<String> stateSelect, TextField playerNameField,
             ComboBox<Title> playerTitleSelect, TextField localRtgField, TextField FIDERtgField,
             TextField clubField, TextField dayOfBirth, TextField monthOfBirth, TextField yearOfBirth,
             ComboBox<Player.Sex> sexSelect, TextField mailField, ComboBox<Short> phonePrefixSelect,
             TextField phoneNumber, TextField localIDField, TextField FIDEIDField, TextField remarksField,
-            Button addPlayerButton, Button clearPlayerButton, Button addClearPlayerButton,
+            Button addPlayerButton, Button updatePlayerBth, Button clearPlayerButton, Button addClearPlayerButton,
             Button insertFromList, ListView<Player> newPlayerHint
     ) {
         setTournament(tournament);
+        setPlayerSelect(playerSelect);
         setFedSelect(fedSelect);
         setStateSelect(stateSelect);
         setPlayerNameField(playerNameField);
@@ -73,10 +79,59 @@ public class NewPlayerHelper {
         setFIDEIDField(FIDEIDField);
         setRemarksField(remarksField);
         setAddPlayerButton(addPlayerButton);
+        setUpdatePlayerBth(updatePlayerBth);
         setClearPlayerButton(clearPlayerButton);
         setAddClearPlayerButton(addClearPlayerButton);
         setInsertFromList(insertFromList);
         setNewPlayerHint(newPlayerHint);
+
+        getPlayerSelect().setItems(getTournament().getPlayersObs());
+        getPlayerSelect().setOnAction(e->{
+            Player player = getPlayerSelect().getValue();
+            if (player != null){
+                getFedSelect().setValue(player.getFederation());
+                String state = player.getState();
+                getStateSelect().setValue(state.trim().length() == 0 ? null : state);
+                getPlayerNameField().setText(player.getName());
+                getPlayerTitleSelect().setValue(player.getTitle());
+                getLocalRtgField().setText(String.valueOf(player.getLocalRating()));
+                getFIDERtgField().setText(String.valueOf(player.getFideRating()));
+                getClubField().setText(player.getClub());
+                getDayOfBirth().setText(String.valueOf(player.getDayOfBirth()));
+                getMonthOfBirth().setText(String.valueOf(player.getMonthOfBirth()));
+                getYearOfBirth().setText(String.valueOf(player.getYearOfBirth()));
+                getSexSelect().setValue(player.getSex());
+                getMailField().setText(player.getEMail());
+                getPhonePrefixSelect().setValue(player.getPhonePrefix());
+                String phone = String.valueOf(player.getPhoneNumber());
+                getPhoneNumber().setText(phone == null ? "" : phone);
+                getLocalIDField().setText(String.valueOf(player.getLocalId()));
+                getFIDEIDField().setText(String.valueOf(player.getFideId()));
+                getRemarksField().setText(player.getRemarks());
+            }
+        });
+        getPlayerSelect().setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Player item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
+        getPlayerSelect().setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Player item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
 
         getNewPlayerHint().setCellFactory(new Callback<>() {
             @Override
@@ -169,8 +224,8 @@ public class NewPlayerHelper {
                 String birthdayDay = "";
                 String dateOfBirth = selected.getDateOfBirth();
                 if (dateOfBirth != null) {
-                    birthdayYear = dateOfBirth.substring(0,4);
-                    birthdayMonth = dateOfBirth.substring(5,7);
+                    birthdayYear = dateOfBirth.substring(0, 4);
+                    birthdayMonth = dateOfBirth.substring(5, 7);
                     birthdayDay = dateOfBirth.substring(8);
                 }
 
@@ -195,7 +250,7 @@ public class NewPlayerHelper {
                 if (!birthdayMonth.isEmpty() && !(Integer.parseInt(birthdayMonth) == 0)) {
                     getMonthOfBirth().setText(birthdayMonth);
                 }
-                if (!birthdayDay.isEmpty()  && !(Integer.parseInt(birthdayDay) == 0)) {
+                if (!birthdayDay.isEmpty() && !(Integer.parseInt(birthdayDay) == 0)) {
                     getDayOfBirth().setText(birthdayDay);
                 }
                 getSexSelect().setValue(sex);
@@ -206,6 +261,75 @@ public class NewPlayerHelper {
         });
 
         getAddPlayerButton().setOnAction(event -> addPlayer());
+        getUpdatePlayerBth().setOnAction(event->{
+            Player player = getPlayerSelect().getValue();
+            if ( player == null){
+                error("No player selected");
+            }else{
+                int localRtg;
+                try {
+                    localRtg = Integer.parseInt(getLocalRtgField().getText());
+                } catch (Exception e) {
+                    localRtg = 0;
+                }
+                int fideRtg;
+                try {
+                    fideRtg = Integer.parseInt(getFIDERtgField().getText());
+                } catch (Exception e) {
+                    fideRtg = 0;
+                }
+                Integer phone;
+                try {
+                    phone = Integer.parseInt(getPhoneNumber().getText());
+                } catch (Exception e) {
+                    phone = null;
+                }
+                String date;
+                if (getYearOfBirth().getText().isEmpty()) {
+                    date = null;
+                } else {
+                    date = getYearOfBirth().getText() + "-" + getMonthOfBirth().getText() + "-" + getDayOfBirth().getText();
+                }
+                Integer localID;
+                try {
+                    localID = Integer.parseInt(getLocalIDField().getText());
+                } catch (Exception e) {
+                    localID = null;
+                }
+                Integer fideID;
+                try {
+                    fideID = Integer.parseInt(getFIDEIDField().getText());
+                } catch (Exception e) {
+                    fideID = null;
+                }
+
+                String name = getPlayerNameField().getText();
+
+                int counter = 1;
+                Player found = getTournament().getPlayers().get(name);
+                while (found != null && found != player) {
+                    name = getPlayerNameField().getText() + " " + ++counter;
+                    found = getTournament().getPlayers().get(name);
+                }
+                getPlayerNameField().setText(name);
+
+                player.setFederation(getFedSelect().getValue());
+                player.setState(getStateSelect().getValue());
+                player.setName(getPlayerNameField().getText());
+                player.setTitle(getPlayerTitleSelect().getValue());
+                player.setLocalRating(localRtg);
+                player.setFideRating(fideRtg);
+                player.setClub(getClubField().getText());
+                player.setDateOfBirth(date);
+                player.setSex(getSexSelect().getValue());
+                player.setEMail(getMailField().getText());
+                player.setPhonePrefix(getPhonePrefixSelect().getValue());
+                player.setPhoneNumber(phone);
+                player.setLocalId(localID);
+                player.setFideId(fideID);
+                player.setRemarks(getRemarksField().getText());
+            }
+        });
 
         getClearPlayerButton().setOnAction(event -> resetForm());
         getAddClearPlayerButton().setOnAction(event -> {
@@ -216,6 +340,7 @@ public class NewPlayerHelper {
     }
 
     public void resetForm() {
+        getPlayerSelect().setValue(null);
         getFedSelect().setValue(Federation.POL);
         getStateSelect().setValue(null);
         getPlayerNameField().setText("");
@@ -489,6 +614,22 @@ public class NewPlayerHelper {
 
     public void setNewPlayerHint(ListView<Player> newPlayerHint) {
         this.newPlayerHint = newPlayerHint;
+    }
+
+    public ComboBox<Player> getPlayerSelect() {
+        return playerSelect;
+    }
+
+    public void setPlayerSelect(ComboBox<Player> playerSelect) {
+        this.playerSelect = playerSelect;
+    }
+
+    public Button getUpdatePlayerBth() {
+        return updatePlayerBth;
+    }
+
+    public void setUpdatePlayerBth(Button updatePlayerBth) {
+        this.updatePlayerBth = updatePlayerBth;
     }
 
 }

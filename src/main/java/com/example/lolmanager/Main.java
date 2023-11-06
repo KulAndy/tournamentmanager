@@ -10,8 +10,8 @@ import javafx.stage.Stage;
 import java.util.Locale;
 
 public class Main extends Application {
-    private String programName = "lol manager";
-    private String programExtension = "lol";
+    private String programName = "andchess";
+    private String programExtension = "and";
 
     public static void main(String[] args) {
         Application.launch(args);

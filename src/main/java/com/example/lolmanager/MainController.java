@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
@@ -22,6 +23,8 @@ import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
 
 public class MainController implements Initializable {
+    @FXML
+    ScrollPane allRoundsScroll;
     private String programName = "";
     private String programExtension = "*";
     private Tournament tournament;
@@ -44,19 +47,16 @@ public class MainController implements Initializable {
     private MenuItem importSwsx;
     @FXML
     private MenuItem importPgn;
-
     @FXML
     private CheckMenuItem autosaveMenu;
     @FXML
     private MenuItem quitMenu;
-
     @FXML
     private MenuItem fideReg;
     @FXML
     private MenuItem downloadFideMenu;
     @FXML
     private MenuItem trfRaport;
-
     @FXML
     private Button saveButton;
     @FXML
@@ -69,19 +69,16 @@ public class MainController implements Initializable {
     private Button nextRoundBth;
     @FXML
     private Button lastRoundBth;
-
     @FXML
     private Button downloadFideButton;
     @FXML
     private Button downloadPolButton;
-
     @FXML
     private TabPane mainTabPane;
     @FXML
     private Tab roundsTab;
     @FXML
     private Tab enterResultsTab;
-
     private HomeTabHelper homeTabHelper;
     @FXML
     private TextField tourName;
@@ -115,7 +112,6 @@ public class MainController implements Initializable {
     private TextField tourOrganizer;
     @FXML
     private TextField tourEmail;
-
     @FXML
     private CheckBox tourFIDEMode;
     @FXML
@@ -146,7 +142,6 @@ public class MainController implements Initializable {
     private TextField pointsBye;
     @FXML
     private TextField pointsHalfBye;
-
     @FXML
     private TextField minInitGames;
     @FXML
@@ -165,9 +160,7 @@ public class MainController implements Initializable {
     private CheckBox twoOtherFeds;
     @FXML
     private TextField minTitleGames;
-
     private PlayersHelper playersHelper;
-
     @FXML
     private TableView<Player> playersListTable;
     @FXML
@@ -192,7 +185,6 @@ public class MainController implements Initializable {
     private TableColumn<Player, String> remarksCol;
     @FXML
     private TableColumn<Player, Void> deleteCol;
-
     @FXML
     private ComboBox<StartListComparator.SortCriteria> criteria1;
     @FXML
@@ -206,6 +198,8 @@ public class MainController implements Initializable {
     @FXML
     private Button applySortButton;
 
+    @FXML
+    private ComboBox<Player> playerSelect;
     @FXML
     private ComboBox<Federation> fedSelect;
     @FXML
@@ -243,6 +237,8 @@ public class MainController implements Initializable {
     @FXML
     private Button addPlayerButton;
     @FXML
+    private Button updatePlayerBth;
+    @FXML
     private Button clearPlayerButton;
     @FXML
     private Button addClearPlayerButton;
@@ -251,9 +247,65 @@ public class MainController implements Initializable {
     @FXML
     private ListView<Player> newPlayerHint;
 
+    @FXML
+    private ComboBox<Player> withdrawPlayerSelect;
+    @FXML
+    private ComboBox<Withdraw.WithdrawType> withdrawTypeSelect;
+    @FXML
+    private TextField withdrawRound;
+    @FXML
+    private Button acceptWithdrawButton;
+    @FXML
+    private TableView<Withdraw> withdrawTable;
+    @FXML
+    private TableColumn<Withdraw, Integer> withdrawNoCol;
+    @FXML
+    private TableColumn<Withdraw, String> withdrawNameCol;
+    @FXML
+    private TableColumn<Withdraw, Withdraw.WithdrawType> withdrawTypeCol;
+    @FXML
+    private TableColumn<Withdraw, Byte> withdrawRoundCol;
+    @FXML
+    private TableColumn<Withdraw, Void> withdrawBackCol;
+
+    @FXML
+    private AnchorPane PlayerCard;
+    @FXML
+    private ComboBox<Player> playerCardSelect;
+    @FXML
+    private Label playerCardName;
+    @FXML
+    private Label playerCardTB1;
+    @FXML
+    private Label playerCardTB1Value;
+    @FXML
+    private Label playerCardTB2;
+    @FXML
+    private Label playerCardTB2Value;
+    @FXML
+    private Label playerCardTB3;
+    @FXML
+    private Label playerCardTB3Value;
+    @FXML
+    private Label playerCardTB4;
+    @FXML
+    private Label playerCardTB4Value;
+    @FXML
+    private Label playerCardTB5;
+    @FXML
+    private Label playerCardTB5Value;
+    @FXML
+    private Label playerCardElo;
+    @FXML
+    private Label playerCardEloValue;
+    @FXML
+    private Label playerCardPZSzach;
+    @FXML
+    private Label playerCardPZSzachValue;
+    @FXML
+    private ListView<Game> playerCardGames;
 
     private RoundsHelper roundsHelper;
-
     @FXML
     private ComboBox<Integer> roundUpdateSelect;
     @FXML
@@ -287,10 +339,6 @@ public class MainController implements Initializable {
     @FXML
     private ListView<Game> pairsList;
     @FXML
-    ScrollPane allRoundsScroll;
-
-
-    @FXML
     private ComboBox<Integer> roundsViewSelect;
     @FXML
     private Button firstRound;
@@ -310,8 +358,6 @@ public class MainController implements Initializable {
     private Button whiteWinForfeitResult;
     @FXML
     private Button blackWinForfeitResult;
-    @FXML
-    private Button applyResultButton;
     @FXML
     private Button deleteRound;
     @FXML
@@ -446,13 +492,21 @@ public class MainController implements Initializable {
                 localCol, clubCol, localIdCol, fideIdCol, remarksCol, deleteCol,
                 criteria1, criteria2, criteria3, criteria4, criteria5,
                 applySortButton,
+                playerSelect,
                 fedSelect, stateSelect, playerNameField,
                 playerTitleSelect, localRtgField, FIDERtgField,
                 clubField, dayOfBirth, monthOfBirth, yearOfBirth,
                 sexSelect, mailField, phonePrefixSelect,
                 phoneNumber, localIDField, FIDEIDField, remarksField,
-                addPlayerButton, clearPlayerButton, addClearPlayerButton,
-                insertFromList, newPlayerHint
+                addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
+                insertFromList, newPlayerHint,
+                playerCardSelect,
+                PlayerCard,
+                playerCardName, playerCardTB1, playerCardTB1Value,
+                playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
+                playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
+                playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
+                playerCardGames
         );
 
         roundsHelper = new RoundsHelper(
@@ -460,10 +514,13 @@ public class MainController implements Initializable {
                 autoColorCheckbox, pairRestButton, pairButton, whithdrawButton, byePairButton, halfByePairButton,
                 clearManualButton, unpairButton, swapColorPairButton,
                 applyManualButton, pairsList, roundsViewSelect, firstRound, previousRound, nextRound, lastRound, whiteWinResult, drawResult,
-                blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, applyResultButton, gamesView,
+                blackWinResult, whiteWinForfeitResult, blackWinForfeitResult, gamesView,
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
                 blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton,
-                allRoundsScroll
+                allRoundsScroll,
+                withdrawPlayerSelect,  withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
+                withdrawNoCol, withdrawNameCol, withdrawTypeCol, withdrawRoundCol, withdrawBackCol
+
         );
 
         tablesHelper = new TablesHelper(
@@ -474,6 +531,27 @@ public class MainController implements Initializable {
                 resultElo, resultLocal, resultFed, resultPoints,
                 resultBuchCut, resultBuch, resultBerger, resultProgress
         );
+
+        tourTB1.valueProperty().addListener(e->{
+            playerCardTB1.setText(String.valueOf(tourTB1.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB1.getValue()).toString());
+        });
+        tourTB2.valueProperty().addListener(e->{
+            playerCardTB2.setText(String.valueOf(tourTB2.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB2.getValue()).toString());
+        });
+        tourTB3.valueProperty().addListener(e->{
+            playerCardTB3.setText(String.valueOf(tourTB3.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB3.getValue()).toString());
+        });
+        tourTB4.valueProperty().addListener(e->{
+            playerCardTB4.setText(String.valueOf(tourTB4.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB4.getValue()).toString());
+        });
+        tourTB5.valueProperty().addListener(e->{
+            playerCardTB5.setText(String.valueOf(tourTB5.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB5.getValue()).toString());
+        });
     }
 
     public void init(Scene scene, String programName, String programExtension) {
@@ -492,7 +570,7 @@ public class MainController implements Initializable {
         saveButton.setOnAction(e -> getFileOperation().save());
         openMenu.setOnAction(e -> getFileOperation().open());
         openButton.setOnAction(e -> getFileOperation().open());
-        fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, programName));
+        fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         downloadFideMenu.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)

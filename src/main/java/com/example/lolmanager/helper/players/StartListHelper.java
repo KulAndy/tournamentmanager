@@ -160,7 +160,7 @@ public class StartListHelper {
                 deleteButton.setOnAction(event -> {
                     Player player = getTableRow().getItem();
                     if (player != null) {
-                        tournament.getPlayersObs().remove(player);
+                        getTournament().getPlayersObs().remove(player);
                         getTournament().getPlayers().remove(player);
                     }
                 });

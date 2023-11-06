@@ -54,6 +54,23 @@ public class JavafoWrapper implements Engine {
                     black.addRound(game);
                 }
             }
+            for (Withdraw withdraw: tournament.getWithdraws()){
+                Player player = withdraw.getPlayer();
+                switch (withdraw.getType()){
+                    case ROUND -> {
+                        if (withdraw.getRoundNo() == tournament.getRounds().size() + 1){
+                            round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
+                        }
+                    }
+                    case HALFBYE -> {
+                            if (withdraw.getRoundNo() == tournament.getRounds().size() + 1){
+                                round.add(new Game(player, tournament.getPlayers().getHalfbye(), Result.DRAW, Result.DRAW, true));
+                            }
+                    }
+                    default -> round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
+
+                }
+            }
             tournament.getRoundsObs().add(round);
             return round.size();
         } catch (IOException e) {

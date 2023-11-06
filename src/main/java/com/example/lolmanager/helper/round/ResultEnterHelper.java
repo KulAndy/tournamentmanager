@@ -31,7 +31,6 @@ public class ResultEnterHelper {
     private Button blackWinResult;
     private Button whiteWinForfeitResult;
     private Button blackWinForfeitResult;
-    private Button applyResultButton;
     private TableView<Game> gamesView;
     private TableColumn<Game, Integer> leftBoardNo;
     private TableColumn<Game, Float> whitePoints;
@@ -52,7 +51,7 @@ public class ResultEnterHelper {
             Tournament tournament,
             ComboBox<Integer> roundsViewSelect, Button firstRound, Button previousRound, Button nextRound, Button lastRound,
             Button whiteWinResult, Button drawResult, Button blackWinResult, Button whiteWinForfeitResult, Button blackWinForfeitResult,
-            Button applyResultButton, TableView<Game> gamesView, TableColumn<Game, Integer> leftBoardNo, TableColumn<Game, Float> whitePoints,
+            TableView<Game> gamesView, TableColumn<Game, Integer> leftBoardNo, TableColumn<Game, Float> whitePoints,
             TableColumn<Game, Integer> whiteRating, TableColumn<Game, String> whitePlayer, TableColumn<Game, Void> gameResult,
             TableColumn<Game, String> blackPlayer, TableColumn<Game, Integer> blackRating, TableColumn<Game, Float> blackPoints,
             TableColumn<Game, Integer> rightBoardNo, Button deleteRound, Button enginePairButton
@@ -101,66 +100,6 @@ public class ResultEnterHelper {
         setBlackWinForfeitResult(blackWinForfeitResult);
         getBlackWinForfeitResult().setOnAction(e -> enterResult("-", "+"));
         setDeleteRound(deleteRound);
-        setApplyResultButton(applyResultButton);
-        getApplyResultButton().setOnAction(e -> {
-            boolean forfeitIncompatible = false;
-            boolean pointsOverflow = false;
-            for (int i = 0; i < getCurrentRound().size(); i++) {
-                TextField textField1 = (TextField) getGamesView().lookup("#result" + i + "white");
-                TextField textField2 = (TextField) getGamesView().lookup("#result" + i + "black");
-                if (textField1 != null && textField2 != null) {
-                    Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
-                    Result whiteResult = (Result) objects1[0];
-                    boolean forfeit1 = (boolean) objects1[1];
-                    Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                    Result blackResult = (Result) objects2[0];
-                    boolean forfeit2 = (boolean) objects2[1];
-                    if (forfeit1 != forfeit2) {
-                        forfeitIncompatible = true;
-                    }
-
-                    if (
-                            whiteResult == Result.WIN && (blackResult == Result.WIN || blackResult == Result.DRAW)
-                                    || whiteResult == Result.DRAW && blackResult == Result.WIN
-                    ) {
-                        pointsOverflow = true;
-                    }
-                }
-            }
-
-            if (forfeitIncompatible && pointsOverflow) {
-                error("Incompatible results - occured in one game result for played and unplayed game\nPoints overflow - in one game both players total has more than points for winning");
-            } else if (forfeitIncompatible) {
-                error("Incompatible results - occured in one game result for played and unplayed game");
-            } else if (pointsOverflow) {
-                error("Points overflow - in one game both players total has more than points for winning");
-            } else {
-                for (int i = 0; i < getCurrentRound().size(); i++) {
-                    TextField textField1 = (TextField) getGamesView().lookup("#result" + i + "white");
-                    TextField textField2 = (TextField) getGamesView().lookup("#result" + i + "black");
-                    if (textField1 != null && textField2 != null) {
-                        Object[] objects1 = Result.getResultFromPoints(textField1.getText().trim());
-                        Result whiteResult = (Result) objects1[0];
-                        boolean forfeit1 = (boolean) objects1[1];
-                        Object[] objects2 = Result.getResultFromPoints(textField2.getText().trim());
-                        Result blackResult = (Result) objects2[0];
-                        boolean forfeit2 = (boolean) objects2[1];
-                        Game game = getTournament().getRoundsObs().get(currentRoundNo.get() - 1).get(i);
-                        game.setWhiteResult(whiteResult);
-                        game.setBlackResult(blackResult);
-                        game.setForfeit(forfeit1 && forfeit2);
-                    }
-                }
-                int roundIndex = getRoundsViewSelect().getValue() - 1;
-                ArrayList<Game> roundElem = new ArrayList<>(getTournament().getRoundsObs().get(roundIndex));
-                getTournament().getRoundsObs().remove(roundIndex);
-                getTournament().getRoundsObs().add(roundIndex, roundElem);
-                getRoundsViewSelect().setValue(roundIndex + 1);
-
-            }
-
-
-        });
 
         setGamesView(gamesView);
         getGamesView().setItems(getCurrentRound());
@@ -220,28 +159,68 @@ public class ResultEnterHelper {
                     Player black = game.getBlack();
 
                     if (black.equals(bye)) {
-                        textField1.setText(String.valueOf(Player.getPointsForBye()));
-                        textField2.setText(String.valueOf(1.0 - (Player.getPointsForBye())));
+                        textField1.setText("1");
+                        textField2.setText("0");
                         textField1.setDisable(true);
                         textField2.setDisable(true);
                     } else if (black.equals(halfbye)) {
-                        textField1.setText(String.valueOf(Player.getPointsForHalfBye()));
-                        textField2.setText(String.valueOf(1.0 - (Player.getPointsForHalfBye())));
+                        textField1.setText("0.5");
+                        textField2.setText("0.5");
                         textField1.setDisable(true);
                         textField2.setDisable(true);
                     } else if (black.equals(unpaired)) {
-                        textField1.setText("-");
-                        textField2.setText("+");
+                        textField1.setText("0");
+                        textField2.setText("1");
                         textField1.setDisable(true);
                         textField2.setDisable(true);
                     } else {
                         textField1.setText(Result.getResultString(game.getWhiteResult(), game.isForfeit()));
                         textField2.setText(Result.getResultString(game.getBlackResult(), game.isForfeit()));
-                        textField1.setId("result" + getIndex() + "white");
-                        textField2.setId("result" + getIndex() + "black");
                         textField1.setDisable(false);
                         textField2.setDisable(false);
                     }
+                    textField1.setId("result" + getIndex() + "white");
+                    textField2.setId("result" + getIndex() + "black");
+                    textField1.textProperty().addListener(e->{
+                        if (textField1.isFocused()){
+                            if (textField1.getText().isEmpty()){
+                                game.setWhiteResult(null);
+                                game.setForfeit(true);
+                            }else{
+                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
+                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                                Result resultW = (Result) objectsW[0];
+                                Result resultB = (Result) objects2[0];
+                                boolean forfeitW = (Boolean) objectsW[1];
+                                boolean forfeitB = (Boolean) objects2[1];
+
+                                if (resultW != null){
+                                    game.setWhiteResult(resultW);
+                                    game.setForfeit(forfeitW || forfeitB);
+                                }
+                            }
+                        }
+                    });
+                    textField2.textProperty().addListener(e->{
+                        if (textField2.isFocused()) {
+                            if (textField2.getText().isEmpty()) {
+                                game.setBlackResult(null);
+                                game.setForfeit(true);
+                            } else {
+                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
+                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                                Result resultW = (Result) objectsW[0];
+                                Result resultB = (Result) objects2[0];
+                                boolean forfeitW = (Boolean) objectsW[1];
+                                boolean forfeitB = (Boolean) objects2[1];
+
+                                if (resultB != null) {
+                                    game.setBlackResult(resultB);
+                                    game.setForfeit(forfeitW || forfeitB);
+                                }
+                            }
+                        }
+                    });
                     setGraphic(hbox);
                 }
             }
@@ -310,7 +289,6 @@ public class ResultEnterHelper {
                         getCurrentRound().clear();
                         getTournament().getRoundsObs().clear();
                         getGamesView().refresh();
-                        System.out.println(getTournament().getRounds());
                     }
                 } else {
                     confirm("This will also remove subsequent rounds")
@@ -324,7 +302,6 @@ public class ResultEnterHelper {
                                         getCurrentRound().clear();
                                         getTournament().getRoundsObs().clear();
                                         getGamesView().refresh();
-                                        System.out.println(getTournament().getRounds());
                                     }
                                 }
                             });
@@ -345,7 +322,7 @@ public class ResultEnterHelper {
                         dialog.showAndWait().ifPresent(result -> {
                             byte replays = Byte.parseByte(result);
                             int pairing = 0;
-                            boolean success= true;
+                            boolean success = true;
                             for (int i = 0; i < replays; i++) {
                                 try {
                                     pairing += RoundRobinEngine.generatePairing(getTournament(), i % 2 == 1);
@@ -354,9 +331,9 @@ public class ResultEnterHelper {
                                     break;
                                 }
                             }
-                            if (success){
+                            if (success) {
                                 info("Paired successfully\nGenerated " + pairing + " pairings");
-                            }else{
+                            } else {
                                 error("An error occurred during pairing");
                             }
                             getTournament().setRoundsNumber((byte) (replays * Math.round(getTournament().getPlayersObs().size())));
@@ -383,9 +360,13 @@ public class ResultEnterHelper {
         if (textField1 == null || textField2 == null || textField1.isDisable() || textField2.isDisable()) {
             return;
         }
+        textField1.requestFocus();
         textField1.setText(whiteResult);
+        textField2.requestFocus();
         textField2.setText(blackResult);
         setPairEnterCounter(getPairEnterCounter() + 1);
+        getGamesView().scrollTo(getPairEnterCounter()-1);
+        getGamesView().requestFocus();
     }
 
     public ComboBox<Integer> getRoundsViewSelect() {
@@ -466,14 +447,6 @@ public class ResultEnterHelper {
 
     public void setBlackWinForfeitResult(Button blackWinForfeitResult) {
         this.blackWinForfeitResult = blackWinForfeitResult;
-    }
-
-    public Button getApplyResultButton() {
-        return applyResultButton;
-    }
-
-    public void setApplyResultButton(Button applyResultButton) {
-        this.applyResultButton = applyResultButton;
     }
 
     public TableView<Game> getGamesView() {
@@ -608,8 +581,7 @@ public class ResultEnterHelper {
         this.pairEnterCounter = pairEnterCounter;
         try {
             getGamesView().getSelectionModel().select(pairEnterCounter);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
 
 }

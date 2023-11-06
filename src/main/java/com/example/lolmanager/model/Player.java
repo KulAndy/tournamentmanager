@@ -9,6 +9,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.example.lolmanager.calculation.PZSzachCalculation.getNorm;
@@ -26,7 +27,7 @@ public class Player implements Serializable {
     private Federation federation;
     private String state;
     private String name;
-    private Title title;
+    private Title title = Title.bk;
     private Integer localRating;
     private Integer fideRating;
     private String club;
@@ -123,6 +124,57 @@ public class Player implements Serializable {
         );
     }
 
+    public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak){
+        switch (tiebreak){
+            case KOYA -> {
+                return getKoya();
+            }
+            case WONS -> {
+                return getWonsNumber();
+            }
+            case POINTS -> {
+                return getPoints();
+            }
+            case BUCHOLZ -> {
+                return getBucholz();
+            }
+            case PROGRESS -> {
+                return getProgress();
+            }
+            case BUCHOLZ_CUT1 -> {
+                return getBucholzCut1();
+            }
+            case SONNEN_BERGER -> {
+                return getBerger();
+            }
+            case WONS_WITH_BLACK -> {
+                return getWonsWithBlackNumber();
+            }
+            case GAMES_WITH_BLACK -> {
+                return getGamesPlayedWithBlack();
+            }
+            case RATING_PERFORMENCE_FIDE -> {
+                return getRatingPerformanceFide();
+            }
+            case AVERAGE_OPPONENTS_RATING -> {
+                return getAverageFideRating();
+            }
+            case RATING_PERFORMENCE_PZSZACH -> {
+                return getRatingPerformancePZSzach();
+            }
+            case AVERAGE_OPPONENTS_LOCAL_RATING -> {
+                return getAverageRatingPZSzach();
+            }
+            default -> {
+                return 0;
+            }
+        }
+    }
+
+    public float getRatingPerformanceFide(){
+        return FIDECalculation.getRatingPerformance(getOpponents(), getPoints());
+    }
+
     public static Float getPointsForWin() {
         return pointsForWin;
     }
@@ -208,7 +260,7 @@ public class Player implements Serializable {
     }
 
     public Title getPlayerNorm() {
-        Title norm = getNorm(getRatingPerformance(), getPlayedGamedNumber(), getSex());
+        Title norm = getNorm(getRatingPerformancePZSzach(), getPlayedGamedNumber(), getSex());
         if (norm != null && PZSzachCalculation.getTitleValue(norm, getSex()) > PZSzachCalculation.getTitleValue(getTitle(), getSex())) {
             return norm;
         }
@@ -233,7 +285,7 @@ public class Player implements Serializable {
         return koya;
     }
 
-    public int getRatingPerformance() {
+    public int getRatingPerformancePZSzach() {
         return PZSzachCalculation.getRatingPerformance(this);
     }
 
@@ -241,7 +293,7 @@ public class Player implements Serializable {
         return PZSzachCalculation.getRatingDelta(this);
     }
 
-    public int getAverageRating() {
+    public int getAverageRatingPZSzach() {
         return PZSzachCalculation.getAverageRating(this);
     }
 
@@ -471,12 +523,11 @@ public class Player implements Serializable {
     }
 
     public Player getOpponent(Game round) {
-        Color color = getRoundColor(round);
-        if (color == Color.WHITE) {
+        if (round.getWhite() == this){
             return round.getBlack();
-        } else if (color == Color.BLACK) {
+        } else if (round.getBlack() == this) {
             return round.getWhite();
-        } else {
+        }else {
             return null;
         }
     }
@@ -666,11 +717,11 @@ public class Player implements Serializable {
     public void setDateOfBirth(String dateOfBirth) {
         if (dateOfBirth != null) {
             try {
-                setYearOfBirth(Integer.parseInt(dateOfBirth.substring(0,4)));
+                setYearOfBirth(Integer.parseInt(dateOfBirth.substring(0, 4)));
             } catch (Exception ignored) {
             }
             try {
-                setMonthOfBirth(Byte.parseByte(dateOfBirth.substring(5,7)));
+                setMonthOfBirth(Byte.parseByte(dateOfBirth.substring(5, 7)));
             } catch (Exception ignored) {
             }
             try {
@@ -771,10 +822,6 @@ public class Player implements Serializable {
         this.rounds = rounds;
     }
 
-    public String geteMail() {
-        return eMail;
-    }
-
     public void seteMail(String eMail) {
         this.eMail = eMail;
     }
@@ -816,6 +863,21 @@ public class Player implements Serializable {
     public void setDayOfBirth(byte dayOfBirth) {
         DayOfBirth = dayOfBirth;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Player other = (Player) obj;
+
+        return Objects.equals(getPlayerid().toString(), other.getPlayerid().toString()) && Objects.equals(getName(), other.getName());
+    }
+
 
     public enum Sex {
         MALE,
