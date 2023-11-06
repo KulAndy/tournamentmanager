@@ -141,6 +141,7 @@ public class ResultEnterHelper {
             private final TextField textField1 = new TextField();
             private final Label separator = new Label("-");
             private final TextField textField2 = new TextField();
+            private Game game;
 
             {
                 hbox.getChildren().addAll(textField1, separator, textField2);
@@ -152,7 +153,7 @@ public class ResultEnterHelper {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    Game game = getTableRow().getItem();
+                    game = getTableRow().getItem();
                     Player bye = getTournament().getPlayers().getBye();
                     Player halfbye = getTournament().getPlayers().getHalfbye();
                     Player unpaired = getTournament().getPlayers().getUnpaired();
