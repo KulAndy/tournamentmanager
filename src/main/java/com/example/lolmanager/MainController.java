@@ -7,12 +7,15 @@ import com.example.lolmanager.operation.ExcelOperation;
 import com.example.lolmanager.operation.FIDEOperation;
 import com.example.lolmanager.operation.FileOperation;
 import com.example.lolmanager.operation.TournamentOperation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -29,6 +32,7 @@ public class MainController implements Initializable {
     private String programExtension = "*";
     private Tournament tournament;
     private File file;
+    private boolean saving = false;
     private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
     @FXML
@@ -552,6 +556,19 @@ public class MainController implements Initializable {
             playerCardTB5.setText(String.valueOf(tourTB5.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB5.getValue()).toString());
         });
+
+        Timeline timeline = new Timeline();
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
+            if (getAutosaveMenu().isSelected() && !isSaving()){
+                setSaving(true);
+                fileOperation.save();
+                setSaving(false);
+            }
+        });
+
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     public void init(Scene scene, String programName, String programExtension) {
@@ -955,5 +972,12 @@ public class MainController implements Initializable {
         this.roundsHelper = roundsHelper;
     }
 
+    public boolean isSaving() {
+        return saving;
+    }
+
+    public void setSaving(boolean saving) {
+        this.saving = saving;
+    }
 }
 
