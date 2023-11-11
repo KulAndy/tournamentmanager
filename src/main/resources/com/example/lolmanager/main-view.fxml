@@ -125,7 +125,7 @@
                 <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="800.0" spacing="10.0" VBox.vgrow="SOMETIMES">
                     <children>
                         <Label text="Tournament" />
-                        <ComboBox prefWidth="150.0" />
+                        <ComboBox fx:id="tournamentSelect" prefHeight="27.0" prefWidth="714.0" />
                     </children>
                 </HBox>
             </children>
@@ -932,6 +932,11 @@
                                           <RowConstraints maxHeight="43.0" minHeight="10.0" prefHeight="43.0" />
                                           <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="44.0" />
                                           <RowConstraints maxHeight="527.0" minHeight="10.0" prefHeight="506.0" vgrow="ALWAYS" />
+                                          <RowConstraints />
+                                          <RowConstraints />
+                                          <RowConstraints />
+                                          <RowConstraints />
+                                          <RowConstraints />
                                       </rowConstraints>
                                        <children>
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="7">

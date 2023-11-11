@@ -9,11 +9,13 @@ import com.example.lolmanager.operation.FileOperation;
 import com.example.lolmanager.operation.TournamentOperation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
@@ -32,9 +34,12 @@ public class MainController implements Initializable {
     private String programExtension = "*";
     private Tournament tournament;
     private File file;
+    private ObservableList files = FXCollections.observableArrayList();
     private boolean saving = false;
     private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
+    @FXML
+    private ComboBox<File> tournamentSelect;
     @FXML
     private MenuItem newMenu;
     @FXML
@@ -548,6 +553,8 @@ public class MainController implements Initializable {
                 resultBuchCut, resultBuch, resultBerger, resultProgress
         );
 
+        tournamentSelect.setItems(files);
+
         tourTB1.valueProperty().addListener(e->{
             playerCardTB1.setText(String.valueOf(tourTB1.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB1.getValue()).toString());
@@ -642,6 +649,19 @@ public class MainController implements Initializable {
                 System.out.println(ex.getMessage());
             }
         });
+
+        closeMenu.setOnAction(e->{
+            files.remove(getFile());
+        });
+        tournamentSelect.valueProperty().addListener(e-> {
+            getFileOperation().save();
+            File newValue = tournamentSelect.getValue();
+            if (newValue == null) {
+                TournamentOperation.loadTournament(new Tournament(), this);
+            }else{
+                getFileOperation().importJson(tournamentSelect.getValue());
+            }
+        });
     }
 
     public ShortcutsHelper getShortcutsHelper() {
@@ -674,6 +694,10 @@ public class MainController implements Initializable {
 
     public void setFile(File file) {
         this.file = file;
+        if (!files.contains(file)){
+            files.add(file);
+            tournamentSelect.setValue(file);
+        }
     }
 
     public FileOperation getFileOperation() {
