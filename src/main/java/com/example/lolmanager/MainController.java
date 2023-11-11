@@ -273,8 +273,6 @@ public class MainController implements Initializable {
     private TableColumn<Withdraw, Void> withdrawBackCol;
 
     @FXML
-    private AnchorPane PlayerCard;
-    @FXML
     private ComboBox<Player> playerCardSelect;
     @FXML
     private Label playerCardName;
@@ -307,7 +305,21 @@ public class MainController implements Initializable {
     @FXML
     private Label playerCardPZSzachValue;
     @FXML
-    private ListView<Game> playerCardGames;
+    private TableView<Game> playerCardGames;
+    @FXML
+    private TableColumn<Game,Integer> playerCardOppRound;
+    @FXML
+    private TableColumn<Game, Player.Color> playerCardOppColor;
+    @FXML
+    private TableColumn<Game, String> playerCardOppResult;
+    @FXML
+    private TableColumn<Game, Title> playerCardOppTitle;
+    @FXML
+    private TableColumn<Game, String> playerCardOppName;
+    @FXML
+    private TableColumn<Game, Integer> playerCardOppRtg;
+    @FXML
+    private GridPane cardGrid;
 
     private RoundsHelper roundsHelper;
     @FXML
@@ -505,12 +517,12 @@ public class MainController implements Initializable {
                 addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
                 insertFromList, newPlayerHint,
                 playerCardSelect,
-                PlayerCard,
                 playerCardName, playerCardTB1, playerCardTB1Value,
                 playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
                 playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
                 playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
-                playerCardGames
+                playerCardGames, playerCardOppRound, playerCardOppColor, playerCardOppResult,
+                playerCardOppTitle, playerCardOppName, playerCardOppRtg, cardGrid
         );
 
         roundsHelper = new RoundsHelper(

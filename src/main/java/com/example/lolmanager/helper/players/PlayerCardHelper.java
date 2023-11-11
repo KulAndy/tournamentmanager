@@ -1,16 +1,15 @@
 package com.example.lolmanager.helper.players;
 
-import com.example.lolmanager.model.Game;
-import com.example.lolmanager.model.Player;
-import com.example.lolmanager.model.Tournament;
-import javafx.beans.binding.DoubleBinding;
+import com.example.lolmanager.model.*;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 public class PlayerCardHelper {
     private Tournament tournament;
@@ -30,16 +29,26 @@ public class PlayerCardHelper {
     private Label playerCardEloValue;
     private Label playerCardPZSzach;
     private Label playerCardPZSzachValue;
-    private ListView<Game> playerCardGames;
+    private TableView<Game> playerCardGames;
+    private TableColumn<Game,Integer> playerCardOppRound;
+    private TableColumn<Game, Player.Color> playerCardOppColor;
+    private TableColumn<Game, String> playerCardOppResult;
+    private TableColumn<Game, Title> playerCardOppTitle;
+    private TableColumn<Game, String> playerCardOppName;
+    private TableColumn<Game, Integer> playerCardOppRtg;
+
 
     public PlayerCardHelper(
             Tournament tournament,
-            AnchorPane playerCard, ComboBox<Player> playerCardSelect,
+            ComboBox<Player> playerCardSelect,
             Label playerCardName, Label playerCardTB1, Label playerCardTB1Value,
             Label playerCardTB2, Label playerCardTB2Value, Label playerCardTB3, Label playerCardTB3Value,
             Label playerCardTB4, Label playerCardTB4Value, Label playerCardTB5, Label playerCardTB5Value,
             Label playerCardElo, Label playerCardEloValue, Label playerCardPZSzach, Label playerCardPZSzachValue,
-            ListView<Game> playerCardGames
+            TableView<Game> playerCardGames, TableColumn<Game,Integer> playerCardOppRound,
+            TableColumn<Game, Player.Color> playerCardOppColor, TableColumn<Game, String> playerCardOppResult,
+            TableColumn<Game, Title> playerCardOppTitle, TableColumn<Game, String> playerCardOppName,
+            TableColumn<Game, Integer> playerCardOppRtg, GridPane cardGrid
     ) {
         setTournament(tournament);
         setPlayerCardSelect(playerCardSelect);
@@ -86,11 +95,14 @@ public class PlayerCardHelper {
         setPlayerCardEloValue(playerCardEloValue);
         setPlayerCardPZSzach(playerCardPZSzach);
         setPlayerCardPZSzachValue(playerCardPZSzachValue);
-        setPlayerCardGames(playerCardGames);
 
-        playerCard.prefWidthProperty().bind(getPlayerCardName().widthProperty());
-        playerCard.prefWidthProperty().bind(getPlayerCardGames().widthProperty());
-        playerCard.prefHeightProperty().bind(getPlayerCardGames().heightProperty());
+        setPlayerCardGames(playerCardGames);
+        setPlayerCardOppRound(playerCardOppRound);
+        setPlayerCardOppColor(playerCardOppColor);
+        setPlayerCardOppResult(playerCardOppResult);
+        setPlayerCardOppTitle(playerCardOppTitle);
+        setPlayerCardOppName(playerCardOppName);
+        setPlayerCardOppRtg(playerCardOppRtg);
 
         getPlayerCardSelect().valueProperty().addListener((ObservableValue<? extends Player> observable, Player oldValue, Player newValue) ->{
             if (newValue != null) {
@@ -106,6 +118,72 @@ public class PlayerCardHelper {
                 getPlayerCardGames().setItems(FXCollections.observableArrayList(newValue.getRounds()));
             }
         });
+
+        getPlayerCardOppRound().setCellValueFactory(cellData -> {
+            Game game = cellData.getValue();
+            Player player = getPlayerCardSelect().getValue();
+            int rowIndex = player.getRounds().indexOf(game) + 1;
+            return new SimpleIntegerProperty(rowIndex).asObject();
+        });
+
+        getPlayerCardOppColor().setCellValueFactory(cellData -> {
+            Game game = cellData.getValue();
+            Player player = getPlayerCardSelect().getValue();
+            return new SimpleObjectProperty<>(player.getRoundColor(game));
+        });
+
+        getPlayerCardOppResult().setCellValueFactory(cellData -> {
+            Game game = cellData.getValue();
+            Player player = getPlayerCardSelect().getValue();
+            Player.Color color = player.getRoundColor(game);
+            String result = "-";
+            if (game.isForfeit()){
+                if (
+                        (color == Player.Color.WHITE && game.getWhiteResult() == Result.WIN)
+                                || (color == Player.Color.BLACK && game.getBlackResult() == Result.WIN)
+                ){
+                    result = "+";
+                }
+            }else{
+                if (
+                        (color == Player.Color.WHITE && game.getWhiteResult() == Result.WIN)
+                                || (color == Player.Color.BLACK && game.getBlackResult() == Result.WIN)
+                ){
+                    result = "1";
+                } else if (
+                        (color == Player.Color.WHITE && game.getWhiteResult() == Result.DRAW)
+                                || (color == Player.Color.BLACK && game.getBlackResult() == Result.DRAW)
+                ) {
+                    result = "\u00BD";
+                }else {
+                    result = "0";
+                }
+            }
+
+            return new SimpleStringProperty(result);
+        });
+
+        getPlayerCardOppTitle().setCellValueFactory(cellData -> {
+            Game game = cellData.getValue();
+            Player player = getPlayerCardSelect().getValue();
+            Player opponent = player.getOpponent(game);
+            return new SimpleObjectProperty<>(opponent.getTitle());
+        });
+
+        getPlayerCardOppName().setCellValueFactory(cellData -> {
+            Game game = cellData.getValue();
+            Player player = getPlayerCardSelect().getValue();
+            Player opponent = player.getOpponent(game);
+            return new SimpleObjectProperty<>(opponent.getName());
+        });
+
+        getPlayerCardOppRtg().setCellValueFactory(cellData -> {
+            Game game = cellData.getValue();
+            Player player = getPlayerCardSelect().getValue();
+            Player opponent = player.getOpponent(game);
+            return new SimpleIntegerProperty(opponent.getFideRating()).asObject();
+        });
+
     }
 
     public Tournament getTournament() {
@@ -244,12 +322,59 @@ public class PlayerCardHelper {
         this.playerCardPZSzachValue = playerCardPZSzachValue;
     }
 
-    public ListView<Game> getPlayerCardGames() {
+    public TableView<Game> getPlayerCardGames() {
         return playerCardGames;
     }
 
-    public void setPlayerCardGames(ListView<Game> playerCardGames) {
+    public void setPlayerCardGames(TableView<Game> playerCardGames) {
         this.playerCardGames = playerCardGames;
     }
 
+    public TableColumn<Game, Integer> getPlayerCardOppRound() {
+        return playerCardOppRound;
+    }
+
+    public void setPlayerCardOppRound(TableColumn<Game, Integer> playerCardOppRound) {
+        this.playerCardOppRound = playerCardOppRound;
+    }
+
+    public TableColumn<Game, Player.Color> getPlayerCardOppColor() {
+        return playerCardOppColor;
+    }
+
+    public void setPlayerCardOppColor(TableColumn<Game, Player.Color> playerCardOppColor) {
+        this.playerCardOppColor = playerCardOppColor;
+    }
+
+    public TableColumn<Game, String> getPlayerCardOppResult() {
+        return playerCardOppResult;
+    }
+
+    public void setPlayerCardOppResult(TableColumn<Game, String> playerCardOppResult) {
+        this.playerCardOppResult = playerCardOppResult;
+    }
+
+    public TableColumn<Game, Title> getPlayerCardOppTitle() {
+        return playerCardOppTitle;
+    }
+
+    public void setPlayerCardOppTitle(TableColumn<Game, Title> playerCardOppTitle) {
+        this.playerCardOppTitle = playerCardOppTitle;
+    }
+
+    public TableColumn<Game, String> getPlayerCardOppName() {
+        return playerCardOppName;
+    }
+
+    public void setPlayerCardOppName(TableColumn<Game, String> playerCardOppName) {
+        this.playerCardOppName = playerCardOppName;
+    }
+
+    public TableColumn<Game, Integer> getPlayerCardOppRtg() {
+        return playerCardOppRtg;
+    }
+
+    public void setPlayerCardOppRtg(TableColumn<Game, Integer> playerCardOppRtg) {
+        this.playerCardOppRtg = playerCardOppRtg;
+    }
 }
