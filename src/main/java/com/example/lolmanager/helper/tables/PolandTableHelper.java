@@ -50,10 +50,10 @@ public class PolandTableHelper {
         getRtPolPoints().setCellValueFactory(new PropertyValueFactory<>("PZSzachPoints"));
 
         setRtPolAverage(rtPolAverage);
-        getRtPolAverage().setCellValueFactory(new PropertyValueFactory<>("averageRating"));
+        getRtPolAverage().setCellValueFactory(new PropertyValueFactory<>("averageRatingPZSzach"));
 
         setRtPolPerformance(rtPolPerformance);
-        getRtPolPerformence().setCellValueFactory(new PropertyValueFactory<>("ratingPerformance"));
+        getRtPolPerformence().setCellValueFactory(new PropertyValueFactory<>("ratingPerformancePZSzach"));
 
         setRtPolNorm(rtPolNorm);
         getRtPolNorm().setCellValueFactory(new PropertyValueFactory<>("playerNorm"));

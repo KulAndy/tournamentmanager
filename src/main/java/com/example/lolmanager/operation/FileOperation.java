@@ -592,7 +592,7 @@ public class FileOperation {
 
     }
 
-    private void importJson(File file) {
+    public void importJson(File file) {
         String fileName = "tournament.json";
 
         try (FileInputStream fis = new FileInputStream(file);
@@ -633,6 +633,7 @@ public class FileOperation {
                     break;
                 }
             }
+            controller.setFile(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
