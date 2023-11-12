@@ -367,7 +367,7 @@ public class FIDEOperation {
                     .append(" ")
                     .append("%11s".formatted((player.getFideId() != null && player.getFideId() > 0) ? player.getFideId() : ""))
                     .append(" ")
-                    .append(player.getDateOfBirth())
+                    .append("%10s".formatted(player.getDateOfBirth()))
                     .append(" ")
                     .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
                     .append("     ")
@@ -424,12 +424,17 @@ public class FIDEOperation {
 
         trf.append("\nXXR ").append(tournament.getRoundsNumber());
         trf.append("\nXXZ");
+        StringBuilder withdrawed = new StringBuilder("\nXXZ");
         for (Withdraw withdraw : tournament.getWithdraws()){
             if (withdraw.getType() == Withdraw.WithdrawType.TOURNAMENT || withdraw.getRoundNo() == tournament.getRounds().size() + 1){
-                trf.append("%4d".formatted(players.getUuid2startNo().get(withdraw.getPlayer().getPlayerid())));
+                withdrawed.append("%4d".formatted(players.getUuid2startNo().get(withdraw.getPlayer().getPlayerid())));
             }
         }
+        if (withdrawed.length() > 4){
+            trf.append(withdrawed);
+        }
         trf.append("\n");
+        System.out.println(trf);
         return trf.toString();
     }
 
