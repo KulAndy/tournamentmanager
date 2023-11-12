@@ -7,11 +7,17 @@ import com.example.lolmanager.operation.ExcelOperation;
 import com.example.lolmanager.operation.FIDEOperation;
 import com.example.lolmanager.operation.FileOperation;
 import com.example.lolmanager.operation.TournamentOperation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -28,8 +34,12 @@ public class MainController implements Initializable {
     private String programExtension = "*";
     private Tournament tournament;
     private File file;
+    private ObservableList files = FXCollections.observableArrayList();
+    private boolean saving = false;
     private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
+    @FXML
+    private ComboBox<File> tournamentSelect;
     @FXML
     private MenuItem newMenu;
     @FXML
@@ -267,6 +277,55 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Withdraw, Void> withdrawBackCol;
 
+    @FXML
+    private ComboBox<Player> playerCardSelect;
+    @FXML
+    private Label playerCardName;
+    @FXML
+    private Label playerCardTB1;
+    @FXML
+    private Label playerCardTB1Value;
+    @FXML
+    private Label playerCardTB2;
+    @FXML
+    private Label playerCardTB2Value;
+    @FXML
+    private Label playerCardTB3;
+    @FXML
+    private Label playerCardTB3Value;
+    @FXML
+    private Label playerCardTB4;
+    @FXML
+    private Label playerCardTB4Value;
+    @FXML
+    private Label playerCardTB5;
+    @FXML
+    private Label playerCardTB5Value;
+    @FXML
+    private Label playerCardElo;
+    @FXML
+    private Label playerCardEloValue;
+    @FXML
+    private Label playerCardPZSzach;
+    @FXML
+    private Label playerCardPZSzachValue;
+    @FXML
+    private TableView<Game> playerCardGames;
+    @FXML
+    private TableColumn<Game,Integer> playerCardOppRound;
+    @FXML
+    private TableColumn<Game, Player.Color> playerCardOppColor;
+    @FXML
+    private TableColumn<Game, String> playerCardOppResult;
+    @FXML
+    private TableColumn<Game, Title> playerCardOppTitle;
+    @FXML
+    private TableColumn<Game, String> playerCardOppName;
+    @FXML
+    private TableColumn<Game, Integer> playerCardOppRtg;
+    @FXML
+    private GridPane cardGrid;
+
     private RoundsHelper roundsHelper;
     @FXML
     private ComboBox<Integer> roundUpdateSelect;
@@ -461,7 +520,14 @@ public class MainController implements Initializable {
                 sexSelect, mailField, phonePrefixSelect,
                 phoneNumber, localIDField, FIDEIDField, remarksField,
                 addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
-                insertFromList, newPlayerHint
+                insertFromList, newPlayerHint,
+                playerCardSelect,
+                playerCardName, playerCardTB1, playerCardTB1Value,
+                playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
+                playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
+                playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
+                playerCardGames, playerCardOppRound, playerCardOppColor, playerCardOppResult,
+                playerCardOppTitle, playerCardOppName, playerCardOppRtg, cardGrid
         );
 
         roundsHelper = new RoundsHelper(
@@ -486,6 +552,42 @@ public class MainController implements Initializable {
                 resultElo, resultLocal, resultFed, resultPoints,
                 resultBuchCut, resultBuch, resultBerger, resultProgress
         );
+
+        tournamentSelect.setItems(files);
+
+        tourTB1.valueProperty().addListener(e->{
+            playerCardTB1.setText(String.valueOf(tourTB1.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB1.getValue()).toString());
+        });
+        tourTB2.valueProperty().addListener(e->{
+            playerCardTB2.setText(String.valueOf(tourTB2.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB2.getValue()).toString());
+        });
+        tourTB3.valueProperty().addListener(e->{
+            playerCardTB3.setText(String.valueOf(tourTB3.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB3.getValue()).toString());
+        });
+        tourTB4.valueProperty().addListener(e->{
+            playerCardTB4.setText(String.valueOf(tourTB4.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB4.getValue()).toString());
+        });
+        tourTB5.valueProperty().addListener(e->{
+            playerCardTB5.setText(String.valueOf(tourTB5.getValue()));
+            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB5.getValue()).toString());
+        });
+
+        Timeline timeline = new Timeline();
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
+            if (getAutosaveMenu().isSelected() && !isSaving()){
+                setSaving(true);
+                fileOperation.save();
+                setSaving(false);
+            }
+        });
+
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     public void init(Scene scene, String programName, String programExtension) {
@@ -547,6 +649,19 @@ public class MainController implements Initializable {
                 System.out.println(ex.getMessage());
             }
         });
+
+        closeMenu.setOnAction(e->{
+            files.remove(getFile());
+        });
+        tournamentSelect.valueProperty().addListener(e-> {
+            getFileOperation().save();
+            File newValue = tournamentSelect.getValue();
+            if (newValue == null) {
+                TournamentOperation.loadTournament(new Tournament(), this);
+            }else{
+                getFileOperation().importJson(tournamentSelect.getValue());
+            }
+        });
     }
 
     public ShortcutsHelper getShortcutsHelper() {
@@ -579,6 +694,10 @@ public class MainController implements Initializable {
 
     public void setFile(File file) {
         this.file = file;
+        if (!files.contains(file)){
+            files.add(file);
+            tournamentSelect.setValue(file);
+        }
     }
 
     public FileOperation getFileOperation() {
@@ -889,5 +1008,12 @@ public class MainController implements Initializable {
         this.roundsHelper = roundsHelper;
     }
 
+    public boolean isSaving() {
+        return saving;
+    }
+
+    public void setSaving(boolean saving) {
+        this.saving = saving;
+    }
 }
 

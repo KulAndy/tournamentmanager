@@ -141,6 +141,7 @@ public class ResultEnterHelper {
             private final TextField textField1 = new TextField();
             private final Label separator = new Label("-");
             private final TextField textField2 = new TextField();
+            private Game game;
 
             {
                 hbox.getChildren().addAll(textField1, separator, textField2);
@@ -152,7 +153,7 @@ public class ResultEnterHelper {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    Game game = getTableRow().getItem();
+                    game = getTableRow().getItem();
                     Player bye = getTournament().getPlayers().getBye();
                     Player halfbye = getTournament().getPlayers().getHalfbye();
                     Player unpaired = getTournament().getPlayers().getUnpaired();
@@ -182,39 +183,43 @@ public class ResultEnterHelper {
                     textField1.setId("result" + getIndex() + "white");
                     textField2.setId("result" + getIndex() + "black");
                     textField1.textProperty().addListener(e->{
-                        Object[] objectsW = Result.getResultFromPoints(textField1.getText());
-                        Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                        Result resultW = (Result) objectsW[0];
-                        Result resultB = (Result) objects2[0];
-                        boolean forfeitW = (Boolean) objectsW[1];
-                        boolean forfeitB = (Boolean) objects2[1];
-                        if (resultW != null || textField1.getText().isEmpty()){
-                            getCurrentRound().get(getIndex()).setWhiteResult(resultW);
-                        }
-                        if (
-                                resultW != null && resultB != null
-                        ){
-                            getCurrentRound().get(getIndex()).setForfeit(forfeitW || forfeitB);
-                        } else if (textField1.getText().isEmpty() || textField2.getText().isEmpty()) {
-                            getCurrentRound().get(getIndex()).setForfeit(true);
+                        if (textField1.isFocused()){
+                            if (textField1.getText().isEmpty()){
+                                game.setWhiteResult(null);
+                                game.setForfeit(true);
+                            }else{
+                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
+                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                                Result resultW = (Result) objectsW[0];
+                                Result resultB = (Result) objects2[0];
+                                boolean forfeitW = (Boolean) objectsW[1];
+                                boolean forfeitB = (Boolean) objects2[1];
+
+                                if (resultW != null){
+                                    game.setWhiteResult(resultW);
+                                    game.setForfeit(forfeitW || forfeitB);
+                                }
+                            }
                         }
                     });
                     textField2.textProperty().addListener(e->{
-                        Object[] objectsW = Result.getResultFromPoints(textField1.getText());
-                        Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                        boolean forfeitW = (Boolean) objectsW[1];
-                        Result resultW = (Result) objectsW[0];
-                        Result resultB = (Result) objects2[0];
-                        boolean forfeitB = (Boolean) objects2[1];
-                        if (resultB != null || textField2.getText().isEmpty()){
-                            getCurrentRound().get(getIndex()).setBlackResult(resultB);
-                        }
-                        if (
-                                resultW != null && resultB != null
-                        ){
-                            getCurrentRound().get(getIndex()).setForfeit(forfeitW || forfeitB);
-                        } else if (textField1.getText().isEmpty() || textField2.getText().isEmpty()) {
-                            getCurrentRound().get(getIndex()).setForfeit(true);
+                        if (textField2.isFocused()) {
+                            if (textField2.getText().isEmpty()) {
+                                game.setBlackResult(null);
+                                game.setForfeit(true);
+                            } else {
+                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
+                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
+                                Result resultW = (Result) objectsW[0];
+                                Result resultB = (Result) objects2[0];
+                                boolean forfeitW = (Boolean) objectsW[1];
+                                boolean forfeitB = (Boolean) objects2[1];
+
+                                if (resultB != null) {
+                                    game.setBlackResult(resultB);
+                                    game.setForfeit(forfeitW || forfeitB);
+                                }
+                            }
                         }
                     });
                     setGraphic(hbox);
@@ -356,10 +361,13 @@ public class ResultEnterHelper {
         if (textField1 == null || textField2 == null || textField1.isDisable() || textField2.isDisable()) {
             return;
         }
+        textField1.requestFocus();
         textField1.setText(whiteResult);
+        textField2.requestFocus();
         textField2.setText(blackResult);
         setPairEnterCounter(getPairEnterCounter() + 1);
         getGamesView().scrollTo(getPairEnterCounter()-1);
+        getGamesView().requestFocus();
     }
 
     public ComboBox<Integer> getRoundsViewSelect() {
