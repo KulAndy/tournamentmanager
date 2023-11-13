@@ -198,84 +198,97 @@ public class FIDEOperation {
         }
     }
 
-
-    private static ArrayList<Player> searchInCsv(String player, Tournament.Type type) {
-        ArrayList<Player> players = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream("rejestr_czlonkow.csv")))) {
-
-            // Skip the first line (header)
-            reader.readLine();
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                try {
-                    String[] values = line.split(",");
-                    String NAZWISKO_IMIE = values[1];
-
-                    if (unidecode(NAZWISKO_IMIE).toUpperCase().replaceAll(",", "").startsWith(player.toUpperCase().replaceAll(",", ""))) {
-                        int ID;
-                        try {
-                            ID = Integer.parseInt(values[0]);
-                        } catch (NumberFormatException e) {
-                            ID = 0;
-                        }
-                        String PLEC = values[2];
-                        String DATA_URODZENIA = values[3];
-                        String NR_LICENCJI_ZAW = values[4];
-                        String WZSZACH = values[5];
-                        int ID_FIDE;
-                        try {
-                            ID_FIDE = Integer.parseInt(values[6]);
-                        } catch (NumberFormatException e) {
-                            ID_FIDE = 0;
-                        }
-                        int ELO;
-                        try {
-                            ELO = Integer.parseInt(values[7]);
-                        } catch (NumberFormatException e) {
-                            ELO = 1000;
-                        }
-                        Title TYTUL = Title.getTitle(values[8]);
-                        String KLUB = values[9];
-                        String ZN_FOTO = values[10];
-                        String OBYWATELSTWO = values[11];
-                        int _KOL_CZL_R_FIDE_SZ;
-                        try {
-                            _KOL_CZL_R_FIDE_SZ = Integer.parseInt(values[12]);
-                        } catch (NumberFormatException e) {
-                            _KOL_CZL_R_FIDE_SZ = 1000;
-                        }
-                        int _KOL_CZL_R_FIDE_BL;
-                        try {
-                            _KOL_CZL_R_FIDE_BL = Integer.parseInt(values[13]);
-                        } catch (NumberFormatException e) {
-                            _KOL_CZL_R_FIDE_BL = 1000;
-                        }
-
-                        Player.Sex sex = Objects.equals(PLEC, "M") ? Player.Sex.MALE : Player.Sex.FEMALE;
-                        players.add(new Player(
-                                Federation.POL, WZSZACH,
-                                NAZWISKO_IMIE, TYTUL,
-                                PZSzachCalculation.getTitleValue(TYTUL, sex),
-                                switch (type) {
-                                    case RAPID -> _KOL_CZL_R_FIDE_SZ;
-                                    case BLITZ -> _KOL_CZL_R_FIDE_BL;
-                                    default -> ELO;
-                                },
-                                KLUB, DATA_URODZENIA, sex, null,
-                                null, null, ID, ID_FIDE, null
-                        ));
-                    }
-                } catch (NumberFormatException ignored) {
+    public static ArrayList<Player> searchByFideId(int fideId, Tournament.Type type){
+        try {
+            Class.forName("org.sqlite.JDBC");
+            String url = "jdbc:sqlite:";
+            switch (type) {
+                case BLITZ -> url += "blitz_rating_list.db";
+                case RAPID -> url += "rapid_rating_list.db";
+                default -> url += "standard_rating_list.db";
+            }
+            Connection connection = DriverManager.getConnection(url);
+            String query = "SELECT fideid, name, country, sex, title, rating, k, birthday FROM players WHERE fideid LIKE ? ORDER BY name";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + fideId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Player> players = new ArrayList<>();
+            while (resultSet.next()) {
+                int retrievedFideId = resultSet.getInt("fideid");
+                if (retrievedFideId == fideId){
+                    String name = resultSet.getString("name");
+                    String country = resultSet.getString("country");
+                    String sex = resultSet.getString("sex");
+                    String title = resultSet.getString("title");
+                    int rating = resultSet.getInt("rating");
+                    int k = resultSet.getInt("k");
+                    int birthday = resultSet.getInt("birthday");
+                    players.add(new Player(
+                            Federation.valueOf(country), null, name, Title.getTitle(title),
+                            1000, rating, null, birthday + "-00-00", Objects.equals(sex, "M") ? Player.Sex.MALE : Player.Sex.FEMALE,
+                            null, null, null, null, retrievedFideId, null
+                    ));
                 }
             }
-        } catch (IOException e) {
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+            return players;
+
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        return players;
+    public static ArrayList<Player> searchByPolId(int polId, Tournament.Type type){
+        Connection connection = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            String url = "jdbc:sqlite:rejestr_czlonkow.db";
+            connection = DriverManager.getConnection(url);
+            String query = "SELECT id, NAZWISKO_IMIE, PLEC,DATA_URODZENIA, WZSZACH," +
+                    "ID_FIDE,ELO,TYTUL,KLUB," +
+                    "_KOL_CZL_R_FIDE_SZ,_KOL_CZL_R_FIDE_BL FROM players WHERE id = ? ORDER BY NAZWISKO_IMIE";
+            Statement statement = connection.createStatement();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, polId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Player> players = new ArrayList<>();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String NAZWISKO_IMIE = resultSet.getString("NAZWISKO_IMIE");
+                String PLEC = resultSet.getString("PLEC");
+                String DATA_URODZENIA = resultSet.getString("DATA_URODZENIA");
+                String WZSZACH = resultSet.getString("WZSZACH");
+                int ID_FIDE = resultSet.getInt("ID_FIDE");
+                int ELO = resultSet.getInt("ELO");
+                String TYTUL = resultSet.getString("TYTUL");
+                String KLUB = resultSet.getString("KLUB");
+                int _KOL_CZL_R_FIDE_SZ = resultSet.getInt("_KOL_CZL_R_FIDE_SZ");
+                int _KOL_CZL_R_FIDE_BL = resultSet.getInt("_KOL_CZL_R_FIDE_BL");
+
+                players.add(new Player(
+                        Federation.POL, WZSZACH, NAZWISKO_IMIE, Title.getTitle(TYTUL),
+                        1000, switch (type) {
+                    case BLITZ -> _KOL_CZL_R_FIDE_BL;
+                    case RAPID -> _KOL_CZL_R_FIDE_SZ;
+                    default -> ELO;
+                }
+                        , KLUB, DATA_URODZENIA, Objects.equals(PLEC, "M") ? Player.Sex.MALE : Player.Sex.FEMALE,
+                        null, null, null, id, ID_FIDE, null
+
+                ));
+            }
+
+            resultSet.close();
+            statement.close();
+            connection.close();
+            return players;
+
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void selectTrfReport(Tournament tournament) {

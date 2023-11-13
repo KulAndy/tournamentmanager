@@ -170,6 +170,11 @@ public class MainController implements Initializable {
     @FXML
     private TextField minTitleGames;
     private PlayersHelper playersHelper;
+
+    @FXML
+    private Button correctFide;
+    @FXML
+    private Button correctPl;
     @FXML
     private TableView<Player> playersListTable;
     @FXML
@@ -508,7 +513,9 @@ public class MainController implements Initializable {
                 minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames
         );
         playersHelper = new PlayersHelper(
-                tournament, playersListTable,
+                tournament,
+                correctFide, correctPl,
+                playersListTable,
                 startNoCol, titleCol, nameCol, fedCol, fideCol,
                 localCol, clubCol, localIdCol, fideIdCol, remarksCol, deleteCol,
                 criteria1, criteria2, criteria3, criteria4, criteria5,

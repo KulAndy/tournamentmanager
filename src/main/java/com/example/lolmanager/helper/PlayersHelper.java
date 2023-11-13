@@ -19,7 +19,9 @@ public class PlayersHelper {
     private PlayerCardHelper playerCardHelper;
 
     public PlayersHelper(
-            Tournament tournament, TableView<Player> playersListTable,
+            Tournament tournament,
+            Button correctFide, Button correctPl,
+            TableView<Player> playersListTable,
             TableColumn<Player, Integer> startNoCol, TableColumn<Player, Title> titleCol, TableColumn<Player, String> nameCol, TableColumn<Player, Federation> fedCol,
             TableColumn<Player, Integer> fideCol, TableColumn<Player, Integer> localCol, TableColumn<Player, String> clubCol, TableColumn<Player, Integer> localIdCol,
             TableColumn<Player, Integer> fideIdCol, TableColumn<Player, String> remarksCol, TableColumn<Player, Void> deleteCol,
@@ -50,7 +52,9 @@ public class PlayersHelper {
     ) {
         setTournament(tournament);
         setStartListHelper(new StartListHelper(
-                tournament, playersListTable,
+                tournament,
+                correctFide, correctPl,
+                playersListTable,
                 startNoCol, titleCol, nameCol, fedCol, fideCol,
                 localCol, clubCol, localIdCol, fideIdCol, remarksCol, deleteCol
         ));

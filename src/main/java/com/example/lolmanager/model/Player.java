@@ -848,7 +848,7 @@ public class Player implements Serializable {
         YearOfBirth = yearOfBirth;
     }
 
-    public int getMonthOfBirth() {
+    public byte getMonthOfBirth() {
         return MonthOfBirth;
     }
 
@@ -856,7 +856,7 @@ public class Player implements Serializable {
         MonthOfBirth = monthOfBirth;
     }
 
-    public int getDayOfBirth() {
+    public byte getDayOfBirth() {
         return DayOfBirth;
     }
 

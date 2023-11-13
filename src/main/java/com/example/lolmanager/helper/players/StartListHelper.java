@@ -1,9 +1,11 @@
 package com.example.lolmanager.helper.players;
 
+import com.example.lolmanager.calculation.PZSzachCalculation;
 import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;
 import com.example.lolmanager.model.Tournament;
+import com.example.lolmanager.operation.FIDEOperation;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
@@ -15,8 +17,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.util.ArrayList;
+
 public class StartListHelper {
     private Tournament tournament;
+    private Button correctFide;
+    private Button correctPl;
     private TableView<Player> playersListTable;
     private TableColumn<Player, Integer> startNoCol;
     private TableColumn<Player, Title> titleCol;
@@ -31,11 +37,53 @@ public class StartListHelper {
     private TableColumn<Player, Void> deleteCol;
 
     public StartListHelper(
-            Tournament tournament, TableView<Player> playersListTable,
+            Tournament tournament,
+            Button correctFide, Button correctPl,
+            TableView<Player> playersListTable,
             TableColumn<Player, Integer> startNoCol, TableColumn<Player, Title> titleCol, TableColumn<Player, String> nameCol, TableColumn<Player, Federation> fedCol,
             TableColumn<Player, Integer> fideCol, TableColumn<Player, Integer> localCol, TableColumn<Player, String> clubCol, TableColumn<Player, Integer> localIdCol,
             TableColumn<Player, Integer> fideIdCol, TableColumn<Player, String> remarksCol, TableColumn<Player, Void> deleteCol) {
         setTournament(tournament);
+        setCorrectFide(correctFide);
+        getCorrectFide().setOnAction(e->{
+            for (Player player : getTournament().getPlayersObs()){
+                if (player.getFideId() != null){
+                    ArrayList<Player> players = FIDEOperation.searchByFideId(player.getFideId(), getTournament().getType());
+                    if (players.size() == 1){
+                        Player playerFide = players.get(0);
+                        if (playerFide.getTitle() != Title.bk){
+                            player.setTitle(playerFide.getTitle());
+                        }
+                        player.setFederation(playerFide.getFederation());
+                        player.setFideRating(playerFide.getFideRating());
+                    }
+                }
+            }
+            getPlayersListTable().refresh();
+        });
+        setCorrectPl(correctPl);
+        getCorrectPl().setOnAction(e->{
+            for (Player player : getTournament().getPlayersObs()){
+                if (player.getLocalId() != null){
+                    ArrayList<Player> players = FIDEOperation.searchByPolId(player.getLocalId(), getTournament().getType());
+                    if (players.size() == 1){
+                        Player playerPl = players.get(0);
+                        player.setName(playerPl.getName());
+                        player.setTitle(playerPl.getTitle());
+                        player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
+                        player.setClub(playerPl.getClub());
+                        player.setYearOfBirth(playerPl.getYearOfBirth());
+                        player.setMonthOfBirth(playerPl.getMonthOfBirth());
+                        player.setDayOfBirth(playerPl.getDayOfBirth());
+                        player.setSex(playerPl.getSex());
+                        if (playerPl.getFideId() != null){
+                            player.setFideId(playerPl.getFideId());
+                        }
+                    }
+                }
+            }
+            getPlayersListTable().refresh();
+        });
         setPlayersListTable(playersListTable);
         getPlayersListTable().setItems(tournament.getPlayersObs());
 
@@ -186,6 +234,21 @@ public class StartListHelper {
         this.tournament = tournament;
     }
 
+    public Button getCorrectFide() {
+        return correctFide;
+    }
+
+    public void setCorrectFide(Button correctFide) {
+        this.correctFide = correctFide;
+    }
+
+    public Button getCorrectPl() {
+        return correctPl;
+    }
+
+    public void setCorrectPl(Button correctPl) {
+        this.correctPl = correctPl;
+    }
     public TableView<Player> getPlayersListTable() {
         return playersListTable;
     }
