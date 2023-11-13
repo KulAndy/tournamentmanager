@@ -46,39 +46,41 @@ public class StartListHelper {
         setTournament(tournament);
         setCorrectFide(correctFide);
         getCorrectFide().setOnAction(e->{
+            System.out.println("FIDE");
             for (Player player : getTournament().getPlayersObs()){
-                if (player.getFideId() != null){
-                    ArrayList<Player> players = FIDEOperation.searchByFideId(player.getFideId(), getTournament().getType());
-                    if (players.size() == 1){
-                        Player playerFide = players.get(0);
-                        if (playerFide.getTitle() != Title.bk){
-                            player.setTitle(playerFide.getTitle());
-                        }
-                        player.setFederation(playerFide.getFederation());
-                        player.setFideRating(playerFide.getFideRating());
+                ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
+                if (players.size() == 1){
+                    System.out.println(player.getName());
+                    Player playerFide = players.get(0);
+                    if (playerFide.getTitle() != Title.bk){
+                        player.setTitle(playerFide.getTitle());
                     }
+                    player.setFederation(playerFide.getFederation());
+                    player.setFideRating(playerFide.getFideRating());
+                    player.setFideId(playerFide.getFideId());
                 }
             }
             getPlayersListTable().refresh();
         });
         setCorrectPl(correctPl);
         getCorrectPl().setOnAction(e->{
+            System.out.println("PL");
             for (Player player : getTournament().getPlayersObs()){
-                if (player.getLocalId() != null){
-                    ArrayList<Player> players = FIDEOperation.searchByPolId(player.getLocalId(), getTournament().getType());
-                    if (players.size() == 1){
-                        Player playerPl = players.get(0);
-                        player.setName(playerPl.getName());
-                        player.setTitle(playerPl.getTitle());
-                        player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
-                        player.setClub(playerPl.getClub());
-                        player.setYearOfBirth(playerPl.getYearOfBirth());
-                        player.setMonthOfBirth(playerPl.getMonthOfBirth());
-                        player.setDayOfBirth(playerPl.getDayOfBirth());
-                        player.setSex(playerPl.getSex());
-                        if (playerPl.getFideId() != null){
-                            player.setFideId(playerPl.getFideId());
-                        }
+                ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
+                if (players.size() == 1){
+                    System.out.println(player.getName());
+                    Player playerPl = players.get(0);
+                    player.setName(playerPl.getName());
+                    player.setTitle(playerPl.getTitle());
+                    player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
+                    player.setClub(playerPl.getClub());
+                    player.setYearOfBirth(playerPl.getYearOfBirth());
+                    player.setMonthOfBirth(playerPl.getMonthOfBirth());
+                    player.setDayOfBirth(playerPl.getDayOfBirth());
+                    player.setSex(playerPl.getSex());
+                    player.setLocalId(playerPl.getLocalId());
+                    if (playerPl.getFideId() != null){
+                        player.setFideId(playerPl.getFideId());
                     }
                 }
             }
@@ -101,9 +103,6 @@ public class StartListHelper {
         getTitleCol().setOnEditCommit(event -> {
             Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             player.setTitle(event.getNewValue());
-            Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-            playerStatic.setTitle(event.getNewValue());
-
         });
 
         setNameCol(nameCol);
@@ -112,8 +111,6 @@ public class StartListHelper {
         getNameCol().setOnEditCommit(event -> {
             Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             player.setName(event.getNewValue());
-            Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-            playerStatic.setName(event.getNewValue());
         });
 
         setFedCol(fedCol);
@@ -124,19 +121,15 @@ public class StartListHelper {
         getFedCol().setOnEditCommit(event -> {
             Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             player.setFederation(event.getNewValue());
-            Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-            playerStatic.setFederation(event.getNewValue());
         });
 
         setFideCol(fideCol);
         getFideCol().setCellValueFactory(new PropertyValueFactory<>("fideRating"));
         getFideCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getFideCol().setOnEditCommit(event -> {
+            Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             try {
-                Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 player.setFideRating(event.getNewValue());
-                Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-                playerStatic.setFideRating(event.getNewValue());
             } catch (Exception ignored) {
             }
         });
@@ -145,11 +138,9 @@ public class StartListHelper {
         getLocalCol().setCellValueFactory(new PropertyValueFactory<>("localRating"));
         getLocalCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getLocalCol().setOnEditCommit(event -> {
+            Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             try {
-                Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 player.setLocalRating(event.getNewValue());
-                Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-                playerStatic.setLocalRating(event.getNewValue());
             } catch (Exception ignored) {
             }
         });
@@ -160,19 +151,15 @@ public class StartListHelper {
         getClubCol().setOnEditCommit(event -> {
             Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             player.setClub(event.getNewValue());
-            Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-            playerStatic.setClub(event.getNewValue());
         });
 
         setLocalIdCol(localIdCol);
         getLocalIdCol().setCellValueFactory(new PropertyValueFactory<>("localId"));
         getLocalIdCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getLocalIdCol().setOnEditCommit(event -> {
+            Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             try {
-                Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 player.setLocalId(event.getNewValue());
-                Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-                playerStatic.setLocalId(event.getNewValue());
             } catch (Exception ignored) {
             }
         });
@@ -181,11 +168,9 @@ public class StartListHelper {
         getFideIdCol().setCellValueFactory(new PropertyValueFactory<>("fideId"));
         getFideIdCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getFideIdCol().setOnEditCommit(event -> {
+            Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             try {
-                Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 player.setFideId(event.getNewValue());
-                Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-                playerStatic.setFideId(event.getNewValue());
             } catch (Exception ignored) {
             }
         });
@@ -196,8 +181,6 @@ public class StartListHelper {
         getRemarksCol().setOnEditCommit(event -> {
             Player player = event.getTableView().getItems().get(event.getTablePosition().getRow());
             player.setRemarks(event.getNewValue());
-            Player playerStatic = getTournament().getPlayers().get(player.getPlayerid());
-            playerStatic.setRemarks(event.getNewValue());
         });
 
         setDeleteCol(deleteCol);

@@ -786,7 +786,7 @@ public class Player implements Serializable {
     }
 
     public void setLocalId(Integer localId) {
-        if (localId != null && localId > 0) {
+        if (localId == null || localId > 0) {
             this.localId = localId;
         }
     }
@@ -796,7 +796,7 @@ public class Player implements Serializable {
     }
 
     public void setFideId(Integer fideId) {
-        if (fideId != null && fideId > 0) {
+        if (fideId == null || fideId > 0) {
             this.fideId = fideId;
         }
     }

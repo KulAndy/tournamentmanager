@@ -3,7 +3,9 @@ package com.example.lolmanager.comparator;
 import com.example.lolmanager.model.Player;
 
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Random;
 
 public class StartListComparator implements Comparator<Player>, Serializable {
@@ -98,7 +100,8 @@ public class StartListComparator implements Comparator<Player>, Serializable {
                 return -player1.getDateOfBirth().compareTo(player2.getDateOfBirth());
             }
             case ALPHABETIC -> {
-                return player1.getName().compareTo(player2.getName());
+                Collator collator = Collator.getInstance(new Locale("pl", "PL"));
+                return collator.compare(player1.getName(), player2.getName());
             }
             case RANDOM -> {
                 long seed = System.currentTimeMillis();
