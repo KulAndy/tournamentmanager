@@ -294,12 +294,10 @@ public class GeneralHelper {
         public void setValue(double value) {
             if (value >= 0 && value <= 1.0) {
                 progressBar.setProgress(value);
-                label.setText((value * 100) + "%");
+                label.setText("%.2f %%".formatted (value * 100));
                 if (value >= 1.0) {
                     stage.close();
                 }
-            } else {
-                System.err.println("Invalid value. Value should be between 0 and 1.");
             }
         }
     }

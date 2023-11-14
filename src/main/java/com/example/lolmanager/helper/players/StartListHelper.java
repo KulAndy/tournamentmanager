@@ -75,11 +75,7 @@ public class StartListHelper {
                             player.setFideId(playerFide.getFideId());
                         }
                     }
-                    Platform.runLater(() -> {
-                        getPlayersListTable().refresh();
-                        progressMessageBox.setValue(1.0);
-
-                    });
+                    getPlayersListTable().refresh();
                     return null;
                 }
             };
@@ -105,20 +101,22 @@ public class StartListHelper {
 
                         ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
                         if (players.size() == 1) {
-                            Player playerFide = players.get(0);
-                            if (playerFide.getTitle() != Title.bk) {
-                                player.setTitle(playerFide.getTitle());
+                            Player playerPl = players.get(0);
+                            player.setName(playerPl.getName());
+                            player.setTitle(playerPl.getTitle());
+                            player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
+                            player.setClub(playerPl.getClub());
+                            player.setYearOfBirth(playerPl.getYearOfBirth());
+                            player.setMonthOfBirth(playerPl.getMonthOfBirth());
+                            player.setDayOfBirth(playerPl.getDayOfBirth());
+                            player.setSex(playerPl.getSex());
+                            player.setLocalId(playerPl.getLocalId());
+                            if (playerPl.getFideId() != null){
+                                player.setFideId(playerPl.getFideId());
                             }
-                            player.setFederation(playerFide.getFederation());
-                            player.setFideRating(playerFide.getFideRating());
-                            player.setFideId(playerFide.getFideId());
                         }
                     }
-                    Platform.runLater(() -> {
-                        getPlayersListTable().refresh();
-                        progressMessageBox.setValue(1.0);
-
-                    });
+                    getPlayersListTable().refresh();
                     return null;
                 }
             };
