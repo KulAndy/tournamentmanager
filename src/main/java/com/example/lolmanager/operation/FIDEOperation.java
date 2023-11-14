@@ -3,7 +3,6 @@ package com.example.lolmanager.operation;
 import com.example.lolmanager.MainController;
 import com.example.lolmanager.helper.GeneralHelper;
 import com.example.lolmanager.model.*;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
