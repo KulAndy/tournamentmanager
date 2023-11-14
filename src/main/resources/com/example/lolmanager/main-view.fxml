@@ -32,6 +32,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.CheckMenuItem?>
@@ -166,7 +167,7 @@
                                                                     <children>
                                                                         <Label alignment="CENTER" text="Name" textAlignment="RIGHT" />
                                                                         <Separator opacity="0.0" prefHeight="33.0" prefWidth="54.0" />
-                                                                        <TextField fx:id="tourName" prefHeight="27.0" prefWidth="905.0" />
+                                                                        <TextField fx:id="tourName" prefHeight="27.0" prefWidth="905.0" HBox.hgrow="ALWAYS" />
                                                                     </children>
                                                                 </HBox>
                                                                 <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -191,13 +192,14 @@
                                                                     <children>
                                                                         <Label text="Place" />
                                                                         <Separator opacity="0.0" prefHeight="35.0" prefWidth="64.0" />
-                                                                        <TextField fx:id="tourPlace" prefHeight="24.0" prefWidth="403.0" />
+                                                                        <TextField fx:id="tourPlace" prefHeight="27.0" prefWidth="904.0" HBox.hgrow="ALWAYS" />
                                                                     </children>
                                                                 </HBox>
-                                                                <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                                <GridPane prefWidth="246.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                     <columnConstraints>
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="172.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="176.0" minWidth="10.0" prefWidth="67.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="176.0" minWidth="10.0" prefWidth="126.0" />
                                                                     </columnConstraints>
                                                                     <rowConstraints>
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -206,14 +208,15 @@
                                                                     <children>
                                                                         <Label text="Game time (min)" />
                                                                         <Label text="Increment (s)" GridPane.rowIndex="1" />
-                                                                        <TextField fx:id="tourGameTime" text="0" GridPane.columnIndex="1" />
-                                                                        <TextField fx:id="tourIncrement" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                        <TextField fx:id="tourGameTime" alignment="CENTER" prefWidth="65.0" text="0" GridPane.columnIndex="1" />
+                                                                        <TextField fx:id="tourIncrement" alignment="CENTER" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                     </children>
                                                                 </GridPane>
                                                                 <GridPane GridPane.columnIndex="2" GridPane.rowIndex="3">
                                                                     <columnConstraints>
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="185.0" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="57.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="191.0" minWidth="10.0" prefWidth="191.0" />
                                                                     </columnConstraints>
                                                                     <rowConstraints>
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -222,8 +225,8 @@
                                                                     <children>
                                                                         <Label text="Control move" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                                                                         <Label alignment="CENTER_RIGHT" text="Control addition (min)" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                                                                        <TextField fx:id="tourControlMove" text="0" GridPane.columnIndex="1" />
-                                                                        <TextField fx:id="tourControlAddition" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                        <TextField fx:id="tourControlMove" alignment="CENTER" text="0" GridPane.columnIndex="1" />
+                                                                        <TextField fx:id="tourControlAddition" alignment="CENTER" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                     </children>
                                                                 </GridPane>
                                                                 <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
@@ -246,7 +249,7 @@
                                                                     <children>
                                                                         <Label text="No. of rounds" />
                                                                         <Separator opacity="0.0" prefHeight="38.0" prefWidth="37.0" />
-                                                                        <TextField fx:id="tourNoRounds" text="0" />
+                                                                        <TextField fx:id="tourNoRounds" alignment="CENTER" prefHeight="27.0" prefWidth="54.0" text="0" />
                                                                     </children>
                                                                 </HBox>
                                                                 <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
@@ -256,27 +259,31 @@
                                                                         <ComboBox fx:id="tourSystem" prefWidth="150.0" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="7">
-                                                                    <children>
+                                                <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2" GridPane.rowIndex="7">
+                                                   <children>
                                                                         <Label text="Arbiter" />
-                                                                        <Separator opacity="0.0" prefHeight="61.0" prefWidth="36.0" />
-                                                                        <TextField fx:id="tourArbiter" prefHeight="24.0" prefWidth="337.0" />
-                                                                    </children>
-                                                                </HBox>
+                                                      <Separator opacity="0.0" prefHeight="46.0" prefWidth="47.0" />
+                                                                        <TextField fx:id="tourArbiter" prefHeight="24.0" prefWidth="337.0" HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets right="15.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
                                                                 <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
                                                                     <children>
                                                                         <Label text="e-mail" />
-                                                                        <Separator opacity="0.0" prefHeight="0.0" prefWidth="84.0" />
-                                                                        <TextField fx:id="tourEmail" />
+                                                                        <Separator opacity="0.0" prefHeight="42.0" prefWidth="51.0" />
+                                                                        <TextField fx:id="tourEmail" HBox.hgrow="SOMETIMES" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="8">
-                                                                    <children>
+                                                <HBox alignment="CENTER_LEFT" GridPane.columnSpan="3" GridPane.rowIndex="8">
+                                                   <children>
                                                                         <Label text="Organizer" />
-                                                                        <Separator opacity="0.0" prefHeight="67.0" prefWidth="35.0" />
-                                                                        <TextField fx:id="tourOrganizer" prefHeight="24.0" prefWidth="325.0" />
-                                                                    </children>
-                                                                </HBox>
+                                                      <Separator opacity="0.0" prefHeight="44.0" prefWidth="30.0" />
+                                                                        <TextField fx:id="tourOrganizer" prefHeight="24.0" prefWidth="325.0" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
                                                             </children>
                                                         </GridPane>
                                                     </children>
@@ -461,8 +468,8 @@
                                                     <children>
                                                         <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <children>
-                                                                <HBox prefHeight="55.0" prefWidth="1280.0">
-                                                                    <children>
+                                                <ToolBar>
+                                                   <items>
                                                                         <Separator opacity="0.0" prefHeight="28.0" prefWidth="22.0" />
                                                                         <Label prefHeight="16.0" prefWidth="53.0" text="Round" />
                                                                         <Separator opacity="0.0" prefHeight="26.0" prefWidth="0.0" />
@@ -479,18 +486,17 @@
                                                                         <Button fx:id="blackWinResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="48.0" text="0-1" />
                                                                         <Button fx:id="whiteWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="52.0" text="+ - -" />
                                                                         <Button fx:id="blackWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="- - +" />
-                                                                        <Separator opacity="0.0" prefHeight="49.0" prefWidth="53.0" HBox.hgrow="ALWAYS" />
+                                                                        <Separator opacity="0.0" prefHeight="49.0" prefWidth="53.0" />
                                                                         <Separator opacity="0.0" prefHeight="31.0" prefWidth="36.0" />
-                                                      <HBox>
+                                                      <HBox alignment="CENTER">
                                                          <children>
-                                                            <Separator prefWidth="25.0" />
                                                             <Button fx:id="enginePairButton" mnemonicParsing="false" text="Pair" />
                                                             <Separator opacity="0.0" prefHeight="29.0" prefWidth="36.0" />
                                                             <Button fx:id="deleteRound" mnemonicParsing="false" prefHeight="26.0" prefWidth="66.0" text="Delete" />
                                                          </children>
                                                       </HBox>
-                                                                    </children>
-                                                                </HBox>
+                                                   </items>
+                                                </ToolBar>
                                                                 <TableView fx:id="gamesView" nodeOrientation="LEFT_TO_RIGHT" prefHeight="568.0" prefWidth="1280.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                                                                     <columns>
                                                                         <TableColumn fx:id="leftBoardNo" prefWidth="37.0" text="#" />
@@ -627,13 +633,13 @@
                                                     <children>
                                           <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1280.0">
-                                                   <children>
+                                                <ToolBar>
+                                                   <items>
                                                       <Button fx:id="correctFide" mnemonicParsing="false" text="Correct FIDE data" />
                                                       <Separator opacity="0.0" prefHeight="30.0" prefWidth="18.0" />
                                                       <Button fx:id="correctPl" mnemonicParsing="false" text="Correct PL data" />
-                                                   </children>
-                                                </HBox>
+                                                   </items>
+                                                </ToolBar>
                                                               <TableView id="list" fx:id="playersListTable" editable="true" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                                                                   <columns>
                                                                       <TableColumn fx:id="startNoCol" editable="true" prefWidth="67.0" text="S.No." />
