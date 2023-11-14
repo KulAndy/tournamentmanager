@@ -1,13 +1,16 @@
 package com.example.lolmanager.helper.players;
 
 import com.example.lolmanager.calculation.PZSzachCalculation;
+import com.example.lolmanager.helper.GeneralHelper;
 import com.example.lolmanager.model.Federation;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Title;
 import com.example.lolmanager.model.Tournament;
 import com.example.lolmanager.operation.FIDEOperation;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -46,45 +49,81 @@ public class StartListHelper {
         setTournament(tournament);
         setCorrectFide(correctFide);
         getCorrectFide().setOnAction(e->{
-            System.out.println("FIDE");
-            for (Player player : getTournament().getPlayersObs()){
-                ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
-                if (players.size() == 1){
-                    System.out.println(player.getName());
-                    Player playerFide = players.get(0);
-                    if (playerFide.getTitle() != Title.bk){
-                        player.setTitle(playerFide.getTitle());
+            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
+            progressMessageBox.show();
+            int n = getTournament().getPlayersObs().size();
+
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    for (int i = 0; i < n; i++) {
+                        Player player = getTournament().getPlayersObs().get(i);
+
+                        float finalI = i + 1;
+                        Platform.runLater(() -> {
+                            progressMessageBox.setValue(finalI / n);
+                        });
+
+                        ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
+                        if (players.size() == 1) {
+                            Player playerFide = players.get(0);
+                            if (playerFide.getTitle() != Title.bk) {
+                                player.setTitle(playerFide.getTitle());
+                            }
+                            player.setFederation(playerFide.getFederation());
+                            player.setFideRating(playerFide.getFideRating());
+                            player.setFideId(playerFide.getFideId());
+                        }
                     }
-                    player.setFederation(playerFide.getFederation());
-                    player.setFideRating(playerFide.getFideRating());
-                    player.setFideId(playerFide.getFideId());
+                    Platform.runLater(() -> {
+                        getPlayersListTable().refresh();
+                        progressMessageBox.setValue(1.0);
+
+                    });
+                    return null;
                 }
-            }
-            getPlayersListTable().refresh();
+            };
+
+            new Thread(task).start();
         });
         setCorrectPl(correctPl);
         getCorrectPl().setOnAction(e->{
-            System.out.println("PL");
-            for (Player player : getTournament().getPlayersObs()){
-                ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
-                if (players.size() == 1){
-                    System.out.println(player.getName());
-                    Player playerPl = players.get(0);
-                    player.setName(playerPl.getName());
-                    player.setTitle(playerPl.getTitle());
-                    player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
-                    player.setClub(playerPl.getClub());
-                    player.setYearOfBirth(playerPl.getYearOfBirth());
-                    player.setMonthOfBirth(playerPl.getMonthOfBirth());
-                    player.setDayOfBirth(playerPl.getDayOfBirth());
-                    player.setSex(playerPl.getSex());
-                    player.setLocalId(playerPl.getLocalId());
-                    if (playerPl.getFideId() != null){
-                        player.setFideId(playerPl.getFideId());
+            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
+            progressMessageBox.show();
+            int n = getTournament().getPlayersObs().size();
+
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    for (int i = 0; i < n; i++) {
+                        Player player = getTournament().getPlayersObs().get(i);
+
+                        float finalI = i + 1;
+                        Platform.runLater(() -> {
+                            progressMessageBox.setValue(finalI / n);
+                        });
+
+                        ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
+                        if (players.size() == 1) {
+                            Player playerFide = players.get(0);
+                            if (playerFide.getTitle() != Title.bk) {
+                                player.setTitle(playerFide.getTitle());
+                            }
+                            player.setFederation(playerFide.getFederation());
+                            player.setFideRating(playerFide.getFideRating());
+                            player.setFideId(playerFide.getFideId());
+                        }
                     }
+                    Platform.runLater(() -> {
+                        getPlayersListTable().refresh();
+                        progressMessageBox.setValue(1.0);
+
+                    });
+                    return null;
                 }
-            }
-            getPlayersListTable().refresh();
+            };
+
+            new Thread(task).start();
         });
         setPlayersListTable(playersListTable);
         getPlayersListTable().setItems(tournament.getPlayersObs());

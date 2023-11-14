@@ -3,7 +3,11 @@ package com.example.lolmanager.helper;
 import com.example.lolmanager.model.Tournament;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -258,4 +262,46 @@ public class GeneralHelper {
 
         return future;
     }
+
+    public static class ProgressMessageBox {
+        private final Stage stage;
+        private final ProgressBar progressBar;
+        private final Label label;
+
+        public ProgressMessageBox(String title, double maxValue) {
+            stage = new Stage();
+            stage.setTitle(title);
+
+            progressBar = new ProgressBar();
+            progressBar.setMinWidth(250);
+            progressBar.setProgress(0);
+
+            label = new Label("0%");
+            label.setPadding(new Insets(0,0,0,15));
+
+            VBox root = new VBox(20);
+            root.setPadding(new javafx.geometry.Insets(20));
+            root.getChildren().addAll(progressBar, label);
+
+            Scene scene = new Scene(root, 300, 100);
+            stage.setScene(scene);
+        }
+
+        public void show() {
+            stage.show();
+        }
+
+        public void setValue(double value) {
+            if (value >= 0 && value <= 1.0) {
+                progressBar.setProgress(value);
+                label.setText((value * 100) + "%");
+                if (value >= 1.0) {
+                    stage.close();
+                }
+            } else {
+                System.err.println("Invalid value. Value should be between 0 and 1.");
+            }
+        }
+    }
+
 }

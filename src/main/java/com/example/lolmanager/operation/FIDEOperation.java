@@ -224,8 +224,14 @@ public class FIDEOperation {
                         int rating = resultSet.getInt("rating");
                         int k = resultSet.getInt("k");
                         int birthday = resultSet.getInt("birthday");
+                        Federation fed;
+                        try{
+                            fed = Federation.valueOf(country);
+                        } catch (IllegalArgumentException e) {
+                            fed = Federation.FID;
+                        }
                         players.add(new Player(
-                                Federation.valueOf(country), null, name, Title.getTitle(title),
+                                fed, null, name, Title.getTitle(title),
                                 1000, rating, null, birthday + "-00-00", Objects.equals(sex, "M") ? Player.Sex.MALE : Player.Sex.FEMALE,
                                 null, null, null, null, retrievedFideId, null
                         ));
@@ -242,14 +248,11 @@ public class FIDEOperation {
             try{
                 final String decodedName = unidecode(player.getName()).replaceAll(",", "");
                 players = searchInFideDb(decodedName, type);
-                if (players.size() > 1){
-                    players = (ArrayList<Player>) players.stream()
-                            .filter(elem ->
-                                    Objects.equals(elem.getName(), decodedName)
-                                    && elem.getYearOfBirth() == player.getYearOfBirth()
-                            )
-                            .collect(Collectors.toList());
-                }
+                players = (ArrayList<Player>) players.parallelStream()
+                        .filter(elem ->
+                                Objects.equals(elem.getName(), decodedName) && elem.getYearOfBirth() == player.getYearOfBirth()
+                        )
+                        .collect(Collectors.toList());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -311,14 +314,14 @@ public class FIDEOperation {
                 final String decodedName = unidecode(player.getName()).replaceAll(",", "");
                 players = searchInPolDb(decodedName, type);
                 if (players.size() > 1){
-                    players = (ArrayList<Player>) players.stream()
+                    players = (ArrayList<Player>) players.parallelStream()
                             .filter(elem ->
                                     Objects.equals(elem.getName(), decodedName)
                                             && elem.getYearOfBirth() == player.getYearOfBirth()
                             )
                             .collect(Collectors.toList());
                     if (players.size() > 1){
-                        players = (ArrayList<Player>) players.stream()
+                        players = (ArrayList<Player>) players.parallelStream()
                                 .filter(elem ->
                                         Objects.equals(elem.getName(), decodedName)
                                         && Objects.equals(elem.getDateOfBirth(), player.getDateOfBirth())
