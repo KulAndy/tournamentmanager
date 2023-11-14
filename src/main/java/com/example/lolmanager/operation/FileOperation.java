@@ -133,7 +133,7 @@ public class FileOperation {
             File xmlFile = new File(xmlPath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new FileInputStream(xmlFile));
+            Document document = builder.parse(new BufferedInputStream(new FileInputStream(xmlFile)));
 
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
             connection.setAutoCommit(false);
@@ -365,12 +365,14 @@ public class FileOperation {
 
             try (InputStream in = new BufferedInputStream(connection.getInputStream());
                  BufferedReader reader = new BufferedReader(new InputStreamReader(in, Charset.forName("ISO-8859-2")));
-                 FileWriter writer = new FileWriter(localFilePath)) {
+                 FileWriter writer = new FileWriter(localFilePath);
+                 BufferedWriter bufferedWriter = new BufferedWriter(writer)
+                 ) {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (uniqueLines.add(line)) { // add returns true for new lines
-                        writer.write(line + "\n");
+                        bufferedWriter.write(line + "\n");
                     }
                 }
             } catch (IOException e) {
@@ -596,7 +598,8 @@ public class FileOperation {
         String fileName = "tournament.json";
 
         try (FileInputStream fis = new FileInputStream(file);
-             ZipInputStream zipIn = new ZipInputStream(fis)) {
+             BufferedInputStream bis = new BufferedInputStream(fis);
+             ZipInputStream zipIn = new ZipInputStream(bis)) {
 
             ZipEntry zipEntry;
             while ((zipEntry = zipIn.getNextEntry()) != null) {

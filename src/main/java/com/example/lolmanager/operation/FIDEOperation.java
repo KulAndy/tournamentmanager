@@ -3,6 +3,8 @@ package com.example.lolmanager.operation;
 import com.example.lolmanager.MainController;
 import com.example.lolmanager.helper.GeneralHelper;
 import com.example.lolmanager.model.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -22,21 +24,81 @@ import static com.example.lolmanager.operation.FileOperation.*;
 
 public class FIDEOperation {
     public static void downloadFIDEList() {
+        final int[] standardProcessed = {2};
+        final int[] rapidProcessed = {2};
+        final int[] blitzProcessed = {2};
+        Task<Void> taskStandard = new Task<>() {
+            @Override
+            protected Void call() {
+                try{
+                    downloadFIDEfile("http://ratings.fide.com/download/standard_rating_list_xml.zip", "standard_rating_list_xml.zip");
+                    standardProcessed[0] = 1;
+                    convertXMLToSQLite("standard_rating_list.xml", "standard_rating_list.db");
+                    standardProcessed[0] = 0;
+                } catch (IOException ignored) {}
+                return null;
+            }
+        };
+        Task<Void> taskRapid = new Task<>() {
+            @Override
+            protected Void call() {
+                try{
+                    downloadFIDEfile("http://ratings.fide.com/download/rapid_rating_list_xml.zip", "rapid_rating_list_xml.zip");
+                    rapidProcessed[0] = 1;
+                    convertXMLToSQLite("rapid_rating_list.xml", "rapid_rating_list.db");
+                    rapidProcessed[0] = 0;
+                } catch (IOException ignored) {}
+                return null;
+            }
+        };
+        Task<Void> taskBlitz = new Task<>() {
+            @Override
+            protected Void call() {
+                try{
+                    downloadFIDEfile("http://ratings.fide.com/download/blitz_rating_list_xml.zip", "blitz_rating_list_xml.zip");
+                    blitzProcessed[0] = 1;
+                    convertXMLToSQLite("blitz_rating_list.xml", "blitz_rating_list.db");
+                    blitzProcessed[0] = 0;
+                } catch (IOException ignored) {}
+                return null;
+            }
+        };
+
+        Thread threadStandard = new Thread(taskStandard);
+        Thread threadRapid = new Thread(taskRapid);
+        Thread threadBlitz = new Thread(taskBlitz);
+
+        threadStandard.start();
+        threadRapid.start();
+        threadBlitz.start();
         try {
-            downloadFIDEfile("http://ratings.fide.com/download/standard_rating_list_xml.zip", "standard_rating_list_xml.zip");
-            downloadFIDEfile("http://ratings.fide.com/download/rapid_rating_list_xml.zip", "rapid_rating_list_xml.zip");
-            downloadFIDEfile("http://ratings.fide.com/download/blitz_rating_list_xml.zip", "blitz_rating_list_xml.zip");
-        } catch (Exception e) {
-            GeneralHelper.error("Couldn't download list");
+            threadStandard.join();
+            threadRapid.join();
+            threadBlitz.join();
+        } catch (InterruptedException ignored) {}
+
+        StringBuilder statment = new StringBuilder();
+        switch (standardProcessed[0]){
+            case 0 -> statment.append("Standard list downloaded and converted succesfully\n");
+            case 1 -> statment.append("Standard list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
+            default -> statment.append("Couldn't download standard list\n");
         }
-        try {
-            convertXMLToSQLite("standard_rating_list.xml", "standard_rating_list.db");
-            convertXMLToSQLite("rapid_rating_list.xml", "rapid_rating_list.db");
-            convertXMLToSQLite("blitz_rating_list.xml", "blitz_rating_list.db");
-            GeneralHelper.info("List downloaded and unzipped successfully");
-        } catch (Exception e) {
-            GeneralHelper.warning("List downloaded and unzipped successfully, but couldn't convert xml to local database");
+        switch (rapidProcessed[0]){
+            case 0 -> statment.append("Rapid list downloaded and converted succesfully\n");
+            case 1 -> statment.append("Rapid list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
+            default -> statment.append("Couldn't download rapid list\n");
         }
+        switch (blitzProcessed[0]){
+            case 0 -> statment.append("Blitz list downloaded and converted succesfully");
+            case 1 -> statment.append("Blitz list downloaded and unzipped successfully, but couldn't convert xml to local database");
+            default -> statment.append("Couldn't download blitz list");
+        }
+        if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0){
+            info(String.valueOf(statment));
+        }else {
+            error(String.valueOf(statment));
+        }
+
     }
 
     public static void downloadFIDEfile(String url, String filename) throws IOException {
