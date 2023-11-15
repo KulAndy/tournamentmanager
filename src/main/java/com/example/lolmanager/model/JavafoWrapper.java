@@ -24,9 +24,9 @@ public class JavafoWrapper implements Engine {
         command.add(javaPath);
         command.add("-jar");
         command.add(javafoPath);
-        command.add(reportFile.getAbsolutePath());
+        command.add(reportFilePath);
         command.add("-p");
-        command.add(outputFile.getAbsolutePath());
+        command.add(outputFilePath);
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
@@ -54,20 +54,21 @@ public class JavafoWrapper implements Engine {
                     black.addRound(game);
                 }
             }
-            for (Withdraw withdraw: tournament.getWithdraws()){
+            for (Withdraw withdraw : tournament.getWithdraws()) {
                 Player player = withdraw.getPlayer();
-                switch (withdraw.getType()){
+                switch (withdraw.getType()) {
                     case ROUND -> {
-                        if (withdraw.getRoundNo() == tournament.getRounds().size() + 1){
+                        if (withdraw.getRoundNo() == tournament.getRounds().size() + 1) {
                             round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
                         }
                     }
                     case HALFBYE -> {
-                            if (withdraw.getRoundNo() == tournament.getRounds().size() + 1){
-                                round.add(new Game(player, tournament.getPlayers().getHalfbye(), Result.DRAW, Result.DRAW, true));
-                            }
+                        if (withdraw.getRoundNo() == tournament.getRounds().size() + 1) {
+                            round.add(new Game(player, tournament.getPlayers().getHalfbye(), Result.DRAW, Result.DRAW, true));
+                        }
                     }
-                    default -> round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
+                    default ->
+                            round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
 
                 }
             }
@@ -92,7 +93,19 @@ public class JavafoWrapper implements Engine {
         return false;
     }
 
-    public static Tournament generateRandomTournament() {
-        return null;
+    public static Tournament generateRandomTournament() throws IOException, InterruptedException {
+        List<String> command = new ArrayList<>();
+        command.add(javaPath);
+        command.add("-jar");
+        command.add(javafoPath);
+        command.add("-g");
+        command.add("-o");
+        command.add(reportFilePath);
+        File reportFile = new File(reportFilePath);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        Process process = processBuilder.start();
+        process.waitFor();
+        return new Tournament(new TrfTournament(reportFile));
     }
 }

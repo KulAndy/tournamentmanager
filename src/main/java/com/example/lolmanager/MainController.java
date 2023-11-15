@@ -11,7 +11,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -20,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +34,7 @@ public class MainController implements Initializable {
     private String programExtension = "*";
     private Tournament tournament;
     private File file;
-    private ObservableList files = FXCollections.observableArrayList();
+    private final ObservableList files = FXCollections.observableArrayList();
     private boolean saving = false;
     private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
@@ -71,19 +71,12 @@ public class MainController implements Initializable {
     @FXML
     private Button openButton;
     @FXML
-    private Button firstRoundBth;
-    @FXML
-    private Button previousRoundBth;
-    @FXML
-    private Button nextRoundBth;
-    @FXML
-    private Button lastRoundBth;
-    @FXML
     private Button downloadFideButton;
     @FXML
     private Button downloadPolButton;
     @FXML
-    private TabPane mainTabPane;
+    private Button randomTournament;
+
     @FXML
     private Tab roundsTab;
     @FXML
@@ -317,7 +310,7 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Game> playerCardGames;
     @FXML
-    private TableColumn<Game,Integer> playerCardOppRound;
+    private TableColumn<Game, Integer> playerCardOppRound;
     @FXML
     private TableColumn<Game, Player.Color> playerCardOppColor;
     @FXML
@@ -526,7 +519,7 @@ public class MainController implements Initializable {
                 clubField, dayOfBirth, monthOfBirth, yearOfBirth,
                 sexSelect, mailField, phonePrefixSelect,
                 phoneNumber, localIDField, FIDEIDField, remarksField,
-                addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
+                addPlayerButton, updatePlayerBth, clearPlayerButton, addClearPlayerButton,
                 insertFromList, newPlayerHint,
                 playerCardSelect,
                 playerCardName, playerCardTB1, playerCardTB1Value,
@@ -546,7 +539,7 @@ public class MainController implements Initializable {
                 leftBoardNo, whitePoints, whiteRating, whitePlayer, gameResult, blackPlayer,
                 blackRating, blackPoints, rightBoardNo, deleteRound, enginePairButton,
                 allRoundsScroll,
-                withdrawPlayerSelect,  withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
+                withdrawPlayerSelect, withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
                 withdrawNoCol, withdrawNameCol, withdrawTypeCol, withdrawRoundCol, withdrawBackCol
 
         );
@@ -562,30 +555,30 @@ public class MainController implements Initializable {
 
         tournamentSelect.setItems(files);
 
-        tourTB1.valueProperty().addListener(e->{
+        tourTB1.valueProperty().addListener(e -> {
             playerCardTB1.setText(String.valueOf(tourTB1.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB1.getValue()).toString());
         });
-        tourTB2.valueProperty().addListener(e->{
+        tourTB2.valueProperty().addListener(e -> {
             playerCardTB2.setText(String.valueOf(tourTB2.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB2.getValue()).toString());
         });
-        tourTB3.valueProperty().addListener(e->{
+        tourTB3.valueProperty().addListener(e -> {
             playerCardTB3.setText(String.valueOf(tourTB3.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB3.getValue()).toString());
         });
-        tourTB4.valueProperty().addListener(e->{
+        tourTB4.valueProperty().addListener(e -> {
             playerCardTB4.setText(String.valueOf(tourTB4.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB4.getValue()).toString());
         });
-        tourTB5.valueProperty().addListener(e->{
+        tourTB5.valueProperty().addListener(e -> {
             playerCardTB5.setText(String.valueOf(tourTB5.getValue()));
             playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB5.getValue()).toString());
         });
 
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
-            if (getAutosaveMenu().isSelected() && !isSaving()){
+            if (getAutosaveMenu().isSelected() && !isSaving()) {
                 setSaving(true);
                 fileOperation.save();
                 setSaving(false);
@@ -637,6 +630,18 @@ public class MainController implements Initializable {
                     });
         });
 
+        randomTournament.setOnAction(e -> {
+            try {
+                if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
+                    TournamentOperation.loadTournament(JavafoWrapper.generateRandomTournament(), this);
+                } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
+                    TournamentOperation.loadTournament(RoundRobinEngine.generateRandomTournament(), this);
+                }
+            } catch (IOException | InterruptedException ex) {
+                error("Couldn't generate random tournament");
+            }
+        });
+
         importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
 
         importSwsx.setOnAction(e -> {
@@ -657,15 +662,15 @@ public class MainController implements Initializable {
             }
         });
 
-        closeMenu.setOnAction(e->{
+        closeMenu.setOnAction(e -> {
             files.remove(getFile());
         });
-        tournamentSelect.valueProperty().addListener(e-> {
+        tournamentSelect.valueProperty().addListener(e -> {
             getFileOperation().save();
             File newValue = tournamentSelect.getValue();
             if (newValue == null) {
                 TournamentOperation.loadTournament(new Tournament(), this);
-            }else{
+            } else {
                 getFileOperation().importJson(tournamentSelect.getValue());
             }
         });
@@ -701,7 +706,7 @@ public class MainController implements Initializable {
 
     public void setFile(File file) {
         this.file = file;
-        if (!files.contains(file)){
+        if (!files.contains(file)) {
             files.add(file);
             tournamentSelect.setValue(file);
         }

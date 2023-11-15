@@ -8,7 +8,6 @@ import com.example.lolmanager.helper.players.StartListHelper;
 import com.example.lolmanager.model.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 public class PlayersHelper {
@@ -44,7 +43,7 @@ public class PlayersHelper {
             Label playerCardTB2, Label playerCardTB2Value, Label playerCardTB3, Label playerCardTB3Value,
             Label playerCardTB4, Label playerCardTB4Value, Label playerCardTB5, Label playerCardTB5Value,
             Label playerCardElo, Label playerCardEloValue, Label playerCardPZSzach, Label playerCardPZSzachValue,
-            TableView<Game> playerCardGames, TableColumn<Game,Integer> playerCardOppRound,
+            TableView<Game> playerCardGames, TableColumn<Game, Integer> playerCardOppRound,
             TableColumn<Game, Player.Color> playerCardOppColor, TableColumn<Game, String> playerCardOppResult,
             TableColumn<Game, Title> playerCardOppTitle, TableColumn<Game, String> playerCardOppName,
             TableColumn<Game, Integer> playerCardOppRtg, GridPane cardGrid
@@ -75,11 +74,11 @@ public class PlayersHelper {
                         clubField, dayOfBirth, monthOfBirth, yearOfBirth,
                         sexSelect, mailField, phonePrefixSelect,
                         phoneNumber, localIDField, FIDEIDField, remarksField,
-                        addPlayerButton, updatePlayerBth ,clearPlayerButton, addClearPlayerButton,
+                        addPlayerButton, updatePlayerBth, clearPlayerButton, addClearPlayerButton,
                         insertFromList, newPlayerHint
                 )
         );
-        updatePlayerBth.addEventHandler(ActionEvent.ACTION, e->playersListTable.refresh());
+        updatePlayerBth.addEventHandler(ActionEvent.ACTION, e -> playersListTable.refresh());
 
         setPlayerCardHelper(
                 new PlayerCardHelper(

@@ -29,36 +29,39 @@ public class FIDEOperation {
         Task<Void> taskStandard = new Task<>() {
             @Override
             protected Void call() {
-                try{
+                try {
                     downloadFIDEfile("http://ratings.fide.com/download/standard_rating_list_xml.zip", "standard_rating_list_xml.zip");
                     standardProcessed[0] = 1;
                     convertXMLToSQLite("standard_rating_list.xml", "standard_rating_list.db");
                     standardProcessed[0] = 0;
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
                 return null;
             }
         };
         Task<Void> taskRapid = new Task<>() {
             @Override
             protected Void call() {
-                try{
+                try {
                     downloadFIDEfile("http://ratings.fide.com/download/rapid_rating_list_xml.zip", "rapid_rating_list_xml.zip");
                     rapidProcessed[0] = 1;
                     convertXMLToSQLite("rapid_rating_list.xml", "rapid_rating_list.db");
                     rapidProcessed[0] = 0;
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
                 return null;
             }
         };
         Task<Void> taskBlitz = new Task<>() {
             @Override
             protected Void call() {
-                try{
+                try {
                     downloadFIDEfile("http://ratings.fide.com/download/blitz_rating_list_xml.zip", "blitz_rating_list_xml.zip");
                     blitzProcessed[0] = 1;
                     convertXMLToSQLite("blitz_rating_list.xml", "blitz_rating_list.db");
                     blitzProcessed[0] = 0;
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
                 return null;
             }
         };
@@ -74,27 +77,31 @@ public class FIDEOperation {
             threadStandard.join();
             threadRapid.join();
             threadBlitz.join();
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
 
         StringBuilder statment = new StringBuilder();
-        switch (standardProcessed[0]){
+        switch (standardProcessed[0]) {
             case 0 -> statment.append("Standard list downloaded and converted succesfully\n");
-            case 1 -> statment.append("Standard list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
+            case 1 ->
+                    statment.append("Standard list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
             default -> statment.append("Couldn't download standard list\n");
         }
-        switch (rapidProcessed[0]){
+        switch (rapidProcessed[0]) {
             case 0 -> statment.append("Rapid list downloaded and converted succesfully\n");
-            case 1 -> statment.append("Rapid list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
+            case 1 ->
+                    statment.append("Rapid list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
             default -> statment.append("Couldn't download rapid list\n");
         }
-        switch (blitzProcessed[0]){
+        switch (blitzProcessed[0]) {
             case 0 -> statment.append("Blitz list downloaded and converted succesfully");
-            case 1 -> statment.append("Blitz list downloaded and unzipped successfully, but couldn't convert xml to local database");
+            case 1 ->
+                    statment.append("Blitz list downloaded and unzipped successfully, but couldn't convert xml to local database");
             default -> statment.append("Couldn't download blitz list");
         }
-        if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0){
+        if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0) {
             info(String.valueOf(statment));
-        }else {
+        } else {
             error(String.valueOf(statment));
         }
 
@@ -130,7 +137,7 @@ public class FIDEOperation {
             e.printStackTrace();
         }
         try {
-            if (name.length() > 3){
+            if (name.length() > 3) {
                 players.addAll(searchInFideDb(name, type));
             }
         } catch (SQLException e) {
@@ -258,10 +265,10 @@ public class FIDEOperation {
         }
     }
 
-    public static ArrayList<Player> searchSimilarFide(Player player, Tournament.Type type){
+    public static ArrayList<Player> searchSimilarFide(Player player, Tournament.Type type) {
         ArrayList<Player> players = new ArrayList<>();
         Integer fideId = player.getFideId();
-        if (fideId != null && fideId > 0){
+        if (fideId != null && fideId > 0) {
             try {
                 Class.forName("org.sqlite.JDBC");
                 String url = "jdbc:sqlite:";
@@ -277,7 +284,7 @@ public class FIDEOperation {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     int retrievedFideId = resultSet.getInt("fideid");
-                    if (retrievedFideId == fideId){
+                    if (retrievedFideId == fideId) {
                         String name = resultSet.getString("name");
                         String country = resultSet.getString("country");
                         String sex = resultSet.getString("sex");
@@ -286,7 +293,7 @@ public class FIDEOperation {
                         int k = resultSet.getInt("k");
                         int birthday = resultSet.getInt("birthday");
                         Federation fed;
-                        try{
+                        try {
                             fed = Federation.valueOf(country);
                         } catch (IllegalArgumentException e) {
                             fed = Federation.FID;
@@ -305,8 +312,8 @@ public class FIDEOperation {
             } catch (ClassNotFoundException | SQLException e) {
                 throw new RuntimeException(e);
             }
-        }else{
-            try{
+        } else {
+            try {
                 final String decodedName = unidecode(player.getName()).replaceAll(",", "");
                 players = searchInFideDb(decodedName, type);
                 players = (ArrayList<Player>) players.parallelStream()
@@ -321,10 +328,10 @@ public class FIDEOperation {
         return players;
     }
 
-    public static ArrayList<Player> searchSimilarPol(Player player, Tournament.Type type){
+    public static ArrayList<Player> searchSimilarPol(Player player, Tournament.Type type) {
         ArrayList<Player> players = new ArrayList<>();
         Integer polId = player.getLocalId();
-        if (polId != null && polId > 0){
+        if (polId != null && polId > 0) {
             Connection connection = null;
             try {
                 Class.forName("org.sqlite.JDBC");
@@ -353,14 +360,14 @@ public class FIDEOperation {
                     players.add(new Player(
                             Federation.POL, WZSZACH, NAZWISKO_IMIE, Title.getTitle(TYTUL),
                             1000, switch (type) {
-                    case BLITZ -> _KOL_CZL_R_FIDE_BL;
-                    case RAPID -> _KOL_CZL_R_FIDE_SZ;
-                    default -> ELO;
-                }
-                        , KLUB, DATA_URODZENIA, Objects.equals(PLEC, "M") ? Player.Sex.MALE : Player.Sex.FEMALE,
-                null, null, null, id, ID_FIDE, null
+                        case BLITZ -> _KOL_CZL_R_FIDE_BL;
+                        case RAPID -> _KOL_CZL_R_FIDE_SZ;
+                        default -> ELO;
+                    }
+                            , KLUB, DATA_URODZENIA, Objects.equals(PLEC, "M") ? Player.Sex.MALE : Player.Sex.FEMALE,
+                            null, null, null, id, ID_FIDE, null
 
-                ));
+                    ));
                 }
 
                 resultSet.close();
@@ -370,22 +377,22 @@ public class FIDEOperation {
             } catch (ClassNotFoundException | SQLException e) {
                 throw new RuntimeException(e);
             }
-        }else{
-            try{
+        } else {
+            try {
                 final String decodedName = unidecode(player.getName()).replaceAll(",", "");
                 players = searchInPolDb(decodedName, type);
-                if (players.size() > 1){
+                if (players.size() > 1) {
                     players = (ArrayList<Player>) players.parallelStream()
                             .filter(elem ->
                                     Objects.equals(elem.getName(), decodedName)
                                             && elem.getYearOfBirth() == player.getYearOfBirth()
                             )
                             .collect(Collectors.toList());
-                    if (players.size() > 1){
+                    if (players.size() > 1) {
                         players = (ArrayList<Player>) players.parallelStream()
                                 .filter(elem ->
                                         Objects.equals(elem.getName(), decodedName)
-                                        && Objects.equals(elem.getDateOfBirth(), player.getDateOfBirth())
+                                                && Objects.equals(elem.getDateOfBirth(), player.getDateOfBirth())
                                 )
                                 .collect(Collectors.toList());
                     }
@@ -496,13 +503,13 @@ public class FIDEOperation {
             for (Game game : rounds) {
                 Player opponent = player.getOpponent(game);
                 trf.append("  ");
-                if (opponent == tournament.getPlayers().getBye()){
+                if (opponent == tournament.getPlayers().getBye()) {
                     trf.append("0000 - ").append("F");
                 } else if (opponent == tournament.getPlayers().getHalfbye()) {
                     trf.append("0000 - ").append("H");
                 } else if (opponent == tournament.getPlayers().getUnpaired() || Objects.equals(opponent.getName(), "unpaired")) {
                     trf.append("0000 - ").append("Z");
-                }else{
+                } else {
                     if (game.isForfeit()) {
                         trf.append("%4d".formatted(players.getUuid2startNo().get(opponent.getPlayerid())))
                                 .append(" ");
@@ -542,14 +549,17 @@ public class FIDEOperation {
         }
 
         trf.append("\nXXR ").append(tournament.getRoundsNumber());
-        trf.append("\nXXZ");
+        trf.append("\nXXZ ");
         StringBuilder withdrawed = new StringBuilder("\nXXZ");
-        for (Withdraw withdraw : tournament.getWithdraws()){
-            if (withdraw.getType() == Withdraw.WithdrawType.TOURNAMENT || withdraw.getRoundNo() == tournament.getRounds().size() + 1){
-                withdrawed.append("%4d".formatted(players.getUuid2startNo().get(withdraw.getPlayer().getPlayerid())));
+        for (Withdraw withdraw : tournament.getWithdraws()) {
+            if (withdraw.getType() == Withdraw.WithdrawType.TOURNAMENT || withdraw.getRoundNo() == tournament.getRounds().size() + 1) {
+                Integer id = players.getUuid2startNo().get(withdraw.getPlayer().getPlayerid());
+                if (id != null) {
+                    withdrawed.append("%4d".formatted(players.getUuid2startNo().get(withdraw.getPlayer().getPlayerid())));
+                }
             }
         }
-        if (withdrawed.length() > 4){
+        if (withdrawed.length() > 4) {
             trf.append(withdrawed);
         }
         trf.append("\n");

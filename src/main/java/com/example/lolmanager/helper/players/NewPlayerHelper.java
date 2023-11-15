@@ -12,7 +12,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
 import java.util.Comparator;
@@ -86,9 +85,9 @@ public class NewPlayerHelper {
         setNewPlayerHint(newPlayerHint);
 
         getPlayerSelect().setItems(getTournament().getPlayersObs());
-        getPlayerSelect().setOnAction(e->{
+        getPlayerSelect().setOnAction(e -> {
             Player player = getPlayerSelect().getValue();
-            if (player != null){
+            if (player != null) {
                 getFedSelect().setValue(player.getFederation());
                 String state = player.getState();
                 getStateSelect().setValue(state.trim().length() == 0 ? null : state);
@@ -261,11 +260,11 @@ public class NewPlayerHelper {
         });
 
         getAddPlayerButton().setOnAction(event -> addPlayer());
-        getUpdatePlayerBth().setOnAction(event->{
+        getUpdatePlayerBth().setOnAction(event -> {
             Player player = getPlayerSelect().getValue();
-            if ( player == null){
+            if (player == null) {
                 error("No player selected");
-            }else{
+            } else {
                 int localRtg;
                 try {
                     localRtg = Integer.parseInt(getLocalRtgField().getText());

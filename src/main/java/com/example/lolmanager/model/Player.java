@@ -124,8 +124,8 @@ public class Player implements Serializable {
         );
     }
 
-    public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak){
-        switch (tiebreak){
+    public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak) {
+        switch (tiebreak) {
             case KOYA -> {
                 return getKoya();
             }
@@ -171,7 +171,7 @@ public class Player implements Serializable {
         }
     }
 
-    public float getRatingPerformanceFide(){
+    public float getRatingPerformanceFide() {
         return FIDECalculation.getRatingPerformance(getOpponents(), getPoints());
     }
 
@@ -523,11 +523,11 @@ public class Player implements Serializable {
     }
 
     public Player getOpponent(Game round) {
-        if (round.getWhite() == this){
+        if (round.getWhite() == this) {
             return round.getBlack();
         } else if (round.getBlack() == this) {
             return round.getWhite();
-        }else {
+        } else {
             return null;
         }
     }
@@ -863,6 +863,7 @@ public class Player implements Serializable {
     public void setDayOfBirth(byte dayOfBirth) {
         DayOfBirth = dayOfBirth;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

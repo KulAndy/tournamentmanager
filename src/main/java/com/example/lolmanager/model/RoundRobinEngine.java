@@ -4,6 +4,7 @@ import com.example.lolmanager.comparator.StartListComparator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RoundRobinEngine implements Engine {
     public static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
@@ -88,7 +89,45 @@ public class RoundRobinEngine implements Engine {
         return false;
     }
 
-    public static Tournament generateRandomTournament() {
-        return null;
+    public static Tournament generateRandomTournament() throws IOException, InterruptedException {
+        Tournament tournament = new Tournament();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        int minRounds = 6;
+        int maxRounds = 20;
+        int minRating = 6;
+        int maxRating = 20;
+        int minNameLength = 5;
+        int maxNameLength = 25;
+        Random random = new Random();
+        Title[] titles = Title.values();
+        int players = random.nextInt(maxRounds - minRounds + 1) + minRounds;
+        for (int i = 0; i < players; i++) {
+            Player player = new Player();
+            player.setName("player" + (i + 1));
+            player.setFideRating(random.nextInt(maxRating - minRating + 1) + minRating);
+            player.setTitle(titles[random.nextInt(titles.length)]);
+            tournament.getPlayersObs().add(player);
+        }
+
+        StringBuilder nameBuilder = new StringBuilder();
+
+        for (int i = 0; i < random.nextInt(maxNameLength - minNameLength + 1) + minNameLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            nameBuilder.append(randomChar);
+        }
+
+        StringBuilder placeBuilder = new StringBuilder();
+
+        for (int i = 0; i < random.nextInt(maxNameLength - minNameLength + 1) + minNameLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            placeBuilder.append(randomChar);
+        }
+        tournament.setName(nameBuilder.toString());
+        tournament.setPlace(placeBuilder.toString());
+        generatePairing(tournament, false);
+
+        return tournament;
     }
 }

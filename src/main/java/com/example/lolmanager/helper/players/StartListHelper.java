@@ -48,7 +48,7 @@ public class StartListHelper {
             TableColumn<Player, Integer> fideIdCol, TableColumn<Player, String> remarksCol, TableColumn<Player, Void> deleteCol) {
         setTournament(tournament);
         setCorrectFide(correctFide);
-        getCorrectFide().setOnAction(e->{
+        getCorrectFide().setOnAction(e -> {
             GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
@@ -83,7 +83,7 @@ public class StartListHelper {
             new Thread(task).start();
         });
         setCorrectPl(correctPl);
-        getCorrectPl().setOnAction(e->{
+        getCorrectPl().setOnAction(e -> {
             GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
@@ -111,7 +111,7 @@ public class StartListHelper {
                             player.setDayOfBirth(playerPl.getDayOfBirth());
                             player.setSex(playerPl.getSex());
                             player.setLocalId(playerPl.getLocalId());
-                            if (playerPl.getFideId() != null){
+                            if (playerPl.getFideId() != null) {
                                 player.setFideId(playerPl.getFideId());
                             }
                         }
@@ -269,6 +269,7 @@ public class StartListHelper {
     public void setCorrectPl(Button correctPl) {
         this.correctPl = correctPl;
     }
+
     public TableView<Player> getPlayersListTable() {
         return playersListTable;
     }

@@ -182,12 +182,12 @@ public class ResultEnterHelper {
                     }
                     textField1.setId("result" + getIndex() + "white");
                     textField2.setId("result" + getIndex() + "black");
-                    textField1.textProperty().addListener(e->{
-                        if (textField1.isFocused()){
-                            if (textField1.getText().isEmpty()){
+                    textField1.textProperty().addListener(e -> {
+                        if (textField1.isFocused()) {
+                            if (textField1.getText().isEmpty()) {
                                 game.setWhiteResult(null);
                                 game.setForfeit(true);
-                            }else{
+                            } else {
                                 Object[] objectsW = Result.getResultFromPoints(textField1.getText());
                                 Object[] objects2 = Result.getResultFromPoints(textField2.getText());
                                 Result resultW = (Result) objectsW[0];
@@ -195,14 +195,14 @@ public class ResultEnterHelper {
                                 boolean forfeitW = (Boolean) objectsW[1];
                                 boolean forfeitB = (Boolean) objects2[1];
 
-                                if (resultW != null){
+                                if (resultW != null) {
                                     game.setWhiteResult(resultW);
                                     game.setForfeit(forfeitW || forfeitB);
                                 }
                             }
                         }
                     });
-                    textField2.textProperty().addListener(e->{
+                    textField2.textProperty().addListener(e -> {
                         if (textField2.isFocused()) {
                             if (textField2.getText().isEmpty()) {
                                 game.setBlackResult(null);
@@ -366,7 +366,7 @@ public class ResultEnterHelper {
         textField2.requestFocus();
         textField2.setText(blackResult);
         setPairEnterCounter(getPairEnterCounter() + 1);
-        getGamesView().scrollTo(getPairEnterCounter()-1);
+        getGamesView().scrollTo(getPairEnterCounter() - 1);
         getGamesView().requestFocus();
     }
 
@@ -582,7 +582,8 @@ public class ResultEnterHelper {
         this.pairEnterCounter = pairEnterCounter;
         try {
             getGamesView().getSelectionModel().select(pairEnterCounter);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
 }

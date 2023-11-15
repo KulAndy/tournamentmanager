@@ -277,7 +277,7 @@ public class GeneralHelper {
             progressBar.setProgress(0);
 
             label = new Label("0%");
-            label.setPadding(new Insets(0,0,0,15));
+            label.setPadding(new Insets(0, 0, 0, 15));
 
             VBox root = new VBox(20);
             root.setPadding(new javafx.geometry.Insets(20));
@@ -294,7 +294,7 @@ public class GeneralHelper {
         public void setValue(double value) {
             if (value >= 0 && value <= 1.0) {
                 progressBar.setProgress(value);
-                label.setText("%.2f %%".formatted (value * 100));
+                label.setText("%.2f %%".formatted(value * 100));
                 if (value >= 1.0) {
                     stage.close();
                 }

@@ -6,7 +6,7 @@ public class Withdraw {
 
     private Byte roundNo;
 
-    public Withdraw(Player player, WithdrawType type){
+    public Withdraw(Player player, WithdrawType type) {
         this(player, type, (byte) 0);
     }
 
@@ -16,7 +16,7 @@ public class Withdraw {
         setRoundNo(roundNo);
     }
 
-    public enum WithdrawType{
+    public enum WithdrawType {
         TOURNAMENT,
         ROUND,
         HALFBYE

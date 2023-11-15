@@ -118,8 +118,8 @@ public class ManualPairingHelper {
 
         getWhiteSearch().textProperty().bindBidirectional(whiteStart);
         getBlackSearch().textProperty().bindBidirectional(blackStart);
-        getWhiteSearch().textProperty().addListener(e->getWhitePairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim())));
-        getBlackSearch().textProperty().addListener(e->getBlackPairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim())));
+        getWhiteSearch().textProperty().addListener(e -> getWhitePairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim())));
+        getBlackSearch().textProperty().addListener(e -> getBlackPairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim())));
 
         getPairButton().setOnAction(e -> {
             Player white = getWhiteList().getSelectionModel().getSelectedItem();
@@ -236,8 +236,8 @@ public class ManualPairingHelper {
         });
 
 
-        setWhitePairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim()) ));
-        setBlackPairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim()) ));
+        setWhitePairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim())));
+        setBlackPairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim())));
         getPaired().addListener((ListChangeListener<Player>) change -> {
             getWhitePairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim()));
             getBlackPairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim()));
@@ -436,6 +436,7 @@ public class ManualPairingHelper {
     public ObservableList<Player> getPaired() {
         return paired;
     }
+
     public FilteredList<Player> getWhitePairedFilter() {
         return whitePairedFilter;
     }

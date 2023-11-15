@@ -6,9 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 public class PlayerCardHelper {
@@ -30,7 +28,7 @@ public class PlayerCardHelper {
     private Label playerCardPZSzach;
     private Label playerCardPZSzachValue;
     private TableView<Game> playerCardGames;
-    private TableColumn<Game,Integer> playerCardOppRound;
+    private TableColumn<Game, Integer> playerCardOppRound;
     private TableColumn<Game, Player.Color> playerCardOppColor;
     private TableColumn<Game, String> playerCardOppResult;
     private TableColumn<Game, Title> playerCardOppTitle;
@@ -45,7 +43,7 @@ public class PlayerCardHelper {
             Label playerCardTB2, Label playerCardTB2Value, Label playerCardTB3, Label playerCardTB3Value,
             Label playerCardTB4, Label playerCardTB4Value, Label playerCardTB5, Label playerCardTB5Value,
             Label playerCardElo, Label playerCardEloValue, Label playerCardPZSzach, Label playerCardPZSzachValue,
-            TableView<Game> playerCardGames, TableColumn<Game,Integer> playerCardOppRound,
+            TableView<Game> playerCardGames, TableColumn<Game, Integer> playerCardOppRound,
             TableColumn<Game, Player.Color> playerCardOppColor, TableColumn<Game, String> playerCardOppResult,
             TableColumn<Game, Title> playerCardOppTitle, TableColumn<Game, String> playerCardOppName,
             TableColumn<Game, Integer> playerCardOppRtg, GridPane cardGrid
@@ -104,9 +102,9 @@ public class PlayerCardHelper {
         setPlayerCardOppName(playerCardOppName);
         setPlayerCardOppRtg(playerCardOppRtg);
 
-        getPlayerCardSelect().valueProperty().addListener((ObservableValue<? extends Player> observable, Player oldValue, Player newValue) ->{
+        getPlayerCardSelect().valueProperty().addListener((ObservableValue<? extends Player> observable, Player oldValue, Player newValue) -> {
             if (newValue != null) {
-                getPlayerCardName().setText( "\t" + newValue.getTitle() + " " + newValue.getName());
+                getPlayerCardName().setText("\t" + newValue.getTitle() + " " + newValue.getName());
                 getPlayerCardTB1Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak1()).toString());
                 getPlayerCardTB2Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak2()).toString());
                 getPlayerCardTB3Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak3()).toString());
@@ -137,25 +135,25 @@ public class PlayerCardHelper {
             Player player = getPlayerCardSelect().getValue();
             Player.Color color = player.getRoundColor(game);
             String result = "-";
-            if (game.isForfeit()){
+            if (game.isForfeit()) {
                 if (
                         (color == Player.Color.WHITE && game.getWhiteResult() == Result.WIN)
                                 || (color == Player.Color.BLACK && game.getBlackResult() == Result.WIN)
-                ){
+                ) {
                     result = "+";
                 }
-            }else{
+            } else {
                 if (
                         (color == Player.Color.WHITE && game.getWhiteResult() == Result.WIN)
                                 || (color == Player.Color.BLACK && game.getBlackResult() == Result.WIN)
-                ){
+                ) {
                     result = "1";
                 } else if (
                         (color == Player.Color.WHITE && game.getWhiteResult() == Result.DRAW)
                                 || (color == Player.Color.BLACK && game.getBlackResult() == Result.DRAW)
                 ) {
                     result = "\u00BD";
-                }else {
+                } else {
                     result = "0";
                 }
             }

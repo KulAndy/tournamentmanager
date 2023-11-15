@@ -367,7 +367,7 @@ public class FileOperation {
                  BufferedReader reader = new BufferedReader(new InputStreamReader(in, Charset.forName("ISO-8859-2")));
                  FileWriter writer = new FileWriter(localFilePath);
                  BufferedWriter bufferedWriter = new BufferedWriter(writer)
-                 ) {
+            ) {
 
                 String line;
                 while ((line = reader.readLine()) != null) {

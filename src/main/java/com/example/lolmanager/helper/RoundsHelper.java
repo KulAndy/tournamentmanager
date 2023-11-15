@@ -54,7 +54,7 @@ public class RoundsHelper {
 
         setAllRoundsViewerHelper(new AllRoundsViewerHelper(tournament, allRoundsScroll));
 
-        setWithdrawHelper(new WithdrawHelper(tournament, withdrawPlayerSelect,  withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
+        setWithdrawHelper(new WithdrawHelper(tournament, withdrawPlayerSelect, withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
                 withdrawNoCol, withdrawNameCol, withdrawTypeCol, withdrawRoundCol, withdrawBackCol
         ));
     }

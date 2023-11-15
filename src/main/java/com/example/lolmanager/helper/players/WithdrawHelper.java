@@ -22,6 +22,7 @@ public class WithdrawHelper {
     private TableColumn<Withdraw, Withdraw.WithdrawType> withdrawTypeCol;
     private TableColumn<Withdraw, Byte> withdrawRoundCol;
     private TableColumn<Withdraw, Void> withdrawBackCol;
+
     public WithdrawHelper(
             Tournament tournament,
             ComboBox<Player> withdrawPlayerSelect, ComboBox<Withdraw.WithdrawType> withdrawTypeSelect,
@@ -65,16 +66,17 @@ public class WithdrawHelper {
             }
         });
 
-        getAcceptWithdrawButton().setOnAction(e->{
+        getAcceptWithdrawButton().setOnAction(e -> {
             Player player = getWithdrawPlayerSelect().getValue();
             Byte roundNo = null;
-            try{
+            try {
                 roundNo = Byte.parseByte(getWithdrawRound().getText());
-            } catch (NumberFormatException ignored) {}
-            if (roundNo != null && roundNo <= 0){
+            } catch (NumberFormatException ignored) {
+            }
+            if (roundNo != null && roundNo <= 0) {
                 roundNo = null;
             }
-            if (player != null){
+            if (player != null) {
                 getTournament().getWithdrawsObs().add(
                         new Withdraw(
                                 player,
@@ -85,14 +87,14 @@ public class WithdrawHelper {
             }
         });
 
-        getWithdrawTypeSelect().setOnAction(e->{
-            if (getWithdrawTypeSelect().getValue() == Withdraw.WithdrawType.TOURNAMENT){
-                if (!(getWithdrawRound().isDisable())){
+        getWithdrawTypeSelect().setOnAction(e -> {
+            if (getWithdrawTypeSelect().getValue() == Withdraw.WithdrawType.TOURNAMENT) {
+                if (!(getWithdrawRound().isDisable())) {
                     getWithdrawRound().setText("");
                     getWithdrawRound().setDisable(true);
                 }
-            }else{
-                if (getWithdrawRound().isDisable()){
+            } else {
+                if (getWithdrawRound().isDisable()) {
                     getWithdrawRound().setText(String.valueOf(tournament.getRounds().size() + 1));
                     getWithdrawRound().setDisable(false);
                 }
