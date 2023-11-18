@@ -3,7 +3,6 @@ package com.example.lolmanager.helper.tables;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.ResultPredicate;
 import com.example.lolmanager.model.Tournament;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -11,28 +10,26 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.util.function.Predicate;
-
 public class FilterListHelper {
     private Tournament tournament;
-    private TableView<ResultPredicate> filterListTable;
-    private TableColumn<ResultPredicate, String> filterListName;
-    private TableColumn<ResultPredicate, Player.Sex> filterListSex;
-    private TableColumn<ResultPredicate, String> filterListYear;
-    private TableColumn<ResultPredicate, String> filterListTitle;
-    private TableColumn<ResultPredicate, String> filterListLocal;
-    private TableColumn<ResultPredicate, String> filterListFideRtg;
-    private TableColumn<ResultPredicate, String> filterListFed;
-    private TableColumn<ResultPredicate, String> filterListState;
-    private TableColumn<ResultPredicate, Void> filterListDelete;
+    private TableView<ResultPredicate<Player>> filterListTable;
+    private TableColumn<ResultPredicate<Player>, String> filterListName;
+    private TableColumn<ResultPredicate<Player>, Player.Sex> filterListSex;
+    private TableColumn<ResultPredicate<Player>, String> filterListYear;
+    private TableColumn<ResultPredicate<Player>, String> filterListTitle;
+    private TableColumn<ResultPredicate<Player>, String> filterListLocal;
+    private TableColumn<ResultPredicate<Player>, String> filterListFideRtg;
+    private TableColumn<ResultPredicate<Player>, String> filterListFed;
+    private TableColumn<ResultPredicate<Player>, String> filterListState;
+    private TableColumn<ResultPredicate<Player>, Void> filterListDelete;
 
     public FilterListHelper(
-            Tournament tournament, TableView<ResultPredicate> filterListTable,
-            TableColumn<ResultPredicate, String> filterListName, TableColumn<ResultPredicate, Player.Sex> filterListSex,
-            TableColumn<ResultPredicate, String> filterListYear, TableColumn<ResultPredicate, String> filterListTitle,
-            TableColumn<ResultPredicate, String> filterListLocal, TableColumn<ResultPredicate, String> filterListFideRtg,
-            TableColumn<ResultPredicate, String> filterListFed, TableColumn<ResultPredicate, String> filterListState,
-            TableColumn<ResultPredicate, Void> filterListDelete
+            Tournament tournament, TableView<ResultPredicate<Player>> filterListTable,
+            TableColumn<ResultPredicate<Player>, String> filterListName, TableColumn<ResultPredicate<Player>, Player.Sex> filterListSex,
+            TableColumn<ResultPredicate<Player>, String> filterListYear, TableColumn<ResultPredicate<Player>, String> filterListTitle,
+            TableColumn<ResultPredicate<Player>, String> filterListLocal, TableColumn<ResultPredicate<Player>, String> filterListFideRtg,
+            TableColumn<ResultPredicate<Player>, String> filterListFed, TableColumn<ResultPredicate<Player>, String> filterListState,
+            TableColumn<ResultPredicate<Player>, Void> filterListDelete
     ) {
         setTournament(tournament);
         setFilterListTable(filterListTable);
@@ -115,83 +112,83 @@ public class FilterListHelper {
         this.tournament = tournament;
     }
 
-    public TableView<ResultPredicate> getFilterListTable() {
+    public TableView<ResultPredicate<Player>> getFilterListTable() {
         return filterListTable;
     }
 
-    public void setFilterListTable(TableView<ResultPredicate> filterListTable) {
+    public void setFilterListTable(TableView<ResultPredicate<Player>> filterListTable) {
         this.filterListTable = filterListTable;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListName() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListName() {
         return filterListName;
     }
 
-    public void setFilterListName(TableColumn<ResultPredicate, String> filterListName) {
+    public void setFilterListName(TableColumn<ResultPredicate<Player>, String> filterListName) {
         this.filterListName = filterListName;
     }
 
-    public TableColumn<ResultPredicate, Player.Sex> getFilterListSex() {
+    public TableColumn<ResultPredicate<Player>, Player.Sex> getFilterListSex() {
         return filterListSex;
     }
 
-    public void setFilterListSex(TableColumn<ResultPredicate, Player.Sex> filterListSex) {
+    public void setFilterListSex(TableColumn<ResultPredicate<Player>, Player.Sex> filterListSex) {
         this.filterListSex = filterListSex;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListYear() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListYear() {
         return filterListYear;
     }
 
-    public void setFilterListYear(TableColumn<ResultPredicate, String> filterListYear) {
+    public void setFilterListYear(TableColumn<ResultPredicate<Player>, String> filterListYear) {
         this.filterListYear = filterListYear;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListTitle() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListTitle() {
         return filterListTitle;
     }
 
-    public void setFilterListTitle(TableColumn<ResultPredicate, String> filterListTitle) {
+    public void setFilterListTitle(TableColumn<ResultPredicate<Player>, String> filterListTitle) {
         this.filterListTitle = filterListTitle;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListLocal() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListLocal() {
         return filterListLocal;
     }
 
-    public void setFilterListLocal(TableColumn<ResultPredicate, String> filterListLocal) {
+    public void setFilterListLocal(TableColumn<ResultPredicate<Player>, String> filterListLocal) {
         this.filterListLocal = filterListLocal;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListFideRtg() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListFideRtg() {
         return filterListFideRtg;
     }
 
-    public void setFilterListFideRtg(TableColumn<ResultPredicate, String> filterListFideRtg) {
+    public void setFilterListFideRtg(TableColumn<ResultPredicate<Player>, String> filterListFideRtg) {
         this.filterListFideRtg = filterListFideRtg;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListFed() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListFed() {
         return filterListFed;
     }
 
-    public void setFilterListFed(TableColumn<ResultPredicate, String> filterListFed) {
+    public void setFilterListFed(TableColumn<ResultPredicate<Player>, String> filterListFed) {
         this.filterListFed = filterListFed;
     }
 
-    public TableColumn<ResultPredicate, String> getFilterListState() {
+    public TableColumn<ResultPredicate<Player>, String> getFilterListState() {
         return filterListState;
     }
 
-    public void setFilterListState(TableColumn<ResultPredicate, String> filterListState) {
+    public void setFilterListState(TableColumn<ResultPredicate<Player>, String> filterListState) {
         this.filterListState = filterListState;
     }
 
-    public TableColumn<ResultPredicate, Void> getFilterListDelete() {
+    public TableColumn<ResultPredicate<Player>, Void> getFilterListDelete() {
         return filterListDelete;
     }
 
-    public void setFilterListDelete(TableColumn<ResultPredicate, Void> filterListDelete) {
+    public void setFilterListDelete(TableColumn<ResultPredicate<Player>, Void> filterListDelete) {
         this.filterListDelete = filterListDelete;
     }
 }

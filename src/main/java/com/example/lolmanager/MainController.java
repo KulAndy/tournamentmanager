@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 
 import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
@@ -453,7 +452,7 @@ public class MainController implements Initializable {
     @FXML
     private CheckBox resultFiltered;
     @FXML
-    private ComboBox resultFilter;
+    private ComboBox<ResultPredicate<Player>> resultFilter;
     @FXML
     private TableView<Player> resultsTable;
     @FXML
@@ -482,25 +481,25 @@ public class MainController implements Initializable {
     private TableColumn<Player, Float> resultProgress;
 
     @FXML
-    private TableView<ResultPredicate> filterListTable;
+    private TableView<ResultPredicate<Player>> filterListTable;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListName;
+    private TableColumn<ResultPredicate<Player>, String> filterListName;
     @FXML
-    private TableColumn<ResultPredicate, Player.Sex> filterListSex;
+    private TableColumn<ResultPredicate<Player>, Player.Sex> filterListSex;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListYear;
+    private TableColumn<ResultPredicate<Player>, String> filterListYear;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListTitle;
+    private TableColumn<ResultPredicate<Player>, String> filterListTitle;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListLocal;
+    private TableColumn<ResultPredicate<Player>, String> filterListLocal;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListFideRtg;
+    private TableColumn<ResultPredicate<Player>, String> filterListFideRtg;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListFed;
+    private TableColumn<ResultPredicate<Player>, String> filterListFed;
     @FXML
-    private TableColumn<ResultPredicate, String> filterListState;
+    private TableColumn<ResultPredicate<Player>, String> filterListState;
     @FXML
-    private TableColumn<ResultPredicate, Void> filterListDelete;
+    private TableColumn<ResultPredicate<Player>, Void> filterListDelete;
 
     @FXML
     private TextField filterNameField;

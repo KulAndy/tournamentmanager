@@ -1049,7 +1049,7 @@
                                                                         <CheckBox fx:id="resultFiltered" contentDisplay="CENTER" mnemonicParsing="false" text="Filtred" />
                                                                         <Separator opacity="0.0" prefHeight="46.0" prefWidth="37.0" />
                                                                         <Label text="Filter" />
-                                                                        <ComboBox fx:id="resultFilter" prefWidth="150.0" />
+                                                                        <ComboBox fx:id="resultFilter" prefHeight="27.0" prefWidth="597.0" />
                                                                     </children>
                                                                 </HBox>
                                                                 <TableView fx:id="resultsTable" prefHeight="549.0" prefWidth="1280.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">

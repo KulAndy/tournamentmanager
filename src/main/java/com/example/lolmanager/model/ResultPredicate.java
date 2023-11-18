@@ -1,6 +1,8 @@
 package com.example.lolmanager.model;
 
 import com.example.lolmanager.calculation.PZSzachCalculation;
+
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class ResultPredicate<T extends Player> implements Predicate<T>  {
@@ -131,14 +133,19 @@ public class ResultPredicate<T extends Player> implements Predicate<T>  {
         }
     }
 
-    private boolean compareNumber(CompareOperator compareOperator, int predicateValue, int value) {
-        if (compareOperator == null) {
+    private boolean compareNumber(CompareOperator compareOperator, Integer predicateValue, Integer value) {
+        if (compareOperator == null || predicateValue == null) {
             return true;
         }
 
+        if (value == null){
+            return false;
+        }
+
+
         return switch (compareOperator) {
-            case EQUAL -> value == predicateValue;
-            case UNEQUAL -> value != predicateValue;
+            case EQUAL -> Objects.equals(value, predicateValue);
+            case UNEQUAL -> !Objects.equals(value, predicateValue);
             case LESS -> value < predicateValue;
             case LESS_OR_EQUAL -> value <= predicateValue;
             case GREATER -> value > predicateValue;

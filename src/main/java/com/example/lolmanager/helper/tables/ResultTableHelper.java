@@ -2,12 +2,11 @@ package com.example.lolmanager.helper.tables;
 
 import com.example.lolmanager.model.*;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class ResultTableHelper {
     private Tournament tournament;
     private CheckBox resultFiltered;
-    private ComboBox resultFilter;
+    private ComboBox<ResultPredicate<Player>> resultFilter;
     private TableView<Player> resultsTable;
     private TableColumn<Player, Integer> resultPlace;
     private TableColumn<Player, Integer> resultStartNo;
@@ -33,7 +32,7 @@ public class ResultTableHelper {
 
     public ResultTableHelper(
             Tournament tournament,
-            CheckBox resultFiltered, ComboBox resultFilter, TableView<Player> resultsTable,
+            CheckBox resultFiltered, ComboBox<ResultPredicate<Player>> resultFilter, TableView<Player> resultsTable,
             TableColumn<Player, Integer> resultPlace, TableColumn<Player, Integer> resultStartNo,
             TableColumn<Player, Title> resultTitle, TableColumn<Player, String> resultName,
             TableColumn<Player, Integer> resultElo, TableColumn<Player, Integer> resultLocal,
@@ -44,53 +43,98 @@ public class ResultTableHelper {
         setTournament(tournament);
         setResultFiltered(resultFiltered);
         setResultFilter(resultFilter);
-
         setResultsTable(resultsTable);
-
         setResultPlace(resultPlace);
+        setResultStartNo(resultStartNo);
+        setResultTitle(resultTitle);
+        setResultName(resultName);
+        setResultElo(resultElo);
+        setResultLocal(resultLocal);
+        setResultFed(resultFed);
+        setResultPoints(resultPoints);
+        setResultBuchCut(resultBuchCut);
+        setResultBuch(resultBuch);
+        setResultBerger(resultBerger);
+        setResultProgress(resultProgress);
+
+        getResultFiltered().selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if (newValue != null) {
+                ResultPredicate<Player> predicate = getResultFilter().getValue();
+                SortedList<Player> sortedList;
+                if (newValue && predicate != null){
+                    FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), predicate );
+                    sortedList = new SortedList<>(filteredList, getTournament().getResultsComparator());
+                    setSortedPlayers(sortedList);
+                }else{
+                    sortedList = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
+                    setSortedPlayers(sortedList);
+                }
+                getResultsTable().setItems(sortedList);
+                getResultsTable().refresh();
+            }
+        });
+
+        getResultFilter().setItems(getTournament().getPredicatesObs());
+        getResultFilter().valueProperty().addListener((ObservableValue<? extends ResultPredicate<Player>> observable, ResultPredicate<Player> oldValue, ResultPredicate<Player> newValue)->{
+            if (newValue != null) {
+                SortedList<Player> sortedList;
+                if (getResultFiltered().isSelected()){
+                    FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), newValue );
+                    sortedList = new SortedList<>(filteredList, getTournament().getResultsComparator());
+                    setSortedPlayers(sortedList);
+                }else{
+                    sortedList = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
+                    setSortedPlayers(sortedList);
+                }
+                getResultsTable().setItems(sortedList);
+                getResultsTable().refresh();
+            }
+        });
+
+        getResultFilter().setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(ResultPredicate<Player> item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getFilterName());
+                }
+            }
+        });
+        getResultFilter().setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(ResultPredicate<Player> item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getFilterName());
+                }
+            }
+        });
+
         getResultPlace().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
             int rowIndex = getResultsTable().getItems().indexOf(player) + 1;
             return new SimpleIntegerProperty(rowIndex).asObject();
         });
-
-
-        setResultStartNo(resultStartNo);
         getResultStartNo().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
             int rowIndex = getTournament().getPlayersObs().indexOf(player) + 1;
             return new SimpleIntegerProperty(rowIndex).asObject();
         });
 
-        setResultTitle(resultTitle);
-        resultTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-
-        setResultName(resultName);
-        resultName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        setResultElo(resultElo);
-        resultElo.setCellValueFactory(new PropertyValueFactory<>("fideRating"));
-
-        setResultLocal(resultLocal);
-        resultLocal.setCellValueFactory(new PropertyValueFactory<>("localRating"));
-
-        setResultFed(resultFed);
-        resultFed.setCellValueFactory(new PropertyValueFactory<>("federation"));
-
-        setResultPoints(resultPoints);
-        resultPoints.setCellValueFactory(new PropertyValueFactory<>("points"));
-
-        setResultBuchCut(resultBuchCut);
-        resultBuchCut.setCellValueFactory(new PropertyValueFactory<>("bucholzCut1"));
-
-        setResultBuch(resultBuch);
-        resultBuch.setCellValueFactory(new PropertyValueFactory<>("bucholz"));
-
-        setResultBerger(resultBerger);
-        resultBerger.setCellValueFactory(new PropertyValueFactory<>("berger"));
-
-        setResultProgress(resultProgress);
-        resultProgress.setCellValueFactory(new PropertyValueFactory<>("progress"));
+        getResultTitle().setCellValueFactory(new PropertyValueFactory<>("title"));
+        getResultName().setCellValueFactory(new PropertyValueFactory<>("name"));
+        getResultElo().setCellValueFactory(new PropertyValueFactory<>("fideRating"));
+        getResultLocal().setCellValueFactory(new PropertyValueFactory<>("localRating"));
+        getResultFed().setCellValueFactory(new PropertyValueFactory<>("federation"));
+        getResultPoints().setCellValueFactory(new PropertyValueFactory<>("points"));
+        getResultBuchCut().setCellValueFactory(new PropertyValueFactory<>("bucholzCut1"));
+        getResultBuch().setCellValueFactory(new PropertyValueFactory<>("bucholz"));
+        getResultBerger().setCellValueFactory(new PropertyValueFactory<>("berger"));
+        getResultProgress().setCellValueFactory(new PropertyValueFactory<>("progress"));
 
         SortedList<Player> sortedPlayersTmp = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
         setSortedPlayers(sortedPlayersTmp);
@@ -136,11 +180,11 @@ public class ResultTableHelper {
         this.resultFiltered = resultFiltered;
     }
 
-    public ComboBox getResultFilter() {
+    public ComboBox<ResultPredicate<Player>> getResultFilter() {
         return resultFilter;
     }
 
-    public void setResultFilter(ComboBox resultFilter) {
+    public void setResultFilter(ComboBox<ResultPredicate<Player>> resultFilter) {
         this.resultFilter = resultFilter;
     }
 
