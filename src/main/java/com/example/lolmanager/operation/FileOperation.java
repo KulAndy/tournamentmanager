@@ -431,10 +431,7 @@ public class FileOperation {
                 case "Ś":
                     sb.append("S");
                     break;
-                case "Ź":
-                    sb.append("Z");
-                    break;
-                case "Ż":
+                case "Ź", "Ż":
                     sb.append("Z");
                     break;
                 default:
