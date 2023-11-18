@@ -1,5 +1,6 @@
 package com.example.lolmanager.helper;
 
+import com.example.lolmanager.MainController;
 import com.example.lolmanager.operation.FileOperation;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
@@ -9,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import java.util.Objects;
 
 import static com.example.lolmanager.MainController.quit;
+import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
     private Scene scene;
@@ -16,13 +18,15 @@ public class ShortcutsHelper {
     private RoundsHelper roundsHelper;
     private Tab roundsTab;
     private Tab enterResultsTab;
+    private final MainController controller;
 
-    public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, Tab roundsTab, Tab enterResultsTab) {
+    public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, Tab roundsTab, Tab enterResultsTab, MainController controller) {
         setScene(scene);
         setFileOperation(fileOperation);
         setRoundsHelper(roundsHelper);
         setRoundsTab(roundsTab);
         setEnterResultsTab(enterResultsTab);
+        this.controller = controller;
         addShortcuts();
     }
 
@@ -37,8 +41,8 @@ public class ShortcutsHelper {
     private void controlShortcuts(KeyEvent e) {
         if (e.isControlDown()) {
             switch (e.getCode()) {
-                case S -> fileOperation.save();
-                case O -> fileOperation.open();
+                case S -> save(controller);
+                case O -> open(controller);
                 case Q -> quit();
             }
         }
@@ -47,7 +51,7 @@ public class ShortcutsHelper {
     private void controlShiftShortcuts(KeyEvent e) {
         if (e.isControlDown() && e.isShiftDown()) {
             if (Objects.requireNonNull(e.getCode()) == KeyCode.S) {
-                fileOperation.saveAs();
+                saveAs(controller);
             }
         }
     }

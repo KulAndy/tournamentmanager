@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
+import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class MainController implements Initializable {
     private final ObservableList<File> files = FXCollections.observableArrayList();
@@ -681,7 +682,7 @@ public class MainController implements Initializable {
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
             if (getAutosaveMenu().isSelected() && !isSaving()) {
                 setSaving(true);
-                fileOperation.save();
+                save(this);
                 setSaving(false);
             }
         });
@@ -694,19 +695,19 @@ public class MainController implements Initializable {
     public void init(Scene scene, String programName, String programExtension) {
         setProgramName(programName);
         setProgramExtension(programExtension);
-        setFileOperation(new FileOperation(this));
+        setFileOperation(new FileOperation());
         setupEvents();
-        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, roundsTab, enterResultsTab));
+        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, roundsTab, enterResultsTab, this));
 
     }
 
     public void setupEvents() {
         quitMenu.setOnAction(e -> quit());
-        saveAsMenu.setOnAction(e -> getFileOperation().saveAs());
-        saveMenu.setOnAction(e -> getFileOperation().save());
-        saveButton.setOnAction(e -> getFileOperation().save());
-        openMenu.setOnAction(e -> getFileOperation().open());
-        openButton.setOnAction(e -> getFileOperation().open());
+        saveAsMenu.setOnAction(e -> saveAs(this));
+        saveMenu.setOnAction(e -> save(this));
+        saveButton.setOnAction(e -> save(this));
+        openMenu.setOnAction(e -> open(this));
+        openButton.setOnAction(e -> open(this));
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         downloadFideMenu.setOnAction(e -> {
@@ -767,12 +768,12 @@ public class MainController implements Initializable {
             files.remove(getFile());
         });
         tournamentSelect.valueProperty().addListener(e -> {
-            getFileOperation().save();
+            save(this);
             File newValue = tournamentSelect.getValue();
             if (newValue == null) {
                 TournamentOperation.loadTournament(new Tournament(), this);
             } else {
-                getFileOperation().importJson(tournamentSelect.getValue());
+                importJson(tournamentSelect.getValue(), this);
             }
         });
     }

@@ -4,7 +4,9 @@ import com.example.lolmanager.model.*;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
@@ -146,7 +148,9 @@ public class ResultTableHelper {
     }
 
     public void refreshList() {
-        setSortedPlayers(getSortedPlayers());
+        getSortedPlayers().setComparator(getTournament().getResultsComparator());
+        ObservableList<Player> playersObs = FXCollections.observableArrayList(getSortedPlayers());
+        setSortedPlayers(new SortedList<>(playersObs, getTournament().getResultsComparator()));
     }
 
     public SortedList<Player> getSortedPlayers() {

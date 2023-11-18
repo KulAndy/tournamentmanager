@@ -1,15 +1,7 @@
 package com.example.lolmanager.operation;
 
-import com.example.lolmanager.MainController;
-import com.example.lolmanager.adapter.LocalDateAdapter;
 import com.example.lolmanager.helper.GeneralHelper;
-import com.example.lolmanager.model.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
+import com.example.lolmanager.model.Federation;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
@@ -21,33 +13,22 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.text.Normalizer;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import static com.example.lolmanager.helper.GeneralHelper.error;
-import static com.example.lolmanager.helper.GeneralHelper.warning;
 
 
 public class FileOperation {
     private static final int BATCH_SIZE = 10000;
-    private final MainController controller;
-    private final Stage fileStage;
 
-    public FileOperation(MainController controller) {
-        this.controller = controller;
-        this.fileStage = new Stage();
+    public FileOperation() {
     }
 
     public static File selectSwsx() {
@@ -464,182 +445,4 @@ public class FileOperation {
 
         return sb.toString();
     }
-
-    public void saveAs() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Create New File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
-        File newFile = fileChooser.showSaveDialog(fileStage);
-
-        if (newFile != null) {
-            String filePath = newFile.getAbsolutePath();
-            if (!filePath.endsWith("." + controller.getProgramExtension())) {
-                filePath += "." + controller.getProgramExtension();
-            }
-            newFile = new File(filePath);
-            controller.setFile(newFile);
-            save();
-        }
-    }
-
-    public void save() {
-        File file = controller.getFile();
-        if (file == null) {
-            saveAs();
-        } else {
-            try {
-                exportTournament(controller.getTournament(), controller.getFile());
-            } catch (IOException e) {
-                error("An error occured");
-            }
-
-        }
-    }
-
-    public void open() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
-        File selectedFile = fileChooser.showOpenDialog(fileStage);
-
-        if (selectedFile != null) {
-            importJson(selectedFile);
-        } else {
-            warning("No file selected");
-        }
-
-    }
-
-    public void export(Tournament tournament) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Create New File");
-        FileChooser.ExtensionFilter jsonFilter = new FileChooser.ExtensionFilter("JSON files", "*.xd.json");
-        FileChooser.ExtensionFilter xmlFilter = new FileChooser.ExtensionFilter("XML files", "*.xd.xml");
-        fileChooser.getExtensionFilters().addAll(jsonFilter, xmlFilter);
-        File file = fileChooser.showSaveDialog(fileStage);
-
-        try {
-            if (file != null) {
-                String filePath = file.getAbsolutePath();
-                if (fileChooser.getSelectedExtensionFilter() == xmlFilter) {
-                    if (!filePath.endsWith(".xd.xml")) {
-                        filePath += ".xd.xml";
-                    }
-                    exportAsXML(tournament, new File(filePath));
-                } else if (fileChooser.getSelectedExtensionFilter() == jsonFilter) {
-                    if (!filePath.endsWith(".xd.json")) {
-                        filePath += ".xd.json";
-                    }
-                    exportAsJSON(tournament, new File(filePath));
-                }
-
-
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            error("Tournament couldn't be exported");
-        }
-    }
-
-    private void exportAsXML(Tournament tournament, File file) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Tournament.class, Player.class, PlayerList.class, ArrayList.class);
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(tournament, file);
-    }
-
-    private void exportAsJSON(Tournament tournament, File file) throws IOException {
-
-        try (
-                BufferedWriter writer = new BufferedWriter(new FileWriter(file))
-
-        ) {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                    .create();
-            String json = gson.toJson(tournament);
-            writer.write(json);
-        }
-    }
-
-    private void exportTournament(Tournament tournament, File file) throws IOException {
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
-        String json = gson.toJson(tournament);
-//        try (
-//                BufferedWriter writer = new BufferedWriter(new FileWriter(file))
-//
-//        ) {
-//            writer.write(json);
-//        }
-
-        String fileName = "tournament.json";
-        String fileContent = json;
-
-        try (FileOutputStream fos = new FileOutputStream(file);
-             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-
-            ZipEntry zipEntry = new ZipEntry(fileName);
-            zipOut.putNextEntry(zipEntry);
-
-            byte[] contentBytes = fileContent.getBytes();
-            zipOut.write(contentBytes, 0, contentBytes.length);
-            zipOut.closeEntry();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void importJson(File file) {
-        String fileName = "tournament.json";
-
-        try (FileInputStream fis = new FileInputStream(file);
-             BufferedInputStream bis = new BufferedInputStream(fis);
-             ZipInputStream zipIn = new ZipInputStream(bis)) {
-
-            ZipEntry zipEntry;
-            while ((zipEntry = zipIn.getNextEntry()) != null) {
-                if (zipEntry.getName().equals(fileName)) {
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[1024];
-                    int bytesRead;
-                    while ((bytesRead = zipIn.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-
-                    String content = outputStream.toString(StandardCharsets.UTF_8);
-                    Gson gson = new Gson();
-                    Type tournamentType = new TypeToken<Tournament>() {
-                    }.getType();
-                    Tournament tournament = gson.fromJson(content, tournamentType);
-                    PlayerList players = tournament.getPlayers();
-                    for (Player player : players) {
-                        player.getRounds().clear();
-                    }
-
-                    for (ArrayList<Game> round : tournament.getRounds()) {
-                        for (Game game : round) {
-                            Player white = players.get(game.getWhiteUUDI());
-                            Player black = players.get(game.getBlackUUID());
-                            game.setWhite(white);
-                            game.setBlack(black);
-                            white.addRound(game);
-                            black.addRound(game);
-                        }
-                    }
-                    TournamentOperation.loadTournament(tournament, controller);
-
-                    break;
-                }
-            }
-            controller.setFile(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

@@ -1,13 +1,34 @@
 package com.example.lolmanager.operation;
 
 import com.example.lolmanager.MainController;
+import com.example.lolmanager.adapter.LocalDateAdapter;
+import com.example.lolmanager.model.Game;
+import com.example.lolmanager.model.Player;
+import com.example.lolmanager.model.PlayerList;
 import com.example.lolmanager.model.Tournament;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.*;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import static com.example.lolmanager.helper.GeneralHelper.error;
+import static com.example.lolmanager.helper.GeneralHelper.warning;
 
 public class TournamentOperation {
+    private static final Stage fileStage = new Stage();
+
     public static void loadTournament(Tournament tournament, MainController controller) {
         if (tournament != null && controller != null) {
 
@@ -78,6 +99,123 @@ public class TournamentOperation {
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria3().setValue(tournament.getPlayers().getComparator().getCriteria3());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria4().setValue(tournament.getPlayers().getComparator().getCriteria4());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria5().setValue(tournament.getPlayers().getComparator().getCriteria5());
+        }
+    }
+
+    public static void saveAs(MainController controller) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Create New File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
+        File newFile = fileChooser.showSaveDialog(fileStage);
+
+        if (newFile != null) {
+            String filePath = newFile.getAbsolutePath();
+            if (!filePath.endsWith("." + controller.getProgramExtension())) {
+                filePath += "." + controller.getProgramExtension();
+            }
+            newFile = new File(filePath);
+            controller.setFile(newFile);
+            save(controller);
+        }
+    }
+
+    public static void save(MainController controller) {
+        File file = controller.getFile();
+        if (file == null) {
+            saveAs(controller);
+        } else {
+            try {
+                exportTournament(controller.getTournament(), controller.getFile());
+            } catch (IOException e) {
+                error("An error occured");
+            }
+
+        }
+    }
+
+    public static void open(MainController controller) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
+        File selectedFile = fileChooser.showOpenDialog(fileStage);
+
+        if (selectedFile != null) {
+            importJson(selectedFile, controller);
+        } else {
+            warning("No file selected");
+        }
+
+    }
+
+    private static void exportTournament(Tournament tournament, File file) throws IOException {
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+        String json = gson.toJson(tournament);
+        String fileName = "tournament.json";
+        String fileContent = json;
+
+        try (FileOutputStream fos = new FileOutputStream(file);
+             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zipOut.putNextEntry(zipEntry);
+
+            byte[] contentBytes = fileContent.getBytes();
+            zipOut.write(contentBytes, 0, contentBytes.length);
+            zipOut.closeEntry();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void importJson(File file, MainController controller) {
+        String fileName = "tournament.json";
+
+        try (FileInputStream fis = new FileInputStream(file);
+             BufferedInputStream bis = new BufferedInputStream(fis);
+             ZipInputStream zipIn = new ZipInputStream(bis)) {
+
+            ZipEntry zipEntry;
+            while ((zipEntry = zipIn.getNextEntry()) != null) {
+                if (zipEntry.getName().equals(fileName)) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = zipIn.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    String content = outputStream.toString(StandardCharsets.UTF_8);
+                    Gson gson = new Gson();
+                    Type tournamentType = new TypeToken<Tournament>() {
+                    }.getType();
+                    Tournament tournament = gson.fromJson(content, tournamentType);
+                    PlayerList players = tournament.getPlayers();
+                    for (Player player : players) {
+                        player.getRounds().clear();
+                    }
+
+                    for (ArrayList<Game> round : tournament.getRounds()) {
+                        for (Game game : round) {
+                            Player white = players.get(game.getWhiteUUDI());
+                            Player black = players.get(game.getBlackUUID());
+                            game.setWhite(white);
+                            game.setBlack(black);
+                            white.addRound(game);
+                            black.addRound(game);
+                        }
+                    }
+                    TournamentOperation.loadTournament(tournament, controller);
+
+                    break;
+                }
+            }
+            controller.setFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
