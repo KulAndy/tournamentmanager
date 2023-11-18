@@ -34,23 +34,23 @@ public class PlayersSortHelper {
         setCriteria5(criteria5);
         setApplySortButton(applySortButton);
 
-        setupComboBox(criteria1, StartListComparator.SortCriteria.values());
-        setupComboBox(criteria2, StartListComparator.SortCriteria.values());
-        setupComboBox(criteria3, StartListComparator.SortCriteria.values());
-        setupComboBox(criteria4, StartListComparator.SortCriteria.values());
-        setupComboBox(criteria5, StartListComparator.SortCriteria.values());
+        setupComboBox(getCriteria1(), StartListComparator.SortCriteria.values());
+        setupComboBox(getCriteria2(), StartListComparator.SortCriteria.values());
+        setupComboBox(getCriteria3(), StartListComparator.SortCriteria.values());
+        setupComboBox(getCriteria4(), StartListComparator.SortCriteria.values());
+        setupComboBox(getCriteria5(), StartListComparator.SortCriteria.values());
 
-        bindComboBox(criteria1, tournament.getPlayers().getComparator(), "criteria1", StartListComparator.SortCriteria.class);
-        bindComboBox(criteria2, tournament.getPlayers().getComparator(), "criteria2", StartListComparator.SortCriteria.class);
-        bindComboBox(criteria3, tournament.getPlayers().getComparator(), "criteria3", StartListComparator.SortCriteria.class);
-        bindComboBox(criteria4, tournament.getPlayers().getComparator(), "criteria4", StartListComparator.SortCriteria.class);
-        bindComboBox(criteria5, tournament.getPlayers().getComparator(), "criteria5", StartListComparator.SortCriteria.class);
+        bindComboBox(getCriteria1(), getTournament().getPlayers().getComparator(), "criteria1", StartListComparator.SortCriteria.class);
+        bindComboBox(getCriteria2(), getTournament().getPlayers().getComparator(), "criteria2", StartListComparator.SortCriteria.class);
+        bindComboBox(getCriteria3(), getTournament().getPlayers().getComparator(), "criteria3", StartListComparator.SortCriteria.class);
+        bindComboBox(getCriteria4(), getTournament().getPlayers().getComparator(), "criteria4", StartListComparator.SortCriteria.class);
+        bindComboBox(getCriteria5(), getTournament().getPlayers().getComparator(), "criteria5", StartListComparator.SortCriteria.class);
 
-        criteria1.setValue(StartListComparator.SortCriteria.FIDE_RATING);
-        criteria2.setValue(StartListComparator.SortCriteria.LOCAL_RATING);
-        criteria3.setValue(StartListComparator.SortCriteria.TITLE);
-        criteria4.setValue(StartListComparator.SortCriteria.ALPHABETIC);
-        criteria5.setValue(StartListComparator.SortCriteria.RANDOM);
+        getCriteria1().setValue(StartListComparator.SortCriteria.FIDE_RATING);
+        getCriteria2().setValue(StartListComparator.SortCriteria.LOCAL_RATING);
+        getCriteria3().setValue(StartListComparator.SortCriteria.TITLE);
+        getCriteria4().setValue(StartListComparator.SortCriteria.ALPHABETIC);
+        getCriteria5().setValue(StartListComparator.SortCriteria.RANDOM);
 
         getApplySortButton().setOnAction(event -> {
             getTournament().getPlayers().sort();

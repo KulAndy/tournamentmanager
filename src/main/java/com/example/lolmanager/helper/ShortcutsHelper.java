@@ -13,12 +13,12 @@ import static com.example.lolmanager.MainController.quit;
 import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
+    private final MainController controller;
     private Scene scene;
     private FileOperation fileOperation;
     private RoundsHelper roundsHelper;
     private Tab roundsTab;
     private Tab enterResultsTab;
-    private final MainController controller;
 
     public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, Tab roundsTab, Tab enterResultsTab, MainController controller) {
         setScene(scene);
@@ -39,7 +39,7 @@ public class ShortcutsHelper {
     }
 
     private void controlShortcuts(KeyEvent e) {
-        if (e.isControlDown()) {
+        if (e.isControlDown() && !e.isShiftDown()) {
             switch (e.getCode()) {
                 case S -> save(controller);
                 case O -> open(controller);

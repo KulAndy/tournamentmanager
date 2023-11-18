@@ -36,31 +36,26 @@ public class PolandTableHelper {
     ) {
         setTournament(tournament);
         setRtgPolTable(rtgPolTable);
-
         setRtPolId(rtPolId);
-        rtPolId.setCellValueFactory(new PropertyValueFactory<>("localId"));
         setRtPolTitle(rtPolTitle);
-        rtPolTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         setRtPolName(rtPolName);
-        rtPolName.setCellValueFactory(new PropertyValueFactory<>("name"));
         setRtPolGames(rtPolGames);
-        getRtPolGames().setCellValueFactory(new PropertyValueFactory<>("playedGamedNumber"));
-
         setRtPolPoints(rtPolPoints);
-        getRtPolPoints().setCellValueFactory(new PropertyValueFactory<>("PZSzachPoints"));
-
         setRtPolAverage(rtPolAverage);
-        getRtPolAverage().setCellValueFactory(new PropertyValueFactory<>("averageRatingPZSzach"));
-
         setRtPolPerformance(rtPolPerformance);
-        getRtPolPerformence().setCellValueFactory(new PropertyValueFactory<>("ratingPerformancePZSzach"));
-
         setRtPolNorm(rtPolNorm);
-        getRtPolNorm().setCellValueFactory(new PropertyValueFactory<>("playerNorm"));
-
         setRtPolRemarks(rtPolRemarks);
 
-        getRtgPolTable().setItems(tournament.getPlayersObs());
+        getRtPolId().setCellValueFactory(new PropertyValueFactory<>("localId"));
+        getRtPolTitle().setCellValueFactory(new PropertyValueFactory<>("title"));
+        getRtPolName().setCellValueFactory(new PropertyValueFactory<>("name"));
+        getRtPolGames().setCellValueFactory(new PropertyValueFactory<>("playedGamedNumber"));
+        getRtPolPoints().setCellValueFactory(new PropertyValueFactory<>("PZSzachPoints"));
+        getRtPolAverage().setCellValueFactory(new PropertyValueFactory<>("averageRatingPZSzach"));
+        getRtPolPerformence().setCellValueFactory(new PropertyValueFactory<>("ratingPerformancePZSzach"));
+        getRtPolNorm().setCellValueFactory(new PropertyValueFactory<>("playerNorm"));
+
+        getRtgPolTable().setItems(getTournament().getPlayersObs());
 
 
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {

@@ -9,8 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-import static com.example.lolmanager.helper.GeneralHelper.error;
-import static com.example.lolmanager.helper.GeneralHelper.setupComboBox;
+import static com.example.lolmanager.helper.GeneralHelper.*;
 
 public class FilterCreatorHelper {
     private Tournament tournament;
@@ -152,9 +151,11 @@ public class FilterCreatorHelper {
             getFilterFedSelect().setValue(null);
             getFilterStateOperator().setValue(null);
             getFilterStateSelect().setValue(null);
-
         });
 
+        validateTextFieldInt(getFilterYearField());
+        validateTextFieldInt(getFilterLocalRtg());
+        validateTextFieldInt(getFilterFIDERtg());
     }
 
     public Tournament getTournament() {

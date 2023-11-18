@@ -33,34 +33,26 @@ public class FideTableHelper {
         setTournament(tournament);
         setRtgFideTable(rtgFideTable);
         setRtgFideName(rtgFideName);
-        rtgFideName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
         setRtgFideId(rtgFideId);
-        rtgFideId.setCellValueFactory(new PropertyValueFactory<>("fideId"));
         setRtgFideTitle(rtgFideTitle);
-        rtgFideTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-
         setRtgFideFed(rtgFideFed);
-        rtgFideFed.setCellValueFactory(new PropertyValueFactory<>("federation"));
-
         setRtgFideElo(rtgFideElo);
-        rtgFideElo.setCellValueFactory(new PropertyValueFactory<>("fideRating"));
-
         setRtgFidePoints(rtgFidePoints);
-        rtgFidePoints.setCellValueFactory(new PropertyValueFactory<>("fidePoints"));
-
         setRtgFideGames(rtgFideGames);
-        rtgFideGames.setCellValueFactory(new PropertyValueFactory<>("fidePlayedGamedNumber"));
-
         setRtgFideAverage(rtgFideAverage);
-        rtgFideAverage.setCellValueFactory(new PropertyValueFactory<>("averageFideRating"));
-
         setRtgFideChg(rtgFideChg);
-        rtgFideChg.setCellValueFactory(new PropertyValueFactory<>("fideChange"));
-
         setRtgFideNorm(rtgFideNorm);
 
-        rtgFideTable.setItems(tournament.getPlayersObs());
+        getRtgFideName().setCellValueFactory(new PropertyValueFactory<>("name"));
+        getRtgFideId().setCellValueFactory(new PropertyValueFactory<>("fideId"));
+        getRtgFideTitle().setCellValueFactory(new PropertyValueFactory<>("title"));
+        getRtgFideFed().setCellValueFactory(new PropertyValueFactory<>("federation"));
+        getRtgFideElo().setCellValueFactory(new PropertyValueFactory<>("fideRating"));
+        getRtgFidePoints().setCellValueFactory(new PropertyValueFactory<>("fidePoints"));
+        getRtgFideGames().setCellValueFactory(new PropertyValueFactory<>("fidePlayedGamedNumber"));
+        getRtgFideAverage().setCellValueFactory(new PropertyValueFactory<>("averageFideRating"));
+        getRtgFideChg().setCellValueFactory(new PropertyValueFactory<>("fideChange"));
+        getRtgFideTable().setItems(tournament.getPlayersObs());
 
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
             getRtgFideTable().refresh();

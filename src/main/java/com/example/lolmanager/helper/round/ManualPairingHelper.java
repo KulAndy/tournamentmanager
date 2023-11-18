@@ -52,6 +52,24 @@ public class ManualPairingHelper {
     ) {
         setTournament(tournament);
         setPairsList(pairsList);
+        setRoundUpdateSelect(roundUpdateSelect);
+        setWhiteSearch(whiteSearch);
+        setBlackSearch(blackSearch);
+        setWhiteList(whiteList);
+        setBlackList(blackList);
+        setAutoColorCheckbox(autoColorCheckbox);
+        setPairRestButton(pairRestButton);
+        setPairButton(pairButton);
+        setWhithdrawButton(whithdrawButton);
+        setByePairButton(byePairButton);
+        setHalfByePairButton(halfByePairButton);
+        setClearManualButton(clearManualButton);
+        setUnpairButton(unpairButton);
+        setSwapColorPairButton(swapColorPairButton);
+        setApplyManualButton(applyManualButton);
+        setWhitePairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim())));
+        setBlackPairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim())));
+
         getPairsList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
 
         getPairsList().setItems(manualRound);
@@ -74,7 +92,6 @@ public class ManualPairingHelper {
                 }
             }
         });
-        setRoundUpdateSelect(roundUpdateSelect);
         getRoundUpdateSelect().setItems(roundsNumbersObs);
         getRoundUpdateSelect().valueProperty().addListener((ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) -> {
             try {
@@ -108,13 +125,6 @@ public class ManualPairingHelper {
             getRoundUpdateSelect().setItems(roundsNumbersObs);
         });
 
-        setWhiteSearch(whiteSearch);
-        setBlackSearch(blackSearch);
-        setWhiteList(whiteList);
-        setBlackList(blackList);
-        setAutoColorCheckbox(autoColorCheckbox);
-        setPairRestButton(pairRestButton);
-        setPairButton(pairButton);
 
         getWhiteSearch().textProperty().bindBidirectional(whiteStart);
         getBlackSearch().textProperty().bindBidirectional(blackStart);
@@ -129,73 +139,67 @@ public class ManualPairingHelper {
             } else if (white == null || black == null) {
                 warning("Two players are needed for pairing");
             } else {
-                manualRound.add(new Game(white, black));
+                getManualRound().add(new Game(white, black));
                 getPaired().add(white);
                 getPaired().add(black);
             }
-            manualRound.sort(getTournament().getPairingComparator());
+            getManualRound().sort(getTournament().getPairingComparator());
         });
 
-        setWhithdrawButton(whithdrawButton);
         getWhithdrawButton().setOnAction(e -> {
             Player white = getWhiteList().getSelectionModel().getSelectedItem();
             Player black = getBlackList().getSelectionModel().getSelectedItem();
             if (white != null) {
                 getPaired().add(white);
-                manualRound.add(new Game(white, getTournament().getPlayers().getUnpaired()));
+                getManualRound().add(new Game(white, getTournament().getPlayers().getUnpaired()));
             }
             if (black != null && black != white) {
                 getPaired().add(black);
-                manualRound.add(new Game(black, getTournament().getPlayers().getUnpaired()));
+                getManualRound().add(new Game(black, getTournament().getPlayers().getUnpaired()));
             }
-            manualRound.sort(getTournament().getPairingComparator());
+            getManualRound().sort(getTournament().getPairingComparator());
 
         });
-        setByePairButton(byePairButton);
         getByePairButton().setOnAction(e -> {
             Player white = getWhiteList().getSelectionModel().getSelectedItem();
             Player black = getBlackList().getSelectionModel().getSelectedItem();
             if (white != null) {
                 getPaired().add(white);
-                manualRound.add(new Game(white, getTournament().getPlayers().getBye()));
+                getManualRound().add(new Game(white, getTournament().getPlayers().getBye()));
             }
             if (black != null && black != white) {
                 getPaired().add(black);
-                manualRound.add(new Game(black, getTournament().getPlayers().getBye()));
+                getManualRound().add(new Game(black, getTournament().getPlayers().getBye()));
             }
-            manualRound.sort(getTournament().getPairingComparator());
+            getManualRound().sort(getTournament().getPairingComparator());
             getWhiteSearch().setText("");
             getBlackSearch().setText("");
         });
-        setHalfByePairButton(halfByePairButton);
         getHalfByePairButton().setOnAction(e -> {
             Player white = getWhiteList().getSelectionModel().getSelectedItem();
             Player black = getBlackList().getSelectionModel().getSelectedItem();
             if (white != null) {
                 getPaired().add(white);
-                manualRound.add(new Game(white, getTournament().getPlayers().getHalfbye()));
+                getManualRound().add(new Game(white, getTournament().getPlayers().getHalfbye()));
             }
             if (black != null && black != white) {
                 getPaired().add(black);
-                manualRound.add(new Game(black, getTournament().getPlayers().getHalfbye()));
+                getManualRound().add(new Game(black, getTournament().getPlayers().getHalfbye()));
             }
-            manualRound.sort(getTournament().getPairingComparator());
+            getManualRound().sort(getTournament().getPairingComparator());
         });
 
-        setClearManualButton(clearManualButton);
         getClearManualButton().setOnAction(e -> {
             getWhiteList().getSelectionModel().clearSelection();
             getBlackList().getSelectionModel().clearSelection();
             getPairsList().getSelectionModel().clearSelection();
         });
-        setUnpairButton(unpairButton);
         getUnpairButton().setOnAction(e -> {
             Game game = pairsList.getSelectionModel().getSelectedItem();
-            manualRound.remove(game);
+            getManualRound().remove(game);
             getPaired().removeAll(game.getWhite(), game.getBlack());
         });
 
-        setSwapColorPairButton(swapColorPairButton);
         getSwapColorPairButton().setOnAction(e -> {
             Game game = getPairsList().getSelectionModel().getSelectedItem();
             if (game != null) {
@@ -209,10 +213,9 @@ public class ManualPairingHelper {
                 getPairsList().getSelectionModel().clearSelection();
             }
         });
-        setApplyManualButton(applyManualButton);
         getApplyManualButton().setOnAction(e -> {
             int currentRound = getRoundUpdateSelect().getValue();
-            ArrayList<Game> pom = new ArrayList<>(manualRound);
+            ArrayList<Game> pom = new ArrayList<>(getManualRound());
             if (pom.isEmpty()) {
                 warning("Round cannot be empty");
             } else if (getPaired().size() < getTournament().getPlayersObs().size()) {
@@ -236,8 +239,6 @@ public class ManualPairingHelper {
         });
 
 
-        setWhitePairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim())));
-        setBlackPairedFilter(new FilteredList<>(getTournament().getPlayersObs(), item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim())));
         getPaired().addListener((ListChangeListener<Player>) change -> {
             getWhitePairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(whiteStart.get().toLowerCase().trim()));
             getBlackPairedFilter().setPredicate(item -> !getPaired().contains(item) && item.getName().toLowerCase().startsWith(blackStart.get().toLowerCase().trim()));

@@ -52,46 +52,48 @@ public class BasicInfoHelper {
         setTourOrganizer(tourOrganizer);
         setTourEmail(tourEmail);
         try {
-            bindTextFieldStringProperty(tourName, tournament, "name");
+            bindTextFieldStringProperty(getTourName(), getTournament(), "name");
         } catch (Exception ignored) {
         }
         try {
-            bindTextFieldStringProperty(tourPlace, tournament, "place");
+            bindTextFieldStringProperty(getTourPlace(), getTournament(), "place");
         } catch (Exception ignored) {
         }
         try {
-            bindTextFieldStringProperty(tourArbiter, tournament, "arbiter");
+            bindTextFieldStringProperty(getTourArbiter(), getTournament(), "arbiter");
         } catch (Exception ignored) {
         }
         try {
-            bindTextFieldStringProperty(tourOrganizer, tournament, "organizer");
+            bindTextFieldStringProperty(getTourOrganizer(), getTournament(), "organizer");
         } catch (Exception ignored) {
         }
         try {
-            bindTextFieldStringProperty(tourEmail, tournament, "email");
+            bindTextFieldStringProperty(getTourEmail(), getTournament(), "email");
         } catch (Exception ignored) {
         }
-        validateTextFieldInt(tourGameTime);
-        validateTextFieldInt(tourIncrement);
-        validateTextFieldInt(tourControlMove);
-        validateTextFieldInt(tourControlAddition);
-        validateTextFieldInt(tourNoRounds);
-        bindTextFieldInt(tourGameTime, tournament, "gameTime", "short");
-        bindTextFieldInt(tourIncrement, tournament, "increment", "short");
-        bindTextFieldInt(tourControlMove, tournament, "controlMove", "byte");
-        bindTextFieldInt(tourControlAddition, tournament, "controlAddition", "byte");
-        bindTextFieldInt(tourNoRounds, tournament, "roundsNumber", "byte");
+        validateTextFieldInt(getTourGameTime());
+        validateTextFieldInt(getTourIncrement());
+        validateTextFieldInt(getTourControlMove());
+        validateTextFieldInt(getTourControlAddition());
+        validateTextFieldInt(getTourNoRounds());
+        bindTextFieldInt(getTourGameTime(), getTournament(), "gameTime", "short");
+        bindTextFieldInt(getTourIncrement(), getTournament(), "increment", "short");
+        bindTextFieldInt(getTourControlMove(), getTournament(), "controlMove", "byte");
+        bindTextFieldInt(getTourControlAddition(), getTournament(), "controlAddition", "byte");
+        bindTextFieldInt(getTourNoRounds(), getTournament(), "roundsNumber", "byte");
 
-        bindDatePicker(tourStartDate, tournament, "startDate");
-        bindDatePicker(tourEndDate, tournament, "endDate");
-        tourStartDate.setValue(LocalDate.now());
-        tourEndDate.setValue(LocalDate.now());
+        bindComboBox(getTourType(), getTournament(), "type", Tournament.Type.class);
+        bindCheckBoxRated(getTourRtPZSzach(), getTournament(), "PZSzachRated");
+        bindCheckBoxRated(getTourRtFIDE(), getTournament(), "FIDERated");
 
-        bindComboBox(tourType, tournament, "type", Tournament.Type.class);
-        setupComboBox(tourType, Tournament.Type.values());
-        setupComboBox(tourSystem, Tournament.TournamentSystem.values());
-        bindCheckBoxRated(tourRtPZSzach, tournament, "PZSzachRated");
-        bindCheckBoxRated(tourRtFIDE, tournament, "FIDERated");
+        bindDatePicker(getTourStartDate(), getTournament(), "startDate");
+        bindDatePicker(getTourEndDate(), getTournament(), "endDate");
+
+        getTourStartDate().setValue(LocalDate.now());
+        getTourEndDate().setValue(LocalDate.now());
+
+        setupComboBox(getTourType(), Tournament.Type.values());
+        setupComboBox(getTourSystem(), Tournament.TournamentSystem.values());
 
     }
 

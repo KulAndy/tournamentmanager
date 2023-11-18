@@ -35,30 +35,30 @@ public class RtgOptHelper {
         setMaxTitle(maxTitle);
         setTwoOtherFeds(twoOtherFeds);
         setMinTitleGames(minTitleGames);
-        validateTextFieldInt(minInitGames);
-        validateTextFieldInt(ratingFloor);
-        validateTextFieldInt(minTitleGames);
-        bindTextFieldInt(minInitGames, tournament.getRating(), "minInitGames", "byte");
-        bindTextFieldInt(ratingFloor, tournament.getRating(), "ratingFloor", "short");
-        bindTextFieldInt(minTitleGames, tournament.getRating(), "minTitleGames", "byte");
-        minInitGames.setText("5");
-        ratingFloor.setText("1000");
-        minTitleGames.setText("9");
+        validateTextFieldInt(getMinInitGames());
+        validateTextFieldInt(getRatingFloor());
+        validateTextFieldInt(getMinTitleGames());
+        bindTextFieldInt(getMinInitGames(), getTournament().getRating(), "minInitGames", "byte");
+        bindTextFieldInt(getRatingFloor(), getTournament().getRating(), "ratingFloor", "short");
+        bindTextFieldInt(getMinTitleGames(), getTournament().getRating(), "minTitleGames", "byte");
+        getMinInitGames().setText("5");
+        getRatingFloor().setText("1000");
+        getMinTitleGames().setText("9");
 
-        bindComboBox(maxTitle, tournament.getRating(), "maxTitle", Title.class);
-        setupComboBox(maxTitle, Title.values());
-        maxTitle.setValue(Title.M);
+        bindComboBox(getMaxTitle(), getTournament().getRating(), "maxTitle", Title.class);
+        setupComboBox(getMaxTitle(), Title.values());
+        getMaxTitle().setValue(Title.M);
 
-        bindCheckBoxRated(PZSzach43Cb, tournament, "PZSzach43");
-        bindCheckBoxRated(PZSzach44Cb, tournament, "PZSzach44");
-        bindCheckBoxRated(PZSzach46Cb, tournament, "PZSzach46");
-        bindCheckBoxRated(PZSzach47Cb, tournament, "PZSzach47");
-        bindCheckBoxRated(twoOtherFeds, tournament, "twoOtherFederations");
-        PZSzach43Cb.setSelected(true);
-        PZSzach44Cb.setSelected(true);
-        PZSzach46Cb.setSelected(true);
-        PZSzach47Cb.setSelected(true);
-        twoOtherFeds.setSelected(true);
+        bindCheckBoxRated(getPZSzach43Cb(), getTournament(), "PZSzach43");
+        bindCheckBoxRated(getPZSzach44Cb(), getTournament(), "PZSzach44");
+        bindCheckBoxRated(getPZSzach46Cb(), getTournament(), "PZSzach46");
+        bindCheckBoxRated(getPZSzach47Cb(), getTournament(), "PZSzach47");
+        bindCheckBoxRated(getTwoOtherFeds(), getTournament(), "twoOtherFederations");
+        getPZSzach43Cb().setSelected(true);
+        getPZSzach44Cb().setSelected(true);
+        getPZSzach46Cb().setSelected(true);
+        getPZSzach47Cb().setSelected(true);
+        getTwoOtherFeds().setSelected(true);
     }
 
     public Tournament getTournament() {

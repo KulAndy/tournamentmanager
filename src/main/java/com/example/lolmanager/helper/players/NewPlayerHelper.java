@@ -195,9 +195,9 @@ public class NewPlayerHelper {
         validateTextFieldInt(getLocalIDField());
         validateTextFieldInt(getFIDEIDField());
 
-        newPlayerHint.setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
+        getNewPlayerHint().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
 
-        playerNameField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+        getPlayerNameField().textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             try {
                 CompletableFuture.supplyAsync(() -> FIDEOperation.searchPlayer(newValue.trim(), tournament.getType()))
                         .thenAcceptAsync(players -> Platform.runLater(() -> {
@@ -209,7 +209,7 @@ public class NewPlayerHelper {
             }
         });
 
-        insertFromList.setOnAction(e -> {
+        getInsertFromList().setOnAction(e -> {
             if (newPlayerHint.getSelectionModel().getSelectedItem() != null) {
                 Player selected = newPlayerHint.getSelectionModel().getSelectedItem();
                 Federation federation = (selected.getFederation() == null) ? Federation.FID : selected.getFederation();

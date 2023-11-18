@@ -90,18 +90,29 @@ public class ResultEnterHelper {
         setNextRound(nextRound);
         setLastRound(lastRound);
         setWhiteWinResult(whiteWinResult);
-        getWhiteWinResult().setOnAction(e -> enterResult("1", "0"));
         setDrawResult(drawResult);
-        getDrawResult().setOnAction(e -> enterResult("0.5", "0.5"));
         setBlackWinResult(blackWinResult);
-        getBlackWinResult().setOnAction(e -> enterResult("0", "1"));
         setWhiteWinForfeitResult(whiteWinForfeitResult);
-        getWhiteWinForfeitResult().setOnAction(e -> enterResult("+", "-"));
         setBlackWinForfeitResult(blackWinForfeitResult);
-        getBlackWinForfeitResult().setOnAction(e -> enterResult("-", "+"));
         setDeleteRound(deleteRound);
 
         setGamesView(gamesView);
+        setLeftBoardNo(leftBoardNo);
+        setWhitePoints(whitePoints);
+        setWhiteRating(whiteRating);
+        setWhitePlayer(whitePlayer);
+        setGameResult(gameResult);
+        setBlackPlayer(blackPlayer);
+        setBlackRating(blackRating);
+        setBlackPoints(blackPoints);
+        setRightBoardNo(rightBoardNo);
+        setEnginePairButton(enginePairButton);
+        getWhiteWinResult().setOnAction(e -> enterResult("1", "0"));
+        getDrawResult().setOnAction(e -> enterResult("0.5", "0.5"));
+        getBlackWinResult().setOnAction(e -> enterResult("0", "1"));
+        getWhiteWinForfeitResult().setOnAction(e -> enterResult("+", "-"));
+        getBlackWinForfeitResult().setOnAction(e -> enterResult("-", "+"));
+
         getGamesView().setItems(getCurrentRound());
         getGamesView().setOnMouseClicked(e -> {
             if (e.getClickCount() == 1) {
@@ -110,32 +121,27 @@ public class ResultEnterHelper {
             }
         });
 
-        setLeftBoardNo(leftBoardNo);
         getLeftBoardNo().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             int rowIndex = getGamesView().getItems().indexOf(game) + 1;
             return new SimpleIntegerProperty(rowIndex).asObject();
         });
 
-        setWhitePoints(whitePoints);
         getWhitePoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
             return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
-        setWhiteRating(whiteRating);
         getWhiteRating().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
             return new SimpleIntegerProperty(white.getFideRating()).asObject();
         });
-        setWhitePlayer(whitePlayer);
         getWhitePlayer().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
             return new SimpleStringProperty(white.getName());
         });
-        setGameResult(gameResult);
         getGameResult().setCellFactory(column -> new TableCell<>() {
             private final HBox hbox = new HBox();
             private final TextField textField1 = new TextField();
@@ -227,25 +233,21 @@ public class ResultEnterHelper {
             }
         });
 
-        setBlackPlayer(blackPlayer);
         getBlackPlayer().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player black = game.getBlack();
             return new SimpleStringProperty(black.getName());
         });
-        setBlackRating(blackRating);
         getBlackRating().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player black = game.getBlack();
             return new SimpleIntegerProperty(black.getFideRating()).asObject();
         });
-        setBlackPoints(blackPoints);
         getBlackPoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player black = game.getBlack();
             return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
-        setRightBoardNo(rightBoardNo);
         getRightBoardNo().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             int rowIndex = getGamesView().getItems().indexOf(game) + 1;
@@ -253,31 +255,31 @@ public class ResultEnterHelper {
         });
 
 
-        firstRound.setOnAction(e -> {
+        getFirstRound().setOnAction(e -> {
             if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectFirst();
             }
         });
 
-        nextRound.setOnAction(e -> {
+        getNextRound().setOnAction(e -> {
             if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectNext();
             }
         });
 
-        previousRound.setOnAction(e -> {
+        getPreviousRound().setOnAction(e -> {
             if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectPrevious();
             }
         });
 
-        lastRound.setOnAction(e -> {
+        getLastRound().setOnAction(e -> {
             if (!roundsNumbersObs.isEmpty()) {
                 getRoundsViewSelect().getSelectionModel().selectLast();
             }
         });
 
-        deleteRound.setOnAction(e -> {
+        getDeleteRound().setOnAction(e -> {
             int index = getRoundsViewSelect().getSelectionModel().getSelectedIndex();
             int last = getRoundsViewSelect().getItems().size() - 1;
             if (index >= 0) {
@@ -310,7 +312,6 @@ public class ResultEnterHelper {
             }
         });
 
-        setEnginePairButton(enginePairButton);
         getEnginePairButton().setOnAction(e -> {
             if (getTournament().getRounds().size() < getTournament().getRoundsNumber() || getTournament().getSystem() != Tournament.TournamentSystem.SWISS) {
                 try {

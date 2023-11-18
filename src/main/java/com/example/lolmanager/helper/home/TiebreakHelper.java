@@ -53,36 +53,36 @@ public class TiebreakHelper {
         setPointsBye(pointsBye);
         setPointsHalfBye(pointsHalfBye);
 
-        bindPointField(pointsWin, tournament.getTiebreak(), "winPoints", "pointsForWin");
-        bindPointField(pointsDraw, tournament.getTiebreak(), "drawPoints", "pointsForDraw");
-        bindPointField(pointsLose, tournament.getTiebreak(), "losePoints", "pointsForLose");
-        bindPointField(pointsForfeitWin, tournament.getTiebreak(), "forfeitWinPoints", "pointsForForfeitWin");
-        bindPointField(pointsForfeitLose, tournament.getTiebreak(), "forfeitLosePoints", "pointsForForfeitLose");
-        bindPointField(pointsBye, tournament.getTiebreak(), "byePoints", "pointsForBye");
-        bindPointField(pointsHalfBye, tournament.getTiebreak(), "halfByePoints", "pointsForHalfBye");
+        bindPointField(getPointsWin(), getTournament().getTiebreak(), "winPoints", "pointsForWin");
+        bindPointField(getPointsDraw(), getTournament().getTiebreak(), "drawPoints", "pointsForDraw");
+        bindPointField(getPointsLose(), getTournament().getTiebreak(), "losePoints", "pointsForLose");
+        bindPointField(getPointsForfeitWin(), getTournament().getTiebreak(), "forfeitWinPoints", "pointsForForfeitWin");
+        bindPointField(getPointsForfeitLose(), getTournament().getTiebreak(), "forfeitLosePoints", "pointsForForfeitLose");
+        bindPointField(getPointsBye(), getTournament().getTiebreak(), "byePoints", "pointsForBye");
+        bindPointField(getPointsHalfBye(), getTournament().getTiebreak(), "halfByePoints", "pointsForHalfBye");
 
-        validateTextFieldFloat(pointsWin);
-        validateTextFieldFloat(pointsDraw);
-        validateTextFieldFloat(pointsLose);
-        validateTextFieldFloat(pointsForfeitWin);
-        validateTextFieldFloat(pointsForfeitLose);
-        validateTextFieldFloat(pointsBye);
-        validateTextFieldFloat(pointsHalfBye);
+        validateTextFieldFloat(getPointsWin());
+        validateTextFieldFloat(getPointsDraw());
+        validateTextFieldFloat(getPointsLose());
+        validateTextFieldFloat(getPointsForfeitWin());
+        validateTextFieldFloat(getPointsForfeitLose());
+        validateTextFieldFloat(getPointsBye());
+        validateTextFieldFloat(getPointsHalfBye());
 
-        bindComboBox(tourTB1, tournament.getTiebreak(), "tiebreak1", Tournament.Tiebreak.TbMethod.class);
-        bindComboBox(tourTB2, tournament.getTiebreak(), "tiebreak2", Tournament.Tiebreak.TbMethod.class);
-        bindComboBox(tourTB3, tournament.getTiebreak(), "tiebreak3", Tournament.Tiebreak.TbMethod.class);
-        bindComboBox(tourTB4, tournament.getTiebreak(), "tiebreak4", Tournament.Tiebreak.TbMethod.class);
-        bindComboBox(tourTB5, tournament.getTiebreak(), "tiebreak5", Tournament.Tiebreak.TbMethod.class);
+        bindComboBox(getTourTB1(), getTournament().getTiebreak(), "tiebreak1", Tournament.Tiebreak.TbMethod.class);
+        bindComboBox(getTourTB2(), getTournament().getTiebreak(), "tiebreak2", Tournament.Tiebreak.TbMethod.class);
+        bindComboBox(getTourTB3(), getTournament().getTiebreak(), "tiebreak3", Tournament.Tiebreak.TbMethod.class);
+        bindComboBox(getTourTB4(), getTournament().getTiebreak(), "tiebreak4", Tournament.Tiebreak.TbMethod.class);
+        bindComboBox(getTourTB5(), getTournament().getTiebreak(), "tiebreak5", Tournament.Tiebreak.TbMethod.class);
 
-        setupComboBox(tourTB1, Tournament.Tiebreak.TbMethod.values());
-        setupComboBox(tourTB2, Tournament.Tiebreak.TbMethod.values());
-        setupComboBox(tourTB3, Tournament.Tiebreak.TbMethod.values());
-        setupComboBox(tourTB4, Tournament.Tiebreak.TbMethod.values());
-        setupComboBox(tourTB5, Tournament.Tiebreak.TbMethod.values());
+        setupComboBox(getTourTB1(), Tournament.Tiebreak.TbMethod.values());
+        setupComboBox(getTourTB2(), Tournament.Tiebreak.TbMethod.values());
+        setupComboBox(getTourTB3(), Tournament.Tiebreak.TbMethod.values());
+        setupComboBox(getTourTB4(), Tournament.Tiebreak.TbMethod.values());
+        setupComboBox(getTourTB5(), Tournament.Tiebreak.TbMethod.values());
 
         setupFIDEMode();
-        tourFIDEMode.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        getTourFIDEMode().selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue != null) {
                 if (newValue) {
                     getTiebreakPane().setDisable(true);
@@ -112,40 +112,40 @@ public class TiebreakHelper {
     }
 
     public void setupFIDEMode() {
-        switch (tournament.getSystem()) {
+        switch (getTournament().getSystem()) {
             case SWISS -> {
-                tourTB1.setValue(Tournament.Tiebreak.TbMethod.POINTS);
-                tourTB2.setValue(Tournament.Tiebreak.TbMethod.BUCHOLZ_CUT1);
-                tourTB3.setValue(Tournament.Tiebreak.TbMethod.BUCHOLZ);
-                tourTB4.setValue(Tournament.Tiebreak.TbMethod.SONNEN_BERGER);
-                tourTB5.setValue(Tournament.Tiebreak.TbMethod.PROGRESS);
-                pointsBye.setText("1");
-                pointsHalfBye.setText("0.5");
+                getTourTB1().setValue(Tournament.Tiebreak.TbMethod.POINTS);
+                getTourTB2().setValue(Tournament.Tiebreak.TbMethod.BUCHOLZ_CUT1);
+                getTourTB3().setValue(Tournament.Tiebreak.TbMethod.BUCHOLZ);
+                getTourTB4().setValue(Tournament.Tiebreak.TbMethod.SONNEN_BERGER);
+                getTourTB5().setValue(Tournament.Tiebreak.TbMethod.PROGRESS);
+                getPointsBye().setText("1");
+                getPointsHalfBye().setText("0.5");
             }
             case ROUND_ROBIN -> {
-                tourTB1.setValue(Tournament.Tiebreak.TbMethod.POINTS);
-                tourTB2.setValue(Tournament.Tiebreak.TbMethod.DUEL);
-                tourTB3.setValue(Tournament.Tiebreak.TbMethod.WINS);
-                tourTB4.setValue(Tournament.Tiebreak.TbMethod.SONNEN_BERGER);
-                tourTB5.setValue(Tournament.Tiebreak.TbMethod.KOYA);
-                pointsBye.setText("0");
-                pointsHalfBye.setText("0");
+                getTourTB1().setValue(Tournament.Tiebreak.TbMethod.POINTS);
+                getTourTB2().setValue(Tournament.Tiebreak.TbMethod.DUEL);
+                getTourTB3().setValue(Tournament.Tiebreak.TbMethod.WINS);
+                getTourTB4().setValue(Tournament.Tiebreak.TbMethod.SONNEN_BERGER);
+                getTourTB5().setValue(Tournament.Tiebreak.TbMethod.KOYA);
+                getPointsBye().setText("0");
+                getPointsHalfBye().setText("0");
             }
             case CUP -> {
-                tourTB1.setValue(Tournament.Tiebreak.TbMethod.DUEL);
-                tourTB2.setValue(null);
-                tourTB3.setValue(null);
-                tourTB4.setValue(null);
-                tourTB5.setValue(null);
-                pointsBye.setText("0");
-                pointsHalfBye.setText("0");
+                getTourTB1().setValue(Tournament.Tiebreak.TbMethod.DUEL);
+                getTourTB2().setValue(null);
+                getTourTB3().setValue(null);
+                getTourTB4().setValue(null);
+                getTourTB5().setValue(null);
+                getPointsBye().setText("0");
+                getPointsHalfBye().setText("0");
             }
         }
-        pointsWin.setText("1");
-        pointsDraw.setText("0.5");
-        pointsLose.setText("0");
-        pointsForfeitWin.setText("1");
-        pointsForfeitLose.setText("0");
+        getPointsWin().setText("1");
+        getPointsDraw().setText("0.5");
+        getPointsLose().setText("0");
+        getPointsForfeitWin().setText("1");
+        getPointsForfeitLose().setText("0");
     }
 
     public GridPane getTiebreakPane() {

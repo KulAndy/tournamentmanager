@@ -48,6 +48,20 @@ public class StartListHelper {
             TableColumn<Player, Integer> fideIdCol, TableColumn<Player, String> remarksCol, TableColumn<Player, Void> deleteCol) {
         setTournament(tournament);
         setCorrectFide(correctFide);
+        setCorrectPl(correctPl);
+        setPlayersListTable(playersListTable);
+        setStartNoCol(startNoCol);
+        setTitleCol(titleCol);
+        setNameCol(nameCol);
+        setFedCol(fedCol);
+        setFideCol(fideCol);
+        setLocalCol(localCol);
+        setClubCol(clubCol);
+        setLocalIdCol(localIdCol);
+        setFideIdCol(fideIdCol);
+        setRemarksCol(remarksCol);
+        setDeleteCol(deleteCol);
+
         getCorrectFide().setOnAction(e -> {
             GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
             progressMessageBox.show();
@@ -82,7 +96,6 @@ public class StartListHelper {
 
             new Thread(task).start();
         });
-        setCorrectPl(correctPl);
         getCorrectPl().setOnAction(e -> {
             GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
             progressMessageBox.show();
@@ -123,16 +136,13 @@ public class StartListHelper {
 
             new Thread(task).start();
         });
-        setPlayersListTable(playersListTable);
         getPlayersListTable().setItems(tournament.getPlayersObs());
 
-        setStartNoCol(startNoCol);
         getStartNoCol().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
             int rowIndex = getPlayersListTable().getItems().indexOf(player) + 1;
             return new SimpleIntegerProperty(rowIndex).asObject();
         });
-        setTitleCol(titleCol);
         getTitleCol().setCellValueFactory(new PropertyValueFactory<>("title"));
         getTitleCol().setCellFactory(param -> new ChoiceBoxTableCell<>(
                 FXCollections.observableArrayList(Title.values())
@@ -142,7 +152,6 @@ public class StartListHelper {
             player.setTitle(event.getNewValue());
         });
 
-        setNameCol(nameCol);
         getNameCol().setCellValueFactory(new PropertyValueFactory<>("name"));
         getNameCol().setCellFactory(TextFieldTableCell.forTableColumn());
         getNameCol().setOnEditCommit(event -> {
@@ -150,7 +159,6 @@ public class StartListHelper {
             player.setName(event.getNewValue());
         });
 
-        setFedCol(fedCol);
         getFedCol().setCellValueFactory(new PropertyValueFactory<>("federation"));
         getFedCol().setCellFactory(param -> new ChoiceBoxTableCell<>(
                 FXCollections.observableArrayList(Federation.values())
@@ -160,7 +168,6 @@ public class StartListHelper {
             player.setFederation(event.getNewValue());
         });
 
-        setFideCol(fideCol);
         getFideCol().setCellValueFactory(new PropertyValueFactory<>("fideRating"));
         getFideCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getFideCol().setOnEditCommit(event -> {
@@ -171,7 +178,6 @@ public class StartListHelper {
             }
         });
 
-        setLocalCol(localCol);
         getLocalCol().setCellValueFactory(new PropertyValueFactory<>("localRating"));
         getLocalCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getLocalCol().setOnEditCommit(event -> {
@@ -182,7 +188,6 @@ public class StartListHelper {
             }
         });
 
-        setClubCol(clubCol);
         getClubCol().setCellValueFactory(new PropertyValueFactory<>("club"));
         getClubCol().setCellFactory(TextFieldTableCell.forTableColumn());
         getClubCol().setOnEditCommit(event -> {
@@ -190,7 +195,6 @@ public class StartListHelper {
             player.setClub(event.getNewValue());
         });
 
-        setLocalIdCol(localIdCol);
         getLocalIdCol().setCellValueFactory(new PropertyValueFactory<>("localId"));
         getLocalIdCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getLocalIdCol().setOnEditCommit(event -> {
@@ -201,7 +205,6 @@ public class StartListHelper {
             }
         });
 
-        setFideIdCol(fideIdCol);
         getFideIdCol().setCellValueFactory(new PropertyValueFactory<>("fideId"));
         getFideIdCol().setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         getFideIdCol().setOnEditCommit(event -> {
@@ -212,7 +215,6 @@ public class StartListHelper {
             }
         });
 
-        setRemarksCol(remarksCol);
         getRemarksCol().setCellValueFactory(new PropertyValueFactory<>("remarks"));
         getRemarksCol().setCellFactory(TextFieldTableCell.forTableColumn());
         getRemarksCol().setOnEditCommit(event -> {
@@ -220,7 +222,6 @@ public class StartListHelper {
             player.setRemarks(event.getNewValue());
         });
 
-        setDeleteCol(deleteCol);
         getDeleteCol().setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("Delete");
 
