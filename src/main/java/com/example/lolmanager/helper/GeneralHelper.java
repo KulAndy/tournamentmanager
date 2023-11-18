@@ -287,6 +287,24 @@ public class GeneralHelper {
             stage.setScene(scene);
         }
 
+        public static String convertToTitleCase(String input) {
+            if (input == null || input.isEmpty()) {
+                return input;
+            }
+
+            String[] words = input.split("\\s+");
+            StringBuilder titleCase = new StringBuilder();
+
+            for (String word : words) {
+                if (!word.isEmpty()) {
+                    String formattedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                    titleCase.append(formattedWord).append(" ");
+                }
+            }
+
+            return titleCase.toString().trim();
+        }
+
         public void show() {
             stage.show();
         }

@@ -124,57 +124,6 @@ public class Player implements Serializable {
         );
     }
 
-    public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak) {
-        switch (tiebreak) {
-            case KOYA -> {
-                return getKoya();
-            }
-            case WONS -> {
-                return getWonsNumber();
-            }
-            case POINTS -> {
-                return getPoints();
-            }
-            case BUCHOLZ -> {
-                return getBucholz();
-            }
-            case PROGRESS -> {
-                return getProgress();
-            }
-            case BUCHOLZ_CUT1 -> {
-                return getBucholzCut1();
-            }
-            case SONNEN_BERGER -> {
-                return getBerger();
-            }
-            case WONS_WITH_BLACK -> {
-                return getWonsWithBlackNumber();
-            }
-            case GAMES_WITH_BLACK -> {
-                return getGamesPlayedWithBlack();
-            }
-            case RATING_PERFORMENCE_FIDE -> {
-                return getRatingPerformanceFide();
-            }
-            case AVERAGE_OPPONENTS_RATING -> {
-                return getAverageFideRating();
-            }
-            case RATING_PERFORMENCE_PZSZACH -> {
-                return getRatingPerformancePZSzach();
-            }
-            case AVERAGE_OPPONENTS_LOCAL_RATING -> {
-                return getAverageRatingPZSzach();
-            }
-            default -> {
-                return 0;
-            }
-        }
-    }
-
-    public float getRatingPerformanceFide() {
-        return FIDECalculation.getRatingPerformance(getOpponents(), getPoints());
-    }
-
     public static Float getPointsForWin() {
         return pointsForWin;
     }
@@ -233,6 +182,57 @@ public class Player implements Serializable {
 
     public static Short[] getPhonePrefixesList() {
         return phonePrefixesList;
+    }
+
+    public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak) {
+        switch (tiebreak) {
+            case KOYA -> {
+                return getKoya();
+            }
+            case WINS -> {
+                return getWonsNumber();
+            }
+            case POINTS -> {
+                return getPoints();
+            }
+            case BUCHOLZ -> {
+                return getBucholz();
+            }
+            case PROGRESS -> {
+                return getProgress();
+            }
+            case BUCHOLZ_CUT1 -> {
+                return getBucholzCut1();
+            }
+            case SONNEN_BERGER -> {
+                return getBerger();
+            }
+            case WONS_WITH_BLACK -> {
+                return getWonsWithBlackNumber();
+            }
+            case GAMES_WITH_BLACK -> {
+                return getGamesPlayedWithBlack();
+            }
+            case RATING_PERFORMENCE_FIDE -> {
+                return getRatingPerformanceFide();
+            }
+            case AVERAGE_OPPONENTS_RATING -> {
+                return getAverageFideRating();
+            }
+            case RATING_PERFORMENCE_PZSZACH -> {
+                return getRatingPerformancePZSzach();
+            }
+            case AVERAGE_OPPONENTS_LOCAL_RATING -> {
+                return getAverageRatingPZSzach();
+            }
+            default -> {
+                return 0;
+            }
+        }
+    }
+
+    public float getRatingPerformanceFide() {
+        return FIDECalculation.getRatingPerformance(getOpponents(), getPoints());
     }
 
     @Override

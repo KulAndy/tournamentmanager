@@ -1,6 +1,7 @@
 package com.example.lolmanager.helper.tables;
 
 import com.example.lolmanager.model.*;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -23,11 +24,11 @@ public class ResultTableHelper {
     private TableColumn<Player, Integer> resultElo;
     private TableColumn<Player, Integer> resultLocal;
     private TableColumn<Player, Federation> resultFed;
-    private TableColumn<Player, Float> resultPoints;
-    private TableColumn<Player, Float> resultBuchCut;
-    private TableColumn<Player, Float> resultBuch;
-    private TableColumn<Player, Float> resultBerger;
-    private TableColumn<Player, Float> resultProgress;
+    private TableColumn<Player, Number> resultTb1;
+    private TableColumn<Player, Number> resultTb2;
+    private TableColumn<Player, Number> resultTb3;
+    private TableColumn<Player, Number> resultTb4;
+    private TableColumn<Player, Number> resultTb5;
     private SortedList<Player> sortedPlayers;
 
     public ResultTableHelper(
@@ -36,9 +37,9 @@ public class ResultTableHelper {
             TableColumn<Player, Integer> resultPlace, TableColumn<Player, Integer> resultStartNo,
             TableColumn<Player, Title> resultTitle, TableColumn<Player, String> resultName,
             TableColumn<Player, Integer> resultElo, TableColumn<Player, Integer> resultLocal,
-            TableColumn<Player, Federation> resultFed, TableColumn<Player, Float> resultPoints,
-            TableColumn<Player, Float> resultBuchCut, TableColumn<Player, Float> resultBuch,
-            TableColumn<Player, Float> resultBerger, TableColumn<Player, Float> resultProgress
+            TableColumn<Player, Federation> resultFed, TableColumn<Player, Number> resultTb1,
+            TableColumn<Player, Number> resultTb2, TableColumn<Player, Number> resultTb3,
+            TableColumn<Player, Number> resultTb4, TableColumn<Player, Number> resultTb5
     ) {
         setTournament(tournament);
         setResultFiltered(resultFiltered);
@@ -51,43 +52,37 @@ public class ResultTableHelper {
         setResultElo(resultElo);
         setResultLocal(resultLocal);
         setResultFed(resultFed);
-        setResultPoints(resultPoints);
-        setResultBuchCut(resultBuchCut);
-        setResultBuch(resultBuch);
-        setResultBerger(resultBerger);
-        setResultProgress(resultProgress);
+        setResultTb1(resultTb1);
+        setResultTb2(resultTb2);
+        setResultTb3(resultTb3);
+        setResultTb4(resultTb4);
+        setResultTb5(resultTb5);
 
         getResultFiltered().selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue != null) {
                 ResultPredicate<Player> predicate = getResultFilter().getValue();
                 SortedList<Player> sortedList;
-                if (newValue && predicate != null){
-                    FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), predicate );
+                if (newValue && predicate != null) {
+                    FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), predicate);
                     sortedList = new SortedList<>(filteredList, getTournament().getResultsComparator());
                     setSortedPlayers(sortedList);
-                }else{
-                    sortedList = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
-                    setSortedPlayers(sortedList);
+                } else {
+                    setUnfilteredList();
                 }
-                getResultsTable().setItems(sortedList);
-                getResultsTable().refresh();
             }
         });
 
         getResultFilter().setItems(getTournament().getPredicatesObs());
-        getResultFilter().valueProperty().addListener((ObservableValue<? extends ResultPredicate<Player>> observable, ResultPredicate<Player> oldValue, ResultPredicate<Player> newValue)->{
+        getResultFilter().valueProperty().addListener((ObservableValue<? extends ResultPredicate<Player>> observable, ResultPredicate<Player> oldValue, ResultPredicate<Player> newValue) -> {
             if (newValue != null) {
                 SortedList<Player> sortedList;
-                if (getResultFiltered().isSelected()){
-                    FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), newValue );
+                if (getResultFiltered().isSelected()) {
+                    FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), newValue);
                     sortedList = new SortedList<>(filteredList, getTournament().getResultsComparator());
                     setSortedPlayers(sortedList);
-                }else{
-                    sortedList = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
-                    setSortedPlayers(sortedList);
+                } else {
+                    setUnfilteredList();
                 }
-                getResultsTable().setItems(sortedList);
-                getResultsTable().refresh();
             }
         });
 
@@ -130,29 +125,28 @@ public class ResultTableHelper {
         getResultElo().setCellValueFactory(new PropertyValueFactory<>("fideRating"));
         getResultLocal().setCellValueFactory(new PropertyValueFactory<>("localRating"));
         getResultFed().setCellValueFactory(new PropertyValueFactory<>("federation"));
-        getResultPoints().setCellValueFactory(new PropertyValueFactory<>("points"));
-        getResultBuchCut().setCellValueFactory(new PropertyValueFactory<>("bucholzCut1"));
-        getResultBuch().setCellValueFactory(new PropertyValueFactory<>("bucholz"));
-        getResultBerger().setCellValueFactory(new PropertyValueFactory<>("berger"));
-        getResultProgress().setCellValueFactory(new PropertyValueFactory<>("progress"));
 
-        SortedList<Player> sortedPlayersTmp = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
-        setSortedPlayers(sortedPlayersTmp);
+        setUnfilteredList();
 
         getResultsTable().setItems(getSortedPlayers());
 
         getTournament().getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
-            SortedList<Player> sortedPlayersTmp2 = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
-            setSortedPlayers(sortedPlayersTmp2);
-            getResultsTable().refresh();
+            setUnfilteredList();
         });
 
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
-            SortedList<Player> sortedPlayersTmp2 = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
-            setSortedPlayers(sortedPlayersTmp2);
-            getResultsTable().refresh();
+            setUnfilteredList();
         });
 
+    }
+
+    public void setUnfilteredList() {
+        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
+        setSortedPlayers(sortedList);
+    }
+
+    public void refreshList() {
+        setSortedPlayers(getSortedPlayers());
     }
 
     public SortedList<Player> getSortedPlayers() {
@@ -161,6 +155,28 @@ public class ResultTableHelper {
 
     public void setSortedPlayers(SortedList<Player> sortedPlayers) {
         this.sortedPlayers = sortedPlayers;
+        getResultsTable().setItems(sortedPlayers);
+        getResultTb1().setCellValueFactory(cellData -> {
+            Player player = cellData.getValue();
+            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria1()));
+        });
+        getResultTb2().setCellValueFactory(cellData -> {
+            Player player = cellData.getValue();
+            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria2()));
+        });
+        getResultTb3().setCellValueFactory(cellData -> {
+            Player player = cellData.getValue();
+            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria3()));
+        });
+        getResultTb4().setCellValueFactory(cellData -> {
+            Player player = cellData.getValue();
+            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria4()));
+        });
+        getResultTb5().setCellValueFactory(cellData -> {
+            Player player = cellData.getValue();
+            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria5()));
+        });
+        getResultsTable().refresh();
     }
 
 
@@ -252,44 +268,44 @@ public class ResultTableHelper {
         this.resultFed = resultFed;
     }
 
-    public TableColumn<Player, Float> getResultPoints() {
-        return resultPoints;
+    public TableColumn<Player, Number> getResultTb1() {
+        return resultTb1;
     }
 
-    public void setResultPoints(TableColumn<Player, Float> resultPoints) {
-        this.resultPoints = resultPoints;
+    public void setResultTb1(TableColumn<Player, Number> resultTb1) {
+        this.resultTb1 = resultTb1;
     }
 
-    public TableColumn<Player, Float> getResultBuchCut() {
-        return resultBuchCut;
+    public TableColumn<Player, Number> getResultTb2() {
+        return resultTb2;
     }
 
-    public void setResultBuchCut(TableColumn<Player, Float> resultBuchCut) {
-        this.resultBuchCut = resultBuchCut;
+    public void setResultTb2(TableColumn<Player, Number> resultTb2) {
+        this.resultTb2 = resultTb2;
     }
 
-    public TableColumn<Player, Float> getResultBuch() {
-        return resultBuch;
+    public TableColumn<Player, Number> getResultTb3() {
+        return resultTb3;
     }
 
-    public void setResultBuch(TableColumn<Player, Float> resultBuch) {
-        this.resultBuch = resultBuch;
+    public void setResultTb3(TableColumn<Player, Number> resultTb3) {
+        this.resultTb3 = resultTb3;
     }
 
-    public TableColumn<Player, Float> getResultBerger() {
-        return resultBerger;
+    public TableColumn<Player, Number> getResultTb4() {
+        return resultTb4;
     }
 
-    public void setResultBerger(TableColumn<Player, Float> resultBerger) {
-        this.resultBerger = resultBerger;
+    public void setResultTb4(TableColumn<Player, Number> resultTb4) {
+        this.resultTb4 = resultTb4;
     }
 
-    public TableColumn<Player, Float> getResultProgress() {
-        return resultProgress;
+    public TableColumn<Player, Number> getResultTb5() {
+        return resultTb5;
     }
 
-    public void setResultProgress(TableColumn<Player, Float> resultProgress) {
-        this.resultProgress = resultProgress;
+    public void setResultTb5(TableColumn<Player, Number> resultTb5) {
+        this.resultTb5 = resultTb5;
     }
 
 

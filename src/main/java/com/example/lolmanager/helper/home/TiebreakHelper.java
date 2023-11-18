@@ -125,7 +125,7 @@ public class TiebreakHelper {
             case ROUND_ROBIN -> {
                 tourTB1.setValue(Tournament.Tiebreak.TbMethod.POINTS);
                 tourTB2.setValue(Tournament.Tiebreak.TbMethod.DUEL);
-                tourTB3.setValue(Tournament.Tiebreak.TbMethod.WONS);
+                tourTB3.setValue(Tournament.Tiebreak.TbMethod.WINS);
                 tourTB4.setValue(Tournament.Tiebreak.TbMethod.SONNEN_BERGER);
                 tourTB5.setValue(Tournament.Tiebreak.TbMethod.KOYA);
                 pointsBye.setText("0");

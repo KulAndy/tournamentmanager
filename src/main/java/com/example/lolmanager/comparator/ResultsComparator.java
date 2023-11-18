@@ -104,7 +104,7 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
                 }
                 return 0;
             }
-            case WONS -> {
+            case WINS -> {
                 return Integer.compare(player1.getWonsNumber(), player2.getWonsNumber());
             }
             case GAMES_WITH_BLACK -> {

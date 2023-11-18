@@ -76,9 +76,9 @@ public class FilterCreatorHelper {
         getFilterStateOperator().setItems(equalOperators);
 
         getFilterFedSelect().valueProperty().addListener((ObservableValue<? extends Federation> observable, Federation oldValue, Federation newValue) -> {
-            if (newValue == null || getFilterFedOperator().getValue() != ResultPredicate.CompareOperator.EQUAL){
+            if (newValue == null || getFilterFedOperator().getValue() != ResultPredicate.CompareOperator.EQUAL) {
                 getFilterStateSelect().getItems().clear();
-            } else{
+            } else {
                 String[] provinces = FileOperation.searchProvince(newValue);
                 getFilterStateSelect().getItems().clear();
                 setupComboBox(getFilterStateSelect(), provinces);
@@ -87,41 +87,45 @@ public class FilterCreatorHelper {
             }
         });
         getFilterFedOperator().valueProperty().addListener((ObservableValue<? extends ResultPredicate.CompareOperator> observable, ResultPredicate.CompareOperator oldValue, ResultPredicate.CompareOperator newValue) -> {
-            if (newValue == null || getFilterFedSelect().getValue() != null){
+            if (newValue == null || getFilterFedSelect().getValue() != null) {
                 getFilterStateSelect().getItems().clear();
-            } else{
+            } else {
                 String[] provinces = FileOperation.searchProvince(getFilterFedSelect().getValue());
                 getFilterStateSelect().getItems().clear();
                 setupComboBox(getFilterStateSelect(), provinces);
                 getFilterStateSelect().getItems().add(0, null);
                 getFilterStateSelect().setValue(null);
-            }});
+            }
+        });
 
 
-        getFilterCreate().setOnAction(e->{
+        getFilterCreate().setOnAction(e -> {
             String name = getFilterNameField().getText();
-            if (name.isEmpty()){
+            if (name.isEmpty()) {
                 error("Name cannot be empty");
                 return;
             }
             Player.Sex sex = getFilterSexSelect().getValue();
             ResultPredicate.CompareOperator yearOperator = getFilterYearOperator().getValue();
             Integer year = null;
-            try{
+            try {
                 year = Integer.parseInt(getFilterYearField().getText());
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
             ResultPredicate.CompareOperator titleOperator = getFilterTitleOperator().getValue();
             Title title = getFilterTitleSelect().getValue();
             ResultPredicate.CompareOperator localRtgOperator = getFilterLocalRtgOperator().getValue();
             Integer localRtg = null;
-            try{
+            try {
                 localRtg = Integer.parseInt(getFilterLocalRtg().getText());
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
             ResultPredicate.CompareOperator fideRtgOperator = getFilterFIDERtgOperator().getValue();
             Integer fideRtg = null;
-            try{
+            try {
                 fideRtg = Integer.parseInt(getFilterFIDERtg().getText());
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
             ResultPredicate.CompareOperator fedOperator = getFilterFedOperator().getValue();
             Federation federation = getFilterFedSelect().getValue();
             ResultPredicate.CompareOperator stateOperator = getFilterStateOperator().getValue();

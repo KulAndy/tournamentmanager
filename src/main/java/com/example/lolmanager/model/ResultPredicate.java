@@ -5,7 +5,7 @@ import com.example.lolmanager.calculation.PZSzachCalculation;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class ResultPredicate<T extends Player> implements Predicate<T>  {
+public class ResultPredicate<T extends Player> implements Predicate<T> {
     private String filterName;
     private CompareOperator sexCompareOperator;
     private Player.Sex sex;
@@ -30,61 +30,61 @@ public class ResultPredicate<T extends Player> implements Predicate<T>  {
     ) {
         setFilterName(filterName);
         setSex(sex);
-        if (yearCompareOperator == null || year <= 0){
+        if (yearCompareOperator == null || year <= 0) {
             setYearCompareOperator(null);
             setYear(null);
-        }else{
+        } else {
             setYearCompareOperator(yearCompareOperator);
             setYear(year);
         }
 
-        if (titleCompareOperator == null || title == null || title == Title.bk){
+        if (titleCompareOperator == null || title == null || title == Title.bk) {
             setTitleCompareOperator(null);
             setTitle(null);
-        }else{
+        } else {
             setTitleCompareOperator(titleCompareOperator);
             setTitle(title);
         }
 
-        if (localRtgCompareOperator == null || localRtg <= 0){
+        if (localRtgCompareOperator == null || localRtg <= 0) {
             setLocalRtgCompareOperator(null);
             setLocalRtg(null);
-        }else{
+        } else {
             setLocalRtgCompareOperator(localRtgCompareOperator);
             setLocalRtg(localRtg);
         }
 
-        if (fideRtgCompareOperator == null || fideRtg <= 0){
+        if (fideRtgCompareOperator == null || fideRtg <= 0) {
             setFideRtgCompareOperator(null);
             setFideRtg(null);
-        }else {
+        } else {
             setFideRtgCompareOperator(fideRtgCompareOperator);
             setFideRtg(fideRtg);
         }
 
-        if (fedCompareOperator == null || federation == null){
+        if (fedCompareOperator == null || federation == null) {
             setFedCompareOperator(null);
             setFederation(null);
-        }else {
+        } else {
             setFedCompareOperator(fedCompareOperator);
             setFederation(federation);
         }
 
-        if (stateCompareOperator == null || state.isEmpty()){
+        if (stateCompareOperator == null || state.isEmpty()) {
             setStateCompareOperator(null);
             setState(null);
-        }else{
+        } else {
             setStateCompareOperator(stateCompareOperator);
             setState(state);
         }
-        if (sex != null){
+        if (sex != null) {
             setSexCompareOperator(CompareOperator.EQUAL);
         }
     }
 
     @Override
     public boolean test(T t) {
-        if (t != null){
+        if (t != null) {
             boolean sexCompare = compare(getSexCompareOperator(), getSex(), t.getSex());
             boolean yearCompare = compareNumber(getYearCompareOperator(), getYear(), t.getYearOfBirth());
             boolean titleCompare = compareNumber(getTitleCompareOperator(), PZSzachCalculation.getTitleValue(getTitle(), t.getSex()), PZSzachCalculation.getTitleValue(t.getTitle(), t.getSex()));
@@ -97,48 +97,12 @@ public class ResultPredicate<T extends Player> implements Predicate<T>  {
         return false;
     }
 
-    public enum  CompareOperator {
-        EQUAL,
-        UNEQUAL,
-        LESS,
-        LESS_OR_EQUAL,
-        GREATER,
-        GREATER_OR_EQUAL;
-
-        @Override
-        public String toString(){
-            switch (this){
-                case EQUAL -> {
-                    return "=";
-                }
-                case UNEQUAL -> {
-                    return  "!=";
-                }
-                case LESS -> {
-                    return "<";
-                }
-                case LESS_OR_EQUAL -> {
-                    return "<=";
-                }
-                case GREATER -> {
-                    return ">";
-                }
-                case GREATER_OR_EQUAL -> {
-                    return  ">=";
-                }
-                default -> {
-                    return "";
-                }
-            }
-        }
-    }
-
     private boolean compareNumber(CompareOperator compareOperator, Integer predicateValue, Integer value) {
         if (compareOperator == null || predicateValue == null) {
             return true;
         }
 
-        if (value == null){
+        if (value == null) {
             return false;
         }
 
@@ -150,15 +114,15 @@ public class ResultPredicate<T extends Player> implements Predicate<T>  {
             case LESS_OR_EQUAL -> value <= predicateValue;
             case GREATER -> value > predicateValue;
             case GREATER_OR_EQUAL -> value >= predicateValue;
-            default -> true;
         };
     }
-    private <T extends Comparable<T>> boolean compare(CompareOperator compareOperator, T predicateValue, T value){
-        if (compareOperator == null){
+
+    private <T extends Comparable<T>> boolean compare(CompareOperator compareOperator, T predicateValue, T value) {
+        if (compareOperator == null) {
             return true;
         }
 
-        switch (compareOperator){
+        switch (compareOperator) {
             case EQUAL -> {
                 return predicateValue == value;
             }
@@ -168,6 +132,7 @@ public class ResultPredicate<T extends Player> implements Predicate<T>  {
         }
         return true;
     }
+
     public String getFilterName() {
         return filterName;
     }
@@ -286,5 +251,41 @@ public class ResultPredicate<T extends Player> implements Predicate<T>  {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public enum CompareOperator {
+        EQUAL,
+        UNEQUAL,
+        LESS,
+        LESS_OR_EQUAL,
+        GREATER,
+        GREATER_OR_EQUAL;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case EQUAL -> {
+                    return "=";
+                }
+                case UNEQUAL -> {
+                    return "!=";
+                }
+                case LESS -> {
+                    return "<";
+                }
+                case LESS_OR_EQUAL -> {
+                    return "<=";
+                }
+                case GREATER -> {
+                    return ">";
+                }
+                case GREATER_OR_EQUAL -> {
+                    return ">=";
+                }
+                default -> {
+                    return "";
+                }
+            }
+        }
     }
 }

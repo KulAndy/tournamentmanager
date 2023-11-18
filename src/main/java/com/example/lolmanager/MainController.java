@@ -9,6 +9,7 @@ import com.example.lolmanager.operation.FileOperation;
 import com.example.lolmanager.operation.TournamentOperation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,13 +29,13 @@ import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
 
 public class MainController implements Initializable {
+    private final ObservableList<File> files = FXCollections.observableArrayList();
     @FXML
     ScrollPane allRoundsScroll;
     private String programName = "";
     private String programExtension = "*";
     private Tournament tournament;
     private File file;
-    private final ObservableList files = FXCollections.observableArrayList();
     private boolean saving = false;
     private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
@@ -470,15 +471,15 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Player, Federation> resultFed;
     @FXML
-    private TableColumn<Player, Float> resultPoints;
+    private TableColumn<Player, Number> resultTb1;
     @FXML
-    private TableColumn<Player, Float> resultBuchCut;
+    private TableColumn<Player, Number> resultTb2;
     @FXML
-    private TableColumn<Player, Float> resultBuch;
+    private TableColumn<Player, Number> resultTb3;
     @FXML
-    private TableColumn<Player, Float> resultBerger;
+    private TableColumn<Player, Number> resultTb4;
     @FXML
-    private TableColumn<Player, Float> resultProgress;
+    private TableColumn<Player, Number> resultTb5;
 
     @FXML
     private TableView<ResultPredicate<Player>> filterListTable;
@@ -601,8 +602,8 @@ public class MainController implements Initializable {
                 rtgFideTable, rtgFideName, rtgFideId, rtgFideTitle, rtgFideFed, rtgFideElo, rtgFidePoints, rtgFideGames, rtgFideAverage, rtgFideChg, rtgFideNorm,
                 resultFiltered, resultFilter, resultsTable,
                 resultPlace, resultStartNo, resultTitle, resultName,
-                resultElo, resultLocal, resultFed, resultPoints,
-                resultBuchCut, resultBuch, resultBerger, resultProgress,
+                resultElo, resultLocal, resultFed, resultTb1,
+                resultTb2, resultTb3, resultTb4, resultTb5,
                 filterListTable,
                 filterListName, filterListSex,
                 filterListYear, filterListTitle,
@@ -620,25 +621,60 @@ public class MainController implements Initializable {
 
         tournamentSelect.setItems(files);
 
-        tourTB1.valueProperty().addListener(e -> {
-            playerCardTB1.setText(String.valueOf(tourTB1.getValue()));
-            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB1.getValue()).toString());
+        tourTB1.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+            getTournament().getResultsComparator().setCriteria1(newValue);
+            String tiebreak = newValue.prettyText();
+            playerCardTB1.setText(tiebreak);
+            Player player = playerCardSelect.getValue();
+            if (player != null) {
+                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            }
+            resultTb1.setText(tiebreak);
+            tablesHelper.getResultTableHelper().refreshList();
         });
-        tourTB2.valueProperty().addListener(e -> {
-            playerCardTB2.setText(String.valueOf(tourTB2.getValue()));
-            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB2.getValue()).toString());
+        tourTB2.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+            getTournament().getResultsComparator().setCriteria2(newValue);
+            String tiebreak = newValue.prettyText();
+            playerCardTB2.setText(tiebreak);
+            Player player = playerCardSelect.getValue();
+            if (player != null) {
+                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            }
+            resultTb2.setText(tiebreak);
+            tablesHelper.getResultTableHelper().refreshList();
         });
-        tourTB3.valueProperty().addListener(e -> {
-            playerCardTB3.setText(String.valueOf(tourTB3.getValue()));
-            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB3.getValue()).toString());
+        tourTB3.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+            getTournament().getResultsComparator().setCriteria3(newValue);
+            String tiebreak = newValue.prettyText();
+            playerCardTB3.setText(tiebreak);
+            Player player = playerCardSelect.getValue();
+            if (player != null) {
+                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            }
+            resultTb3.setText(tiebreak);
+            tablesHelper.getResultTableHelper().refreshList();
         });
-        tourTB4.valueProperty().addListener(e -> {
-            playerCardTB4.setText(String.valueOf(tourTB4.getValue()));
-            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB4.getValue()).toString());
+        tourTB4.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+            getTournament().getResultsComparator().setCriteria4(newValue);
+            String tiebreak = newValue.prettyText();
+            playerCardTB4.setText(tiebreak);
+            Player player = playerCardSelect.getValue();
+            if (player != null) {
+                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            }
+            resultTb4.setText(tiebreak);
+            tablesHelper.getResultTableHelper().refreshList();
         });
-        tourTB5.valueProperty().addListener(e -> {
-            playerCardTB5.setText(String.valueOf(tourTB5.getValue()));
-            playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(tourTB5.getValue()).toString());
+        tourTB5.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+            getTournament().getResultsComparator().setCriteria5(newValue);
+            String tiebreak = newValue.prettyText();
+            playerCardTB5.setText(tiebreak);
+            Player player = playerCardSelect.getValue();
+            if (player != null) {
+                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            }
+            resultTb5.setText(tiebreak);
+            tablesHelper.getResultTableHelper().refreshList();
         });
 
         Timeline timeline = new Timeline();

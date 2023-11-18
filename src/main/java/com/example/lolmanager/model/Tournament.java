@@ -18,6 +18,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.lolmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
+
 @XmlRootElement(name = "tournament")
 public class Tournament implements Serializable {
     private String name;
@@ -885,6 +887,10 @@ public class Tournament implements Serializable {
         return predicates;
     }
 
+    public void setPredicates(ArrayList<ResultPredicate<Player>> predicates) {
+        this.predicates = predicates;
+    }
+
     public ObservableList<ResultPredicate<Player>> getPredicatesObs() {
         return predicatesObs;
     }
@@ -892,9 +898,7 @@ public class Tournament implements Serializable {
     public void setPredicatesObs(ObservableList<ResultPredicate<Player>> predicatesObs) {
         this.predicatesObs = predicatesObs;
     }
-    public void setPredicates(ArrayList<ResultPredicate<Player>> predicates) {
-        this.predicates = predicates;
-    }
+
     public enum Type implements Serializable {
         STANDARD,
         RAPID,
@@ -1070,7 +1074,7 @@ public class Tournament implements Serializable {
             POINTS,
             PLAYOFF,
             DUEL,
-            WONS,
+            WINS,
             GAMES_WITH_BLACK,
             WONS_WITH_BLACK,
             RATING_PERFORMENCE_FIDE,
@@ -1104,7 +1108,7 @@ public class Tournament implements Serializable {
                         return PROGRESS;
                     }
                     case "4" -> {
-                        return WONS;
+                        return WINS;
                     }
                     case "5" -> {
                         return AVERAGE_OPPONENTS_RATING;
@@ -1126,6 +1130,53 @@ public class Tournament implements Serializable {
                     }
                     default -> {
                         return null;
+                    }
+                }
+            }
+
+            public String prettyText() {
+                switch (this) {
+                    case GAMES_WITH_BLACK -> {
+                        return "Black";
+                    }
+                    case WONS_WITH_BLACK -> {
+                        return "Black wins";
+                    }
+                    case BUCHOLZ -> {
+                        return "Bch";
+                    }
+                    case BUCHOLZ_CUT1 -> {
+                        return "CBch";
+                    }
+                    case SONNEN_BERGER -> {
+                        return "S.B.";
+                    }
+                    case PROGRESS -> {
+                        return "Prog";
+                    }
+                    case RATING_PERFORMENCE_PZSZACH -> {
+                        return "RtgPerfPol";
+                    }
+                    case AVERAGE_OPPONENTS_RATING -> {
+                        return "AvgOppRtg";
+                    }
+                    case AVERAGE_OPPONENTS_LOCAL_RATING -> {
+                        return "AvgOppLocRtg";
+                    }
+                    case AVERAGE_OPPONENTS_RATING_CUT1 -> {
+                        return "AvgOppRtgCut1";
+                    }
+                    case MEDIA_BUCHOLZ -> {
+                        return "MeBch";
+                    }
+                    case RATING_PERFORMENCE_FIDE -> {
+                        return "RtgPerf";
+                    }
+                    case MODIFIED_BUCHOLZ -> {
+                        return "MoBch";
+                    }
+                    default -> {
+                        return convertToTitleCase(toString());
                     }
                 }
             }

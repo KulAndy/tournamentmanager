@@ -16,12 +16,6 @@ public class Withdraw {
         setRoundNo(roundNo);
     }
 
-    public enum WithdrawType {
-        TOURNAMENT,
-        ROUND,
-        HALFBYE
-    }
-
     public Player getPlayer() {
         return player;
     }
@@ -44,5 +38,11 @@ public class Withdraw {
 
     public void setRoundNo(Byte roundNo) {
         this.roundNo = roundNo;
+    }
+
+    public enum WithdrawType {
+        TOURNAMENT,
+        ROUND,
+        HALFBYE
     }
 }

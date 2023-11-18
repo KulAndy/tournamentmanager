@@ -47,32 +47,32 @@ public class FilterListHelper {
         getFilterListSex().setCellValueFactory(new PropertyValueFactory<>("sex"));
 
         getFilterListYear().setCellValueFactory(cellData -> {
-            ResultPredicate resultPredicate = cellData.getValue();
+            ResultPredicate<Player> resultPredicate = cellData.getValue();
             String text = (resultPredicate.getYearCompareOperator() + " " + resultPredicate.getYear()).replaceAll("null", "");
             return new SimpleStringProperty(text);
         });
         getFilterListTitle().setCellValueFactory(cellData -> {
-            ResultPredicate resultPredicate = cellData.getValue();
+            ResultPredicate<Player> resultPredicate = cellData.getValue();
             String text = (resultPredicate.getTitleCompareOperator() + " " + resultPredicate.getTitle()).replaceAll("null", "");
             return new SimpleStringProperty(text);
         });
         getFilterListLocal().setCellValueFactory(cellData -> {
-            ResultPredicate resultPredicate = cellData.getValue();
+            ResultPredicate<Player> resultPredicate = cellData.getValue();
             String text = (resultPredicate.getLocalRtgCompareOperator() + " " + resultPredicate.getLocalRtg()).replaceAll("null", "");
             return new SimpleStringProperty(text);
         });
         getFilterListFideRtg().setCellValueFactory(cellData -> {
-            ResultPredicate resultPredicate = cellData.getValue();
+            ResultPredicate<Player> resultPredicate = cellData.getValue();
             String text = (resultPredicate.getFideRtgCompareOperator() + " " + resultPredicate.getFideRtg()).replaceAll("null", "");
             return new SimpleStringProperty(text);
         });
         getFilterListFed().setCellValueFactory(cellData -> {
-            ResultPredicate resultPredicate = cellData.getValue();
+            ResultPredicate<Player> resultPredicate = cellData.getValue();
             String text = (resultPredicate.getFedCompareOperator() + " " + resultPredicate.getFederation()).replaceAll("null", "");
             return new SimpleStringProperty(text);
         });
         getFilterListState().setCellValueFactory(cellData -> {
-            ResultPredicate resultPredicate = cellData.getValue();
+            ResultPredicate<Player> resultPredicate = cellData.getValue();
             String text = (resultPredicate.getStateCompareOperator() + " " + resultPredicate.getState()).replaceAll("null", "");
             return new SimpleStringProperty(text);
         });
@@ -82,7 +82,7 @@ public class FilterListHelper {
 
             {
                 deleteButton.setOnAction(event -> {
-                    ResultPredicate resultPredicate = getTableRow().getItem();
+                    ResultPredicate<Player> resultPredicate = getTableRow().getItem();
                     if (resultPredicate != null) {
                         getTournament().getPredicatesObs().remove(resultPredicate);
                     }
@@ -100,7 +100,7 @@ public class FilterListHelper {
             }
         });
 
-    getFilterListTable().setItems(getTournament().getPredicatesObs());
+        getFilterListTable().setItems(getTournament().getPredicatesObs());
 
     }
 

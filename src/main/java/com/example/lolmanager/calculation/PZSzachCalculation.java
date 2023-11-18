@@ -61,7 +61,7 @@ public class PZSzachCalculation {
 
 
     public static Integer getTitleValue(Title title, Player.Sex sex) {
-        if (title == null){
+        if (title == null) {
             return 1000;
         }
         switch (title) {

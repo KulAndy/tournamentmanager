@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import static com.example.lolmanager.helper.GeneralHelper.*;
 
 public class ManualPairingHelper {
+    private final StringProperty whiteStart = new SimpleStringProperty("");
+    private final StringProperty blackStart = new SimpleStringProperty("");
     private Tournament tournament;
     private ComboBox<Integer> roundUpdateSelect;
     private TextField whiteSearch;
@@ -39,8 +41,6 @@ public class ManualPairingHelper {
     private FilteredList<Player> blackPairedFilter;
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList(1);
     private ObservableList<Game> manualRound = FXCollections.observableArrayList();
-    private final StringProperty whiteStart = new SimpleStringProperty("");
-    private final StringProperty blackStart = new SimpleStringProperty("");
 
     public ManualPairingHelper(
             Tournament tournament,
@@ -413,10 +413,6 @@ public class ManualPairingHelper {
         this.blackPairedFilter = blackPairedFilter;
     }
 
-    public void setPaired(ObservableList<Player> paired) {
-        this.paired = paired;
-    }
-
     public ObservableList<Game> getManualRound() {
         return manualRound;
     }
@@ -435,6 +431,10 @@ public class ManualPairingHelper {
 
     public ObservableList<Player> getPaired() {
         return paired;
+    }
+
+    public void setPaired(ObservableList<Player> paired) {
+        this.paired = paired;
     }
 
     public FilteredList<Player> getWhitePairedFilter() {
