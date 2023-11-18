@@ -61,6 +61,9 @@ public class PZSzachCalculation {
 
 
     public static Integer getTitleValue(Title title, Player.Sex sex) {
+        if (title == null){
+            return 1000;
+        }
         switch (title) {
             case GM -> {
                 return 2600;

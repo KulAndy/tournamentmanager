@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.helper.GeneralHelper.info;
@@ -480,6 +481,58 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Player, Float> resultProgress;
 
+    @FXML
+    private TableView<ResultPredicate> filterListTable;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListName;
+    @FXML
+    private TableColumn<ResultPredicate, Player.Sex> filterListSex;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListYear;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListTitle;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListLocal;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListFideRtg;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListFed;
+    @FXML
+    private TableColumn<ResultPredicate, String> filterListState;
+    @FXML
+    private TableColumn<ResultPredicate, Void> filterListDelete;
+
+    @FXML
+    private TextField filterNameField;
+    @FXML
+    private Button filterCreate;
+    @FXML
+    private ComboBox<Player.Sex> filterSexSelect;
+    @FXML
+    private ComboBox<ResultPredicate.CompareOperator> filterYearOperator;
+    @FXML
+    private TextField filterYearField;
+    @FXML
+    private ComboBox<ResultPredicate.CompareOperator> filterTitleOperator;
+    @FXML
+    private ComboBox<Title> filterTitleSelect;
+    @FXML
+    private ComboBox<ResultPredicate.CompareOperator> filterLocalRtgOperator;
+    @FXML
+    private TextField filterLocalRtg;
+    @FXML
+    private ComboBox<ResultPredicate.CompareOperator> filterFIDERtgOperator;
+    @FXML
+    private TextField filterFIDERtg;
+    @FXML
+    private ComboBox<ResultPredicate.CompareOperator> filterFedOperator;
+    @FXML
+    private ComboBox<Federation> filterFedSelect;
+    @FXML
+    private ComboBox<ResultPredicate.CompareOperator> filterStateOperator;
+    @FXML
+    private ComboBox<String> filterStateSelect;
+
 
     public static void quit() {
         System.exit(0);
@@ -550,7 +603,20 @@ public class MainController implements Initializable {
                 resultFiltered, resultFilter, resultsTable,
                 resultPlace, resultStartNo, resultTitle, resultName,
                 resultElo, resultLocal, resultFed, resultPoints,
-                resultBuchCut, resultBuch, resultBerger, resultProgress
+                resultBuchCut, resultBuch, resultBerger, resultProgress,
+                filterListTable,
+                filterListName, filterListSex,
+                filterListYear, filterListTitle,
+                filterListLocal, filterListFideRtg,
+                filterListFed, filterListState,
+                filterListDelete,
+                filterNameField, filterCreate, filterSexSelect,
+                filterYearOperator, filterYearField,
+                filterTitleOperator, filterTitleSelect,
+                filterLocalRtgOperator, filterLocalRtg,
+                filterFIDERtgOperator, filterFIDERtg,
+                filterFedOperator, filterFedSelect,
+                filterStateOperator, filterStateSelect
         );
 
         tournamentSelect.setItems(files);

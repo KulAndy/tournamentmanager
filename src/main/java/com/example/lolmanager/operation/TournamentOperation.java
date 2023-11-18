@@ -71,6 +71,8 @@ public class TournamentOperation {
             controller.getTournament().getRoundsObs().addAll(tournament.getRounds());
             controller.getTournament().getWithdrawsObs().clear();
             controller.getTournament().getWithdrawsObs().addAll(tournament.getWithdraws());
+            controller.getTournament().getPredicatesObs().clear();
+            controller.getTournament().getPredicatesObs().addAll(tournament.getPredicates());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria1().setValue(tournament.getPlayers().getComparator().getCriteria1());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria2().setValue(tournament.getPlayers().getComparator().getCriteria2());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria3().setValue(tournament.getPlayers().getComparator().getCriteria3());

@@ -1,21 +1,15 @@
 package com.example.lolmanager.helper;
 
-import com.example.lolmanager.helper.tables.FideTableHelper;
-import com.example.lolmanager.helper.tables.PolandTableHelper;
-import com.example.lolmanager.helper.tables.ResultTableHelper;
-import com.example.lolmanager.model.Federation;
-import com.example.lolmanager.model.Player;
-import com.example.lolmanager.model.Title;
-import com.example.lolmanager.model.Tournament;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import com.example.lolmanager.helper.tables.*;
+import com.example.lolmanager.model.*;
+import javafx.scene.control.*;
 
 public class TablesHelper {
     private PolandTableHelper polandTablesHelper;
     private FideTableHelper fideTableHelper;
     private ResultTableHelper resultTableHelper;
+    private FilterListHelper filterListHelper;
+    private FilterCreatorHelper filterCreatorHelper;
 
     public TablesHelper(Tournament tournament,
                         TableView<Player> rtgPolTable,
@@ -36,7 +30,20 @@ public class TablesHelper {
                         TableColumn<Player, Integer> resultElo, TableColumn<Player, Integer> resultLocal,
                         TableColumn<Player, Federation> resultFed, TableColumn<Player, Float> resultPoints,
                         TableColumn<Player, Float> resultBuchCut, TableColumn<Player, Float> resultBuch,
-                        TableColumn<Player, Float> resultBerger, TableColumn<Player, Float> resultProgress
+                        TableColumn<Player, Float> resultBerger, TableColumn<Player, Float> resultProgress,
+                        TableView<ResultPredicate> filterListTable,
+                        TableColumn<ResultPredicate, String> filterListName, TableColumn<ResultPredicate, Player.Sex> filterListSex,
+                        TableColumn<ResultPredicate, String> filterListYear, TableColumn<ResultPredicate, String> filterListTitle,
+                        TableColumn<ResultPredicate, String> filterListLocal, TableColumn<ResultPredicate, String> filterListFideRtg,
+                        TableColumn<ResultPredicate, String> filterListFed, TableColumn<ResultPredicate, String> filterListState,
+                        TableColumn<ResultPredicate, Void> filterListDelete,
+                        TextField filterNameField, Button filterCreate, ComboBox<Player.Sex> filterSexSelect,
+                        ComboBox<ResultPredicate.CompareOperator> filterYearOperator, TextField filterYearField,
+                        ComboBox<ResultPredicate.CompareOperator> filterTitleOperator, ComboBox<Title> filterTitleSelect,
+                        ComboBox<ResultPredicate.CompareOperator> filterLocalRtgOperator, TextField filterLocalRtg,
+                        ComboBox<ResultPredicate.CompareOperator> filterFIDERtgOperator, TextField filterFIDERtg,
+                        ComboBox<ResultPredicate.CompareOperator> filterFedOperator, ComboBox<Federation> filterFedSelect,
+                        ComboBox<ResultPredicate.CompareOperator> filterStateOperator, ComboBox<String> filterStateSelect
     ) {
         setPolandTablesHelper(new PolandTableHelper(
                 tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks
@@ -53,6 +60,30 @@ public class TablesHelper {
                 resultElo, resultLocal, resultFed, resultPoints,
                 resultBuchCut, resultBuch, resultBerger, resultProgress
         ));
+
+        setFilterListHelper(
+                new FilterListHelper(
+                        tournament, filterListTable,
+                        filterListName, filterListSex,
+                        filterListYear, filterListTitle,
+                        filterListLocal, filterListFideRtg,
+                        filterListFed, filterListState,
+                        filterListDelete
+                )
+        );
+
+        setFilterCreatorHelper(
+                new FilterCreatorHelper(
+                        tournament,
+                        filterNameField, filterCreate, filterSexSelect,
+                        filterYearOperator, filterYearField,
+                        filterTitleOperator, filterTitleSelect,
+                        filterLocalRtgOperator, filterLocalRtg,
+                        filterFIDERtgOperator, filterFIDERtg,
+                        filterFedOperator, filterFedSelect,
+                        filterStateOperator, filterStateSelect
+                )
+        );
     }
 
     public PolandTableHelper getPolandTablesHelper() {
@@ -77,6 +108,22 @@ public class TablesHelper {
 
     public void setResultTableHelper(ResultTableHelper resultTableHelper) {
         this.resultTableHelper = resultTableHelper;
+    }
+
+    public FilterListHelper getFilterListHelper() {
+        return filterListHelper;
+    }
+
+    public void setFilterListHelper(FilterListHelper filterListHelper) {
+        this.filterListHelper = filterListHelper;
+    }
+
+    public FilterCreatorHelper getFilterCreatorHelper() {
+        return filterCreatorHelper;
+    }
+
+    public void setFilterCreatorHelper(FilterCreatorHelper filterCreatorHelper) {
+        this.filterCreatorHelper = filterCreatorHelper;
     }
 
 }

@@ -44,6 +44,8 @@ public class Tournament implements Serializable {
     private ResultsComparator resultsComparator;
     private ArrayList<Withdraw> withdraws = new ArrayList<>();
     private transient ObservableList<Withdraw> withdrawsObs = FXCollections.observableArrayList();
+    private ArrayList<ResultPredicate> predicates = new ArrayList<>();
+    private transient ObservableList<ResultPredicate> predicatesObs = FXCollections.observableArrayList();
 
     public Tournament(SwsxTournament swsxTournament) {
         setName(swsxTournament.getName());
@@ -582,6 +584,23 @@ public class Tournament implements Serializable {
             }
         });
 
+        predicatesObs.addListener((ListChangeListener<? super ResultPredicate>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getPredicates().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getPredicates().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getPredicates().subList(from, to + 1).clear();
+                    getPredicates().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
 
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
@@ -862,6 +881,20 @@ public class Tournament implements Serializable {
         this.withdrawsObs = withdrawsObs;
     }
 
+    public ArrayList<ResultPredicate> getPredicates() {
+        return predicates;
+    }
+
+    public ObservableList<ResultPredicate> getPredicatesObs() {
+        return predicatesObs;
+    }
+
+    public void setPredicatesObs(ObservableList<ResultPredicate> predicatesObs) {
+        this.predicatesObs = predicatesObs;
+    }
+    public void setPredicates(ArrayList<ResultPredicate> predicates) {
+        this.predicates = predicates;
+    }
     public enum Type implements Serializable {
         STANDARD,
         RAPID,

@@ -229,7 +229,6 @@ public class StartListHelper {
                     Player player = getTableRow().getItem();
                     if (player != null) {
                         getTournament().getPlayersObs().remove(player);
-                        getTournament().getPlayers().remove(player);
                     }
                 });
             }

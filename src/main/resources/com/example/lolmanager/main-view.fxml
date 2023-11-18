@@ -1136,16 +1136,17 @@
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                             <children>
-                                                                                <TableView prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                <TableView fx:id="filterListTable" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                     <columns>
-                                                                                        <TableColumn prefWidth="75.0" text="Filter name" />
-                                                                                        <TableColumn prefWidth="75.0" text="Sex" />
-                                                                                        <TableColumn prefWidth="111.0" text="Year of birth" />
-                                                                                        <TableColumn prefWidth="75.0" text="Title" />
-                                                                                        <TableColumn prefWidth="75.0" text="Local" />
-                                                                                        <TableColumn prefWidth="75.0" text="FIDE" />
-                                                                                        <TableColumn prefWidth="75.0" text="FED" />
-                                                                                        <TableColumn prefWidth="75.0" text="State" />
+                                                                                        <TableColumn fx:id="filterListName" prefWidth="75.0" text="Filter name" />
+                                                                                        <TableColumn fx:id="filterListSex" prefWidth="75.0" text="Sex" />
+                                                                                        <TableColumn fx:id="filterListYear" prefWidth="111.0" text="Year of birth" />
+                                                                                        <TableColumn fx:id="filterListTitle" prefWidth="75.0" text="Title" />
+                                                                                        <TableColumn fx:id="filterListLocal" prefWidth="75.0" text="Local" />
+                                                                                        <TableColumn fx:id="filterListFideRtg" prefWidth="75.0" text="FIDE" />
+                                                                                        <TableColumn fx:id="filterListFed" prefWidth="75.0" text="FED" />
+                                                                                        <TableColumn fx:id="filterListState" prefWidth="75.0" text="State" />
+                                                                  <TableColumn fx:id="filterListDelete" prefWidth="75.0" text="Delete" />
                                                                                     </columns>
                                                                                     <columnResizePolicy>
                                                                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -1175,35 +1176,21 @@
                                                                                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                                                                             <children>
                                                                                                 <Label contentDisplay="CENTER" text="Filter Name" />
+                                                                        <Separator opacity="0.0" prefHeight="33.0" prefWidth="15.0" />
                                                                                                 <TextField fx:id="filterNameField" prefHeight="24.0" prefWidth="614.0" />
                                                                                             </children>
                                                                                         </HBox>
-                                                                                        <Button fx:id="filterCreate" mnemonicParsing="false" text="Create" GridPane.columnIndex="3" />
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                                                                             <children>
-                                                                                                <Label text="Sex" />
+                                                                                                <Label text="Sex: " />
                                                                                                 <ComboBox fx:id="filterSexSelect" prefWidth="150.0" />
-                                                                                            </children>
-                                                                                        </HBox>
-                                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
-                                                                                            <children>
-                                                                                                <Label prefHeight="16.0" prefWidth="98.0" text="FIDE R." />
-                                                                                                <ComboBox fx:id="filterFIDERtgOperator" prefWidth="150.0" />
-                                                                                                <TextField fx:id="filterFIDERtg" />
                                                                                             </children>
                                                                                         </HBox>
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                                             <children>
                                                                                                 <Label text="Year of birth" />
-                                                                                                <ComboBox fx:id="filterYearOperator" prefHeight="24.0" prefWidth="19.0" />
-                                                                                                <TextField fx:id="filterYearFiled" prefHeight="24.0" prefWidth="109.0" />
-                                                                                            </children>
-                                                                                        </HBox>
-                                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                                                                            <children>
-                                                                                                <Label prefHeight="16.0" prefWidth="65.0" text="FED" />
-                                                                                                <ComboBox fx:id="filterFedOpeartor" prefWidth="150.0" />
-                                                                                                <ComboBox fx:id="filterFedCombobox" prefWidth="150.0" />
+                                                                                                <ComboBox fx:id="filterYearOperator" prefHeight="27.0" prefWidth="77.0" />
+                                                                                                <TextField fx:id="filterYearField" prefHeight="24.0" prefWidth="109.0" />
                                                                                             </children>
                                                                                         </HBox>
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -1213,20 +1200,35 @@
                                                                                                 <ComboBox fx:id="filterTitleSelect" prefWidth="150.0" />
                                                                                             </children>
                                                                                         </HBox>
-                                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                                                            <children>
-                                                                                                <Label prefHeight="16.0" prefWidth="72.0" text="State" />
-                                                                                                <ComboBox fx:id="filterStateOperator" prefWidth="150.0" />
-                                                                                                <ComboBox fx:id="filterStateCheckbox" prefWidth="150.0" />
-                                                                                            </children>
-                                                                                        </HBox>
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                                                                             <children>
                                                                                                 <Label prefHeight="16.0" prefWidth="86.0" text="Local R." />
-                                                                                                <ComboBox fx:id="filterLocalRtgOperator" prefWidth="150.0" />
+                                                                                                <ComboBox fx:id="filterLocalRtgOperator" prefHeight="27.0" prefWidth="94.0" />
                                                                                                 <TextField fx:id="filterLocalRtg" />
                                                                                             </children>
                                                                                         </HBox>
+                                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                                                                            <children>
+                                                                                                <Label prefHeight="16.0" prefWidth="98.0" text="FIDE R." />
+                                                                                                <ComboBox fx:id="filterFIDERtgOperator" prefHeight="27.0" prefWidth="93.0" />
+                                                                                                <TextField fx:id="filterFIDERtg" />
+                                                                                            </children>
+                                                                                        </HBox>
+                                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                                                            <children>
+                                                                                                <Label prefHeight="16.0" prefWidth="65.0" text="FED" />
+                                                                                                <ComboBox fx:id="filterFedOperator" prefHeight="27.0" prefWidth="89.0" />
+                                                                                                <ComboBox fx:id="filterFedSelect" prefWidth="150.0" />
+                                                                                            </children>
+                                                                                        </HBox>
+                                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                                                            <children>
+                                                                                                <Label prefHeight="16.0" prefWidth="72.0" text="State" />
+                                                                                                <ComboBox fx:id="filterStateOperator" prefHeight="27.0" prefWidth="86.0" />
+                                                                                                <ComboBox fx:id="filterStateSelect" prefWidth="150.0" />
+                                                                                            </children>
+                                                                                        </HBox>
+                                                                                        <Button fx:id="filterCreate" mnemonicParsing="false" text="Create" GridPane.columnIndex="3" />
                                                                                     </children>
                                                                                 </GridPane>
                                                                             </children>
