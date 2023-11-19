@@ -600,6 +600,18 @@ public class Player implements Serializable {
         return getRounds().get(n);
     }
 
+    public Game getRound(Player player) {
+        if (player == this){
+            return null;
+        }
+        for (Game game : getRounds()){
+            if (game.getWhite() == player || game.getBlack() == player){
+                return game;
+            }
+        }
+        return null;
+    }
+
     public Game getLastRound() {
         return getRound(getRounds().size() - 1);
     }

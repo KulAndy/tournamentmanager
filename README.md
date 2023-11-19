@@ -38,7 +38,7 @@ Funkcje:
 - [ ] formularz na normę FA
 - [ ] ceryfikat tytułu
 - [X] import trf
-- [ ] import pgn
+- [X] import pgn
 - [X] import swsx
 
 Skróty:
@@ -48,7 +48,7 @@ Skróty:
 - CTRL + O - otwórz
 - z, x, c - "1-0", "0.5-0.5", "0-1" przy wpisywaniu wyników
 
-Uruchamianie
+# Uruchamianie
 ## 1. Zapomocą Idea IntelliJ
 - zainstaluj [Idee](https://www.jetbrains.com/idea/download/?section=windows)
 - pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)

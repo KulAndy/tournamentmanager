@@ -18,7 +18,7 @@ public class Game implements Serializable {
         this(white, black, null, null, true);
     }
 
-    Game(Player white, Player black, Result whiteResult, Result blackResult, Boolean forfeit) {
+    public Game(Player white, Player black, Result whiteResult, Result blackResult, Boolean forfeit) {
         setWhite(white);
         setBlack(black);
         setWhiteUUDI(white.getPlayerid());

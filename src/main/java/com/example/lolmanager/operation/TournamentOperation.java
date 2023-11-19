@@ -2,10 +2,7 @@ package com.example.lolmanager.operation;
 
 import com.example.lolmanager.MainController;
 import com.example.lolmanager.adapter.LocalDateAdapter;
-import com.example.lolmanager.model.Game;
-import com.example.lolmanager.model.Player;
-import com.example.lolmanager.model.PlayerList;
-import com.example.lolmanager.model.Tournament;
+import com.example.lolmanager.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -17,14 +14,12 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static com.example.lolmanager.helper.GeneralHelper.error;
-import static com.example.lolmanager.helper.GeneralHelper.warning;
+import static com.example.lolmanager.helper.GeneralHelper.*;
 
 public class TournamentOperation {
     private static final Stage fileStage = new Stage();
@@ -217,5 +212,118 @@ public class TournamentOperation {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void importPgn(MainController controller){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("pgn files", "*.pgn"));
+        File selectedFile = fileChooser.showOpenDialog(new Stage());
+
+        if (selectedFile != null) {
+            LinkedList<PgnGame> pgnGames = new LinkedList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                String line;
+                StringBuilder builder = new StringBuilder();
+                byte counter = 1;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line).append("\n");
+                    if (line.trim().isEmpty()) {
+                        counter++;
+                        counter %= 2;
+                        if (counter == 0){
+                            PgnGame game = new PgnGame(builder.toString());
+                            if (game.getRound() == null || game.getRound() <= 0){
+                                game.setRound((byte) controller.getTournament().getRoundsObs().size());
+                            }
+                            pgnGames.add(game);
+                            builder.setLength(0);
+                        }
+                    }
+
+                }
+                String buffered = builder.toString().trim();
+                if (buffered.contains("White") && buffered.contains("Black")){
+                    PgnGame game = new PgnGame(builder.toString());
+                    if (game.getRound() == null || game.getRound() <= 0){
+                        game.setRound((byte) controller.getTournament().getRoundsObs().size());
+                    }
+                    pgnGames.add(game);
+                    builder.setLength(0);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Set<Byte> editedRounds = new HashSet<>();
+            for (PgnGame pgnGame : pgnGames){
+                while (controller.getTournament().getRoundsObs().size() < pgnGame.getRound()){
+                    controller.getTournament().getRoundsObs().add(new ArrayList<>());
+                }
+                Player white = controller.getTournament().getPlayers().get(pgnGame.getWhite());
+                if (white == null){
+                    white = new Player(pgnGame.getWhite());
+                    controller.getTournament().getPlayers().add(white);
+                }
+                Player black = controller.getTournament().getPlayers().get(pgnGame.getBlack());
+                if (black == null){
+                    black = new Player(pgnGame.getBlack());
+                    controller.getTournament().getPlayers().add(black);
+                }
+                Result whiteResult, blackResult;
+                boolean forfeit;
+                switch (pgnGame.getResult()){
+                    case "1-0" ->{
+                        whiteResult = Result.WIN;
+                        blackResult = Result.LOSE;
+                        forfeit = false;
+                    }
+                    case "0-1" ->{
+                        whiteResult = Result.LOSE;
+                        blackResult = Result.WIN;
+                        forfeit = false;
+                    }
+                    case "1/2-1/2" ->{
+                        whiteResult = Result.DRAW;
+                        blackResult = Result.DRAW;
+                        forfeit = false;
+                    }
+                    case "0-0" ->{
+                        whiteResult = Result.LOSE;
+                        blackResult = Result.LOSE;
+                        forfeit = false;
+                    }
+                    case "+--" ->{
+                        whiteResult = Result.WIN;
+                        blackResult = Result.LOSE;
+                        forfeit = true;
+                    }
+                    case "--+" ->{
+                        whiteResult = Result.LOSE;
+                        blackResult = Result.WIN;
+                        forfeit = true;
+                    }
+                    default -> {
+                        whiteResult = null;
+                        blackResult = null;
+                        forfeit = true;
+                    }
+                }
+
+                Game game = new Game(white, black, whiteResult, blackResult, forfeit);
+                editedRounds.add(pgnGame.getRound());
+                controller.getTournament().getRoundsObs().get(pgnGame.getRound() - 1).add(game);
+            }
+
+            for (Byte round:editedRounds){
+                controller.getTournament().getRoundsObs().get(round - 1).sort(controller.getTournament().getPairingComparator());
+            }
+            controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(Integer.valueOf(editedRounds.parallelStream().max(Byte::compare).orElse((byte) 0)));
+            info("Imported pgn successfully");
+
+        } else {
+            warning("No file selected");
+        }
+
     }
 }

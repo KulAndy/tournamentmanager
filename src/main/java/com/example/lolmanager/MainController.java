@@ -622,6 +622,106 @@ public class MainController implements Initializable {
 
         tournamentSelect.setItems(files);
 
+        Timeline timeline = new Timeline();
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
+            if (getAutosaveMenu().isSelected() && !isSaving()) {
+                setSaving(true);
+                save(this);
+                setSaving(false);
+            }
+        });
+
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    public void init(Scene scene, String programName, String programExtension) {
+        setProgramName(programName);
+        setProgramExtension(programExtension);
+        setFileOperation(new FileOperation());
+        setupEvents();
+        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, roundsTab, enterResultsTab, this));
+
+    }
+
+    public void setupEvents() {
+        quitMenu.setOnAction(e -> quit());
+        saveAsMenu.setOnAction(e -> saveAs(this));
+        saveMenu.setOnAction(e -> save(this));
+        saveButton.setOnAction(e -> save(this));
+        openMenu.setOnAction(e -> open(this));
+        openButton.setOnAction(e -> open(this));
+        fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
+        trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
+        downloadFideMenu.setOnAction(e -> {
+            CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
+                    .exceptionally(ex -> {
+                        ex.printStackTrace();
+                        return null;
+                    });
+        });
+        downloadFideButton.setOnAction(e -> {
+            CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
+                    .exceptionally(ex -> {
+                        ex.printStackTrace();
+                        return null;
+                    });
+        });
+        downloadPolButton.setOnAction(e -> {
+            CompletableFuture.runAsync(FileOperation::downloadPolList)
+                    .exceptionally(ex -> {
+                        ex.printStackTrace();
+                        return null;
+                    });
+        });
+        importPgn.setOnAction(e->TournamentOperation.importPgn(this));
+
+        randomTournament.setOnAction(e -> {
+            try {
+                if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
+                    TournamentOperation.loadTournament(JavafoWrapper.generateRandomTournament(), this);
+                } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
+                    TournamentOperation.loadTournament(RoundRobinEngine.generateRandomTournament(), this);
+                }
+            } catch (IOException | InterruptedException ex) {
+                error("Couldn't generate random tournament");
+            }
+        });
+
+        importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
+
+        importSwsx.setOnAction(e -> {
+            File swsx = FileOperation.selectSwsx();
+            try {
+                if (swsx != null) {
+                    SwsxTournament swsxTournament = new SwsxTournament(swsx);
+                    Tournament tournament = new Tournament(swsxTournament);
+                    TournamentOperation.loadTournament(tournament, this);
+                    info("Imported successfully");
+                } else {
+                    error("An error eccured");
+                }
+            } catch (Exception ex) {
+                error("An error eccured");
+                ex.printStackTrace();
+                System.out.println(ex.getMessage());
+            }
+        });
+
+        closeMenu.setOnAction(e -> {
+            files.remove(getFile());
+        });
+        tournamentSelect.valueProperty().addListener(e -> {
+            save(this);
+            File newValue = tournamentSelect.getValue();
+            if (newValue == null) {
+                TournamentOperation.loadTournament(new Tournament(), this);
+            } else {
+                importJson(tournamentSelect.getValue(), this);
+            }
+        });
+
         tourTB1.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getResultsComparator().setCriteria1(newValue);
             String tiebreak = newValue.prettyText();
@@ -676,105 +776,6 @@ public class MainController implements Initializable {
             }
             resultTb5.setText(tiebreak);
             tablesHelper.getResultTableHelper().refreshList();
-        });
-
-        Timeline timeline = new Timeline();
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
-            if (getAutosaveMenu().isSelected() && !isSaving()) {
-                setSaving(true);
-                save(this);
-                setSaving(false);
-            }
-        });
-
-        timeline.getKeyFrames().add(keyFrame);
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-    }
-
-    public void init(Scene scene, String programName, String programExtension) {
-        setProgramName(programName);
-        setProgramExtension(programExtension);
-        setFileOperation(new FileOperation());
-        setupEvents();
-        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, roundsTab, enterResultsTab, this));
-
-    }
-
-    public void setupEvents() {
-        quitMenu.setOnAction(e -> quit());
-        saveAsMenu.setOnAction(e -> saveAs(this));
-        saveMenu.setOnAction(e -> save(this));
-        saveButton.setOnAction(e -> save(this));
-        openMenu.setOnAction(e -> open(this));
-        openButton.setOnAction(e -> open(this));
-        fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
-        trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
-        downloadFideMenu.setOnAction(e -> {
-            CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
-                    .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        return null;
-                    });
-        });
-        downloadFideButton.setOnAction(e -> {
-            CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
-                    .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        return null;
-                    });
-        });
-        downloadPolButton.setOnAction(e -> {
-            CompletableFuture.runAsync(FileOperation::downloadPolList)
-                    .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        return null;
-                    });
-        });
-
-        randomTournament.setOnAction(e -> {
-            try {
-                if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
-                    TournamentOperation.loadTournament(JavafoWrapper.generateRandomTournament(), this);
-                } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
-                    TournamentOperation.loadTournament(RoundRobinEngine.generateRandomTournament(), this);
-                }
-            } catch (IOException | InterruptedException ex) {
-                error("Couldn't generate random tournament");
-            }
-        });
-
-        importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
-
-        importSwsx.setOnAction(e -> {
-            File swsx = FileOperation.selectSwsx();
-            try {
-                if (swsx != null) {
-                    SwsxTournament swsxTournament = new SwsxTournament(swsx);
-                    Tournament tournament = new Tournament(swsxTournament);
-                    TournamentOperation.loadTournament(tournament, this);
-                    info("Imported successfully");
-                } else {
-                    error("An error eccured");
-                }
-            } catch (Exception ex) {
-                error("An error eccured");
-                ex.printStackTrace();
-                System.out.println(ex.getMessage());
-            }
-        });
-
-        closeMenu.setOnAction(e -> {
-            files.remove(getFile());
-        });
-        tournamentSelect.valueProperty().addListener(e -> {
-            save(this);
-            File newValue = tournamentSelect.getValue();
-            if (newValue == null) {
-                TournamentOperation.loadTournament(new Tournament(), this);
-            } else {
-                importJson(tournamentSelect.getValue(), this);
-            }
         });
     }
 

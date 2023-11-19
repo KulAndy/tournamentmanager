@@ -588,8 +588,5 @@ public class FIDEOperation {
         } else {
             warning("No file selected");
         }
-
     }
-
-
 }
