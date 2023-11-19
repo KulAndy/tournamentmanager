@@ -311,6 +311,8 @@ public class TournamentOperation {
                 }
 
                 Game game = new Game(white, black, whiteResult, blackResult, forfeit);
+                white.addRound(game);
+                black.addRound(game);
                 editedRounds.add(pgnGame.getRound());
                 controller.getTournament().getRoundsObs().get(pgnGame.getRound() - 1).add(game);
             }
