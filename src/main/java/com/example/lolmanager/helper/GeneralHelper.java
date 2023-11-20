@@ -320,4 +320,33 @@ public class GeneralHelper {
         }
     }
 
+    public static CompletableFuture<String> threeOptionsDialog(String content, String optionA, String optionB) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Export pgn");
+            alert.setHeaderText("Choose an option:");
+            alert.setContentText(content);
+
+            ButtonType buttonTypeA = new ButtonType(optionA);
+            ButtonType buttonTypeB = new ButtonType(optionB);
+            ButtonType buttonTypeCancel = new ButtonType("Cancel");
+
+            alert.getButtonTypes().setAll(buttonTypeA, buttonTypeB, buttonTypeCancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            result.ifPresent(buttonType -> {
+                if (buttonType == buttonTypeA) {
+                    future.complete("A");
+                } else if (buttonType == buttonTypeB) {
+                    future.complete("B");
+                } else {
+                    future.complete("Cancel");
+                }
+            });
+        });
+
+        return future;
+    }
 }

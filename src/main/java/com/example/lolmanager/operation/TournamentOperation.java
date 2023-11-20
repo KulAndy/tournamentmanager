@@ -97,7 +97,7 @@ public class TournamentOperation {
         }
     }
 
-    public static void saveAs(MainController controller) {
+    public static void saveAs(MainController controller) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create New File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
@@ -114,7 +114,7 @@ public class TournamentOperation {
         }
     }
 
-    public static void save(MainController controller) {
+    public static void save(MainController controller) throws IOException {
         File file = controller.getFile();
         if (file == null) {
             saveAs(controller);
@@ -214,9 +214,9 @@ public class TournamentOperation {
         }
     }
 
-    public static void importPgn(MainController controller){
+    public static void importPgn(MainController controller) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open File");
+        fileChooser.setTitle("Import pgn");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("pgn files", "*.pgn"));
         File selectedFile = fileChooser.showOpenDialog(new Stage());
 
@@ -231,9 +231,9 @@ public class TournamentOperation {
                     if (line.trim().isEmpty()) {
                         counter++;
                         counter %= 2;
-                        if (counter == 0){
+                        if (counter == 0) {
                             PgnGame game = new PgnGame(builder.toString());
-                            if (game.getRound() == null || game.getRound() <= 0){
+                            if (game.getRound() == null || game.getRound() <= 0) {
                                 game.setRound((byte) controller.getTournament().getRoundsObs().size());
                             }
                             pgnGames.add(game);
@@ -243,9 +243,9 @@ public class TournamentOperation {
 
                 }
                 String buffered = builder.toString().trim();
-                if (buffered.contains("White") && buffered.contains("Black")){
+                if (buffered.contains("White") && buffered.contains("Black")) {
                     PgnGame game = new PgnGame(builder.toString());
-                    if (game.getRound() == null || game.getRound() <= 0){
+                    if (game.getRound() == null || game.getRound() <= 0) {
                         game.setRound((byte) controller.getTournament().getRoundsObs().size());
                     }
                     pgnGames.add(game);
@@ -256,76 +256,145 @@ public class TournamentOperation {
             }
 
             Set<Byte> editedRounds = new HashSet<>();
-            for (PgnGame pgnGame : pgnGames){
-                while (controller.getTournament().getRoundsObs().size() < pgnGame.getRound()){
+            for (PgnGame pgnGame : pgnGames) {
+                while (controller.getTournament().getRoundsObs().size() < pgnGame.getRound()) {
                     controller.getTournament().getRoundsObs().add(new ArrayList<>());
                 }
                 Player white = controller.getTournament().getPlayers().get(pgnGame.getWhite());
-                if (white == null){
+                if (white == null) {
                     white = new Player(pgnGame.getWhite());
                     controller.getTournament().getPlayers().add(white);
                 }
                 Player black = controller.getTournament().getPlayers().get(pgnGame.getBlack());
-                if (black == null){
+                if (black == null) {
                     black = new Player(pgnGame.getBlack());
                     controller.getTournament().getPlayers().add(black);
                 }
-                Result whiteResult, blackResult;
-                boolean forfeit;
-                switch (pgnGame.getResult()){
-                    case "1-0" ->{
-                        whiteResult = Result.WIN;
-                        blackResult = Result.LOSE;
-                        forfeit = false;
-                    }
-                    case "0-1" ->{
-                        whiteResult = Result.LOSE;
-                        blackResult = Result.WIN;
-                        forfeit = false;
-                    }
-                    case "1/2-1/2" ->{
-                        whiteResult = Result.DRAW;
-                        blackResult = Result.DRAW;
-                        forfeit = false;
-                    }
-                    case "0-0" ->{
-                        whiteResult = Result.LOSE;
-                        blackResult = Result.LOSE;
-                        forfeit = false;
-                    }
-                    case "+--" ->{
-                        whiteResult = Result.WIN;
-                        blackResult = Result.LOSE;
-                        forfeit = true;
-                    }
-                    case "--+" ->{
-                        whiteResult = Result.LOSE;
-                        blackResult = Result.WIN;
-                        forfeit = true;
-                    }
-                    default -> {
-                        whiteResult = null;
-                        blackResult = null;
-                        forfeit = true;
-                    }
-                }
-
-                Game game = new Game(white, black, whiteResult, blackResult, forfeit);
+                Game game = getGame(pgnGame, white, black);
                 white.addRound(game);
                 black.addRound(game);
                 editedRounds.add(pgnGame.getRound());
                 controller.getTournament().getRoundsObs().get(pgnGame.getRound() - 1).add(game);
             }
 
-            for (Byte round:editedRounds){
+            for (Byte round : editedRounds) {
                 controller.getTournament().getRoundsObs().get(round - 1).sort(controller.getTournament().getPairingComparator());
             }
             controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(Integer.valueOf(editedRounds.parallelStream().max(Byte::compare).orElse((byte) 0)));
+            if (controller.getTournament().getName().isEmpty()){
+                controller.getHomeTabHelper().getBasicInfoHelper().getTourName().setText(pgnGames.get(0).getEvent());
+                controller.getHomeTabHelper().getBasicInfoHelper().getTourPlace().setText(pgnGames.get(0).getSite());
+            }
+            if (controller.getTournament().getRoundsObs().size() > controller.getTournament().getRoundsNumber()){
+                controller.getHomeTabHelper().getBasicInfoHelper().getTourNoRounds().setText(controller.getTournament().getRoundsObs().size() + "");
+            }
             info("Imported pgn successfully");
 
         } else {
             warning("No file selected");
         }
 
+    }
+
+    private static Game getGame(PgnGame pgnGame, Player white, Player black) {
+        Result whiteResult, blackResult;
+        boolean forfeit;
+        switch (pgnGame.getResultTag()) {
+            case "1-0" -> {
+                whiteResult = Result.WIN;
+                blackResult = Result.LOSE;
+                forfeit = false;
+            }
+            case "0-1" -> {
+                whiteResult = Result.LOSE;
+                blackResult = Result.WIN;
+                forfeit = false;
+            }
+            case "1/2-1/2" -> {
+                whiteResult = Result.DRAW;
+                blackResult = Result.DRAW;
+                forfeit = false;
+            }
+            case "0-0" -> {
+                whiteResult = Result.LOSE;
+                blackResult = Result.LOSE;
+                forfeit = false;
+            }
+            case "+--" -> {
+                whiteResult = Result.WIN;
+                blackResult = Result.LOSE;
+                forfeit = true;
+            }
+            case "--+" -> {
+                whiteResult = Result.LOSE;
+                blackResult = Result.WIN;
+                forfeit = true;
+            }
+            default -> {
+                whiteResult = null;
+                blackResult = null;
+                forfeit = true;
+            }
+        }
+
+        return new Game(white, black, whiteResult, blackResult, forfeit);
+    }
+
+    public static void exportRoundPgn(ArrayList<Game> games, Tournament tournament) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export to pgn");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("pgn files", "*.pgn"));
+        File pgnFile = fileChooser.showSaveDialog(fileStage);
+
+        if (pgnFile != null) {
+            String filePath = pgnFile.getAbsolutePath();
+            if (!filePath.endsWith(".pgn")) {
+                filePath += ".pgn";
+            }
+            pgnFile = new File(filePath);
+
+            StringBuilder pgn = new StringBuilder();
+            for (Game game : games) {
+                PgnGame pgnGame = new PgnGame(game.getWhite(), game.getBlack(), new Date(), tournament);
+                pgn.append(pgnGame.getPgn()).append("\n");
+            }
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(pgnFile))) {
+                bw.write(pgn.toString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void exportPgn(Tournament tournament) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export to pgn");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("pgn files", "*.pgn"));
+        File pgnFile = fileChooser.showSaveDialog(fileStage);
+
+        if (pgnFile != null) {
+            System.out.println(pgnFile.getAbsolutePath());
+            String filePath = pgnFile.getAbsolutePath();
+            if (!filePath.endsWith(".pgn")) {
+                filePath += ".pgn";
+                pgnFile = new File(filePath);
+            }
+
+            StringBuilder pgn = new StringBuilder();
+
+            for (int i = 0; i < tournament.getRounds().size(); i++) {
+                for (Game game : tournament.getRound(i)) {
+                    PgnGame pgnGame = new PgnGame(game.getWhite(), game.getBlack(), new Date(), tournament);
+                    pgn.append(pgnGame.getPgn()).append("\n");
+                }
+            }
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(pgnFile))) {
+                bw.write(pgn.toString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -7,9 +7,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static com.example.lolmanager.MainController.quit;
+import static com.example.lolmanager.helper.GeneralHelper.error;
 import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
@@ -41,7 +43,13 @@ public class ShortcutsHelper {
     private void controlShortcuts(KeyEvent e) {
         if (e.isControlDown() && !e.isShiftDown()) {
             switch (e.getCode()) {
-                case S -> save(controller);
+                case S -> {
+                    try {
+                        save(controller);
+                    } catch (IOException ex) {
+                        error("Couldn't save tournament");
+                    }
+                }
                 case O -> open(controller);
                 case Q -> quit();
             }
@@ -51,7 +59,11 @@ public class ShortcutsHelper {
     private void controlShiftShortcuts(KeyEvent e) {
         if (e.isControlDown() && e.isShiftDown()) {
             if (Objects.requireNonNull(e.getCode()) == KeyCode.S) {
-                saveAs(controller);
+                try {
+                    saveAs(controller);
+                } catch (IOException ex) {
+                    error("Couldn't save tournament");
+                }
             }
         }
     }

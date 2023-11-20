@@ -32,23 +32,12 @@ public class PgnGame {
         setSite(tournament.getPlace());
         if (game != null){
             if (game.getWhiteResult() != null && game.getBlackResult() != null){
-                StringBuilder result = new StringBuilder();
-                switch (game.getWhiteResult()){
-                    case WIN -> result.append("1");
-                    case DRAW -> result.append("1/2");
-                    case LOSE -> result.append("0");
-                }
-                result.append("-");
-                switch (game.getBlackResult()){
-                    case WIN -> result.append("1");
-                    case DRAW -> result.append("1/2");
-                    case LOSE -> result.append("0");
-                }
+                StringBuilder result = getResultTag(game);
                 setResult(result.toString());
             }
             int round = white.getRounds().indexOf(game);
             if (round >= 0){
-                setRound((byte) round);
+                setRound((byte) (round + 1));
             }else {
                 setRound((byte) tournament.getRounds().size());
             }
@@ -58,6 +47,22 @@ public class PgnGame {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
         setDate(dateFormat.format(date));
         setMoves("1. *");
+    }
+
+    private static StringBuilder getResultTag(Game game) {
+        StringBuilder result = new StringBuilder();
+        switch (game.getWhiteResult()){
+            case WIN -> result.append("1");
+            case DRAW -> result.append("1/2");
+            case LOSE -> result.append("0");
+        }
+        result.append("-");
+        switch (game.getBlackResult()){
+            case WIN -> result.append("1");
+            case DRAW -> result.append("1/2");
+            case LOSE -> result.append("0");
+        }
+        return result;
     }
 
     public PgnGame(File pgn){
@@ -120,7 +125,7 @@ public class PgnGame {
         }
         builder.append("[White \"").append(getWhite()).append("\"]").append("\n");
         builder.append("[Black \"").append(getBlack()).append("\"]").append("\n");
-        builder.append("[Result \"").append(getResult()).append("\"]").append("\n");
+        builder.append("[Result \"").append(getResultTag()).append("\"]").append("\n");
         if (getWhiteElo() > 0){
             builder.append("[WhiteElo \"").append(getWhiteElo()).append("\"]").append("\n");
         }
@@ -301,7 +306,7 @@ public class PgnGame {
         }
     }
 
-    public String getResult() {
+    public String getResultTag() {
         return result;
     }
 

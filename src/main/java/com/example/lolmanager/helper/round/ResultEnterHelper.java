@@ -58,6 +58,28 @@ public class ResultEnterHelper {
     ) {
         setTournament(tournament);
         setRoundsViewSelect(roundsViewSelect);
+        setFirstRound(firstRound);
+        setPreviousRound(previousRound);
+        setNextRound(nextRound);
+        setLastRound(lastRound);
+        setWhiteWinResult(whiteWinResult);
+        setDrawResult(drawResult);
+        setBlackWinResult(blackWinResult);
+        setWhiteWinForfeitResult(whiteWinForfeitResult);
+        setBlackWinForfeitResult(blackWinForfeitResult);
+        setDeleteRound(deleteRound);
+        setGamesView(gamesView);
+        setLeftBoardNo(leftBoardNo);
+        setWhitePoints(whitePoints);
+        setWhiteRating(whiteRating);
+        setWhitePlayer(whitePlayer);
+        setGameResult(gameResult);
+        setBlackPlayer(blackPlayer);
+        setBlackRating(blackRating);
+        setBlackPoints(blackPoints);
+        setRightBoardNo(rightBoardNo);
+        setEnginePairButton(enginePairButton);
+
         getRoundsViewSelect().setItems(roundsNumbersObs);
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
             ArrayList<Integer> rounds = new ArrayList<>();
@@ -85,28 +107,6 @@ public class ResultEnterHelper {
             }
         });
 
-        setFirstRound(firstRound);
-        setPreviousRound(previousRound);
-        setNextRound(nextRound);
-        setLastRound(lastRound);
-        setWhiteWinResult(whiteWinResult);
-        setDrawResult(drawResult);
-        setBlackWinResult(blackWinResult);
-        setWhiteWinForfeitResult(whiteWinForfeitResult);
-        setBlackWinForfeitResult(blackWinForfeitResult);
-        setDeleteRound(deleteRound);
-
-        setGamesView(gamesView);
-        setLeftBoardNo(leftBoardNo);
-        setWhitePoints(whitePoints);
-        setWhiteRating(whiteRating);
-        setWhitePlayer(whitePlayer);
-        setGameResult(gameResult);
-        setBlackPlayer(blackPlayer);
-        setBlackRating(blackRating);
-        setBlackPoints(blackPoints);
-        setRightBoardNo(rightBoardNo);
-        setEnginePairButton(enginePairButton);
         getWhiteWinResult().setOnAction(e -> enterResult("1", "0"));
         getDrawResult().setOnAction(e -> enterResult("0.5", "0.5"));
         getBlackWinResult().setOnAction(e -> enterResult("0", "1"));
@@ -586,5 +586,4 @@ public class ResultEnterHelper {
         } catch (Exception ignored) {
         }
     }
-
 }

@@ -20,13 +20,14 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
-import static com.example.lolmanager.helper.GeneralHelper.error;
-import static com.example.lolmanager.helper.GeneralHelper.info;
+import static com.example.lolmanager.helper.GeneralHelper.*;
 import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class MainController implements Initializable {
@@ -53,6 +54,8 @@ public class MainController implements Initializable {
     @FXML
     private MenuItem saveAsMenu;
     @FXML
+    private MenuItem exportPgnMenu;
+    @FXML
     private MenuItem importTrf;
     @FXML
     private MenuItem importSwsx;
@@ -68,6 +71,7 @@ public class MainController implements Initializable {
     private MenuItem downloadFideMenu;
     @FXML
     private MenuItem trfRaport;
+
     @FXML
     private Button saveButton;
     @FXML
@@ -626,7 +630,11 @@ public class MainController implements Initializable {
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
             if (getAutosaveMenu().isSelected() && !isSaving()) {
                 setSaving(true);
-                save(this);
+                try {
+                    save(this);
+                } catch (IOException e) {
+                    error("Couldn't save tournament");
+                }
                 setSaving(false);
             }
         });
@@ -647,33 +655,72 @@ public class MainController implements Initializable {
 
     public void setupEvents() {
         quitMenu.setOnAction(e -> quit());
-        saveAsMenu.setOnAction(e -> saveAs(this));
-        saveMenu.setOnAction(e -> save(this));
-        saveButton.setOnAction(e -> save(this));
+        saveAsMenu.setOnAction(e -> {
+            try {
+                saveAs(this);
+            } catch (IOException ex) {
+                error("Couldn't save tournament");
+            }
+        });
+        saveMenu.setOnAction(e -> {
+            try {
+                save(this);
+            } catch (IOException ex) {
+                error("Couldn't save tournament");
+            }
+        });
+        saveButton.setOnAction(e -> {
+            try {
+                save(this);
+            } catch (IOException ex) {
+                error("Couldn't save tournament");
+            }
+        });
         openMenu.setOnAction(e -> open(this));
         openButton.setOnAction(e -> open(this));
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
+        exportPgnMenu.setOnAction(e->
+                GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
+                        .thenAccept(choice->{
+                            if (choice.equals("A")){
+                                try{
+                                    TournamentOperation.exportPgn(getTournament());
+                                    info("Exported games to pgn successfully");
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                    System.out.println(ex.getMessage());
+                                    error("Error during exporting rounds");
+                                }
+                            } else if (choice.equals("B")) {
+                                Integer currentRound = getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
+                                if (currentRound == null){
+                                    warning("Nothing exported\nNo round has been selected");
+                                }else {
+                                    try{
+                                        System.out.println("eksportowanie");
+                                        TournamentOperation.exportRoundPgn(getTournament().getRound(currentRound - 1), getTournament());
+                                        info("Export round %d successfully".formatted(currentRound));
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                        System.out.println(ex.getMessage());
+                                        error("Error during export round %d".formatted(currentRound));
+                                    }
+                                    System.out.println("koniec eskportu");
+                                }
+                            }
+                        }));
         downloadFideMenu.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
-                    .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        return null;
-                    });
+                    .exceptionally(ex -> null);
         });
         downloadFideButton.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
-                    .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        return null;
-                    });
+                    .exceptionally(ex -> null);
         });
         downloadPolButton.setOnAction(e -> {
             CompletableFuture.runAsync(FileOperation::downloadPolList)
-                    .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        return null;
-                    });
+                    .exceptionally(ex -> null);
         });
         importPgn.setOnAction(e->TournamentOperation.importPgn(this));
 
@@ -713,7 +760,12 @@ public class MainController implements Initializable {
             files.remove(getFile());
         });
         tournamentSelect.valueProperty().addListener(e -> {
-            save(this);
+            try {
+                save(this);
+            } catch (IOException ex) {
+                error("An error eccured");
+                return;
+            }
             File newValue = tournamentSelect.getValue();
             if (newValue == null) {
                 TournamentOperation.loadTournament(new Tournament(), this);
