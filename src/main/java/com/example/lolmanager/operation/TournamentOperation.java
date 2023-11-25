@@ -89,6 +89,11 @@ public class TournamentOperation {
             controller.getTournament().getWithdrawsObs().addAll(tournament.getWithdraws());
             controller.getTournament().getPredicatesObs().clear();
             controller.getTournament().getPredicatesObs().addAll(tournament.getPredicates());
+            controller.getTournament().getScheduleElementsObs().clear();
+            controller.getTournament().getScheduleElementsObs().addAll(tournament.getSchedule());
+            controller.getTournament().getScheduleElementsObs().set(0, tournament.getSchedule().getBriefing());
+            controller.getTournament().getSchedule().setBriefing(tournament.getSchedule().getBriefing());
+            controller.getTournament().getSchedule().setClosing(tournament.getSchedule().getClosing());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria1().setValue(tournament.getPlayers().getComparator().getCriteria1());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria2().setValue(tournament.getPlayers().getComparator().getCriteria2());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria3().setValue(tournament.getPlayers().getComparator().getCriteria3());
@@ -143,10 +148,10 @@ public class TournamentOperation {
     }
 
     private static void exportTournament(Tournament tournament, File file) throws IOException {
-
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
+
         String json = gson.toJson(tournament);
         String fileName = "tournament.json";
         String fileContent = json;
@@ -163,7 +168,6 @@ public class TournamentOperation {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void importJson(File file, MainController controller) {
@@ -184,7 +188,10 @@ public class TournamentOperation {
                     }
 
                     String content = outputStream.toString(StandardCharsets.UTF_8);
-                    Gson gson = new Gson();
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                            .registerTypeAdapter(Schedule.class, new Schedule.ScheduleDeserializer())
+                            .create();
                     Type tournamentType = new TypeToken<Tournament>() {
                     }.getType();
                     Tournament tournament = gson.fromJson(content, tournamentType);
@@ -374,7 +381,6 @@ public class TournamentOperation {
         File pgnFile = fileChooser.showSaveDialog(fileStage);
 
         if (pgnFile != null) {
-            System.out.println(pgnFile.getAbsolutePath());
             String filePath = pgnFile.getAbsolutePath();
             if (!filePath.endsWith(".pgn")) {
                 filePath += ".pgn";

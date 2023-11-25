@@ -168,6 +168,12 @@ public class MainController implements Initializable {
     private CheckBox twoOtherFeds;
     @FXML
     private TextField minTitleGames;
+    @FXML
+    private TableView<Schedule.ScheduleElement> scheduleTable;
+    @FXML
+    private TableColumn<Schedule.ScheduleElement, String> scheduleName;
+    @FXML
+    private TableColumn<Schedule.ScheduleElement, Void> scheduleDate;
     private PlayersHelper playersHelper;
 
     @FXML
@@ -561,7 +567,8 @@ public class MainController implements Initializable {
                 tourFIDEMode, tiebreakPane, tourTB1, tourTB2, tourTB3, tourTB4, tourTB5,
                 pointsPane, pointsWin, pointsDraw, pointsLose, pointsForfeitWin, pointsForfeitLose,
                 pointsBye, pointsHalfBye,
-                minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames
+                minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,
+                scheduleTable, scheduleName, scheduleDate
         );
         playersHelper = new PlayersHelper(
                 tournament,
@@ -698,7 +705,6 @@ public class MainController implements Initializable {
                                     warning("Nothing exported\nNo round has been selected");
                                 }else {
                                     try{
-                                        System.out.println("eksportowanie");
                                         TournamentOperation.exportRoundPgn(getTournament().getRound(currentRound - 1), getTournament());
                                         info("Export round %d successfully".formatted(currentRound));
                                     } catch (IOException ex) {
@@ -706,7 +712,6 @@ public class MainController implements Initializable {
                                         System.out.println(ex.getMessage());
                                         error("Error during export round %d".formatted(currentRound));
                                     }
-                                    System.out.println("koniec eskportu");
                                 }
                             }
                         }));
@@ -759,18 +764,21 @@ public class MainController implements Initializable {
         closeMenu.setOnAction(e -> {
             files.remove(getFile());
         });
-        tournamentSelect.valueProperty().addListener(e -> {
+        tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue)-> {
             try {
-                save(this);
+                if (newValue != oldValue && newValue != getFile()){
+                    save(this);
+                }
             } catch (IOException ex) {
                 error("An error eccured");
                 return;
             }
-            File newValue = tournamentSelect.getValue();
             if (newValue == null) {
                 TournamentOperation.loadTournament(new Tournament(), this);
             } else {
-                importJson(tournamentSelect.getValue(), this);
+                if (newValue != oldValue && newValue != getFile()){
+                    importJson(tournamentSelect.getValue(), this);
+                }
             }
         });
 

@@ -453,6 +453,23 @@
                                                 </AnchorPane>
                                             </content>
                                         </Tab>
+                              <Tab text="Schedule">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TableView fx:id="scheduleTable" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                              <TableColumn fx:id="scheduleName" prefWidth="75.0" text="Name" />
+                                              <TableColumn fx:id="scheduleDate" prefWidth="75.0" text="Date" />
+                                            </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                                     </tabs>
                                 </TabPane>
                             </children>

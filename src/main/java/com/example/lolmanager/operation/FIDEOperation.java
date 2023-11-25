@@ -463,6 +463,17 @@ public class FIDEOperation {
         }
 
         trf.append("\n122 ").append(controlTime);
+        trf.append("\n132").append(" ".repeat(91));
+        SimpleDateFormat dateFormatRounds = new SimpleDateFormat("yy/MM/dd");
+        for (Schedule.ScheduleElement element : tournament.getSchedule().getRounds()){
+            if (element.getDate() == null){
+                trf.append("00/00/00");
+            }else{
+                trf.append("%8s".formatted(dateFormatRounds.format(element.getDate())));
+            }
+            trf.append(" ".repeat(2));
+        }
+
 
         PlayerList players = tournament.getPlayers();
         players.sort();

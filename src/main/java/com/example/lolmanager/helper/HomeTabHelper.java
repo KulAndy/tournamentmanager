@@ -2,14 +2,13 @@ package com.example.lolmanager.helper;
 
 import com.example.lolmanager.helper.home.BasicInfoHelper;
 import com.example.lolmanager.helper.home.RtgOptHelper;
+import com.example.lolmanager.helper.home.ScheduleHelper;
 import com.example.lolmanager.helper.home.TiebreakHelper;
+import com.example.lolmanager.model.Schedule;
 import com.example.lolmanager.model.Title;
 import com.example.lolmanager.model.Tournament;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.lang.reflect.Method;
@@ -21,6 +20,7 @@ public class HomeTabHelper {
     private BasicInfoHelper basicInfoHelper;
     private TiebreakHelper tiebreakHelper;
     private RtgOptHelper rtgOptHelper;
+    private ScheduleHelper scheduleHelper;
 
     public HomeTabHelper(
             Tournament tournament, TextField tourName, DatePicker tourStartDate, DatePicker tourEndDate, TextField tourPlace, TextField tourGameTime,
@@ -38,7 +38,10 @@ public class HomeTabHelper {
             CheckBox PZSzach47Cb,
             ComboBox<Title> maxTitle,
             CheckBox twoOtherFeds,
-            TextField minTitleGames
+            TextField minTitleGames,
+            TableView<Schedule.ScheduleElement> scheduleTable,
+            TableColumn<Schedule.ScheduleElement, String> scheduleName,
+            TableColumn<Schedule.ScheduleElement, Void> scheduleDate
     ) {
         setBasicInfoHelper(
                 new BasicInfoHelper(
@@ -60,6 +63,10 @@ public class HomeTabHelper {
                         minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames
                 )
         );
+
+        setScheduleHelper(new ScheduleHelper(
+                tournament, scheduleTable, scheduleName, scheduleDate
+        ));
         tourSystem.valueProperty().addListener(
                 (ObservableValue<? extends Tournament.TournamentSystem> observable, Tournament.TournamentSystem oldValue, Tournament.TournamentSystem newValue) -> {
                     String attr = "system";
@@ -104,5 +111,11 @@ public class HomeTabHelper {
     public void setRtgOptHelper(RtgOptHelper rtgOptHelper) {
         this.rtgOptHelper = rtgOptHelper;
     }
+    public ScheduleHelper getScheduleHelper() {
+        return scheduleHelper;
+    }
 
+    public void setScheduleHelper(ScheduleHelper scheduleHelper) {
+        this.scheduleHelper = scheduleHelper;
+    }
 }

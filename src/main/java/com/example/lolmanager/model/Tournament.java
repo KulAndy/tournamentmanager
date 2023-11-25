@@ -46,8 +46,12 @@ public class Tournament implements Serializable {
     private ResultsComparator resultsComparator;
     private ArrayList<Withdraw> withdraws = new ArrayList<>();
     private transient ObservableList<Withdraw> withdrawsObs = FXCollections.observableArrayList();
-    private ArrayList<ResultPredicate<Player>> predicates = new ArrayList<ResultPredicate<Player>>();
+    private ArrayList<ResultPredicate<Player>> predicates = new ArrayList<>();
     private transient ObservableList<ResultPredicate<Player>> predicatesObs = FXCollections.observableArrayList();
+    private Schedule schedule;
+
+    private transient ObservableList<Schedule.ScheduleElement> scheduleElementsObs = FXCollections.observableArrayList();
+
 
     public Tournament(SwsxTournament swsxTournament) {
         setName(swsxTournament.getName());
@@ -523,7 +527,7 @@ public class Tournament implements Serializable {
         setPlayers(players);
         playersObs = FXCollections.observableArrayList(getPlayers());
         FXCollections.sort(getPlayersObs(), getPlayers().getComparator());
-        playersObs.addListener((ListChangeListener<? super Player>) change -> {
+        getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     getPlayers().addAll(change.getAddedSubList());
@@ -540,7 +544,7 @@ public class Tournament implements Serializable {
             }
         });
 
-        roundsObs.addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
+        getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     getRounds().addAll(change.getAddedSubList());
@@ -569,7 +573,7 @@ public class Tournament implements Serializable {
 
         });
 
-        withdrawsObs.addListener((ListChangeListener<? super Withdraw>) change -> {
+        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     getWithdraws().addAll(change.getAddedSubList());
@@ -586,7 +590,7 @@ public class Tournament implements Serializable {
             }
         });
 
-        predicatesObs.addListener((ListChangeListener<? super ResultPredicate<Player>>) change -> {
+        getPredicatesObs().addListener((ListChangeListener<? super ResultPredicate<Player>>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     getPredicates().addAll(change.getAddedSubList());
@@ -603,8 +607,34 @@ public class Tournament implements Serializable {
             }
         });
 
+        setSchedule(new Schedule());
+        getScheduleElementsObs().addAll(getSchedule());
 
-        setPairingComparator(new PairingComparator(playersObs));
+        getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getSchedule().addAll(change.getAddedSubList()
+                            .stream().filter(e->e.getType() == Schedule.ScheduleElement.Type.ROUND)
+                            .toList()
+                    );
+                }
+                if (change.wasRemoved()) {
+                    getSchedule().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getSchedule().subList(from, to + 1).clear();
+                    getSchedule().addAll(from, change.getList().subList(from, to + 1)
+                            .stream().filter(e->e.getType() != Schedule.ScheduleElement.Type.BRIEFING && e.getType() != Schedule.ScheduleElement.Type.CLOSING_CEREMONY)
+                            .toList()
+                    );
+                }
+            }
+        });
+
+
+        setPairingComparator(new PairingComparator(getPlayersObs()));
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
 
@@ -625,7 +655,7 @@ public class Tournament implements Serializable {
                 "organizer: " + getOrganizer() + "\n" +
                 "rating:" + getRating() + "\n" +
                 "tiebreak" + getTiebreak() + "\n" +
-                "players: " + players + "\n";
+                "players: " + getPlayers() + "\n";
     }
 
     public ResultsComparator getResultsComparator() {
@@ -688,6 +718,13 @@ public class Tournament implements Serializable {
         game.setWhiteResult(whiteResult);
         game.setBlackResult(blackResult);
         game.setForfeit(forfeit);
+    }
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 
     public void newRound() {
@@ -803,6 +840,15 @@ public class Tournament implements Serializable {
     }
 
     public void setRoundsNumber(byte roundsNumber) {
+        if (getScheduleElementsObs().size() >= 2){
+            if (getScheduleElementsObs().size() - 2 < roundsNumber){
+                for (int i = getScheduleElementsObs().size() - 2; i < roundsNumber; i++) {
+                    getScheduleElementsObs().add(getScheduleElementsObs().size() - 1,new Schedule.ScheduleElement(Schedule.ScheduleElement.Type.ROUND, (byte) (i+1)));
+                }
+            }else if (getScheduleElementsObs().size() - 2 >roundsNumber){
+                getScheduleElementsObs().subList(roundsNumber + 1, getScheduleElementsObs().size() - 1).clear();
+            }
+        }
         this.roundsNumber = roundsNumber;
     }
 
@@ -897,6 +943,14 @@ public class Tournament implements Serializable {
 
     public void setPredicatesObs(ObservableList<ResultPredicate<Player>> predicatesObs) {
         this.predicatesObs = predicatesObs;
+    }
+
+    public ObservableList<Schedule.ScheduleElement> getScheduleElementsObs() {
+        return scheduleElementsObs;
+    }
+
+    public void setScheduleElementsObs(ObservableList<Schedule.ScheduleElement> scheduleElementsObs) {
+        this.scheduleElementsObs = scheduleElementsObs;
     }
 
     public enum Type implements Serializable {
