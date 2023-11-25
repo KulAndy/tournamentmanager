@@ -20,10 +20,8 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -687,11 +685,11 @@ public class MainController implements Initializable {
         openButton.setOnAction(e -> open(this));
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
-        exportPgnMenu.setOnAction(e->
+        exportPgnMenu.setOnAction(e ->
                 GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
-                        .thenAccept(choice->{
-                            if (choice.equals("A")){
-                                try{
+                        .thenAccept(choice -> {
+                            if (choice.equals("A")) {
+                                try {
                                     TournamentOperation.exportPgn(getTournament());
                                     info("Exported games to pgn successfully");
                                 } catch (Exception ex) {
@@ -701,10 +699,10 @@ public class MainController implements Initializable {
                                 }
                             } else if (choice.equals("B")) {
                                 Integer currentRound = getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
-                                if (currentRound == null){
+                                if (currentRound == null) {
                                     warning("Nothing exported\nNo round has been selected");
-                                }else {
-                                    try{
+                                } else {
+                                    try {
                                         TournamentOperation.exportRoundPgn(getTournament().getRound(currentRound - 1), getTournament());
                                         info("Export round %d successfully".formatted(currentRound));
                                     } catch (IOException ex) {
@@ -727,7 +725,7 @@ public class MainController implements Initializable {
             CompletableFuture.runAsync(FileOperation::downloadPolList)
                     .exceptionally(ex -> null);
         });
-        importPgn.setOnAction(e->TournamentOperation.importPgn(this));
+        importPgn.setOnAction(e -> TournamentOperation.importPgn(this));
 
         randomTournament.setOnAction(e -> {
             try {
@@ -745,28 +743,28 @@ public class MainController implements Initializable {
 
         importSwsx.setOnAction(e -> {
             File swsx = FileOperation.selectSwsx();
-            try {
-                if (swsx != null) {
+            if (swsx != null) {
+                try {
                     SwsxTournament swsxTournament = new SwsxTournament(swsx);
                     Tournament tournament = new Tournament(swsxTournament);
                     TournamentOperation.loadTournament(tournament, this);
                     info("Imported successfully");
-                } else {
+                } catch (Exception ex) {
                     error("An error eccured");
+                    ex.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
-            } catch (Exception ex) {
-                error("An error eccured");
-                ex.printStackTrace();
-                System.out.println(ex.getMessage());
+            } else {
+                warning("No file selected");
             }
         });
 
         closeMenu.setOnAction(e -> {
             files.remove(getFile());
         });
-        tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue)-> {
+        tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
             try {
-                if (newValue != oldValue && newValue != getFile()){
+                if (newValue != oldValue && newValue != getFile()) {
                     save(this);
                 }
             } catch (IOException ex) {
@@ -776,7 +774,7 @@ public class MainController implements Initializable {
             if (newValue == null) {
                 TournamentOperation.loadTournament(new Tournament(), this);
             } else {
-                if (newValue != oldValue && newValue != getFile()){
+                if (newValue != oldValue && newValue != getFile()) {
                     importJson(tournamentSelect.getValue(), this);
                 }
             }

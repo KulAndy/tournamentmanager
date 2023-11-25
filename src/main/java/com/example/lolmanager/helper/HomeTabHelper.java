@@ -111,6 +111,7 @@ public class HomeTabHelper {
     public void setRtgOptHelper(RtgOptHelper rtgOptHelper) {
         this.rtgOptHelper = rtgOptHelper;
     }
+
     public ScheduleHelper getScheduleHelper() {
         return scheduleHelper;
     }

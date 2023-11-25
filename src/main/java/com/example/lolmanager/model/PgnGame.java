@@ -18,11 +18,11 @@ public class PgnGame {
     private short whiteElo = 0;
     private short blackElo = 0;
 
-    public PgnGame(){
+    public PgnGame() {
         setMoves("1. *");
     }
 
-    public PgnGame(Player white, Player black, Date date, Tournament tournament){
+    public PgnGame(Player white, Player black, Date date, Tournament tournament) {
         Game game = white.getRound(black);
         setWhite(white.getName());
         setWhiteElo(white.getFideRating().shortValue());
@@ -30,18 +30,18 @@ public class PgnGame {
         setBlackElo(black.getFideRating().shortValue());
         setEvent(tournament.getName());
         setSite(tournament.getPlace());
-        if (game != null){
-            if (game.getWhiteResult() != null && game.getBlackResult() != null){
+        if (game != null) {
+            if (game.getWhiteResult() != null && game.getBlackResult() != null) {
                 StringBuilder result = getResultTag(game);
                 setResult(result.toString());
             }
             int round = white.getRounds().indexOf(game);
-            if (round >= 0){
+            if (round >= 0) {
                 setRound((byte) (round + 1));
-            }else {
+            } else {
                 setRound((byte) tournament.getRounds().size());
             }
-        }else {
+        } else {
             setRound((byte) tournament.getRounds().size());
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
@@ -49,23 +49,7 @@ public class PgnGame {
         setMoves("1. *");
     }
 
-    private static StringBuilder getResultTag(Game game) {
-        StringBuilder result = new StringBuilder();
-        switch (game.getWhiteResult()){
-            case WIN -> result.append("1");
-            case DRAW -> result.append("1/2");
-            case LOSE -> result.append("0");
-        }
-        result.append("-");
-        switch (game.getBlackResult()){
-            case WIN -> result.append("1");
-            case DRAW -> result.append("1/2");
-            case LOSE -> result.append("0");
-        }
-        return result;
-    }
-
-    public PgnGame(File pgn){
+    public PgnGame(File pgn) {
         try (BufferedReader reader = new BufferedReader(new FileReader(pgn))) {
             String line;
             boolean startReading = false;
@@ -75,10 +59,10 @@ public class PgnGame {
                     continue;
                 } else {
                     startReading = true;
-                    if (line.isEmpty()){
+                    if (line.isEmpty()) {
                         counter++;
-                    }else {
-                        if (line.startsWith("[")){
+                    } else {
+                        if (line.startsWith("[")) {
                             int keyStartIndex = line.indexOf('[');
                             int keyEndIndex = line.indexOf(' ');
                             int valueStartIndex = line.indexOf('"');
@@ -87,7 +71,7 @@ public class PgnGame {
                             String key = line.substring(keyStartIndex + 1, keyEndIndex).trim();
                             String value = line.substring(valueStartIndex + 1, valueEndIndex).trim();
 
-                            switch (key.toLowerCase()){
+                            switch (key.toLowerCase()) {
                                 case "event" -> setEvent(value);
                                 case "site" -> setSite(value);
                                 case "date" -> setDate(value);
@@ -98,48 +82,22 @@ public class PgnGame {
                                 case "whiteelo" -> setWhiteElo(value);
                                 case "blackelo" -> setBlackElo(value);
                             }
-                        }else {
+                        } else {
                             setMoves(getMoves() + line);
                         }
                     }
                 }
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
-        if (moves.length() == 0){
+        if (moves.length() == 0) {
             setMoves("1. *");
         }
 
     }
 
-    public String getPgn(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("[Event \"").append(getEvent()).append("\"]").append("\n");
-        builder.append("[Site \"").append(getSite()).append("\"]").append("\n");
-        builder.append("[Date \"").append(getDate()).append("\"]").append("\n");
-        builder.append("[Round \"");
-        if (getRound() == null){
-            builder.append("?").append("\"]").append("\n");
-        }else{
-            builder.append(getRound()).append("\"]").append("\n");
-        }
-        builder.append("[White \"").append(getWhite()).append("\"]").append("\n");
-        builder.append("[Black \"").append(getBlack()).append("\"]").append("\n");
-        builder.append("[Result \"").append(getResultTag()).append("\"]").append("\n");
-        if (getWhiteElo() > 0){
-            builder.append("[WhiteElo \"").append(getWhiteElo()).append("\"]").append("\n");
-        }
-        if (getBlackElo() > 0){
-            builder.append("[BlackElo \"").append(getBlackElo()).append("\"]").append("\n");
-        }
-
-        builder.append("\n");
-        builder.append(getMoves()).append("\n");
-
-        return builder.toString();
-    }
-
-    public PgnGame(String pgn){
+    public PgnGame(String pgn) {
         try (BufferedReader reader = new BufferedReader(new StringReader(pgn))) {
             String line;
             boolean startReading = false;
@@ -149,10 +107,10 @@ public class PgnGame {
                     continue;
                 }
                 startReading = true;
-                if (line.isEmpty()){
+                if (line.isEmpty()) {
                     counter++;
-                }else {
-                    if (line.startsWith("[")){
+                } else {
+                    if (line.startsWith("[")) {
                         int keyStartIndex = line.indexOf('[');
                         int keyEndIndex = line.indexOf(' ');
                         int valueStartIndex = line.indexOf('"');
@@ -161,7 +119,7 @@ public class PgnGame {
                         String key = line.substring(keyStartIndex + 1, keyEndIndex).trim();
                         String value = line.substring(valueStartIndex + 1, valueEndIndex).trim();
 
-                        switch (key.toLowerCase()){
+                        switch (key.toLowerCase()) {
                             case "event" -> setEvent(value);
                             case "site" -> setSite(value);
                             case "date" -> setDate(value);
@@ -172,32 +130,99 @@ public class PgnGame {
                             case "whiteelo" -> setWhiteElo(value);
                             case "blackelo" -> setBlackElo(value);
                         }
-                    }else {
+                    } else {
                         setMoves(getMoves() + line);
                     }
                 }
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
-        if (moves.length() == 0){
+        if (moves.length() == 0) {
             setMoves("1. *");
         }
     }
 
-    public void setDate(String date){
-        try{
+    private static StringBuilder getResultTag(Game game) {
+        StringBuilder result = new StringBuilder();
+        switch (game.getWhiteResult()) {
+            case WIN -> result.append("1");
+            case DRAW -> result.append("1/2");
+            case LOSE -> result.append("0");
+        }
+        result.append("-");
+        switch (game.getBlackResult()) {
+            case WIN -> result.append("1");
+            case DRAW -> result.append("1/2");
+            case LOSE -> result.append("0");
+        }
+        return result;
+    }
+
+    public String getPgn() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[Event \"").append(getEvent()).append("\"]").append("\n");
+        builder.append("[Site \"").append(getSite()).append("\"]").append("\n");
+        builder.append("[Date \"").append(getDate()).append("\"]").append("\n");
+        builder.append("[Round \"");
+        if (getRound() == null) {
+            builder.append("?").append("\"]").append("\n");
+        } else {
+            builder.append(getRound()).append("\"]").append("\n");
+        }
+        builder.append("[White \"").append(getWhite()).append("\"]").append("\n");
+        builder.append("[Black \"").append(getBlack()).append("\"]").append("\n");
+        builder.append("[Result \"").append(getResultTag()).append("\"]").append("\n");
+        if (getWhiteElo() > 0) {
+            builder.append("[WhiteElo \"").append(getWhiteElo()).append("\"]").append("\n");
+        }
+        if (getBlackElo() > 0) {
+            builder.append("[BlackElo \"").append(getBlackElo()).append("\"]").append("\n");
+        }
+
+        builder.append("\n");
+        builder.append(getMoves()).append("\n");
+
+        return builder.toString();
+    }
+
+    public String getDate() {
+        StringBuilder builder = new StringBuilder();
+        if (getYear() == null || getYear() <= 0) {
+            builder.append("????");
+        } else {
+            builder.append(getYear());
+        }
+        builder.append(".");
+        if (getMonth() == null || getMonth() <= 0) {
+            builder.append("??");
+        } else {
+            builder.append(getMonth());
+        }
+        builder.append(".");
+        if (getDay() == null || getDay() <= 0) {
+            builder.append("??");
+        } else {
+            builder.append(getDay());
+        }
+
+        return builder.toString();
+    }
+
+    public void setDate(String date) {
+        try {
             String[] dateArray = date.split("\\.");
-            try{
+            try {
                 setYear(Short.parseShort(dateArray[0]));
             } catch (NumberFormatException e) {
                 setYear(null);
             }
-            try{
+            try {
                 setMonth(Byte.parseByte(dateArray[1]));
             } catch (NumberFormatException e) {
                 setMonth(null);
             }
-            try{
+            try {
                 setDay(Byte.parseByte(dateArray[2]));
             } catch (NumberFormatException e) {
                 setDay(null);
@@ -207,28 +232,6 @@ public class PgnGame {
         }
     }
 
-    public String getDate(){
-        StringBuilder builder = new StringBuilder();
-        if (getYear() == null || getYear() <= 0){
-            builder.append("????");
-        }else {
-            builder.append(getYear());
-        }
-        builder.append(".");
-        if (getMonth() == null || getMonth() <= 0){
-            builder.append("??");
-        }else {
-            builder.append(getMonth());
-        }
-        builder.append(".");
-        if (getDay() == null || getDay() <= 0){
-            builder.append("??");
-        }else {
-            builder.append(getDay());
-        }
-
-        return builder.toString();
-    }
     public String getWhite() {
         return white;
     }
@@ -294,11 +297,11 @@ public class PgnGame {
     }
 
     public void setRound(String round) {
-        try{
+        try {
             int pointIndex = round.indexOf('.');
-            if (pointIndex < 0){
+            if (pointIndex < 0) {
                 setRound(Byte.parseByte(round));
-            }else {
+            } else {
                 setRound(Byte.parseByte(round.substring(0, pointIndex)));
             }
         } catch (NumberFormatException e) {
@@ -312,7 +315,7 @@ public class PgnGame {
 
     public void setResult(String result) {
         result = result.trim().replaceAll("\\s+", "");
-        switch (result){
+        switch (result) {
             case "1-0", "0-1", "1/2-1/2", "0-0", "+--", "--+" -> this.result = result;
             case "0.5-0.5", "0,5-0,5" -> this.result = "1/2-1/2";
             default -> this.result = "*";
@@ -336,12 +339,13 @@ public class PgnGame {
     }
 
     public void setWhiteElo(String whiteElo) {
-        try{
+        try {
             setWhiteElo(Short.parseShort(whiteElo));
         } catch (NumberFormatException e) {
             setWhiteElo((short) 0);
         }
     }
+
     public short getBlackElo() {
         return blackElo;
     }
@@ -349,8 +353,9 @@ public class PgnGame {
     public void setBlackElo(short blackElo) {
         this.blackElo = blackElo;
     }
+
     public void setBlackElo(String blackElo) {
-        try{
+        try {
             setBlackElo(Short.parseShort(blackElo));
         } catch (NumberFormatException e) {
             setBlackElo((short) 0);

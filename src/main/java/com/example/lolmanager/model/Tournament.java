@@ -287,6 +287,37 @@ public class Tournament implements Serializable {
 
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
+        try {
+            setSchedule(new Schedule(swsxTournament.getReportPol().getSchedule()));
+        } catch (Exception e) {
+            setSchedule(new Schedule());
+            e.printStackTrace();
+        }
+        getScheduleElementsObs().addAll(getSchedule());
+
+        getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getSchedule().addAll(change.getAddedSubList()
+                            .stream().filter(e -> e.getType() == Schedule.ScheduleElement.Type.ROUND)
+                            .toList()
+                    );
+                }
+                if (change.wasRemoved()) {
+                    getSchedule().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getSchedule().subList(from, to + 1).clear();
+                    getSchedule().addAll(from, change.getList().subList(from, to + 1)
+                            .stream().filter(e -> e.getType() != Schedule.ScheduleElement.Type.BRIEFING && e.getType() != Schedule.ScheduleElement.Type.CLOSING_CEREMONY)
+                            .toList()
+                    );
+                }
+            }
+        });
+
     }
 
 
@@ -482,6 +513,34 @@ public class Tournament implements Serializable {
         setPairingComparator(new PairingComparator(playersObs));
         setResultsComparator(new ResultsComparator(getTiebreak()));
 
+        Schedule schedule1 = Schedule.createFromDates(trfTournament.getRoundDates());
+        schedule1.setBriefing(new Schedule.ScheduleElement(Schedule.ScheduleElement.Type.BRIEFING, (byte) 0, getStartDate()));
+        schedule1.setClosing(new Schedule.ScheduleElement(Schedule.ScheduleElement.Type.CLOSING_CEREMONY, (byte) 0, getEndDate()));
+        setSchedule(schedule1);
+
+        getScheduleElementsObs().addAll(getSchedule());
+        getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getSchedule().addAll(change.getAddedSubList()
+                            .stream().filter(e -> e.getType() == Schedule.ScheduleElement.Type.ROUND)
+                            .toList()
+                    );
+                }
+                if (change.wasRemoved()) {
+                    getSchedule().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getSchedule().subList(from, to + 1).clear();
+                    getSchedule().addAll(from, change.getList().subList(from, to + 1)
+                            .stream().filter(e -> e.getType() != Schedule.ScheduleElement.Type.BRIEFING && e.getType() != Schedule.ScheduleElement.Type.CLOSING_CEREMONY)
+                            .toList()
+                    );
+                }
+            }
+        });
     }
 
 
@@ -614,7 +673,7 @@ public class Tournament implements Serializable {
             while (change.next()) {
                 if (change.wasAdded()) {
                     getSchedule().addAll(change.getAddedSubList()
-                            .stream().filter(e->e.getType() == Schedule.ScheduleElement.Type.ROUND)
+                            .stream().filter(e -> e.getType() == Schedule.ScheduleElement.Type.ROUND)
                             .toList()
                     );
                 }
@@ -626,7 +685,7 @@ public class Tournament implements Serializable {
                     int to = change.getTo();
                     getSchedule().subList(from, to + 1).clear();
                     getSchedule().addAll(from, change.getList().subList(from, to + 1)
-                            .stream().filter(e->e.getType() != Schedule.ScheduleElement.Type.BRIEFING && e.getType() != Schedule.ScheduleElement.Type.CLOSING_CEREMONY)
+                            .stream().filter(e -> e.getType() != Schedule.ScheduleElement.Type.BRIEFING && e.getType() != Schedule.ScheduleElement.Type.CLOSING_CEREMONY)
                             .toList()
                     );
                 }
@@ -719,6 +778,7 @@ public class Tournament implements Serializable {
         game.setBlackResult(blackResult);
         game.setForfeit(forfeit);
     }
+
     public Schedule getSchedule() {
         return schedule;
     }
@@ -840,12 +900,12 @@ public class Tournament implements Serializable {
     }
 
     public void setRoundsNumber(byte roundsNumber) {
-        if (getScheduleElementsObs().size() >= 2){
-            if (getScheduleElementsObs().size() - 2 < roundsNumber){
+        if (getScheduleElementsObs().size() >= 2) {
+            if (getScheduleElementsObs().size() - 2 < roundsNumber) {
                 for (int i = getScheduleElementsObs().size() - 2; i < roundsNumber; i++) {
-                    getScheduleElementsObs().add(getScheduleElementsObs().size() - 1,new Schedule.ScheduleElement(Schedule.ScheduleElement.Type.ROUND, (byte) (i+1)));
+                    getScheduleElementsObs().add(getScheduleElementsObs().size() - 1, new Schedule.ScheduleElement(Schedule.ScheduleElement.Type.ROUND, (byte) (i + 1)));
                 }
-            }else if (getScheduleElementsObs().size() - 2 >roundsNumber){
+            } else if (getScheduleElementsObs().size() - 2 > roundsNumber) {
                 getScheduleElementsObs().subList(roundsNumber + 1, getScheduleElementsObs().size() - 1).clear();
             }
         }

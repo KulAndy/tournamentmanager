@@ -601,11 +601,11 @@ public class Player implements Serializable {
     }
 
     public Game getRound(Player player) {
-        if (player == this){
+        if (player == this) {
             return null;
         }
-        for (Game game : getRounds()){
-            if (game.getWhite() == player || game.getBlack() == player){
+        for (Game game : getRounds()) {
+            if (game.getWhite() == player || game.getBlack() == player) {
                 return game;
             }
         }

@@ -83,19 +83,20 @@ public class TrfTournament {
                     case "112" -> setDeputyChiefArbiter(line.substring(3).trim());
                     case "122" -> setAllottedTimes(line.substring(3).trim());
                     case "132" -> {
-                        String[] roundDates = line.substring(3).trim().split(" +");
-                        SimpleDateFormat roundDateFormatter = new SimpleDateFormat("yy-MM-dd");
-                        for (String roundDate : roundDates) {
+                        String[] roundDatesArray = line.substring(3).trim().split(" +");
+                        SimpleDateFormat roundDateFormatter1 = new SimpleDateFormat("yy/MM/dd");
+                        SimpleDateFormat roundDateFormatter2 = new SimpleDateFormat("yy-MM-dd");
+                        for (String roundDate : roundDatesArray) {
                             try {
-                                getRoundDates().add(dateFormat.parse(roundDate));
-                            } catch (ParseException e) {
+                                getRoundDates().add(roundDateFormatter1.parse(roundDate));
+                            } catch (ParseException e2) {
                                 try {
-                                    getRoundDates().add(roundDateFormatter.parse(roundDate));
+                                    getRoundDates().add(roundDateFormatter2.parse(roundDate));
                                 } catch (ParseException ignored) {
                                 }
                             }
                         }
-                        setRoundsNo((byte) roundDates.length);
+                        setRoundsNo((byte) roundDatesArray.length);
                     }
                     case "001" -> {
                         int startNo = Integer.parseInt(line.substring(4, 8).trim());

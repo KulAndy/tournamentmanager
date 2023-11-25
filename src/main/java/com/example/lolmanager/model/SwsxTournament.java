@@ -538,7 +538,7 @@ public class SwsxTournament {
         this.rate = rate;
     }
 
-    public class TournamentReportPol {
+    public static class TournamentReportPol {
         private Arbiter chiefArbiter;
         private String state;
         private String rateOfPlay;
@@ -655,6 +655,67 @@ public class SwsxTournament {
 
     }
 
+    public static class SwsxEvent {
+        private Date date;
+        private String name;
+        private EventType type;
+
+        SwsxEvent(Element element) {
+            Element nameNode = (Element) element.getElementsByTagName("event_name").item(0);
+            Element dateNode = (Element) element.getElementsByTagName("event_time").item(0);
+            Element typeNode = (Element) element.getElementsByTagName("type").item(0);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            setName(nameNode.getAttribute("value"));
+            switch (typeNode.getAttribute("value")) {
+                case "0" -> setType(EventType.BRIEFING);
+                case "2" -> setType(EventType.ENDING);
+                default -> setType(EventType.ROUND);
+            }
+
+            try {
+                setDate(
+                        dateFormat.parse(dateNode.getAttribute("year" + "/" +
+                                dateNode.getAttribute("month") + "/" +
+                                dateNode.getAttribute("day")))
+                );
+            } catch (ParseException e) {
+                setDate(Date.from(LocalDate.of(1899, 12, 31).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
+            }
+
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public EventType getType() {
+            return type;
+        }
+
+        public void setType(EventType type) {
+            this.type = type;
+        }
+
+
+        enum EventType {
+            BRIEFING,
+            ROUND,
+            ENDING
+        }
+    }
+
     public class TournamentReportFide {
         private String name;
         private String place;
@@ -735,67 +796,6 @@ public class SwsxTournament {
 
         public void setRateOfPlay(String rateOfPlay) {
             this.rateOfPlay = rateOfPlay;
-        }
-    }
-
-    public class SwsxEvent {
-        private Date date;
-        private String name;
-        private EventType type;
-
-        SwsxEvent(Element element) {
-            Element nameNode = (Element) element.getElementsByTagName("event_name").item(0);
-            Element dateNode = (Element) element.getElementsByTagName("event_time").item(0);
-            Element typeNode = (Element) element.getElementsByTagName("type").item(0);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            setName(nameNode.getAttribute("value"));
-            switch (typeNode.getAttribute("value")) {
-                case "0" -> setType(EventType.BRIEFING);
-                case "2" -> setType(EventType.ENDING);
-                default -> setType(EventType.ROUND);
-            }
-
-            try {
-                setDate(
-                        dateFormat.parse(dateNode.getAttribute("year" + "/" +
-                                dateNode.getAttribute("month") + "/" +
-                                dateNode.getAttribute("day")))
-                );
-            } catch (ParseException e) {
-                setDate(Date.from(LocalDate.of(1899, 12, 31).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()));
-            }
-
-        }
-
-        public Date getDate() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public EventType getType() {
-            return type;
-        }
-
-        public void setType(EventType type) {
-            this.type = type;
-        }
-
-
-        enum EventType {
-            BRIEFING,
-            ROUND,
-            ENDING
         }
     }
 

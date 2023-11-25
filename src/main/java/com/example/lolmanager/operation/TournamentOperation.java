@@ -288,12 +288,12 @@ public class TournamentOperation {
                 controller.getTournament().getRoundsObs().get(round - 1).sort(controller.getTournament().getPairingComparator());
             }
             controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(Integer.valueOf(editedRounds.parallelStream().max(Byte::compare).orElse((byte) 0)));
-            if (controller.getTournament().getName().isEmpty()){
+            if (controller.getTournament().getName().isEmpty()) {
                 controller.getHomeTabHelper().getBasicInfoHelper().getTourName().setText(pgnGames.get(0).getEvent());
                 controller.getHomeTabHelper().getBasicInfoHelper().getTourPlace().setText(pgnGames.get(0).getSite());
             }
-            if (controller.getTournament().getRoundsObs().size() > controller.getTournament().getRoundsNumber()){
-                controller.getHomeTabHelper().getBasicInfoHelper().getTourNoRounds().setText(controller.getTournament().getRoundsObs().size() + "");
+            if (controller.getTournament().getRoundsObs().size() > controller.getTournament().getRoundsNumber()) {
+                controller.getHomeTabHelper().getBasicInfoHelper().getTourNoRounds().setText(String.valueOf(controller.getTournament().getRoundsObs().size()));
             }
             info("Imported pgn successfully");
 

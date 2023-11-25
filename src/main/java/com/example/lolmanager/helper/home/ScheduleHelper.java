@@ -3,10 +3,11 @@ package com.example.lolmanager.helper.home;
 import com.example.lolmanager.model.Schedule;
 import com.example.lolmanager.model.Tournament;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.control.*;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.Date;
@@ -18,6 +19,7 @@ public class ScheduleHelper {
     private TableView<Schedule.ScheduleElement> scheduleTable;
     private TableColumn<Schedule.ScheduleElement, String> scheduleName;
     private TableColumn<Schedule.ScheduleElement, Void> scheduleDate;
+
     public ScheduleHelper(
             Tournament tournament,
             TableView<Schedule.ScheduleElement> scheduleTable,
@@ -34,17 +36,17 @@ public class ScheduleHelper {
             private final DatePicker datePicker = new DatePicker();
 
             {
-                datePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue)->{
+                datePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
                     Schedule.ScheduleElement element = getTableRow().getItem();
-                    if (element!=null){
-                        if (newValue!=null){
+                    if (element != null) {
+                        if (newValue != null) {
                             java.util.Date date = Date.from(newValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                            switch (element.getType()){
+                            switch (element.getType()) {
                                 case BRIEFING -> getTournament().getSchedule().getBriefing().setDate(date);
                                 case CLOSING_CEREMONY -> getTournament().getSchedule().getClosing().setDate(date);
                                 default -> element.setDate(date);
                             }
-                        }else {
+                        } else {
                             element.setDate(null);
                         }
                     }
@@ -68,11 +70,12 @@ public class ScheduleHelper {
             }
         });
 
-        getTournament().getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) e->{
+        getTournament().getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) e -> {
             getScheduleTable().refresh();
         });
         getScheduleTable().setItems(getTournament().getScheduleElementsObs());
     }
+
     public Tournament getTournament() {
         return tournament;
     }
