@@ -419,13 +419,17 @@ public class FIDEOperation {
         }
     }
 
-    public static void saveTrfReport(String trf, File file) {
+    public static void saveTrfReport(String trf, File file) throws IOException {
         if (file != null) {
             String filePath = file.getAbsolutePath();
             if (!filePath.endsWith(".txt")) {
                 filePath += ".txt";
+                file = new File(filePath);
             }
-            file = new File(filePath);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(trf);
             } catch (IOException e) {
@@ -433,9 +437,9 @@ public class FIDEOperation {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-
+        }else{
+            throw new RuntimeException();
         }
-
     }
 
     public static String trfReport(Tournament tournament) {
@@ -463,7 +467,7 @@ public class FIDEOperation {
         }
 
         trf.append("\n122 ").append(controlTime);
-        trf.append("\n132").append(" ".repeat(91));
+        trf.append("\n132").append(" ".repeat(88));
         SimpleDateFormat dateFormatRounds = new SimpleDateFormat("yy/MM/dd");
         for (Schedule.ScheduleElement element : tournament.getSchedule().getRounds()) {
             if (element.getDate() == null) {
@@ -560,7 +564,6 @@ public class FIDEOperation {
         }
 
         trf.append("\nXXR ").append(tournament.getRoundsNumber());
-        trf.append("\nXXZ ");
         StringBuilder withdrawed = new StringBuilder("\nXXZ");
         for (Withdraw withdraw : tournament.getWithdraws()) {
             if (withdraw.getType() == Withdraw.WithdrawType.TOURNAMENT || withdraw.getRoundNo() == tournament.getRounds().size() + 1) {
@@ -570,7 +573,8 @@ public class FIDEOperation {
                 }
             }
         }
-        if (withdrawed.length() > 4) {
+        if (withdrawed.toString().trim().length() > 4) {
+            System.out.println(withdrawed.toString().trim().length());
             trf.append(withdrawed);
         }
         trf.append("\n");

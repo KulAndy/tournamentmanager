@@ -368,7 +368,7 @@ public class FileOperation {
 
         try {
             convertCsvToSqlite("rejestr_czlonkow.csv", "rejestr_czlonkow.db");
-            GeneralHelper.info("File downloaded successfully");
+            GeneralHelper.info("Pl list downloaded successfully");
         } catch (RuntimeException e) {
             GeneralHelper.error("An error occurred during conversion to SQLite");
             e.printStackTrace();

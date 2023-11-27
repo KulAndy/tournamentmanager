@@ -659,30 +659,30 @@ public class MainController implements Initializable {
     }
 
     public void setupEvents() {
-        quitMenu.setOnAction(e -> quit());
-        saveAsMenu.setOnAction(e -> {
+        getQuitMenu().setOnAction(e -> quit());
+        getSaveAsMenu().setOnAction(e -> {
             try {
                 saveAs(this);
             } catch (IOException ex) {
                 error("Couldn't save tournament");
             }
         });
-        saveMenu.setOnAction(e -> {
+        getSaveMenu().setOnAction(e -> {
             try {
                 save(this);
             } catch (IOException ex) {
                 error("Couldn't save tournament");
             }
         });
-        saveButton.setOnAction(e -> {
+        getSaveButton().setOnAction(e -> {
             try {
                 save(this);
             } catch (IOException ex) {
                 error("Couldn't save tournament");
             }
         });
-        openMenu.setOnAction(e -> open(this));
-        openButton.setOnAction(e -> open(this));
+        getOpenMenu().setOnAction(e -> open(this));
+        getOpenButton().setOnAction(e -> open(this));
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         exportPgnMenu.setOnAction(e ->

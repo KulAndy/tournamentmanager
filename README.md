@@ -27,9 +27,9 @@ Funkcje:
 - [X] przydział numerów startowych
 - [X] sprawdzanie zawodnika w cr
 - [ ] własny silnik
-- [ ] wyniki filtrowane
+- [X] wyniki filtrowane
 - [ ] turnieje drużynowe
-- [ ] harmonogram
+- [X] harmonogram
 - [X] otwieranie/import turnieju
 - [X] ranking uzyskany fide
 - [X] wiele grup
@@ -59,14 +59,19 @@ Skróty:
 
 ## 2. Java i Maven
 - Zainstaluj najnowszą [Javę](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 20
-- Zainstaluje [Maven](https://maven.apache.org/download.cgi) (w zależności od SDK Javy może nie być konieczne)
 - pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - przejdź do rozpakowanego katalogu
 - w systemie windows
   - PPM > otwórz w terminalu / otwórz w oknie powershell
-  - uruchom komendę .\mvnw.cmd dependency:resolve
-  - żeby uruchomić wpisz komendę .\mvnw.cmd javafx:run
+  - żeby uruchomić wpisz komendę .\mvnw.cmd javafx:run (przy pierwszym uruchomieniu zostaną zainstalowane zależności)
 - w systemie linux/macos
   - przejdż w terminalu do katalogu (w zależności od środowiska graficznego może dać się to zrobić w eksploratorze plików)
+  - żeby uruchomić wpisz komendę ./mvnw javafx:run (może być potrzebne dodanie wykonywalności np. poprzez chmod +x ./mvnw; (przy pierwszym uruchomieniu zostaną zainstalowane zależności))
+
+w przypadku problemów
+- w systemie windows
+  - uruchom komendę .\mvnw.cmd dependency:resolve
+- w systemie linux/macos
   - wpisz komendę ./mvnw dependency:resolve
-  - żeby uruchomić wpisz komendę ./mvnw javafx:run
+- w obu
+  - Zainstaluj [Maven](https://maven.apache.org/download.cgi) zgodnie z instrukcją

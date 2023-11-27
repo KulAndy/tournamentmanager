@@ -45,13 +45,13 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -65,11 +65,11 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="newMenu" mnemonicParsing="false" text="New" />
-                        <MenuItem fx:id="openMenu" mnemonicParsing="false" text="Open…" />
-                        <MenuItem fx:id="closeMenu" mnemonicParsing="false" text="Close" />
-                        <MenuItem fx:id="saveMenu" mnemonicParsing="false" text="Save" />
-                        <MenuItem fx:id="saveAsMenu" mnemonicParsing="false" text="Save As…" />
+                        <MenuItem fx:id="newMenu" mnemonicParsing="false" text="🗋 New" />
+                        <MenuItem fx:id="openMenu" mnemonicParsing="false" text="🗁 Open" />
+                        <MenuItem fx:id="closeMenu" mnemonicParsing="false" text="&#128473; Close" />
+                        <MenuItem fx:id="saveMenu" mnemonicParsing="false" text="💾 Save" />
+                        <MenuItem fx:id="saveAsMenu" mnemonicParsing="false" text="&#128426; Save As…" />
                   <MenuItem fx:id="exportPgnMenu" mnemonicParsing="false" text="Export pgn" />
                         <Menu mnemonicParsing="false" text="Import">
                             <items>
@@ -79,21 +79,7 @@
                             </items>
                         </Menu>
                         <CheckMenuItem fx:id="autosaveMenu" mnemonicParsing="false" text="Autosave" />
-                        <MenuItem fx:id="quitMenu" mnemonicParsing="false" text="Quit" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Undo" />
-                        <MenuItem mnemonicParsing="false" text="Redo" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Cut" />
-                        <MenuItem mnemonicParsing="false" text="Copy" />
-                        <MenuItem mnemonicParsing="false" text="Paste" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Select All" />
-                        <MenuItem mnemonicParsing="false" text="Unselect All" />
+                        <MenuItem fx:id="quitMenu" mnemonicParsing="false" text="&#128682; Quit" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="FIDE">
@@ -112,14 +98,16 @@
         </MenuBar>
         <ToolBar prefHeight="40.0" prefWidth="200.0">
             <items>
-                <Button fx:id="saveButton" mnemonicParsing="false" text="Save" />
-                <Button fx:id="openButton" mnemonicParsing="false" text="Open" />
-                <Button fx:id="firstRoundBth" mnemonicParsing="false" text="|&lt;" />
-                <Button fx:id="previousRoundBth" mnemonicParsing="false" text="&lt;" />
-                <Button fx:id="nextRoundBth" mnemonicParsing="false" text="&gt;" />
-                <Button fx:id="lastRoundBth" mnemonicParsing="false" text="&gt;|" />
-                <Button fx:id="downloadFideButton" mnemonicParsing="false" text="download FIDE list" />
-                <Button fx:id="downloadPolButton" mnemonicParsing="false" text="download polish list" />
+                <Button fx:id="saveButton" mnemonicParsing="false" text="💾">
+               <tooltip>
+                  <Tooltip text="Save" />
+               </tooltip></Button>
+                <Button fx:id="openButton" mnemonicParsing="false" text="🗁">
+               <tooltip>
+                  <Tooltip text="Open" />
+               </tooltip></Button>
+                <Button fx:id="downloadFideButton" mnemonicParsing="false" text="⭳ FIDE list" />
+                <Button fx:id="downloadPolButton" mnemonicParsing="false" text="⭳ polish list" />
             </items>
         </ToolBar>
         <VBox prefHeight="48.0" prefWidth="640.0" VBox.vgrow="NEVER">
@@ -490,22 +478,22 @@
                                                             <children>
                                                 <ToolBar>
                                                    <items>
-                                                                        <Separator opacity="0.0" prefHeight="28.0" prefWidth="22.0" />
-                                                                        <Label prefHeight="16.0" prefWidth="53.0" text="Round" />
-                                                                        <Separator opacity="0.0" prefHeight="39.0" prefWidth="29.0" />
-                                                                        <ComboBox fx:id="roundsViewSelect" prefWidth="150.0" />
-                                                                        <Separator opacity="0.0" prefHeight="50.0" prefWidth="50.0" />
-                                                                        <Button fx:id="firstRound" mnemonicParsing="false" prefHeight="24.0" prefWidth="44.0" text="|&lt;" />
-                                                                        <Button fx:id="previousRound" mnemonicParsing="false" text="&lt;" />
-                                                                        <Button fx:id="nextRound" mnemonicParsing="false" text="&gt;" />
-                                                                        <Button fx:id="lastRound" mnemonicParsing="false" prefHeight="24.0" prefWidth="38.0" text="&gt;|" />
-                                                                        <Separator opacity="0.0" prefHeight="39.0" prefWidth="56.0" />
-                                                                        <Button fx:id="whiteWinResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="46.0" text="1-0" />
-                                                                        <Button fx:id="drawResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="Draw" />
-                                                                        <Button fx:id="blackWinResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="48.0" text="0-1" />
-                                                                        <Button fx:id="whiteWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="52.0" text="+ - -" />
-                                                                        <Button fx:id="blackWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="- - +" />
-                                                                        <Separator opacity="0.0" prefHeight="49.0" prefWidth="53.0" />
+                                                      <Separator opacity="0.0" prefHeight="28.0" prefWidth="22.0" />
+                                                      <Label prefHeight="16.0" prefWidth="53.0" text="Round" />
+                                                      <Separator opacity="0.0" prefHeight="39.0" prefWidth="29.0" />
+                                                      <ComboBox fx:id="roundsViewSelect" prefWidth="150.0" />
+                                                      <Separator opacity="0.0" prefHeight="50.0" prefWidth="50.0" />
+                                                      <Button fx:id="firstRound" mnemonicParsing="false" prefHeight="24.0" prefWidth="44.0" styleClass="arrow-button" text="⯬" />
+                                                      <Button fx:id="previousRound" mnemonicParsing="false" styleClass="arrow-button" text="⬅" />
+                                                      <Button fx:id="nextRound" mnemonicParsing="false" styleClass="arrow-button" text="➡" />
+                                                      <Button fx:id="lastRound" mnemonicParsing="false" prefHeight="24.0" prefWidth="38.0" styleClass="arrow-button" text="⯮" />
+                                                      <Separator opacity="0.0" prefHeight="39.0" prefWidth="56.0" />
+                                                      <Button fx:id="whiteWinResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="46.0" text="1-0" />
+                                                      <Button fx:id="drawResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="Draw" />
+                                                      <Button fx:id="blackWinResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="48.0" text="0-1" />
+                                                      <Button fx:id="whiteWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="52.0" text="+ - -" />
+                                                      <Button fx:id="blackWinForfeitResult" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="- - +" />
+                                                      <Separator opacity="0.0" prefHeight="49.0" prefWidth="53.0" />
                                                       <Button fx:id="enginePairButton" mnemonicParsing="false" text="Pair" />
                                                       <Separator opacity="0.0" prefHeight="50.0" prefWidth="14.0" />
                                                       <Button fx:id="deleteRound" mnemonicParsing="false" prefHeight="26.0" prefWidth="66.0" text="Delete" />

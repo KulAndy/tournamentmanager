@@ -1,9 +1,6 @@
 package com.example.lolmanager.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +9,9 @@ import static com.example.lolmanager.operation.FIDEOperation.trfReport;
 
 public class JavafoWrapper implements Engine {
     private static final String javaPath = "java";
-    private static final String javafoPath = "./javafo.jar";
-    private static final String outputFilePath = "./pairing.txt";
-    private static final String reportFilePath = "./report.txt";
+    private static final String javafoPath = "javafo.jar";
+    private static final String outputFilePath = "pairing.txt";
+    private static final String reportFilePath = "report.txt";
 
     public static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
         File outputFile = new File(outputFilePath);
@@ -67,8 +64,7 @@ public class JavafoWrapper implements Engine {
                             round.add(new Game(player, tournament.getPlayers().getHalfbye(), Result.DRAW, Result.DRAW, true));
                         }
                     }
-                    default ->
-                            round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
+                    default -> round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
 
                 }
             }
