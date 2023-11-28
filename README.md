@@ -3,6 +3,7 @@
 Menedżer turniejowy do wolnego użytku napisany w javie
 
 Funkcje:
+
 - [X] dodawanie graczy
 - [X] usuwanie graczy
 - [X] szwajcar z użycie javafo
@@ -42,6 +43,7 @@ Funkcje:
 - [X] import swsx
 
 Skróty:
+
 - CTRL + Q - zamknij program
 - CTRL + S - zapisz
 - CTRL + SHIFT + S - zapisz jako
@@ -49,7 +51,9 @@ Skróty:
 - z, x, c - "1-0", "0.5-0.5", "0-1" przy wpisywaniu wyników
 
 # Uruchamianie
+
 ## 1. Zapomocą Idea IntelliJ
+
 - zainstaluj [Idee](https://www.jetbrains.com/idea/download/?section=windows)
 - pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - uruchom Idee
@@ -58,20 +62,24 @@ Skróty:
 - Run > Run 'Main' lub najechać na Main, PPM > Run 'Main'
 
 ## 2. Java i Maven
+
 - Zainstaluj najnowszą [Javę](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 20
 - pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - przejdź do rozpakowanego katalogu
 - w systemie windows
-  - PPM > otwórz w terminalu / otwórz w oknie powershell
-  - żeby uruchomić wpisz komendę .\mvnw.cmd javafx:run (przy pierwszym uruchomieniu zostaną zainstalowane zależności)
+    - PPM > otwórz w terminalu / otwórz w oknie powershell
+    - żeby uruchomić wpisz komendę .\mvnw.cmd javafx:run (przy pierwszym uruchomieniu zostaną zainstalowane zależności)
 - w systemie linux/macos
-  - przejdż w terminalu do katalogu (w zależności od środowiska graficznego może dać się to zrobić w eksploratorze plików)
-  - żeby uruchomić wpisz komendę ./mvnw javafx:run (może być potrzebne dodanie wykonywalności np. poprzez chmod +x ./mvnw; (przy pierwszym uruchomieniu zostaną zainstalowane zależności))
+    - przejdż w terminalu do katalogu (w zależności od środowiska graficznego może dać się to zrobić w eksploratorze
+      plików)
+    - żeby uruchomić wpisz komendę ./mvnw javafx:run (może być potrzebne dodanie wykonywalności np. poprzez chmod +x
+      ./mvnw; (przy pierwszym uruchomieniu zostaną zainstalowane zależności))
 
 w przypadku problemów
+
 - w systemie windows
-  - uruchom komendę .\mvnw.cmd dependency:resolve
+    - uruchom komendę .\mvnw.cmd dependency:resolve
 - w systemie linux/macos
-  - wpisz komendę ./mvnw dependency:resolve
+    - wpisz komendę ./mvnw dependency:resolve
 - w obu
-  - Zainstaluj [Maven](https://maven.apache.org/download.cgi) zgodnie z instrukcją
+    - Zainstaluj [Maven](https://maven.apache.org/download.cgi) zgodnie z instrukcją

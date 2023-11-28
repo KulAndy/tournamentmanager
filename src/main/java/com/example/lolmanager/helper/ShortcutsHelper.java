@@ -1,17 +1,29 @@
 package com.example.lolmanager.helper;
 
 import com.example.lolmanager.MainController;
+import com.example.lolmanager.model.Game;
+import com.example.lolmanager.model.Player;
+import com.example.lolmanager.model.Result;
 import com.example.lolmanager.operation.FileOperation;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPHeaderCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.scene.Scene;
-import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.example.lolmanager.MainController.quit;
+import static com.example.lolmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
 import static com.example.lolmanager.helper.GeneralHelper.error;
+import static com.example.lolmanager.helper.GeneralHelper.warning;
 import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
@@ -19,15 +31,11 @@ public class ShortcutsHelper {
     private Scene scene;
     private FileOperation fileOperation;
     private RoundsHelper roundsHelper;
-    private Tab roundsTab;
-    private Tab enterResultsTab;
 
-    public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, Tab roundsTab, Tab enterResultsTab, MainController controller) {
+    public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, MainController controller) {
         setScene(scene);
         setFileOperation(fileOperation);
         setRoundsHelper(roundsHelper);
-        setRoundsTab(roundsTab);
-        setEnterResultsTab(enterResultsTab);
         this.controller = controller;
         addShortcuts();
     }
@@ -52,9 +60,25 @@ public class ShortcutsHelper {
                 }
                 case O -> open(controller);
                 case Q -> quit();
+                case P -> {
+                    if (controller.getPlayersTab() != null && controller.getPlayersTab().isSelected() && controller.getStartListTab() != null && controller.getStartListTab().isSelected()) {
+                        ArrayList<Player> players = new ArrayList<>(controller.getPlayersHelper().getStartListHelper().getPlayersListTable().getItems());
+                        playersList2pdf(players, PrintMode.START_LIST);
+                    } else if (controller.getTablesTab() != null && controller.getTablesTab().isSelected() && controller.getResultsTab() != null && controller.getResultsTab().isSelected()) {
+                        ArrayList<Player> players = new ArrayList<>(controller.getTablesHelper().getResultTableHelper().getResultsTable().getItems());
+                        playersList2pdf(players, PrintMode.RESULTS);
+                    } else if (controller.getEnterResultsTab() != null && controller.getRoundsTab() != null && controller.getEnterResultsTab().isSelected() && controller.getRoundsTab().isSelected()) {
+                        ArrayList<Game> games = new ArrayList<>(controller.getRoundsHelper().getResultEnterHelper().getGamesView().getItems());
+                        int round = controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
+                        gamesList2pdf(games, round);
+                    } else {
+                        warning("This page isn't printable");
+                    }
+                }
             }
         }
     }
+
 
     private void controlShiftShortcuts(KeyEvent e) {
         if (e.isControlDown() && e.isShiftDown()) {
@@ -69,12 +93,274 @@ public class ShortcutsHelper {
     }
 
     private void resultEnterShortcuts(KeyEvent e) {
-        if (enterResultsTab != null && roundsTab != null && enterResultsTab.isSelected() && roundsTab.isSelected()) {
+        if (controller.getEnterResultsTab() != null && controller.getRoundsTab() != null && controller.getEnterResultsTab().isSelected() && controller.getRoundsTab().isSelected()) {
             switch (e.getCode()) {
                 case Z -> getRoundsHelper().getResultEnterHelper().enterResult("1", "0");
                 case X -> getRoundsHelper().getResultEnterHelper().enterResult("0.5", "0.5");
                 case C -> getRoundsHelper().getResultEnterHelper().enterResult("0", "1");
             }
+        }
+    }
+
+    private void gamesList2pdf(ArrayList<Game> games, int round) {
+        try {
+            Document document = new Document();
+            document.setMargins(5, 5, 5, 5);
+            document.setPageSize(PageSize.A4);
+            OutputStream outputStream = new FileOutputStream("print.pdf");
+            PdfWriter.getInstance(document, outputStream);
+            document.open();
+            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph header = new Paragraph(controller.getTournament().getName(), headerFont);
+            header.setAlignment(Element.ALIGN_CENTER);
+            document.add(header);
+            document.add(new Paragraph("\n"));
+            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+            Paragraph paragraph = new Paragraph("Round " + round, normalFont);
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+            document.add(new Paragraph("\n"));
+            PdfPTable pdfPTable = new PdfPTable(9);
+            pdfPTable.setWidths(new int[]{10, 10, 10, 30, 15, 30, 10, 10, 10});
+            PdfPHeaderCell headerLeftNo = new PdfPHeaderCell();
+            headerLeftNo.addElement(new Phrase("#"));
+            headerLeftNo.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerLeftNo.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerWhitePoints = new PdfPHeaderCell();
+            headerWhitePoints.addElement(new Phrase("Pt"));
+            headerWhitePoints.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerWhitePoints.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerWhiteRating = new PdfPHeaderCell();
+            headerWhiteRating.addElement(new Phrase("Rating"));
+            headerWhiteRating.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerWhiteRating.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerWhite = new PdfPHeaderCell();
+            headerWhite.addElement(new Phrase("White"));
+            headerWhite.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerWhite.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerResult = new PdfPHeaderCell();
+            headerResult.addElement(new Phrase("Result"));
+            headerResult.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerResult.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerBlack = new PdfPHeaderCell();
+            headerBlack.addElement(new Phrase("Black"));
+            headerBlack.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerBlack.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerBlackRating = new PdfPHeaderCell();
+            headerBlackRating.addElement(new Phrase("Rating"));
+            headerBlackRating.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerBlackRating.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerBlackPoints = new PdfPHeaderCell();
+            headerBlackPoints.addElement(new Phrase("Pt"));
+            headerBlackPoints.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerBlackPoints.setVerticalAlignment(Element.ALIGN_CENTER);
+            PdfPHeaderCell headerRightNo = new PdfPHeaderCell();
+            headerRightNo.addElement(new Phrase("#"));
+            headerRightNo.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerRightNo.setVerticalAlignment(Element.ALIGN_CENTER);
+
+            pdfPTable.addCell(headerLeftNo);
+            pdfPTable.addCell(headerWhitePoints);
+            pdfPTable.addCell(headerWhiteRating);
+            pdfPTable.addCell(headerWhite);
+            pdfPTable.addCell(headerResult);
+            pdfPTable.addCell(headerBlack);
+            pdfPTable.addCell(headerBlackRating);
+            pdfPTable.addCell(headerBlackPoints);
+            pdfPTable.addCell(headerRightNo);
+
+            for (int i = 0; i < games.size(); i++) {
+                Game game = games.get(i);
+                pdfPTable.addCell(String.valueOf(i + 1));
+                pdfPTable.addCell(String.valueOf(game.getWhite().getPointInRound(round - 1)));
+                pdfPTable.addCell(String.valueOf(game.getWhite().getFideRating()));
+                pdfPTable.addCell(game.getWhite().getName());
+                PdfPCell cell = new PdfPCell(new Phrase(Result.getResultString(game.getWhiteResult(), game.isForfeit()) + " - " + Result.getResultString(game.getBlackResult(), game.isForfeit())));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                pdfPTable.addCell(cell);
+                pdfPTable.addCell(game.getBlack().getName());
+                pdfPTable.addCell(String.valueOf(game.getBlack().getFideRating()));
+                pdfPTable.addCell(String.valueOf(game.getBlack().getPointInRound(round - 1)));
+                pdfPTable.addCell(String.valueOf(i + 1));
+
+            }
+
+            pdfPTable.setComplete(true);
+            pdfPTable.completeRow();
+            pdfPTable.setSpacingBefore(0);
+            pdfPTable.setSpacingAfter(0);
+            pdfPTable.setWidthPercentage(100);
+            document.add(pdfPTable);
+            document.close();
+            outputStream.close();
+
+            System.out.println("Pdf created successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void playersList2pdf(ArrayList<Player> players, PrintMode printMode) {
+        try {
+            Document document = new Document();
+            document.setMargins(5, 5, 5, 5);
+            document.setPageSize(PageSize.A4);
+            OutputStream outputStream = new FileOutputStream("print.pdf");
+            PdfWriter.getInstance(document, outputStream);
+            document.open();
+            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph header = new Paragraph(controller.getTournament().getName(), headerFont);
+            header.setAlignment(Element.ALIGN_CENTER);
+            document.add(header);
+            document.add(new Paragraph("\n"));
+            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+            Paragraph paragraph = new Paragraph(printMode.toString(), normalFont);
+            paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+            document.add(new Paragraph("\n"));
+            PdfPTable pdfPTable = new PdfPTable(10);
+            switch (printMode) {
+                case RESULTS -> {
+                    pdfPTable = new PdfPTable(12);
+                    pdfPTable.setWidths(new int[]{10, 10, 10, 30, 15, 15, 15, 15, 15, 15, 15, 15});
+                    PdfPHeaderCell headerPlace = new PdfPHeaderCell();
+                    headerPlace.addElement(new Phrase("#"));
+                    headerPlace.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerPlace.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerSno = new PdfPHeaderCell();
+                    headerSno.addElement(new Phrase("S.No"));
+                    headerSno.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerSno.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTitle = new PdfPHeaderCell();
+                    headerTitle.addElement(new Phrase("Title"));
+                    headerTitle.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTitle.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerName = new PdfPHeaderCell();
+                    headerName.addElement(new Phrase("Name"));
+                    headerName.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerName.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerFide = new PdfPHeaderCell();
+                    headerFide.addElement(new Phrase("Fide"));
+                    headerFide.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerFide.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerLocal = new PdfPHeaderCell();
+                    headerLocal.addElement(new Phrase("Local"));
+                    headerLocal.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerLocal.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerFED = new PdfPHeaderCell();
+                    headerFED.addElement(new Phrase("FED"));
+                    headerFED.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerFED.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTb1 = new PdfPHeaderCell();
+                    headerTb1.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria1().prettyText()));
+                    headerTb1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTb1.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTb2 = new PdfPHeaderCell();
+                    headerTb2.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria2().prettyText()));
+                    headerTb2.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTb2.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTb3 = new PdfPHeaderCell();
+                    headerTb3.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria3().prettyText()));
+                    headerTb3.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTb3.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTb4 = new PdfPHeaderCell();
+                    headerTb4.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria4().prettyText()));
+                    headerTb4.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTb4.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTb5 = new PdfPHeaderCell();
+                    headerTb5.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria5().prettyText()));
+                    headerTb5.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTb5.setVerticalAlignment(Element.ALIGN_CENTER);
+                    pdfPTable.addCell(headerPlace);
+                    pdfPTable.addCell(headerSno);
+                    pdfPTable.addCell(headerTitle);
+                    pdfPTable.addCell(headerName);
+                    pdfPTable.addCell(headerFide);
+                    pdfPTable.addCell(headerLocal);
+                    pdfPTable.addCell(headerFED);
+                    pdfPTable.addCell(headerTb1);
+                    pdfPTable.addCell(headerTb2);
+                    pdfPTable.addCell(headerTb3);
+                    pdfPTable.addCell(headerTb4);
+                    pdfPTable.addCell(headerTb5);
+                    for (Player player : players) {
+                        pdfPTable.addCell(String.valueOf(players.indexOf(player) + 1));
+                        pdfPTable.addCell(String.valueOf(controller.getTournament().getPlayers().indexOf(player) + 1));
+                        pdfPTable.addCell(String.valueOf(player.getTitle()));
+                        pdfPTable.addCell(player.getName());
+                        pdfPTable.addCell(String.valueOf(player.getFideRating()));
+                        pdfPTable.addCell(String.valueOf(player.getLocalRating()));
+                        pdfPTable.addCell(String.valueOf(player.getFederation()));
+                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria1()).toString());
+                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria2()).toString());
+                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria3()).toString());
+                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria4()).toString());
+                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria5()).toString());
+                    }
+                }
+                case START_LIST -> {
+                    pdfPTable = new PdfPTable(7);
+                    pdfPTable.setWidths(new int[]{10, 10, 35, 10, 15, 15, 50});
+                    PdfPHeaderCell headerSno = new PdfPHeaderCell();
+                    headerSno.addElement(new Phrase("S.No"));
+                    headerSno.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerSno.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerTitle = new PdfPHeaderCell();
+                    headerTitle.addElement(new Phrase("Title"));
+                    headerTitle.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerTitle.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerName = new PdfPHeaderCell();
+                    headerName.addElement(new Phrase("Name"));
+                    headerName.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerName.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerFED = new PdfPHeaderCell();
+                    headerFED.addElement(new Phrase("FED"));
+                    headerFED.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerFED.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerFide = new PdfPHeaderCell();
+                    headerFide.addElement(new Phrase("Fide"));
+                    headerFide.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerFide.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerLocal = new PdfPHeaderCell();
+                    headerLocal.addElement(new Phrase("Local"));
+                    headerLocal.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerLocal.setVerticalAlignment(Element.ALIGN_CENTER);
+                    PdfPHeaderCell headerClub = new PdfPHeaderCell();
+                    headerClub.addElement(new Phrase("Club"));
+                    headerClub.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    headerClub.setVerticalAlignment(Element.ALIGN_CENTER);
+                    pdfPTable.addCell(headerSno);
+                    pdfPTable.addCell(headerTitle);
+                    pdfPTable.addCell(headerName);
+                    pdfPTable.addCell(headerFED);
+                    pdfPTable.addCell(headerFide);
+                    pdfPTable.addCell(headerLocal);
+                    pdfPTable.addCell(headerClub);
+                    for (Player player : players) {
+                        pdfPTable.addCell(String.valueOf(players.indexOf(player) + 1));
+                        pdfPTable.addCell(String.valueOf(player.getTitle()));
+                        pdfPTable.addCell(player.getName());
+                        pdfPTable.addCell(String.valueOf(player.getFederation()));
+                        pdfPTable.addCell(String.valueOf(player.getFideRating()));
+                        pdfPTable.addCell(String.valueOf(player.getLocalRating()));
+                        pdfPTable.addCell(player.getClub());
+                    }
+                }
+            }
+            pdfPTable.setComplete(true);
+            pdfPTable.completeRow();
+            pdfPTable.setSpacingBefore(0);
+            pdfPTable.setSpacingAfter(0);
+            pdfPTable.setWidthPercentage(100);
+            document.add(pdfPTable);
+            document.close();
+            outputStream.close();
+
+            System.out.println("Pdf created successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -102,20 +388,13 @@ public class ShortcutsHelper {
         this.roundsHelper = roundsHelper;
     }
 
-    public Tab getRoundsTab() {
-        return roundsTab;
-    }
+    enum PrintMode {
+        START_LIST,
+        RESULTS;
 
-    public void setRoundsTab(Tab roundsTab) {
-        this.roundsTab = roundsTab;
+        @Override
+        public String toString() {
+            return convertToTitleCase(super.toString().replace('_', ' '));
+        }
     }
-
-    public Tab getEnterResultsTab() {
-        return enterResultsTab;
-    }
-
-    public void setEnterResultsTab(Tab enterResultsTab) {
-        this.enterResultsTab = enterResultsTab;
-    }
-
 }

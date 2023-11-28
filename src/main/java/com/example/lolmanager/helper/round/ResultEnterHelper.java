@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
@@ -132,16 +133,73 @@ public class ResultEnterHelper {
             Player white = game.getWhite();
             return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
+        getWhitePoints().setCellFactory(column -> new TableCell<Game, Float>() {
+            {
+                setAlignment(javafx.geometry.Pos.CENTER);
+            }
+
+            @Override
+            protected void updateItem(Float item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(item));
+                }
+            }
+        });
+
         getWhiteRating().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
             return new SimpleIntegerProperty(white.getFideRating()).asObject();
         });
+        getWhiteRating().setCellFactory(column -> new TableCell<Game, Integer>() {
+            {
+                setAlignment(javafx.geometry.Pos.CENTER);
+            }
+
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(item));
+                }
+            }
+        });
+
         getWhitePlayer().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player white = game.getWhite();
             return new SimpleStringProperty(white.getName());
         });
+
+        getWhitePlayer().setCellFactory(column -> new TableCell<Game, String>() {
+            private final HBox content = new HBox(); // Use HBox or StackPane here
+            private final Label label = new Label();
+
+            {
+                content.getChildren().add(label);
+                setGraphic(content);
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    content.setPadding(new Insets(0, 0, 0, 25)); // Apply left margin
+                    label.setText(null);
+                } else {
+                    label.setText(item);
+                    content.setPadding(new Insets(0, 0, 0, 10)); // Apply left margin
+                }
+            }
+        });
+
         getGameResult().setCellFactory(column -> new TableCell<>() {
             private final HBox hbox = new HBox();
             private final TextField textField1 = new TextField();
@@ -243,11 +301,44 @@ public class ResultEnterHelper {
             Player black = game.getBlack();
             return new SimpleIntegerProperty(black.getFideRating()).asObject();
         });
+        getBlackRating().setCellFactory(column -> new TableCell<Game, Integer>() {
+            {
+                setAlignment(javafx.geometry.Pos.CENTER);
+            }
+
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(item));
+                }
+            }
+        });
+
         getBlackPoints().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             Player black = game.getBlack();
             return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
+
+        getBlackPoints().setCellFactory(column -> new TableCell<Game, Float>() {
+            {
+                setAlignment(javafx.geometry.Pos.CENTER);
+            }
+
+            @Override
+            protected void updateItem(Float item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(item));
+                }
+            }
+        });
+
         getRightBoardNo().setCellValueFactory(cellData -> {
             Game game = cellData.getValue();
             int rowIndex = getGamesView().getItems().indexOf(game) + 1;

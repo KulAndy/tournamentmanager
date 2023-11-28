@@ -40,6 +40,14 @@ public class MainController implements Initializable {
     private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
     @FXML
+    private Tab playersTab;
+    @FXML
+    private Tab startListTab;
+    @FXML
+    private Tab tablesTab;
+    @FXML
+    private Tab resultsTab;
+    @FXML
     private ComboBox<File> tournamentSelect;
     @FXML
     private MenuItem newMenu;
@@ -412,7 +420,6 @@ public class MainController implements Initializable {
     private TableColumn<Game, Float> blackPoints;
     @FXML
     private TableColumn<Game, Integer> rightBoardNo;
-
     private TablesHelper tablesHelper;
     @FXML
     private TableView<Player> rtgPolTable;
@@ -607,7 +614,7 @@ public class MainController implements Initializable {
 
         );
 
-        tablesHelper = new TablesHelper(
+        setTablesHelper(new TablesHelper(
                 tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks,
                 rtgFideTable, rtgFideName, rtgFideId, rtgFideTitle, rtgFideFed, rtgFideElo, rtgFidePoints, rtgFideGames, rtgFideAverage, rtgFideChg, rtgFideNorm,
                 resultFiltered, resultFilter, resultsTable,
@@ -627,7 +634,7 @@ public class MainController implements Initializable {
                 filterFIDERtgOperator, filterFIDERtg,
                 filterFedOperator, filterFedSelect,
                 filterStateOperator, filterStateSelect
-        );
+        ));
 
         tournamentSelect.setItems(files);
 
@@ -654,7 +661,7 @@ public class MainController implements Initializable {
         setProgramExtension(programExtension);
         setFileOperation(new FileOperation());
         setupEvents();
-        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, roundsTab, enterResultsTab, this));
+        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, this));
 
     }
 
@@ -1187,6 +1194,38 @@ public class MainController implements Initializable {
 
     public void setSaving(boolean saving) {
         this.saving = saving;
+    }
+
+    public Tab getPlayersTab() {
+        return playersTab;
+    }
+
+    public Tab getStartListTab() {
+        return startListTab;
+    }
+
+    public Tab getTablesTab() {
+        return tablesTab;
+    }
+
+    public Tab getResultsTab() {
+        return resultsTab;
+    }
+
+    public Tab getRoundsTab() {
+        return roundsTab;
+    }
+
+    public Tab getEnterResultsTab() {
+        return enterResultsTab;
+    }
+
+    public TablesHelper getTablesHelper() {
+        return tablesHelper;
+    }
+
+    public void setTablesHelper(TablesHelper tablesHelper) {
+        this.tablesHelper = tablesHelper;
     }
 }
 

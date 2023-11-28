@@ -10,6 +10,8 @@ module com.example.lolmanager {
     requires org.apache.logging.log4j;
     requires java.sql;
     requires sqlite.jdbc;
+    requires itextpdf;
+    requires kernel;
 
     opens com.example.lolmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
     opens com.example.lolmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;

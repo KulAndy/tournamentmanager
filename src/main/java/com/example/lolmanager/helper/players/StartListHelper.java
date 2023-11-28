@@ -20,7 +20,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+
+import static com.example.lolmanager.helper.GeneralHelper.error;
 
 public class StartListHelper {
     private Tournament tournament;
@@ -63,6 +67,20 @@ public class StartListHelper {
         setDeleteCol(deleteCol);
 
         getCorrectFide().setOnAction(e -> {
+            Path path;
+            switch (getTournament().getType()) {
+                case BLITZ -> path = Path.of("blitz_rating_list.db");
+                case RAPID -> path = Path.of("rapid_rating_list.db");
+                case OTHER -> {
+                    error("There is no list for other type chess");
+                    return;
+                }
+                default -> path = Path.of("standard_rating_list.db");
+            }
+            if (!Files.exists(path)) {
+                error("Can't find fide list");
+                return;
+            }
             GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
@@ -97,6 +115,10 @@ public class StartListHelper {
             new Thread(task).start();
         });
         getCorrectPl().setOnAction(e -> {
+            if (!Files.exists(Path.of("rejestr_czlonkow.db"))) {
+                error("Can't found polish list");
+                return;
+            }
             GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();

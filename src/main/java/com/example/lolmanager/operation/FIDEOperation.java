@@ -437,7 +437,7 @@ public class FIDEOperation {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        }else{
+        } else {
             throw new RuntimeException();
         }
     }
