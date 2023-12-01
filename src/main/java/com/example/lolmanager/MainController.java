@@ -83,6 +83,8 @@ public class MainController implements Initializable {
     @FXML
     private Button openButton;
     @FXML
+    private Button printButton;
+    @FXML
     private Button downloadFideButton;
     @FXML
     private Button downloadPolButton;
@@ -690,6 +692,7 @@ public class MainController implements Initializable {
         });
         getOpenMenu().setOnAction(e -> open(this));
         getOpenButton().setOnAction(e -> open(this));
+        getPrintButton().setOnAction(e -> shortcutsHelper.print());
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         exportPgnMenu.setOnAction(e ->
@@ -922,6 +925,10 @@ public class MainController implements Initializable {
 
     public Button getOpenButton() {
         return openButton;
+    }
+
+    public Button getPrintButton() {
+        return printButton;
     }
 
     public TextField getTourName() {

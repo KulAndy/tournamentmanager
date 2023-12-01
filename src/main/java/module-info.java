@@ -12,6 +12,8 @@ module com.example.lolmanager {
     requires sqlite.jdbc;
     requires itextpdf;
     requires kernel;
+    requires java.desktop;
+    requires org.apache.pdfbox;
 
     opens com.example.lolmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
     opens com.example.lolmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;

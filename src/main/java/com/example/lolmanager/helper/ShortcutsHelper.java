@@ -10,20 +10,33 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPHeaderCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.printing.PDFPrintable;
 
+import javax.print.PrintService;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.MediaSizeName;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.example.lolmanager.MainController.quit;
 import static com.example.lolmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
-import static com.example.lolmanager.helper.GeneralHelper.error;
-import static com.example.lolmanager.helper.GeneralHelper.warning;
+import static com.example.lolmanager.helper.GeneralHelper.*;
 import static com.example.lolmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
@@ -60,22 +73,24 @@ public class ShortcutsHelper {
                 }
                 case O -> open(controller);
                 case Q -> quit();
-                case P -> {
-                    if (controller.getPlayersTab() != null && controller.getPlayersTab().isSelected() && controller.getStartListTab() != null && controller.getStartListTab().isSelected()) {
-                        ArrayList<Player> players = new ArrayList<>(controller.getPlayersHelper().getStartListHelper().getPlayersListTable().getItems());
-                        playersList2pdf(players, PrintMode.START_LIST);
-                    } else if (controller.getTablesTab() != null && controller.getTablesTab().isSelected() && controller.getResultsTab() != null && controller.getResultsTab().isSelected()) {
-                        ArrayList<Player> players = new ArrayList<>(controller.getTablesHelper().getResultTableHelper().getResultsTable().getItems());
-                        playersList2pdf(players, PrintMode.RESULTS);
-                    } else if (controller.getEnterResultsTab() != null && controller.getRoundsTab() != null && controller.getEnterResultsTab().isSelected() && controller.getRoundsTab().isSelected()) {
-                        ArrayList<Game> games = new ArrayList<>(controller.getRoundsHelper().getResultEnterHelper().getGamesView().getItems());
-                        int round = controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
-                        gamesList2pdf(games, round);
-                    } else {
-                        warning("This page isn't printable");
-                    }
-                }
+                case P -> print();
             }
+        }
+    }
+
+    public void print() {
+        if (controller.getPlayersTab() != null && controller.getPlayersTab().isSelected() && controller.getStartListTab() != null && controller.getStartListTab().isSelected()) {
+            ArrayList<Player> players = new ArrayList<>(controller.getPlayersHelper().getStartListHelper().getPlayersListTable().getItems());
+            Platform.runLater(() -> printPDF(playersList2pdf(players, PrintMode.START_LIST)));
+        } else if (controller.getTablesTab() != null && controller.getTablesTab().isSelected() && controller.getResultsTab() != null && controller.getResultsTab().isSelected()) {
+            ArrayList<Player> players = new ArrayList<>(controller.getTablesHelper().getResultTableHelper().getResultsTable().getItems());
+            Platform.runLater(() -> printPDF(playersList2pdf(players, PrintMode.RESULTS)));
+        } else if (controller.getEnterResultsTab() != null && controller.getRoundsTab() != null && controller.getEnterResultsTab().isSelected() && controller.getRoundsTab().isSelected()) {
+            ArrayList<Game> games = new ArrayList<>(controller.getRoundsHelper().getResultEnterHelper().getGamesView().getItems());
+            int round = controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
+            Platform.runLater(() -> printPDF(gamesList2pdf(games, round)));
+        } else {
+            warning("This page isn't printable");
         }
     }
 
@@ -102,12 +117,49 @@ public class ShortcutsHelper {
         }
     }
 
-    private void gamesList2pdf(ArrayList<Game> games, int round) {
+    public static void printPDF(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            try (PDDocument document = PDDocument.load(file)) {
+                PrinterJob job = PrinterJob.getPrinterJob();
+
+                PrintService printService = job.getPrintService();
+                PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+
+                if (printService == null) {
+                    warning("No printer selected.");
+                } else {
+                    attributes.add(new Copies(1));
+                    attributes.add(MediaSizeName.ISO_A4);
+                    job.setPrintService(printService);
+                    job.setPageable(new PDFPageable(document));
+                    job.setPrintable(new PDFPrintable(document));
+
+                    if (job.printDialog(attributes)) {
+                        job.print(attributes);
+                        info("Printed successfully!");
+                    } else {
+                        warning("Printing canceled by user.");
+                    }
+                }
+            } catch (IOException | PrinterException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            Files.delete(Path.of(filePath));
+        } catch (IOException ignored) {
+        }
+    }
+
+
+    public String gamesList2pdf(ArrayList<Game> games, int round) {
+        String filename = "print.pdf";
         try {
             Document document = new Document();
             document.setMargins(5, 5, 5, 5);
             document.setPageSize(PageSize.A4);
-            OutputStream outputStream = new FileOutputStream("print.pdf");
+            OutputStream outputStream = new FileOutputStream(filename);
             PdfWriter.getInstance(document, outputStream);
             document.open();
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
@@ -194,20 +246,19 @@ public class ShortcutsHelper {
             document.add(pdfPTable);
             document.close();
             outputStream.close();
-
-            System.out.println("Pdf created successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return filename;
     }
 
-    private void playersList2pdf(ArrayList<Player> players, PrintMode printMode) {
+    public String playersList2pdf(ArrayList<Player> players, PrintMode printMode) {
+        String filename = "print.pdf";
         try {
             Document document = new Document();
             document.setMargins(5, 5, 5, 5);
             document.setPageSize(PageSize.A4);
-            OutputStream outputStream = new FileOutputStream("print.pdf");
+            OutputStream outputStream = new FileOutputStream(filename);
             PdfWriter.getInstance(document, outputStream);
             document.open();
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
@@ -357,11 +408,10 @@ public class ShortcutsHelper {
             document.add(pdfPTable);
             document.close();
             outputStream.close();
-
-            System.out.println("Pdf created successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return filename;
     }
 
     public Scene getScene() {
@@ -388,7 +438,7 @@ public class ShortcutsHelper {
         this.roundsHelper = roundsHelper;
     }
 
-    enum PrintMode {
+    public enum PrintMode {
         START_LIST,
         RESULTS;
 

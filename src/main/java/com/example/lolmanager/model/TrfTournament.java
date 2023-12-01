@@ -166,7 +166,7 @@ public class TrfTournament {
                             playerRounds.add(new TrfRound(opponentId, color, result));
                         }
                         getPlayers().add(new TrfPlayer(
-                                startNo,
+                                getPlayers().size() + 1,
                                 playerSex,
                                 playerTitle,
                                 playerName,
