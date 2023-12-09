@@ -15,7 +15,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.example.lolmanager.helper.GeneralHelper.*;
 
@@ -108,11 +110,11 @@ public class ResultEnterHelper {
             }
         });
 
-        getWhiteWinResult().setOnAction(e -> enterResult("1", "0"));
-        getDrawResult().setOnAction(e -> enterResult("0.5", "0.5"));
-        getBlackWinResult().setOnAction(e -> enterResult("0", "1"));
-        getWhiteWinForfeitResult().setOnAction(e -> enterResult("+", "-"));
-        getBlackWinForfeitResult().setOnAction(e -> enterResult("-", "+"));
+        getWhiteWinResult().setOnAction(e -> enterResult('z'));
+        getDrawResult().setOnAction(e -> enterResult('x'));
+        getBlackWinResult().setOnAction(e -> enterResult('c'));
+        getWhiteWinForfeitResult().setOnAction(e -> enterResult('v'));
+        getBlackWinForfeitResult().setOnAction(e -> enterResult('b'));
 
         getGamesView().setItems(getCurrentRound());
         getGamesView().setOnMouseClicked(e -> {
@@ -201,15 +203,8 @@ public class ResultEnterHelper {
         });
 
         getGameResult().setCellFactory(column -> new TableCell<>() {
-            private final HBox hbox = new HBox();
-            private final TextField textField1 = new TextField();
-            private final Label separator = new Label("-");
-            private final TextField textField2 = new TextField();
+            private final ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList(Result.getPossibleResults()));
             private Game game;
-
-            {
-                hbox.getChildren().addAll(textField1, separator, textField2);
-            }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -224,69 +219,36 @@ public class ResultEnterHelper {
                     Player black = game.getBlack();
 
                     if (black.equals(bye)) {
-                        textField1.setText("1");
-                        textField2.setText("0");
-                        textField1.setDisable(true);
-                        textField2.setDisable(true);
+                        comboBox.setValue("1-0");
+                        comboBox.setDisable(true);
                     } else if (black.equals(halfbye)) {
-                        textField1.setText("0.5");
-                        textField2.setText("0.5");
-                        textField1.setDisable(true);
-                        textField2.setDisable(true);
+                        comboBox.setValue("0.5-0.5");
+                        comboBox.setDisable(true);
                     } else if (black.equals(unpaired)) {
-                        textField1.setText("0");
-                        textField2.setText("1");
-                        textField1.setDisable(true);
-                        textField2.setDisable(true);
+                        comboBox.setValue("0-1");
+                        comboBox.setDisable(true);
                     } else {
-                        textField1.setText(Result.getResultString(game.getWhiteResult(), game.isForfeit()));
-                        textField2.setText(Result.getResultString(game.getBlackResult(), game.isForfeit()));
-                        textField1.setDisable(false);
-                        textField2.setDisable(false);
+                        if (game.getWhiteResult() == null || game.getBlackResult() == null){
+                            comboBox.setValue("");
+                        }else{
+                            comboBox.setValue(Result.getResultString(game.getWhiteResult(), game.isForfeit()) + "-" + Result.getResultString(game.getBlackResult(), game.isForfeit()));
+                        }
+                        comboBox.setDisable(false);
                     }
-                    textField1.setId("result" + getIndex() + "white");
-                    textField2.setId("result" + getIndex() + "black");
-                    textField1.textProperty().addListener(e -> {
-                        if (textField1.isFocused()) {
-                            if (textField1.getText().isEmpty()) {
-                                game.setWhiteResult(null);
-                                game.setForfeit(true);
-                            } else {
-                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
-                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                                Result resultW = (Result) objectsW[0];
-                                Result resultB = (Result) objects2[0];
-                                boolean forfeitW = (Boolean) objectsW[1];
-                                boolean forfeitB = (Boolean) objects2[1];
-
-                                if (resultW != null) {
-                                    game.setWhiteResult(resultW);
-                                    game.setForfeit(forfeitW || forfeitB);
-                                }
-                            }
+                    comboBox.setId("result" + getIndex());
+                    comboBox.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
+                        if (comboBox.isFocused()){
+                            Object[] objects = Result.getResultsFromPoints(newValue);
+                            Result whiteResult = (Result) objects[0];
+                            Result blackResult = (Result) objects[1];
+                            boolean forfeit = (boolean) objects[2];
+                            game.setWhiteResult(whiteResult);
+                            game.setBlackResult(blackResult);
+                            game.setForfeit(forfeit);
                         }
                     });
-                    textField2.textProperty().addListener(e -> {
-                        if (textField2.isFocused()) {
-                            if (textField2.getText().isEmpty()) {
-                                game.setBlackResult(null);
-                                game.setForfeit(true);
-                            } else {
-                                Object[] objectsW = Result.getResultFromPoints(textField1.getText());
-                                Object[] objects2 = Result.getResultFromPoints(textField2.getText());
-                                Result resultW = (Result) objectsW[0];
-                                Result resultB = (Result) objects2[0];
-                                boolean forfeitW = (Boolean) objectsW[1];
-                                boolean forfeitB = (Boolean) objects2[1];
-
-                                if (resultB != null) {
-                                    game.setBlackResult(resultB);
-                                    game.setForfeit(forfeitW || forfeitB);
-                                }
-                            }
-                        }
-                    });
-                    setGraphic(hbox);
+                    setStyle("-fx-alignment: center;");
+                    setGraphic(comboBox);
                 }
             }
         });
@@ -447,16 +409,21 @@ public class ResultEnterHelper {
         });
     }
 
-    public void enterResult(String whiteResult, String blackResult) {
-        TextField textField1 = (TextField) getGamesView().lookup("#result" + getPairEnterCounter() + "white");
-        TextField textField2 = (TextField) getGamesView().lookup("#result" + getPairEnterCounter() + "black");
-        if (textField1 == null || textField2 == null || textField1.isDisable() || textField2.isDisable()) {
+    public void enterResult(char c) {
+        ComboBox<String> comboBox = (ComboBox<String>) getGamesView().lookup("#result" + getPairEnterCounter());
+        if (comboBox == null || comboBox.isDisable()) {
             return;
         }
-        textField1.requestFocus();
-        textField1.setText(whiteResult);
-        textField2.requestFocus();
-        textField2.setText(blackResult);
+
+        comboBox.requestFocus();
+        switch (c){
+            case 'z' -> comboBox.setValue("1-0");
+            case 'x' -> comboBox.setValue("0.5-0.5");
+            case 'c' ->comboBox.setValue("0-1");
+            case 'v' -> comboBox.setValue("+--");
+            case 'b' -> comboBox.setValue("--+");
+        }
+
         setPairEnterCounter(getPairEnterCounter() + 1);
         getGamesView().scrollTo(getPairEnterCounter() - 1);
         getGamesView().requestFocus();

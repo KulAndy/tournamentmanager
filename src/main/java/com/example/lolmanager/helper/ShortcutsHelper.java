@@ -110,9 +110,9 @@ public class ShortcutsHelper {
     private void resultEnterShortcuts(KeyEvent e) {
         if (controller.getEnterResultsTab() != null && controller.getRoundsTab() != null && controller.getEnterResultsTab().isSelected() && controller.getRoundsTab().isSelected()) {
             switch (e.getCode()) {
-                case Z -> getRoundsHelper().getResultEnterHelper().enterResult("1", "0");
-                case X -> getRoundsHelper().getResultEnterHelper().enterResult("0.5", "0.5");
-                case C -> getRoundsHelper().getResultEnterHelper().enterResult("0", "1");
+                case Z -> getRoundsHelper().getResultEnterHelper().enterResult('z');
+                case X -> getRoundsHelper().getResultEnterHelper().enterResult('x');
+                case C -> getRoundsHelper().getResultEnterHelper().enterResult('c');
             }
         }
     }

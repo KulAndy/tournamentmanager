@@ -1,10 +1,12 @@
 package com.example.lolmanager.helper.players;
 
+import com.example.lolmanager.comparator.StartListComparator;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Tournament;
 import com.example.lolmanager.model.Withdraw;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -138,7 +140,11 @@ public class WithdrawHelper {
         });
 
 
-        getWithdrawPlayerSelect().setItems(getTournament().getPlayersObs());
+        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs());
+        StartListComparator comparator = new StartListComparator();
+        comparator.setCriteria1(StartListComparator.SortCriteria.ALPHABETIC);
+        sortedList.setComparator(comparator);
+        getWithdrawPlayerSelect().setItems(sortedList);
         setupComboBox(getWithdrawTypeSelect(), Withdraw.WithdrawType.values());
         getWithdrawTable().setItems(getTournament().getWithdrawsObs());
 
