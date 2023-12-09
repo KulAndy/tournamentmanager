@@ -49,8 +49,8 @@ public class Tournament implements Serializable {
     private ArrayList<ResultPredicate<Player>> predicates = new ArrayList<>();
     private transient ObservableList<ResultPredicate<Player>> predicatesObs = FXCollections.observableArrayList();
     private Schedule schedule;
-
     private transient ObservableList<Schedule.ScheduleElement> scheduleElementsObs = FXCollections.observableArrayList();
+    private Player.Color firstColor = null;
 
 
     public Tournament(SwsxTournament swsxTournament) {
@@ -1011,6 +1011,14 @@ public class Tournament implements Serializable {
 
     public void setScheduleElementsObs(ObservableList<Schedule.ScheduleElement> scheduleElementsObs) {
         this.scheduleElementsObs = scheduleElementsObs;
+    }
+
+    public Player.Color getFirstColor() {
+        return firstColor;
+    }
+
+    public void setFirstColor(Player.Color firstColor) {
+        this.firstColor = firstColor;
     }
 
     public enum Type implements Serializable {

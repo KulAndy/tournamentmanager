@@ -15,9 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.example.lolmanager.helper.GeneralHelper.*;
 
@@ -106,6 +104,10 @@ public class ResultEnterHelper {
                 }
                 getGamesView().setItems(getCurrentRound());
                 currentRoundNo.set(newValue);
+                getGamesView().refresh();
+            }else{
+                getGamesView().setItems(FXCollections.observableArrayList());
+                currentRoundNo.set(0);
                 getGamesView().refresh();
             }
         });
@@ -228,16 +230,16 @@ public class ResultEnterHelper {
                         comboBox.setValue("0-1");
                         comboBox.setDisable(true);
                     } else {
-                        if (game.getWhiteResult() == null || game.getBlackResult() == null){
+                        if (game.getWhiteResult() == null || game.getBlackResult() == null) {
                             comboBox.setValue("");
-                        }else{
+                        } else {
                             comboBox.setValue(Result.getResultString(game.getWhiteResult(), game.isForfeit()) + "-" + Result.getResultString(game.getBlackResult(), game.isForfeit()));
                         }
                         comboBox.setDisable(false);
                     }
                     comboBox.setId("result" + getIndex());
-                    comboBox.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
-                        if (comboBox.isFocused()){
+                    comboBox.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                        if (comboBox.isFocused()) {
                             Object[] objects = Result.getResultsFromPoints(newValue);
                             Result whiteResult = (Result) objects[0];
                             Result blackResult = (Result) objects[1];
@@ -416,10 +418,10 @@ public class ResultEnterHelper {
         }
 
         comboBox.requestFocus();
-        switch (c){
+        switch (c) {
             case 'z' -> comboBox.setValue("1-0");
             case 'x' -> comboBox.setValue("0.5-0.5");
-            case 'c' ->comboBox.setValue("0-1");
+            case 'c' -> comboBox.setValue("0-1");
             case 'v' -> comboBox.setValue("+--");
             case 'b' -> comboBox.setValue("--+");
         }

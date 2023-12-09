@@ -32,7 +32,7 @@ public class TiebreakHelper {
 
     public TiebreakHelper(
             Tournament tournament,
-            CheckBox tourFIDEMode, GridPane tiebreakPane, ComboBox<Tournament.Tiebreak.TbMethod> tourTB1, ComboBox<Tournament.Tiebreak.TbMethod> tourTB2,
+            CheckBox tourFIDEMode, ComboBox<Tournament.Tiebreak.TbMethod> tourTB1, ComboBox<Tournament.Tiebreak.TbMethod> tourTB2,
             ComboBox<Tournament.Tiebreak.TbMethod> tourTB3, ComboBox<Tournament.Tiebreak.TbMethod> tourTB4, ComboBox<Tournament.Tiebreak.TbMethod> tourTB5,
             GridPane pointsPane, TextField pointsWin, TextField pointsDraw, TextField pointsLose, TextField pointsForfeitWin, TextField pointsForfeitLose,
             TextField pointsBye, TextField pointsHalfBye) {

@@ -129,9 +129,14 @@ public class MainController implements Initializable {
     @FXML
     private TextField tourEmail;
     @FXML
-    private CheckBox tourFIDEMode;
+    private RadioButton whiteColor;
     @FXML
-    private GridPane tiebreakPane;
+    private RadioButton blackColor;
+    @FXML
+    private RadioButton autoColor;
+
+    @FXML
+    private CheckBox tourFIDEMode;
     @FXML
     private ComboBox<Tournament.Tiebreak.TbMethod> tourTB1;
     @FXML
@@ -571,7 +576,8 @@ public class MainController implements Initializable {
                 tournament, tourName, tourStartDate, tourEndDate, tourPlace, tourGameTime,
                 tourIncrement, tourControlMove, tourControlAddition, tourType, tourRtPZSzach, tourRtFIDE,
                 tourNoRounds, tourSystem, tourArbiter, tourOrganizer, tourEmail,
-                tourFIDEMode, tiebreakPane, tourTB1, tourTB2, tourTB3, tourTB4, tourTB5,
+                whiteColor, blackColor, autoColor,
+                tourFIDEMode, tourTB1, tourTB2, tourTB3, tourTB4, tourTB5,
                 pointsPane, pointsWin, pointsDraw, pointsLose, pointsForfeitWin, pointsForfeitLose,
                 pointsBye, pointsHalfBye,
                 minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,

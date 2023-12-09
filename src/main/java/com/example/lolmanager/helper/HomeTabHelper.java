@@ -26,7 +26,8 @@ public class HomeTabHelper {
             Tournament tournament, TextField tourName, DatePicker tourStartDate, DatePicker tourEndDate, TextField tourPlace, TextField tourGameTime,
             TextField tourIncrement, TextField tourControlMove, TextField tourControlAddition, ComboBox<Tournament.Type> tourType, CheckBox tourRtPZSzach, CheckBox tourRtFIDE,
             TextField tourNoRounds, ComboBox<Tournament.TournamentSystem> tourSystem, TextField tourArbiter, TextField tourOrganizer, TextField tourEmail,
-            CheckBox tourFIDEMode, GridPane tiebreakPane, ComboBox<Tournament.Tiebreak.TbMethod> tourTB1, ComboBox<Tournament.Tiebreak.TbMethod> tourTB2,
+            RadioButton whiteColor, RadioButton blackColor, RadioButton autoColor,
+            CheckBox tourFIDEMode, ComboBox<Tournament.Tiebreak.TbMethod> tourTB1, ComboBox<Tournament.Tiebreak.TbMethod> tourTB2,
             ComboBox<Tournament.Tiebreak.TbMethod> tourTB3, ComboBox<Tournament.Tiebreak.TbMethod> tourTB4, ComboBox<Tournament.Tiebreak.TbMethod> tourTB5,
             GridPane pointsPane, TextField pointsWin, TextField pointsDraw, TextField pointsLose, TextField pointsForfeitWin, TextField pointsForfeitLose,
             TextField pointsBye, TextField pointsHalfBye,
@@ -47,13 +48,14 @@ public class HomeTabHelper {
                 new BasicInfoHelper(
                         tournament, tourName, tourStartDate, tourEndDate, tourPlace, tourGameTime,
                         tourIncrement, tourControlMove, tourControlAddition, tourType, tourRtPZSzach, tourRtFIDE,
-                        tourNoRounds, tourSystem, tourArbiter, tourOrganizer, tourEmail
+                        tourNoRounds, tourSystem, tourArbiter, tourOrganizer, tourEmail,
+                        whiteColor, blackColor, autoColor
                 )
         );
         setTiebreakHelper(
                 new TiebreakHelper(
                         tournament,
-                        tourFIDEMode, tiebreakPane, tourTB1, tourTB2, tourTB3, tourTB4, tourTB5,
+                        tourFIDEMode, tourTB1, tourTB2, tourTB3, tourTB4, tourTB5,
                         pointsPane, pointsWin, pointsDraw, pointsLose, pointsForfeitWin, pointsForfeitLose,
                         pointsBye, pointsHalfBye
                 )

@@ -1,7 +1,6 @@
 package com.example.lolmanager.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public enum Result implements Serializable {
     WIN,
@@ -51,21 +50,21 @@ public enum Result implements Serializable {
 
     public static Object[] getResultsFromPoints(String result) {
         String[] results = result.split("-");
-        return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean)getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
+        return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean) getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
     }
 
-    public static String[] getPossibleResults(){
-        return new String[] {
-            "",
-            "1-0",
-            "0.5-0.5",
-            "0-1",
-            "+--",
-            "--+",
-            "0-0",
-            "---",
-            "0.5-0",
-            "0-0.5",
+    public static String[] getPossibleResults() {
+        return new String[]{
+                "",
+                "1-0",
+                "0.5-0.5",
+                "0-1",
+                "+--",
+                "--+",
+                "0-0",
+                "---",
+                "0.5-0",
+                "0-0.5",
         };
     }
 }

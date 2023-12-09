@@ -43,6 +43,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
@@ -239,7 +240,7 @@
                                                                         <CheckBox fx:id="tourRtFIDE" mnemonicParsing="false" text="FIDE" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER_LEFT" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                                                                <HBox alignment="CENTER_LEFT" GridPane.halignment="LEFT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                                                     <children>
                                                                         <Label text="No. of rounds" />
                                                                         <Separator opacity="0.0" prefHeight="38.0" prefWidth="37.0" />
@@ -285,6 +286,14 @@
                                                                         <Button fx:id="randomTournament" mnemonicParsing="false" text="generate test" />
                                                                     </children>
                                                                 </HBox>
+                                                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="5" GridPane.rowSpan="2">
+                                                   <children>
+                                                      <Label text="First round color" />
+                                                      <RadioButton fx:id="whiteColor" mnemonicParsing="false" text="White" />
+                                                      <RadioButton fx:id="blackColor" mnemonicParsing="false" text="Black" />
+                                                      <RadioButton fx:id="autoColor" mnemonicParsing="false" selected="true" text="auto" />
+                                                   </children>
+                                                </VBox>
                                                             </children>
                                                         </GridPane>
                                                     </children>

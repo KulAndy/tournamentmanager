@@ -12,10 +12,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.security.SecureRandom;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.example.lolmanager.helper.GeneralHelper.*;
@@ -476,6 +478,26 @@ public class FIDEOperation {
                 trf.append("%8s".formatted(dateFormatRounds.format(element.getDate())));
             }
             trf.append(" ".repeat(2));
+        }
+
+        if (tournament.getRoundsObs().size() == 0){
+            if (tournament.getFirstColor() == null) {
+                SecureRandom secureRandom = new SecureRandom();
+                byte[] randomBytes = new byte[1]; // Adjust byte array size as needed
+
+                secureRandom.nextBytes(randomBytes);
+                int randomValue = Math.abs(randomBytes[0] % 2);
+                if (randomValue == 0){
+                    trf.append("\nXXC white1");
+                }else{
+                    trf.append("\nXXC black1");
+                }
+            }else{
+                switch (tournament.getFirstColor()){
+                    case WHITE -> trf.append("\nXXC white1");
+                    case BLACK -> trf.append("\nXXC black1");
+                }
+            }
         }
 
 

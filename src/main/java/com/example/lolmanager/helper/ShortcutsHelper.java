@@ -53,6 +53,41 @@ public class ShortcutsHelper {
         addShortcuts();
     }
 
+    public static void printPDF(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            try (PDDocument document = PDDocument.load(file)) {
+                PrinterJob job = PrinterJob.getPrinterJob();
+
+                PrintService printService = job.getPrintService();
+                PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+
+                if (printService == null) {
+                    warning("No printer selected.");
+                } else {
+                    attributes.add(new Copies(1));
+                    attributes.add(MediaSizeName.ISO_A4);
+                    job.setPrintService(printService);
+                    job.setPageable(new PDFPageable(document));
+                    job.setPrintable(new PDFPrintable(document));
+
+                    if (job.printDialog(attributes)) {
+                        job.print(attributes);
+                        info("Printed successfully!");
+                    } else {
+                        warning("Printing canceled by user.");
+                    }
+                }
+            } catch (IOException | PrinterException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            Files.delete(Path.of(filePath));
+        } catch (IOException ignored) {
+        }
+    }
+
     private void addShortcuts() {
         scene.setOnKeyPressed((KeyEvent e) -> {
             controlShortcuts(e);
@@ -94,7 +129,6 @@ public class ShortcutsHelper {
         }
     }
 
-
     private void controlShiftShortcuts(KeyEvent e) {
         if (e.isControlDown() && e.isShiftDown()) {
             if (Objects.requireNonNull(e.getCode()) == KeyCode.S) {
@@ -116,42 +150,6 @@ public class ShortcutsHelper {
             }
         }
     }
-
-    public static void printPDF(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) {
-            try (PDDocument document = PDDocument.load(file)) {
-                PrinterJob job = PrinterJob.getPrinterJob();
-
-                PrintService printService = job.getPrintService();
-                PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-
-                if (printService == null) {
-                    warning("No printer selected.");
-                } else {
-                    attributes.add(new Copies(1));
-                    attributes.add(MediaSizeName.ISO_A4);
-                    job.setPrintService(printService);
-                    job.setPageable(new PDFPageable(document));
-                    job.setPrintable(new PDFPrintable(document));
-
-                    if (job.printDialog(attributes)) {
-                        job.print(attributes);
-                        info("Printed successfully!");
-                    } else {
-                        warning("Printing canceled by user.");
-                    }
-                }
-            } catch (IOException | PrinterException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        try {
-            Files.delete(Path.of(filePath));
-        } catch (IOException ignored) {
-        }
-    }
-
 
     public String gamesList2pdf(ArrayList<Game> games, int round) {
         String filename = "print.pdf";

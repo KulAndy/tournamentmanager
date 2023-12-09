@@ -1,10 +1,8 @@
 package com.example.lolmanager.helper.home;
 
+import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Tournament;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.time.LocalDate;
 
@@ -28,11 +26,15 @@ public class BasicInfoHelper {
     private TextField tourArbiter;
     private TextField tourOrganizer;
     private TextField tourEmail;
+    private RadioButton whiteColor;
+    private RadioButton blackColor;
+    private RadioButton autoColor;
 
     public BasicInfoHelper(
             Tournament tournament, TextField tourName, DatePicker tourStartDate, DatePicker tourEndDate, TextField tourPlace, TextField tourGameTime,
             TextField tourIncrement, TextField tourControlMove, TextField tourControlAddition, ComboBox<Tournament.Type> tourType, CheckBox tourRtPZSzach, CheckBox tourRtFIDE,
-            TextField tourNoRounds, ComboBox<Tournament.TournamentSystem> tourSystem, TextField tourArbiter, TextField tourOrganizer, TextField tourEmail
+            TextField tourNoRounds, ComboBox<Tournament.TournamentSystem> tourSystem, TextField tourArbiter, TextField tourOrganizer, TextField tourEmail,
+            RadioButton whiteColor, RadioButton blackColor, RadioButton autoColor
     ) {
         setTournament(tournament);
         setTourName(tourName);
@@ -51,6 +53,9 @@ public class BasicInfoHelper {
         setTourArbiter(tourArbiter);
         setTourOrganizer(tourOrganizer);
         setTourEmail(tourEmail);
+        setWhiteColor(whiteColor);
+        setBlackColor(blackColor);
+        setAutoColor(autoColor);
         try {
             bindTextFieldStringProperty(getTourName(), getTournament(), "name");
         } catch (Exception ignored) {
@@ -94,6 +99,20 @@ public class BasicInfoHelper {
 
         setupComboBox(getTourType(), Tournament.Type.values());
         setupComboBox(getTourSystem(), Tournament.TournamentSystem.values());
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        getWhiteColor().setToggleGroup(toggleGroup);
+        getBlackColor().setToggleGroup(toggleGroup);
+        getAutoColor().setToggleGroup(toggleGroup);
+        toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == getWhiteColor()) {
+                getTournament().setFirstColor(Player.Color.WHITE);
+            } else if (newValue == getBlackColor()) {
+                getTournament().setFirstColor(Player.Color.BLACK);
+            } else {
+                getTournament().setFirstColor(null);
+            }
+        });
 
     }
 
@@ -238,4 +257,27 @@ public class BasicInfoHelper {
         this.tourEmail = tourEmail;
     }
 
+    public RadioButton getWhiteColor() {
+        return whiteColor;
+    }
+
+    public void setWhiteColor(RadioButton whiteColor) {
+        this.whiteColor = whiteColor;
+    }
+
+    public RadioButton getBlackColor() {
+        return blackColor;
+    }
+
+    public void setBlackColor(RadioButton blackColor) {
+        this.blackColor = blackColor;
+    }
+
+    public RadioButton getAutoColor() {
+        return autoColor;
+    }
+
+    public void setAutoColor(RadioButton autoColor) {
+        this.autoColor = autoColor;
+    }
 }
