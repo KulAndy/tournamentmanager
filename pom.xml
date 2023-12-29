@@ -172,7 +172,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.lolmanager.Main</mainClass>
+                            <mainClass>com.example.tournamentmanager.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -218,7 +218,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.lolmanager.Main</mainClass>
+                            <mainClass>com.example.tournamentmanager.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
