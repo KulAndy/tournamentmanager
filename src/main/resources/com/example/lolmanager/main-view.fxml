@@ -100,6 +100,11 @@
         </MenuBar>
         <ToolBar prefHeight="40.0" prefWidth="200.0">
             <items>
+            <Button fx:id="newButton" mnemonicParsing="false" text="🗋">
+               <tooltip>
+                  <Tooltip text="New" />
+               </tooltip>
+            </Button>
                 <Button fx:id="saveButton" mnemonicParsing="false" text="💾">
                     <tooltip>
                         <Tooltip text="Save" />
@@ -110,9 +115,18 @@
                         <Tooltip text="Open" />
                     </tooltip>
                 </Button>
-            <Button fx:id="printButton" mnemonicParsing="false" text="⎙" />
-                <Button fx:id="downloadFideButton" mnemonicParsing="false" text="⭳ FIDE list" />
-                <Button fx:id="downloadPolButton" mnemonicParsing="false" text="⭳ polish list" />
+            <Button fx:id="printButton" mnemonicParsing="false" text="⎙">
+               <tooltip>
+                  <Tooltip text="Print" />
+               </tooltip></Button>
+                <Button fx:id="downloadFideButton" mnemonicParsing="false" text="⭳ FIDE list">
+               <tooltip>
+                  <Tooltip text="Downlaod FIDE list" />
+               </tooltip></Button>
+                <Button fx:id="downloadPolButton" mnemonicParsing="false" text="⭳ polish list">
+               <tooltip>
+                  <Tooltip text="Download polish list" />
+               </tooltip></Button>
             </items>
         </ToolBar>
         <VBox prefHeight="48.0" prefWidth="640.0" VBox.vgrow="NEVER">

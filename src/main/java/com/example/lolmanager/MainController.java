@@ -79,6 +79,8 @@ public class MainController implements Initializable {
     private MenuItem trfRaport;
 
     @FXML
+    private Button newButton;
+    @FXML
     private Button saveButton;
     @FXML
     private Button openButton;
@@ -674,6 +676,15 @@ public class MainController implements Initializable {
     }
 
     public void setupEvents() {
+        getNewMenu().setOnAction(e->{
+            try {
+                save(this);
+                loadTournament(new Tournament(), this);
+                tournamentSelect.setValue(null);
+            } catch (IOException ex) {
+                error("Couldn't save tournament");
+            }
+        });
         getQuitMenu().setOnAction(e -> quit());
         getSaveAsMenu().setOnAction(e -> {
             try {
@@ -685,6 +696,15 @@ public class MainController implements Initializable {
         getSaveMenu().setOnAction(e -> {
             try {
                 save(this);
+            } catch (IOException ex) {
+                error("Couldn't save tournament");
+            }
+        });
+        getNewButton().setOnAction(e->{
+            try {
+                save(this);
+                loadTournament(new Tournament(), this);
+                tournamentSelect.setValue(null);
             } catch (IOException ex) {
                 error("Couldn't save tournament");
             }
@@ -896,6 +916,9 @@ public class MainController implements Initializable {
     public void setFileOperation(FileOperation fileOperation) {
         this.fileOperation = fileOperation;
     }
+    public ComboBox<File> getTournamentSelect() {
+        return tournamentSelect;
+    }
 
     public MenuItem getNewMenu() {
         return newMenu;
@@ -925,6 +948,9 @@ public class MainController implements Initializable {
         return quitMenu;
     }
 
+    public Button getNewButton() {
+        return newButton;
+    }
     public Button getSaveButton() {
         return saveButton;
     }

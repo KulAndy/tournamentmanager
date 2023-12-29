@@ -4,6 +4,7 @@ import com.example.lolmanager.MainController;
 import com.example.lolmanager.model.Game;
 import com.example.lolmanager.model.Player;
 import com.example.lolmanager.model.Result;
+import com.example.lolmanager.model.Tournament;
 import com.example.lolmanager.operation.FileOperation;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -99,6 +100,15 @@ public class ShortcutsHelper {
     private void controlShortcuts(KeyEvent e) {
         if (e.isControlDown() && !e.isShiftDown()) {
             switch (e.getCode()) {
+                case N -> {
+                        try {
+                            save(controller);
+                            loadTournament(new Tournament(), controller);
+                            controller.getTournamentSelect().setValue(null);
+                        } catch (IOException ex) {
+                            error("Couldn't save tournament");
+                        }
+                }
                 case S -> {
                     try {
                         save(controller);
