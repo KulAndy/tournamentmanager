@@ -1,11 +1,11 @@
-package com.example.lolmanager.helper;
+package com.example.tournamentmanager.helper;
 
-import com.example.lolmanager.MainController;
-import com.example.lolmanager.model.Game;
-import com.example.lolmanager.model.Player;
-import com.example.lolmanager.model.Result;
-import com.example.lolmanager.model.Tournament;
-import com.example.lolmanager.operation.FileOperation;
+import com.example.tournamentmanager.MainController;
+import com.example.tournamentmanager.model.Game;
+import com.example.tournamentmanager.model.Player;
+import com.example.tournamentmanager.model.Result;
+import com.example.tournamentmanager.model.Tournament;
+import com.example.tournamentmanager.operation.FileOperation;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPHeaderCell;
@@ -35,10 +35,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.example.lolmanager.MainController.quit;
-import static com.example.lolmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
-import static com.example.lolmanager.helper.GeneralHelper.*;
-import static com.example.lolmanager.operation.TournamentOperation.*;
+import static com.example.tournamentmanager.MainController.quit;
+import static com.example.tournamentmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
+import static com.example.tournamentmanager.helper.GeneralHelper.*;
+import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
     private final MainController controller;
