@@ -1,4 +1,4 @@
-module com.example.lolmanager {
+module com.example.tournamentmanager {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
@@ -15,27 +15,27 @@ module com.example.lolmanager {
     requires java.desktop;
     requires org.apache.pdfbox;
 
-    opens com.example.lolmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
-    opens com.example.lolmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;
-    opens com.example.lolmanager.adapter to com.google.gson, jakarta.xml.bind, javafx.fxml;
-    opens com.example.lolmanager.calculation to com.google.gson, jakarta.xml.bind, javafx.fxml;
-    opens com.example.lolmanager.operation to com.google.gson, jakarta.xml.bind, javafx.fxml, javafx.base;
-    opens com.example.lolmanager.model to com.google.gson, jakarta.xml.bind, javafx.fxml, javafx.base;
-    opens com.example.lolmanager.comparator to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    opens com.example.tournamentmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
+    opens com.example.tournamentmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    opens com.example.tournamentmanager.adapter to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    opens com.example.tournamentmanager.calculation to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    opens com.example.tournamentmanager.operation to com.google.gson, jakarta.xml.bind, javafx.fxml, javafx.base;
+    opens com.example.tournamentmanager.model to com.google.gson, jakarta.xml.bind, javafx.fxml, javafx.base;
+    opens com.example.tournamentmanager.comparator to com.google.gson, jakarta.xml.bind, javafx.fxml;
 
-    exports com.example.lolmanager;
-    exports com.example.lolmanager.helper;
-    exports com.example.lolmanager.adapter;
-    exports com.example.lolmanager.calculation;
-    exports com.example.lolmanager.operation;
-    exports com.example.lolmanager.model;
-    exports com.example.lolmanager.comparator;
-    exports com.example.lolmanager.helper.home;
-    opens com.example.lolmanager.helper.home to com.google.gson, jakarta.xml.bind, javafx.fxml;
-    exports com.example.lolmanager.helper.players;
-    opens com.example.lolmanager.helper.players to com.google.gson, jakarta.xml.bind, javafx.fxml;
-    exports com.example.lolmanager.helper.round;
-    opens com.example.lolmanager.helper.round to com.google.gson, jakarta.xml.bind, javafx.fxml;
-    exports com.example.lolmanager.helper.tables;
-    opens com.example.lolmanager.helper.tables to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    exports com.example.tournamentmanager;
+    exports com.example.tournamentmanager.helper;
+    exports com.example.tournamentmanager.adapter;
+    exports com.example.tournamentmanager.calculation;
+    exports com.example.tournamentmanager.operation;
+    exports com.example.tournamentmanager.model;
+    exports com.example.tournamentmanager.comparator;
+    exports com.example.tournamentmanager.helper.home;
+    opens com.example.tournamentmanager.helper.home to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    exports com.example.tournamentmanager.helper.players;
+    opens com.example.tournamentmanager.helper.players to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    exports com.example.tournamentmanager.helper.round;
+    opens com.example.tournamentmanager.helper.round to com.google.gson, jakarta.xml.bind, javafx.fxml;
+    exports com.example.tournamentmanager.helper.tables;
+    opens com.example.tournamentmanager.helper.tables to com.google.gson, jakarta.xml.bind, javafx.fxml;
 }
