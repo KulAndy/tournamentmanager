@@ -55,10 +55,17 @@ public enum Result implements Serializable {
 
         }else if (Objects.equals(result, "--+")){
             return new Object[]{LOSE,WIN, true};
-
+        }else if (Objects.equals(result, "---")){
+            return new Object[]{LOSE,LOSE, true};
         }else{
             String[] results = result.split("-");
-            return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean) getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
+            if (results.length == 0){
+                return new Object[]{LOSE,LOSE, true};
+            } else if (results.length == 1) {
+                return new Object[]{getResultFromPoints(results[0])[0], LOSE, true};
+            }else{
+                return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean) getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
+            }
         }
     }
 
