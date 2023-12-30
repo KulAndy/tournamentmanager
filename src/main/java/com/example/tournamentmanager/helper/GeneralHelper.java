@@ -233,13 +233,18 @@ public class GeneralHelper {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText(null);
-            VBox contentBox = new VBox();
-            Label label = new Label(content);
-            contentBox.getChildren().add(label);
-            ScrollPane scrollPane = new ScrollPane(contentBox);
-            scrollPane.setFitToWidth(true);
-            scrollPane.setPrefViewportHeight(300);
-            alert.getDialogPane().setContent(scrollPane);
+            int numberOfLines = content.split("\n").length;
+            if (numberOfLines <= 15) {
+                alert.setContentText(content);
+            } else {
+                VBox contentBox = new VBox();
+                Label label = new Label(content);
+                contentBox.getChildren().add(label);
+                ScrollPane scrollPane = new ScrollPane(contentBox);
+                scrollPane.setFitToWidth(true);
+                scrollPane.setPrefViewportHeight(300);
+                alert.getDialogPane().setContent(scrollPane);
+            }
             alert.showAndWait();
         });
     }

@@ -135,8 +135,10 @@ public class RoundRobinEngine implements Engine {
             for (int i = 0; i < tournament.getRounds().size(); i++) {
                 builder.append(checkRound(tournament, (byte) (i + 1)));
             }
+        } else {
+            builder.append(checkRound(tournament, round));
         }
-        info(builder.toString());
+        info(builder.toString().replaceAll("(?m)^\\\\s*\\\\r?\\\\n", ""));
     }
 
     private static String checkRound(Tournament tournament, byte round) {

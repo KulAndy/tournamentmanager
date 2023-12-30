@@ -409,6 +409,8 @@ public class MainController implements Initializable {
     @FXML
     private Button deleteRound;
     @FXML
+    private Button roundValidation;
+    @FXML
     private Button enginePairButton;
 
     @FXML
@@ -683,6 +685,7 @@ public class MainController implements Initializable {
                 save(this);
                 loadTournament(new Tournament(), this);
                 tournamentSelect.setValue(null);
+                setFile(null);
             } catch (IOException ex) {
                 error("Couldn't save tournament");
             }
@@ -707,6 +710,7 @@ public class MainController implements Initializable {
                 save(this);
                 loadTournament(new Tournament(), this);
                 tournamentSelect.setValue(null);
+                setFile(null);
             } catch (IOException ex) {
                 error("Couldn't save tournament");
             }
@@ -791,6 +795,23 @@ public class MainController implements Initializable {
             }
         });
 
+        roundValidation.setOnAction(e -> {
+                    if (roundsViewSelect.getValue() == null) {
+                        error("No round selected");
+                    } else {
+                        try {
+                            if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
+                                JavafoWrapper.checkPairing(getTournament(), roundsViewSelect.getValue().byteValue());
+                            } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
+                                RoundRobinEngine.checkPairing(getTournament(), roundsViewSelect.getValue().byteValue());
+                            }
+                        } catch (IOException | InterruptedException ex) {
+                            error("An error occurred during validate");
+                        }
+                    }
+                }
+        );
+
         importTrf.setOnAction(e -> FIDEOperation.importTrfReport(this));
 
         importSwsx.setOnAction(e -> {
@@ -815,6 +836,9 @@ public class MainController implements Initializable {
             files.remove(getFile());
         });
         tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
+            if (newValue != null) {
+                System.out.println(newValue.getAbsolutePath());
+            }
             try {
                 if (newValue != oldValue && newValue != getFile()) {
                     save(this);

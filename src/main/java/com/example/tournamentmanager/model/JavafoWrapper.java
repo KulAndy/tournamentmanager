@@ -137,6 +137,6 @@ public class JavafoWrapper implements Engine {
         while ((line = errorReader.readLine()) != null) {
             stringBuilder.append(line).append("\n");
         }
-        info(stringBuilder.toString());
+        info(stringBuilder.toString().replaceAll("(?m)^\\\\s*\\\\r?\\\\n", ""));
     }
 }
