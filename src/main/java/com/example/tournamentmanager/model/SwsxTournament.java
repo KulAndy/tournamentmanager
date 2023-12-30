@@ -899,19 +899,19 @@ public class SwsxTournament {
             for (int j = 0; j < roundsNode.getLength(); j++) {
                 Element round = (Element) roundsNode.item(j);
 
-                Element color_piecesNode = (Element) round.getElementsByTagName("color_pieces").item(0);
-                Element player_statusNode = (Element) round.getElementsByTagName("player_status").item(0);
-                Element result_symbolNode = (Element) round.getElementsByTagName("result_symbol").item(0);
+                Element colorPiecesNode = (Element) round.getElementsByTagName("color_pieces").item(0);
+                Element playerStatusNode = (Element) round.getElementsByTagName("player_status").item(0);
+                Element resultSymbolNode = (Element) round.getElementsByTagName("result_symbol").item(0);
                 Element resultNode = (Element) round.getElementsByTagName("result").item(0);
-                Element opponent_idNode = (Element) round.getElementsByTagName("opponent_id").item(0);
-                Element pair_noNode = (Element) round.getElementsByTagName("pair_no").item(0);
+                Element opponentIdNode = (Element) round.getElementsByTagName("opponent_id").item(0);
+                Element pairNoNode = (Element) round.getElementsByTagName("pair_no").item(0);
 
-                String colorPieces = color_piecesNode.getAttribute("value");
-                String playerStatus = player_statusNode.getAttribute("value");
-                String resultSymbol = result_symbolNode.getAttribute("value");
+                String colorPieces = colorPiecesNode.getAttribute("value");
+                String playerStatus = playerStatusNode.getAttribute("value");
+                String resultSymbol = resultSymbolNode.getAttribute("value");
                 String resultPoints = resultNode.getAttribute("value");
-                String opponentId = opponent_idNode.getAttribute("value");
-                String pairNo = pair_noNode.getAttribute("value");
+                String opponentId = opponentIdNode.getAttribute("value");
+                String pairNo = pairNoNode.getAttribute("value");
 
                 Player.Color color;
                 switch (colorPieces) {
@@ -921,14 +921,22 @@ public class SwsxTournament {
                 }
                 Result result;
                 switch (resultSymbol) {
-                    case "1" -> result = Result.WIN;
-                    case "2" -> result = Result.LOSE;
+                    case "1", "4" -> result = Result.WIN;
+                    case "2", "5" -> result = Result.LOSE;
                     case "3" -> result = Result.DRAW;
                     default -> result = null;
                 }
 
+                boolean forfeit = false;
+                if (color == null){
+                    forfeit = true;
+                } else if (resultSymbol.equals("4")) {
+                    forfeit = true;
+                } else if (resultSymbol.equals("5")) {
+                    forfeit = true;
+                }
 
-                rounds.add(new SwsxRound(color, Byte.parseByte(playerStatus), result, Float.parseFloat(resultPoints.replaceAll(",", ".")), Short.parseShort(opponentId), Short.parseShort(pairNo)));
+                rounds.add(new SwsxRound(color, Byte.parseByte(playerStatus), result, Float.parseFloat(resultPoints.replaceAll(",", ".")), Short.parseShort(opponentId), Short.parseShort(pairNo), forfeit));
             }
         }
 
@@ -1126,14 +1134,19 @@ public class SwsxTournament {
         private Float points;
         private short opponentId;
         private short pairNo;
+        private boolean forfeit;
 
         public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo) {
+            this(color,  status,  result,  points,  opponentId,  pairNo, false);
+        }
+        public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo, boolean forfeit) {
             setColor(color);
             setStatus(status);
             setResult(result);
             setPoints(points);
             setOpponentId(opponentId);
             setPairNo(pairNo);
+            setForfeit(forfeit);
         }
 
         @Override
@@ -1190,6 +1203,13 @@ public class SwsxTournament {
             this.pairNo = pairNo;
         }
 
+        public boolean isForfeit() {
+            return forfeit;
+        }
+
+        public void setForfeit(boolean forfeit) {
+            this.forfeit = forfeit;
+        }
     }
 
 }

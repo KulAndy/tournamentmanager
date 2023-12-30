@@ -595,7 +595,6 @@ public class FIDEOperation {
             }
         }
         if (withdrawed.toString().trim().length() > 4) {
-            System.out.println(withdrawed.toString().trim().length());
             trf.append(withdrawed);
         }
         trf.append("\n");

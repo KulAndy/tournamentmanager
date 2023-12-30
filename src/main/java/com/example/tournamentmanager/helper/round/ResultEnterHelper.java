@@ -398,7 +398,11 @@ public class ResultEnterHelper {
                     } else {
                         int pairing = JavafoWrapper.generatePairing(getTournament(), false);
                         getRoundsViewSelect().getSelectionModel().selectLast();
-                        info("Paired successfully\nGenerated " + pairing + " pairings");
+                        if (pairing == 0){
+                            error("Couldn't generate pairing");
+                        }else{
+                            info("Paired successfully\nGenerated " + pairing + " pairings");
+                        }
                     }
                 } catch (IOException | InterruptedException ex) {
                     error("An error occurred during pairing");

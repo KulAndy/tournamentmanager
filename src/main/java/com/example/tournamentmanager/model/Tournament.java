@@ -135,6 +135,23 @@ public class Tournament implements Serializable {
         ArrayList<ArrayList<Game>> rounds = new ArrayList<>();
         PlayerList players = new PlayerList();
         ArrayList<ArrayList<UUID>> roundIds = new ArrayList<>();
+        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getWithdraws().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getWithdraws().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getWithdraws().subList(from, to + 1).clear();
+                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
         for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
             Player playerTmp = new Player(
                     player.getFullName(),
@@ -254,14 +271,38 @@ public class Tournament implements Serializable {
                     } else if (black == players.getHalfbye()) {
                         whiteResult = Result.DRAW;
                         blackResult = Result.DRAW;
+                        getWithdrawsObs().add(
+                                new Withdraw(
+                                        white,
+                                        Withdraw.WithdrawType.HALFBYE,
+                                        (byte) (i+1)
+                                )
+                        );
                         forfeit = true;
                     } else if (black == players.getUnpaired()) {
                         whiteResult = Result.LOSE;
                         blackResult = Result.WIN;
                         forfeit = true;
+                        if (round.getStatus() ==0){
+                            getWithdrawsObs().add(
+                                    new Withdraw(
+                                            white,
+                                            Withdraw.WithdrawType.TOURNAMENT,
+                                            null
+                                    )
+                            );
+                        }else{
+                            getWithdrawsObs().add(
+                                    new Withdraw(
+                                            white,
+                                            Withdraw.WithdrawType.ROUND,
+                                            (byte) (i+1)
+                                    )
+                            );
+                        }
                     }
 
-                    Game game = new Game(white, black, whiteResult, blackResult, forfeit);
+                    Game game = new Game(white, black, whiteResult, blackResult, round.isForfeit() || forfeit);
                     roundIds.get(i).add(player.getPlayerId());
                     roundIds.get(i).add(opponentId);
                     rounds.get(i).add(game);
@@ -285,14 +326,32 @@ public class Tournament implements Serializable {
         setPlayers(players);
         setRounds(rounds);
 
-        setPairingComparator(new PairingComparator(playersObs));
-        setResultsComparator(new ResultsComparator(getTiebreak()));
         try {
             setSchedule(new Schedule(swsxTournament.getReportPol().getSchedule()));
         } catch (Exception e) {
             setSchedule(new Schedule());
             e.printStackTrace();
         }
+        getScheduleElementsObs().addAll(getSchedule());
+
+        getPredicatesObs().addListener((ListChangeListener<? super ResultPredicate<Player>>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getPredicates().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getPredicates().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getPredicates().subList(from, to + 1).clear();
+                    getPredicates().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+        setSchedule(new Schedule());
         getScheduleElementsObs().addAll(getSchedule());
 
         getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) change -> {
@@ -318,6 +377,9 @@ public class Tournament implements Serializable {
             }
         });
 
+
+        setPairingComparator(new PairingComparator(getPlayersObs()));
+        setResultsComparator(new ResultsComparator(getTiebreak()));
     }
 
 
@@ -328,6 +390,23 @@ public class Tournament implements Serializable {
         setEndDate(trfTournament.getEndDate());
         setArbiter(trfTournament.getChiefArbiter());
         setRoundsNumber(trfTournament.getRoundsNo());
+        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getWithdraws().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getWithdraws().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getWithdraws().subList(from, to + 1).clear();
+                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
         String allottedTimes = trfTournament.getAllottedTimes();
 
         String basicTimeRegex = "\\d+\\s*min"; // Matches basic time in minutes

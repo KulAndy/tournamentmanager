@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public enum Result implements Serializable {
     WIN,
@@ -49,8 +50,16 @@ public enum Result implements Serializable {
     }
 
     public static Object[] getResultsFromPoints(String result) {
-        String[] results = result.split("-");
-        return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean) getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
+        if (Objects.equals(result, "+--")){
+            return new Object[]{WIN,LOSE, true};
+
+        }else if (Objects.equals(result, "--+")){
+            return new Object[]{LOSE,WIN, true};
+
+        }else{
+            String[] results = result.split("-");
+            return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean) getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
+        }
     }
 
     public static String[] getPossibleResults() {

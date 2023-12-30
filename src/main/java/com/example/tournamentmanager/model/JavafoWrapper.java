@@ -19,14 +19,16 @@ public class JavafoWrapper implements Engine {
     public static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
         File outputFile = new File(outputFilePath);
         File reportFile = new File(reportFilePath);
+        outputFile.delete();
+        reportFile.delete();
         saveTrfReport(trfReport(tournament), reportFile);
         List<String> command = new ArrayList<>();
         command.add(javaPath);
         command.add("-jar");
         command.add(javafoPath);
-        command.add(reportFilePath);
+        command.add(reportFile.getAbsolutePath());
         command.add("-p");
-        command.add(outputFilePath);
+        command.add(outputFile.getAbsolutePath());
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
