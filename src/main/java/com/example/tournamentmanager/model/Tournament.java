@@ -275,7 +275,7 @@ public class Tournament implements Serializable {
                                 new Withdraw(
                                         white,
                                         Withdraw.WithdrawType.HALFBYE,
-                                        (byte) (i+1)
+                                        (byte) (i + 1)
                                 )
                         );
                         forfeit = true;
@@ -283,7 +283,7 @@ public class Tournament implements Serializable {
                         whiteResult = Result.LOSE;
                         blackResult = Result.WIN;
                         forfeit = true;
-                        if (round.getStatus() ==0){
+                        if (round.getStatus() == 0) {
                             getWithdrawsObs().add(
                                     new Withdraw(
                                             white,
@@ -291,12 +291,12 @@ public class Tournament implements Serializable {
                                             null
                                     )
                             );
-                        }else{
+                        } else {
                             getWithdrawsObs().add(
                                     new Withdraw(
                                             white,
                                             Withdraw.WithdrawType.ROUND,
-                                            (byte) (i+1)
+                                            (byte) (i + 1)
                                     )
                             );
                         }

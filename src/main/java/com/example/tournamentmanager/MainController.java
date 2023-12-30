@@ -92,6 +92,8 @@ public class MainController implements Initializable {
     private Button downloadPolButton;
     @FXML
     private Button randomTournament;
+    @FXML
+    private Button validateTournament;
 
     @FXML
     private Tab roundsTab;
@@ -676,7 +678,7 @@ public class MainController implements Initializable {
     }
 
     public void setupEvents() {
-        getNewMenu().setOnAction(e->{
+        getNewMenu().setOnAction(e -> {
             try {
                 save(this);
                 loadTournament(new Tournament(), this);
@@ -700,7 +702,7 @@ public class MainController implements Initializable {
                 error("Couldn't save tournament");
             }
         });
-        getNewButton().setOnAction(e->{
+        getNewButton().setOnAction(e -> {
             try {
                 save(this);
                 loadTournament(new Tournament(), this);
@@ -769,9 +771,23 @@ public class MainController implements Initializable {
                     TournamentOperation.loadTournament(JavafoWrapper.generateRandomTournament(), this);
                 } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
                     TournamentOperation.loadTournament(RoundRobinEngine.generateRandomTournament(), this);
+                    getTourSystem().setValue(Tournament.TournamentSystem.ROUND_ROBIN);
                 }
+                getTourNoRounds().setText(String.valueOf(getTournament().getRounds().size()));
             } catch (IOException | InterruptedException ex) {
                 error("Couldn't generate random tournament");
+            }
+        });
+
+        validateTournament.setOnAction(e -> {
+            try {
+                if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
+                    JavafoWrapper.checkPairing(getTournament(), (byte) 0);
+                } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
+                    RoundRobinEngine.checkPairing(getTournament(), (byte) 0);
+                }
+            } catch (IOException | InterruptedException ex) {
+                error("An error occurred during validate");
             }
         });
 
@@ -916,6 +932,7 @@ public class MainController implements Initializable {
     public void setFileOperation(FileOperation fileOperation) {
         this.fileOperation = fileOperation;
     }
+
     public ComboBox<File> getTournamentSelect() {
         return tournamentSelect;
     }
@@ -951,6 +968,7 @@ public class MainController implements Initializable {
     public Button getNewButton() {
         return newButton;
     }
+
     public Button getSaveButton() {
         return saveButton;
     }

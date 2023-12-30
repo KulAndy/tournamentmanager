@@ -233,7 +233,13 @@ public class GeneralHelper {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText(null);
-            alert.setContentText(content);
+            VBox contentBox = new VBox();
+            Label label = new Label(content);
+            contentBox.getChildren().add(label);
+            ScrollPane scrollPane = new ScrollPane(contentBox);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefViewportHeight(300);
+            alert.getDialogPane().setContent(scrollPane);
             alert.showAndWait();
         });
     }

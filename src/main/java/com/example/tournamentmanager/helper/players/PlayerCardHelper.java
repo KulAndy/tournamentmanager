@@ -1,11 +1,13 @@
 package com.example.tournamentmanager.helper.players;
 
+import com.example.tournamentmanager.comparator.StartListComparator;
 import com.example.tournamentmanager.model.*;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
@@ -72,7 +74,11 @@ public class PlayerCardHelper {
                 }
             }
         });
-        getPlayerCardSelect().setItems(getTournament().getPlayersObs());
+        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs());
+        StartListComparator comparator = new StartListComparator();
+        comparator.setCriteria1(StartListComparator.SortCriteria.ALPHABETIC);
+        sortedList.setComparator(comparator);
+        getPlayerCardSelect().setItems(sortedList);
         setPlayerCardName(playerCardName);
         setPlayerCardTB1(playerCardTB1);
         getPlayerCardTB1().setText(String.valueOf(getTournament().getTiebreak().getTiebreak1()));

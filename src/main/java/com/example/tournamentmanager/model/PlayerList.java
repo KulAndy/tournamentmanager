@@ -27,10 +27,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
 
     public PlayerList(List<Player> players) {
         this.addAll(players);
-        getUuid2startNo().clear();
-        for (Player player : this) {
-            getUuid2startNo().put(player.getPlayerid(), getUuid2startNo().size() + 1);
-        }
+        rehash();
     }
 
     public void addAll(List<Player> players) {
@@ -182,6 +179,10 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     public void sort() {
 
         super.sort(comparator);
+        rehash();
+    }
+
+    public void rehash() {
         getUuid2startNo().clear();
         for (Player player : this) {
             getUuid2startNo().put(player.getPlayerid(), getUuid2startNo().size() + 1);
@@ -190,12 +191,8 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
 
     @Override
     public void sort(Comparator c) {
-
         super.sort(comparator);
-        getUuid2startNo().clear();
-        for (Player player : this) {
-            getUuid2startNo().put(player.getPlayerid(), getUuid2startNo().size() + 1);
-        }
+        rehash();
     }
 
     public Map<UUID, Integer> getUuid2startNo() {

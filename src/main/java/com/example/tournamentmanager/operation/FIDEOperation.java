@@ -408,7 +408,12 @@ public class FIDEOperation {
     public static void selectTrfReport(Tournament tournament) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create New File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf reports", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf reports", "*.txt", "*.trf"));
+        if (tournament.getName().trim().length() == 0) {
+            fileChooser.setInitialFileName("raport.txt");
+        } else {
+            fileChooser.setInitialFileName(tournament.getName().replaceAll("[\\/ ]", "_"));
+        }
         File newFile = fileChooser.showSaveDialog(new Stage());
 
         try {
@@ -479,20 +484,20 @@ public class FIDEOperation {
             trf.append(" ".repeat(2));
         }
 
-        if (tournament.getRoundsObs().size() == 0){
+        if (tournament.getRoundsObs().size() == 0) {
             if (tournament.getFirstColor() == null) {
                 SecureRandom secureRandom = new SecureRandom();
                 byte[] randomBytes = new byte[1]; // Adjust byte array size as needed
 
                 secureRandom.nextBytes(randomBytes);
                 int randomValue = Math.abs(randomBytes[0] % 2);
-                if (randomValue == 0){
+                if (randomValue == 0) {
                     trf.append("\nXXC white1");
-                }else{
+                } else {
                     trf.append("\nXXC black1");
                 }
-            }else{
-                switch (tournament.getFirstColor()){
+            } else {
+                switch (tournament.getFirstColor()) {
                     case WHITE -> trf.append("\nXXC white1");
                     case BLACK -> trf.append("\nXXC black1");
                 }

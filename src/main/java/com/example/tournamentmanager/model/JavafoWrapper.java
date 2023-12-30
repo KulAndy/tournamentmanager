@@ -1,12 +1,10 @@
 package com.example.tournamentmanager.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.tournamentmanager.helper.GeneralHelper.info;
 import static com.example.tournamentmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.tournamentmanager.operation.FIDEOperation.trfReport;
 
@@ -91,10 +89,6 @@ public class JavafoWrapper implements Engine {
         return 0;
     }
 
-    public static boolean checkPairing(Tournament tournament, ArrayList<Integer> pairing) {
-        return false;
-    }
-
     public static Tournament generateRandomTournament() throws IOException, InterruptedException {
         List<String> command = new ArrayList<>();
         command.add(javaPath);
@@ -109,5 +103,40 @@ public class JavafoWrapper implements Engine {
         Process process = processBuilder.start();
         process.waitFor();
         return new Tournament(new TrfTournament(reportFile));
+    }
+
+    public static void checkPairing(Tournament tournament, byte round) throws IOException, InterruptedException {
+        File outputFile = new File(outputFilePath);
+        File reportFile = new File(reportFilePath);
+        outputFile.delete();
+        reportFile.delete();
+        saveTrfReport(trfReport(tournament), reportFile);
+        List<String> command = new ArrayList<>();
+        command.add(javaPath);
+        command.add("-jar");
+        command.add(javafoPath);
+        command.add(reportFile.getAbsolutePath());
+        command.add("-c");
+        if (round > 0) {
+            command.add(String.valueOf(round));
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+
+        process.waitFor();
+
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        while ((line = errorReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        info(stringBuilder.toString());
     }
 }

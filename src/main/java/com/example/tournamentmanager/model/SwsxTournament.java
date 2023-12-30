@@ -928,7 +928,7 @@ public class SwsxTournament {
                 }
 
                 boolean forfeit = false;
-                if (color == null){
+                if (color == null) {
                     forfeit = true;
                 } else if (resultSymbol.equals("4")) {
                     forfeit = true;
@@ -1137,8 +1137,9 @@ public class SwsxTournament {
         private boolean forfeit;
 
         public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo) {
-            this(color,  status,  result,  points,  opponentId,  pairNo, false);
+            this(color, status, result, points, opponentId, pairNo, false);
         }
+
         public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo, boolean forfeit) {
             setColor(color);
             setStatus(status);

@@ -50,20 +50,20 @@ public enum Result implements Serializable {
     }
 
     public static Object[] getResultsFromPoints(String result) {
-        if (Objects.equals(result, "+--")){
-            return new Object[]{WIN,LOSE, true};
+        if (Objects.equals(result, "+--")) {
+            return new Object[]{WIN, LOSE, true};
 
-        }else if (Objects.equals(result, "--+")){
-            return new Object[]{LOSE,WIN, true};
-        }else if (Objects.equals(result, "---")){
-            return new Object[]{LOSE,LOSE, true};
-        }else{
+        } else if (Objects.equals(result, "--+")) {
+            return new Object[]{LOSE, WIN, true};
+        } else if (Objects.equals(result, "---")) {
+            return new Object[]{LOSE, LOSE, true};
+        } else {
             String[] results = result.split("-");
-            if (results.length == 0){
-                return new Object[]{LOSE,LOSE, true};
+            if (results.length == 0) {
+                return new Object[]{LOSE, LOSE, true};
             } else if (results.length == 1) {
                 return new Object[]{getResultFromPoints(results[0])[0], LOSE, true};
-            }else{
+            } else {
                 return new Object[]{getResultFromPoints(results[0])[0], getResultFromPoints(results[1])[0], (boolean) getResultFromPoints(results[0])[1] || (boolean) getResultFromPoints(results[1])[1]};
             }
         }

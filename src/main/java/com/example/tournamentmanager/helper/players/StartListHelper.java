@@ -99,7 +99,8 @@ public class StartListHelper {
                         ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
                         if (players.size() == 1) {
                             Player playerFide = players.get(0);
-                            if (playerFide.getTitle() != Title.bk) {
+                            if (playerFide.getTitle() != Title.bk &&
+                                    PZSzachCalculation.getTitleValue(playerFide.getTitle(), playerFide.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
                                 player.setTitle(playerFide.getTitle());
                             }
                             player.setFederation(playerFide.getFederation());
@@ -138,7 +139,10 @@ public class StartListHelper {
                         if (players.size() == 1) {
                             Player playerPl = players.get(0);
                             player.setName(playerPl.getName());
-                            player.setTitle(playerPl.getTitle());
+                            if (playerPl.getTitle() != Title.bk &&
+                                    PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
+                                player.setTitle(playerPl.getTitle());
+                            }
                             player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
                             player.setClub(playerPl.getClub());
                             player.setYearOfBirth(playerPl.getYearOfBirth());

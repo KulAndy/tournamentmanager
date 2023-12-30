@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.example.tournamentmanager.helper.GeneralHelper.info;
+
 public class RoundRobinEngine implements Engine {
     public static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
         PlayerList players = tournament.getPlayers();
@@ -24,12 +26,7 @@ public class RoundRobinEngine implements Engine {
                 for (int j = 0; j < pairs; j++) {
                     Player white = players.get(j);
                     Player black = j == 0 ? lastPlayer : players.get(roundsNo - j);
-                    Game game;
-                    if (reversColors && black != tournament.getPlayers().getBye()) {
-                        game = new Game(black, white);
-                    } else {
-                        game = new Game(white, black);
-                    }
+                    Game game = new Game(white, black);
                     round.add(game);
                     white.addRound(game);
                     if (black != tournament.getPlayers().getBye()) {
@@ -64,12 +61,7 @@ public class RoundRobinEngine implements Engine {
                         }
                     }
 
-                    Game game;
-                    if (reversColors && black != tournament.getPlayers().getBye()) {
-                        game = new Game(black, white);
-                    } else {
-                        game = new Game(white, black);
-                    }
+                    Game game = new Game(white, black);
                     round.add(game);
                     white.addRound(game);
                     if (black != tournament.getPlayers().getBye()) {
@@ -82,11 +74,18 @@ public class RoundRobinEngine implements Engine {
             prevRound = round;
         }
 
-        return paired;
-    }
+        if (reversColors) {
+            for (int i = 0; i < roundsNo; i++) {
+                for (Game game : tournament.getRoundsObs().get(tournament.getRoundsObs().size() - 1 - i)) {
+                    if (game.getWhite() != players.getBye() && game.getBlack() != players.getBye()) {
+                        game.swapPlayers();
+                    }
+                }
 
-    public static boolean checkPairing(Tournament tournament, ArrayList<Integer> pairing) {
-        return false;
+            }
+        }
+
+        return paired;
     }
 
     public static Tournament generateRandomTournament() throws IOException, InterruptedException {
@@ -94,8 +93,6 @@ public class RoundRobinEngine implements Engine {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         int minRounds = 6;
         int maxRounds = 20;
-        int minRating = 6;
-        int maxRating = 20;
         int minNameLength = 5;
         int maxNameLength = 25;
         Random random = new Random();
@@ -104,7 +101,7 @@ public class RoundRobinEngine implements Engine {
         for (int i = 0; i < players; i++) {
             Player player = new Player();
             player.setName("player" + (i + 1));
-            player.setFideRating(random.nextInt(maxRating - minRating + 1) + minRating);
+            player.setFideRating(players - i);
             player.setTitle(titles[random.nextInt(titles.length)]);
             tournament.getPlayersObs().add(player);
         }
@@ -129,5 +126,70 @@ public class RoundRobinEngine implements Engine {
         generatePairing(tournament, false);
 
         return tournament;
+    }
+
+    public static void checkPairing(Tournament tournament, byte round) {
+        StringBuilder builder = new StringBuilder();
+        tournament.getPlayers().rehash();
+        if (round == 0) {
+            for (int i = 0; i < tournament.getRounds().size(); i++) {
+                builder.append(checkRound(tournament, (byte) (i + 1)));
+            }
+        }
+        info(builder.toString());
+    }
+
+    private static String checkRound(Tournament tournament, byte round) {
+        StringBuilder stringBuilder = new StringBuilder("round " + round);
+        PlayerList players = tournament.getPlayers();
+        int lastNo = players.size() % 2 == 0 ? players.size() : players.size() + 1;
+        boolean ok = true;
+        ArrayList<Player> checked = new ArrayList<>();
+        for (Player player : players) {
+            try {
+                Player opponent = player.getOpponent(player.getRound(round - 1));
+                if (!checked.contains(player) || !checked.contains(opponent)) {
+                    Integer playerStartNo = players.getUuid2startNo().get(player.getPlayerid());
+                    if (playerStartNo == null) {
+                        playerStartNo = lastNo;
+                    }
+                    Integer opponentStartNo = players.getUuid2startNo().get(opponent.getPlayerid());
+                    if (opponentStartNo == null) {
+                        opponentStartNo = lastNo;
+                    }
+                    int diff = ((round - 1) % (lastNo - 1)) + 1 - playerStartNo;
+                    int correctOpponent;
+                    if (diff >= 0) {
+                        correctOpponent = diff + 1;
+                    } else {
+                        correctOpponent = diff + lastNo;
+                    }
+                    if (correctOpponent == playerStartNo) {
+                        correctOpponent = lastNo;
+                    }
+                    if (opponentStartNo != correctOpponent) {
+                        stringBuilder.append("\n");
+                        if (ok) {
+                            stringBuilder.append("Checker pairings\tTournament pairings\n");
+                        }
+                        ok = false;
+                        stringBuilder
+                                .append("  %5d - %-5d".formatted(playerStartNo, correctOpponent))
+                                .append("\t")
+                                .append("  %5d - %-5d".formatted(playerStartNo, opponentStartNo));
+                    }
+                }
+                checked.add(player);
+                checked.add(opponent);
+            } catch (Exception e) {
+                System.out.println(round + " " + player.getRounds().size() + " " + player.getRounds());
+            }
+        }
+        if (ok) {
+            stringBuilder.append(" ok");
+        }
+        stringBuilder.append("\n");
+
+        return stringBuilder.toString();
     }
 }

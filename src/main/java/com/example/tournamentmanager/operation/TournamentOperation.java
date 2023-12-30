@@ -99,9 +99,9 @@ public class TournamentOperation {
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria3().setValue(tournament.getPlayers().getComparator().getCriteria3());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria4().setValue(tournament.getPlayers().getComparator().getCriteria4());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria5().setValue(tournament.getPlayers().getComparator().getCriteria5());
-            if (tournament.getRounds().size() > 0){
+            if (tournament.getRounds().size() > 0) {
                 controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(tournament.getRounds().size());
-            }else{
+            } else {
                 controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(null);
             }
         }

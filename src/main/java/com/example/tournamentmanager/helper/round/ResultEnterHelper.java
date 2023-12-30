@@ -105,7 +105,7 @@ public class ResultEnterHelper {
                 getGamesView().setItems(getCurrentRound());
                 currentRoundNo.set(newValue);
                 getGamesView().refresh();
-            }else{
+            } else {
                 getGamesView().setItems(FXCollections.observableArrayList());
                 currentRoundNo.set(0);
                 getGamesView().refresh();
@@ -398,9 +398,9 @@ public class ResultEnterHelper {
                     } else {
                         int pairing = JavafoWrapper.generatePairing(getTournament(), false);
                         getRoundsViewSelect().getSelectionModel().selectLast();
-                        if (pairing == 0){
+                        if (pairing == 0) {
                             error("Couldn't generate pairing");
-                        }else{
+                        } else {
                             info("Paired successfully\nGenerated " + pairing + " pairings");
                         }
                     }

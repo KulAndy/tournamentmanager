@@ -101,13 +101,13 @@ public class ShortcutsHelper {
         if (e.isControlDown() && !e.isShiftDown()) {
             switch (e.getCode()) {
                 case N -> {
-                        try {
-                            save(controller);
-                            loadTournament(new Tournament(), controller);
-                            controller.getTournamentSelect().setValue(null);
-                        } catch (IOException ex) {
-                            error("Couldn't save tournament");
-                        }
+                    try {
+                        save(controller);
+                        loadTournament(new Tournament(), controller);
+                        controller.getTournamentSelect().setValue(null);
+                    } catch (IOException ex) {
+                        error("Couldn't save tournament");
+                    }
                 }
                 case S -> {
                     try {
