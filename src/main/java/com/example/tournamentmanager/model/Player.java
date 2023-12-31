@@ -378,14 +378,18 @@ public class Player implements Serializable {
         String[] reservedNames = {"bye", "haslfbye", "unpaired"};
         for (Game round : getRounds()) {
             Player opponent = getOpponent(round);
+            Float addition;
             if (Arrays.asList(reservedNames).contains(opponent.getName())) {
-                bucholz += (float) (0.5 * (getRounds().size() - getRounds().indexOf(round) - 1));
+                addition = (float) (0.5 * (getRounds().size() - getRounds().indexOf(round) - 1));
             } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
             ) {
-                bucholz += opponent.getPoints();
+                addition = opponent.getPoints();
             } else {
-                bucholz += (float) (opponent.getPZSzachPoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber()));
+                addition = (float) (opponent.getFidePoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber()));
+            }
+            if (!addition.isNaN()){
+                bucholz += addition;
             }
         }
         return bucholz;
@@ -425,7 +429,7 @@ public class Player implements Serializable {
         return blacks;
     }
 
-    public Float getPZSzachPoints() {
+    public Float getFidePoints() {
         float points = 0;
         for (Game game : getFideRounds()) {
             points += getPointInGame(game);
@@ -441,9 +445,9 @@ public class Player implements Serializable {
         }
     }
 
-    public Float getFidePoints() {
+    public Float getPZSzachPoints() {
         float points = 0;
-        for (Game game : getFideRounds()) {
+        for (Game game : getPZSzachRounds()) {
             points += getPointInGame(game);
         }
         return points;
@@ -452,8 +456,9 @@ public class Player implements Serializable {
     public Float getPoints() {
         float points = 0f;
         for (Game round : getRounds()) {
-            if (!Float.isNaN(getRoundPoints(round))) {
-                points += getRoundPoints(round);
+            float roundPoints = getRoundPoints(round);
+            if (!Float.isNaN(roundPoints)) {
+                points += roundPoints;
             }
         }
         return points;
@@ -480,6 +485,20 @@ public class Player implements Serializable {
             if (!round.isForfeit()) {
                 Player opponent = getOpponent(round);
                 if (opponent.getFideRating() != null && opponent.getFideRating() > 1000) {
+                    fideRounds.add(round);
+                }
+            }
+        }
+        return fideRounds;
+    }
+
+    public ArrayList<Game> getPZSzachRounds() {
+        ArrayList<Game> rounds = getRounds();
+        ArrayList<Game> fideRounds = new ArrayList<>();
+        for (Game round : rounds) {
+            if (!round.isForfeit()) {
+                Player opponent = getOpponent(round);
+                if (opponent.getLocalRating() != null && opponent.getLocalRating() > 1000) {
                     fideRounds.add(round);
                 }
             }
