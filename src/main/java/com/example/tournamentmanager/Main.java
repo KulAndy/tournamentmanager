@@ -41,15 +41,7 @@ public class Main extends Application {
         return programName;
     }
 
-    public void setProgramName(String programName) {
-        this.programName = programName;
-    }
-
     public String getProgramExtension() {
         return programExtension;
-    }
-
-    public void setProgramExtension(String programExtension) {
-        this.programExtension = programExtension;
     }
 }

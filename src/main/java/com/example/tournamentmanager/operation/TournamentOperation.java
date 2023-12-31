@@ -107,7 +107,7 @@ public class TournamentOperation {
         }
     }
 
-    public static void saveAs(MainController controller) throws IOException {
+    public static void saveAs(MainController controller)  {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create New File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
@@ -124,7 +124,7 @@ public class TournamentOperation {
         }
     }
 
-    public static void save(MainController controller) throws IOException {
+    public static void save(MainController controller) {
         File file = controller.getFile();
         if (file == null) {
             saveAs(controller);

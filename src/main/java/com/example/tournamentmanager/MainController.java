@@ -656,11 +656,7 @@ public class MainController implements Initializable {
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(5), event -> {
             if (getAutosaveMenu().isSelected() && !isSaving()) {
                 setSaving(true);
-                try {
-                    save(this);
-                } catch (IOException e) {
-                    error("Couldn't save tournament");
-                }
+                save(this);
                 setSaving(false);
             }
         });
@@ -681,46 +677,28 @@ public class MainController implements Initializable {
 
     public void setupEvents() {
         getNewMenu().setOnAction(e -> {
-            try {
                 save(this);
+                setTournament(new Tournament());
                 loadTournament(new Tournament(), this);
                 tournamentSelect.setValue(null);
                 setFile(null);
-            } catch (IOException ex) {
-                error("Couldn't save tournament");
-            }
         });
         getQuitMenu().setOnAction(e -> quit());
         getSaveAsMenu().setOnAction(e -> {
-            try {
                 saveAs(this);
-            } catch (IOException ex) {
-                error("Couldn't save tournament");
-            }
         });
         getSaveMenu().setOnAction(e -> {
-            try {
                 save(this);
-            } catch (IOException ex) {
-                error("Couldn't save tournament");
-            }
         });
         getNewButton().setOnAction(e -> {
-            try {
                 save(this);
+                setTournament(new Tournament());
                 loadTournament(new Tournament(), this);
                 tournamentSelect.setValue(null);
                 setFile(null);
-            } catch (IOException ex) {
-                error("Couldn't save tournament");
-            }
         });
         getSaveButton().setOnAction(e -> {
-            try {
                 save(this);
-            } catch (IOException ex) {
-                error("Couldn't save tournament");
-            }
         });
         getOpenMenu().setOnAction(e -> open(this));
         getOpenButton().setOnAction(e -> open(this));
@@ -836,16 +814,8 @@ public class MainController implements Initializable {
             files.remove(getFile());
         });
         tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
-            if (newValue != null) {
-                System.out.println(newValue.getAbsolutePath());
-            }
-            try {
-                if (newValue != oldValue && newValue != getFile()) {
-                    save(this);
-                }
-            } catch (IOException ex) {
-                error("An error eccured");
-                return;
+            if (newValue != oldValue && newValue != getFile() && newValue != null) {
+                save(this);
             }
             if (newValue == null) {
                 TournamentOperation.loadTournament(new Tournament(), this);
