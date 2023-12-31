@@ -16,11 +16,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -78,6 +86,8 @@ public class MainController implements Initializable {
     private MenuItem downloadFideMenu;
     @FXML
     private MenuItem trfRaport;
+    @FXML
+    private MenuItem about;
 
     @FXML
     private Button newButton;
@@ -706,6 +716,19 @@ public class MainController implements Initializable {
         getPrintButton().setOnAction(e -> shortcutsHelper.print());
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
+        about.setOnAction(e-> {
+            try {
+                Desktop.getDesktop().open(new File(this.getClass().getResource("man.pdf").toURI()));
+            } catch (Exception ex) {
+                error("Could open manual");
+                try {
+                    URI uri = new URI("https://github.com/KulAndy/tournamentmanager");
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException | URISyntaxException ex2) {
+                    error("Could open project page");
+                }
+            }
+        });
         exportPgnMenu.setOnAction(e ->
                 GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
                         .thenAccept(choice -> {

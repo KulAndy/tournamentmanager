@@ -44,7 +44,7 @@ public class Game implements Serializable {
         }
 
         if (getWhiteResult() == null) {
-            return Float.NaN;
+            return 0F;
         }
         switch (getWhiteResult()) {
             case WIN -> {
@@ -64,7 +64,7 @@ public class Game implements Serializable {
 
     public Float getPointsForBlack() {
         if (getBlackResult() == null) {
-            return Float.NaN;
+            return 0F;
         }
         switch (getBlackResult()) {
             case WIN -> {

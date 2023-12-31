@@ -1,4 +1,88 @@
-# tournamentmanager
+# Tournament manager
+
+Tournament manager for free use written in Java.
+
+Features:
+
+- [X] adding players
+- [X] removing players
+- [X] Swiss system using JavaFO
+- [X] saving round results
+- [X] displaying the current round
+- [X] results
+- [X] tiebreakers
+- [X] number of rounds
+- [X] manual pairing
+- [X] displaying all rounds
+- [X] round-robin
+- [X] Elo rating increment
+- [X] obtained PL ranking
+- [X] half-bye
+- [X] removing players from a round
+- [X] removing players from the tournament
+- [X] setting tournament descriptive data
+- [X] FIDE tournament registration (registration form)
+- [X] FIDE report (TRF)
+- [ ] FIDE titles
+- [ ] prints
+- [X] assigning starting numbers
+- [X] checking a player in CR (ChessResults)
+- [ ] custom engine
+- [X] filtered results
+- [ ] team tournaments
+- [X] schedule
+- [X] opening/importing a tournament
+- [X] obtained FIDE ranking
+- [X] multiple groups
+- [ ] diploma generator
+- [ ] transmission
+- [ ] form for FA norm (FIDE Arbiter)
+- [ ] title certificate
+- [X] importing TRF
+- [X] importing PGN
+- [X] importing SWSX
+
+Shortcuts:
+
+- CTRL + Q - close the program
+- CTRL + S - save
+- CTRL + SHIFT + S - save as
+- CTRL + O - open
+- z, x, c - "1-0", "0.5-0.5", "0-1" when entering results
+
+# Running
+
+## 1. Using IntelliJ IDEA
+
+- Install [IntelliJ IDEA](https://www.jetbrains.com/idea/download/?section=windows)
+- Download and unzip this [project](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
+- Launch IntelliJ IDEA
+- File > Open and select the unzipped project folder
+- In File > Project Structure > Project, set the SDK to at least version 20 (otherwise, click the dropdown menu > Add SDK)
+- Run > Run 'Main' or right-click on Main > Run 'Main'
+
+## 2. Java and Maven
+
+- Install the latest [Java](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 20
+- Download and unzip this [project](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
+- Go to the unzipped directory
+- For Windows:
+    - Right-click > open in terminal / open in PowerShell
+    - To run, type the command .\mvnw.cmd javafx:run (dependencies will be installed on the first run)
+- For Linux/MacOS:
+    - Navigate to the directory in the terminal (depending on the graphical environment, this might be possible via the file explorer)
+    - To run, type the command ./mvnw javafx:run (executable permissions may need to be added, e.g., chmod +x ./mvnw; dependencies will be installed on the first run)
+
+In case of issues:
+
+- For Windows:
+    - Run the command .\mvnw.cmd dependency:resolve
+- For Linux/MacOS:
+    - Enter the command ./mvnw dependency:resolve
+- For both:
+    - Install [Maven](https://maven.apache.org/download.cgi) following the instructions provided.
+
+# Tournament manager
 
 Menedżer turniejowy do wolnego użytku napisany w javie
 
