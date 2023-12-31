@@ -22,6 +22,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -756,6 +757,12 @@ public class MainController implements Initializable {
                     getTourSystem().setValue(Tournament.TournamentSystem.ROUND_ROBIN);
                 }
                 getTourNoRounds().setText(String.valueOf(getTournament().getRounds().size()));
+                ArrayList<Integer> rounds = new ArrayList<>();
+                for (int i = 1; i <= getTournament().getRoundsObs().size() + 1 && i <= getTournament().getRoundsNumber(); i++) {
+                    rounds.add(i);
+                }
+                getRoundsHelper().getManualPairingHelper().setRoundsNumbersObs(FXCollections.observableArrayList(rounds));
+                getRoundsHelper().getManualPairingHelper().getRoundUpdateSelect().setItems(getRoundsHelper().getManualPairingHelper().getRoundsNumbersObs());
             } catch (IOException | InterruptedException ex) {
                 error("Couldn't generate random tournament");
             }

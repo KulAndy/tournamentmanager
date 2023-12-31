@@ -92,7 +92,7 @@ public class ManualPairingHelper {
                 }
             }
         });
-        getRoundUpdateSelect().setItems(roundsNumbersObs);
+        getRoundUpdateSelect().setItems(getRoundsNumbersObs());
         getRoundUpdateSelect().valueProperty().addListener((ObservableValue<? extends Integer> observable, Integer oldValue, Integer newValue) -> {
             try {
                 setManualRound(FXCollections.observableArrayList(getTournament().getRoundsObs().get(newValue - 1)));
@@ -121,8 +121,8 @@ public class ManualPairingHelper {
             for (int i = 1; i <= getTournament().getRoundsObs().size() + 1 && i <= getTournament().getRoundsNumber(); i++) {
                 rounds.add(i);
             }
-            roundsNumbersObs = FXCollections.observableArrayList(rounds);
-            getRoundUpdateSelect().setItems(roundsNumbersObs);
+            setRoundsNumbersObs(FXCollections.observableArrayList(rounds));
+            getRoundUpdateSelect().setItems(getRoundsNumbersObs());
         });
 
 
@@ -278,6 +278,12 @@ public class ManualPairingHelper {
     }
 
 
+    public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {
+        this.roundsNumbersObs = roundsNumbersObs;
+    }
+    public ObservableList<Integer> getRoundsNumbersObs() {
+        return roundsNumbersObs;
+    }
     public Tournament getTournament() {
         return tournament;
     }
