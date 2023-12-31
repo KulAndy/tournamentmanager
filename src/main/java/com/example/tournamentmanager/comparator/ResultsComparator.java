@@ -110,7 +110,7 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
             case GAMES_WITH_BLACK -> {
                 return Integer.compare(player1.getGamesPlayedWithBlack(), player2.getGamesPlayedWithBlack());
             }
-            case WONS_WITH_BLACK -> {
+            case WINS_WITH_BLACK -> {
                 return Integer.compare(player1.getWonsWithBlackNumber(), player2.getWonsWithBlackNumber());
             }
             case BUCHOLZ -> {
@@ -136,6 +136,9 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
             }
             case AVERAGE_OPPONENTS_LOCAL_RATING -> {
                 return Integer.compare(player1.getAverageRatingPZSzach(), player2.getAverageRatingPZSzach());
+            }
+            case RATING_PERFORMENCE_FIDE -> {
+                return Float.compare(player1.getRatingPerformanceFide(), player2.getRatingPerformanceFide());
             }
         }
         return 0;

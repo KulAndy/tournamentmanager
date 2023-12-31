@@ -207,7 +207,7 @@ public class Player implements Serializable {
             case SONNEN_BERGER -> {
                 return getBerger();
             }
-            case WONS_WITH_BLACK -> {
+            case WINS_WITH_BLACK -> {
                 return getWonsWithBlackNumber();
             }
             case GAMES_WITH_BLACK -> {

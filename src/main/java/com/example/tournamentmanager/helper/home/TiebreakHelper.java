@@ -15,7 +15,6 @@ import static com.example.tournamentmanager.helper.GeneralHelper.*;
 public class TiebreakHelper {
     private Tournament tournament;
     private CheckBox tourFIDEMode;
-    private GridPane tiebreakPane;
     private ComboBox<Tournament.Tiebreak.TbMethod> tourTB1;
     private ComboBox<Tournament.Tiebreak.TbMethod> tourTB2;
     private ComboBox<Tournament.Tiebreak.TbMethod> tourTB3;
@@ -38,7 +37,6 @@ public class TiebreakHelper {
             TextField pointsBye, TextField pointsHalfBye) {
         setTournament(tournament);
         setTourFIDEMode(tourFIDEMode);
-        setTiebreakPane(tiebreakPane);
         setTourTB1(tourTB1);
         setTourTB2(tourTB2);
         setTourTB3(tourTB3);
@@ -85,15 +83,15 @@ public class TiebreakHelper {
         getTourFIDEMode().selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue != null) {
                 if (newValue) {
-                    getTiebreakPane().setDisable(true);
-                    getPointsPane().setDisable(true);
                     setupFIDEMode();
+                    getPointsPane().setDisable(true);
                 } else {
-                    getTiebreakPane().setDisable(false);
                     getPointsPane().setDisable(false);
                 }
             }
         });
+
+        getTourFIDEMode().setSelected(true);
     }
 
     public void bindPointField(TextField tf, Object obj, String tbAttr, String plAttr) {
@@ -146,14 +144,6 @@ public class TiebreakHelper {
         getPointsLose().setText("0");
         getPointsForfeitWin().setText("1");
         getPointsForfeitLose().setText("0");
-    }
-
-    public GridPane getTiebreakPane() {
-        return tiebreakPane;
-    }
-
-    public void setTiebreakPane(GridPane tiebreakPane) {
-        this.tiebreakPane = tiebreakPane;
     }
 
     public GridPane getPointsPane() {

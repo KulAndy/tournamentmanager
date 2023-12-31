@@ -1277,7 +1277,7 @@ public class Tournament implements Serializable {
             DUEL,
             WINS,
             GAMES_WITH_BLACK,
-            WONS_WITH_BLACK,
+            WINS_WITH_BLACK,
             RATING_PERFORMENCE_FIDE,
             RATING_PERFORMENCE_PZSZACH,
             AVERAGE_OPPONENTS_RATING,
@@ -1340,7 +1340,7 @@ public class Tournament implements Serializable {
                     case GAMES_WITH_BLACK -> {
                         return "Black";
                     }
-                    case WONS_WITH_BLACK -> {
+                    case WINS_WITH_BLACK -> {
                         return "Black wins";
                     }
                     case BUCHOLZ -> {
