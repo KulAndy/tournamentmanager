@@ -49,7 +49,7 @@ public class TrfTournament {
                         try {
                             setFederation(Federation.valueOf(line.substring(3).trim()));
                         } catch (IllegalArgumentException e) {
-                            setFederation(Federation.FID);
+                            setFederation(Federation.FIDE);
                         }
                     }
                     case "042" -> {
@@ -113,7 +113,7 @@ public class TrfTournament {
                         try {
                             playerFederation = Federation.valueOf(line.substring(53, 56));
                         } catch (IllegalArgumentException e) {
-                            playerFederation = Federation.FID;
+                            playerFederation = Federation.FIDE;
                         }
                         int playerFideId;
                         try {

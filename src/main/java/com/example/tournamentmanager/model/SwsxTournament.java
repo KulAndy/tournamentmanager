@@ -735,7 +735,7 @@ public class SwsxTournament {
             try {
                 setFederation(Federation.valueOf(fedNode.getAttribute("value")));
             } catch (IllegalArgumentException e) {
-                setFederation(Federation.FID);
+                setFederation(Federation.FIDE);
             }
             setChiefArbiter(new Arbiter(chiefNode.getAttribute("value")));
             setRateOfPlay(rateNode.getAttribute("value"));
@@ -886,7 +886,7 @@ public class SwsxTournament {
             try {
                 setFederation(Federation.valueOf(fed));
             } catch (IllegalArgumentException e) {
-                setFederation(Federation.FID);
+                setFederation(Federation.FIDE);
             }
             setLicense(licence);
             setClub(club);

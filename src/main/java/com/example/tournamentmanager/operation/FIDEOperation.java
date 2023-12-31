@@ -198,8 +198,13 @@ public class FIDEOperation {
                 Integer rating = resultSet.getInt("rating");
                 int k = resultSet.getInt("k");
                 int birthday = resultSet.getInt("birthday");
+                Federation fed = Federation.FIDE;
+                try{
+                    fed = Federation.valueOf(country);
+                } catch (IllegalArgumentException ignored) {}
+
                 players.add(new Player(
-                        Federation.valueOf(country), null, name, Title.getTitle(title),
+                        fed, null, name, Title.getTitle(title),
                         1000, rating, null, birthday + "-00-00", Objects.equals(sex, "M") ? Player.Sex.MALE : Player.Sex.FEMALE,
                         null, null, null, null, fideid, null
 
@@ -297,7 +302,7 @@ public class FIDEOperation {
                         try {
                             fed = Federation.valueOf(country);
                         } catch (IllegalArgumentException e) {
-                            fed = Federation.FID;
+                            fed = Federation.FIDE;
                         }
                         players.add(new Player(
                                 fed, null, name, Title.getTitle(title),

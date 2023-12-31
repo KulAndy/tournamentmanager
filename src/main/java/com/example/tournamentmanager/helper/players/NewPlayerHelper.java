@@ -204,7 +204,14 @@ public class NewPlayerHelper {
                             ObservableList<Player> options = FXCollections.observableArrayList(players);
                             options.sort(Comparator.comparing(player -> player.getName().replaceAll("[\\s,]", ""), String.CASE_INSENSITIVE_ORDER));
                             newPlayerHint.setItems(options);
-                        }));
+                        }))
+                        .exceptionallyAsync(ex -> {
+                            Platform.runLater(() -> {
+                                ex.printStackTrace();
+                                System.out.println(ex.getMessage());
+                            });
+                            return null;
+                        });
             } catch (Exception ignored) {
             }
         });
@@ -212,7 +219,7 @@ public class NewPlayerHelper {
         getInsertFromList().setOnAction(e -> {
             if (newPlayerHint.getSelectionModel().getSelectedItem() != null) {
                 Player selected = newPlayerHint.getSelectionModel().getSelectedItem();
-                Federation federation = (selected.getFederation() == null) ? Federation.FID : selected.getFederation();
+                Federation federation = (selected.getFederation() == null) ? Federation.FIDE : selected.getFederation();
                 String name = selected.getName();
                 String fideid = String.valueOf(selected.getFideId());
                 Title title = (selected.getTitle() == null) ? Title.bk : selected.getTitle();
