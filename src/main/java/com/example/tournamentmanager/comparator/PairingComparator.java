@@ -21,11 +21,11 @@ public class PairingComparator implements Comparator<Game>, Serializable {
     }
 
     @Override
-    public int compare(Game o1, Game o2) {
-        Player white1 = o1.getWhite();
-        Player white2 = o2.getWhite();
-        Player black1 = o1.getBlack();
-        Player black2 = o2.getBlack();
+    public int compare(Game game1, Game game2) {
+        Player white1 = game1.getWhite();
+        Player white2 = game2.getWhite();
+        Player black1 = game1.getBlack();
+        Player black2 = game2.getBlack();
 
         if (white1 == null || black1 == null) {
             return -1;
@@ -64,44 +64,36 @@ public class PairingComparator implements Comparator<Game>, Serializable {
         } else if (Objects.equals(black2.getName(), "unpaired") && !(Objects.equals(black1.getName(), "unpaired"))) {
             return -1;
         } else {
-            int roundNo = Integer.min(white1.getRounds().indexOf(o1), white2.getRounds().indexOf(o2));
-            float maxResult1 = Float.max(
-                    white1.getPointInRound(roundNo),
-                    black1.getPointInRound(roundNo)
-            );
-            float maxResult2 = Float.max(
-                    white2.getPointInRound(roundNo),
-                    black2.getPointInRound(roundNo)
-            );
-            if (maxResult1 != maxResult2) {
-                return -Float.compare(maxResult1, maxResult2);
-            } else {
-                float sumResult1 = white1.getPointInRound(roundNo) + black1.getPointInRound(roundNo);
-                float sumResult2 = white2.getPointInRound(roundNo) + black2.getPointInRound(roundNo);
-                if (sumResult1 != sumResult2) {
-                    return -Float.compare(sumResult1, sumResult2);
-                } else {
-                    int minStr1 = Integer.min(
-                            playersObs.contains(white1) ? playersObs.indexOf(white1) : Integer.MAX_VALUE,
-                            playersObs.contains(black1) ? playersObs.indexOf(black1) : Integer.MAX_VALUE
-                    );
-                    int minStr2 = Integer.min(
-                            playersObs.contains(white2) ? playersObs.indexOf(white2) : Integer.MAX_VALUE,
-                            playersObs.contains(black2) ? playersObs.indexOf(black2) : Integer.MAX_VALUE
-                    );
-                    if (minStr1 != minStr2) {
-                        return Integer.compare(minStr1, minStr2);
-                    } else {
-                        int higherPlayer1 = black1.getFideRating() > white1.getFideRating() ? playersObs.indexOf(black1) : playersObs.indexOf(white1);
-                        int higherPlayer2 = black2.getFideRating() > white2.getFideRating() ? playersObs.indexOf(black2) : playersObs.indexOf(white2);
-
-
-                        return Integer.compare(higherPlayer1, higherPlayer2);
-                    }
-                }
-
-            }
+            return compareByPointsAndRating(game1, game2);
         }
+    }
+
+    private int compareByPointsAndRating(Game game1, Game game2) {
+        Player white1 = game1.getWhite();
+        Player black1 = game1.getBlack();
+        Player white2 = game2.getWhite();
+        Player black3 = game2.getBlack();
+        int roundNo1 = Integer.min(white1.getRounds().indexOf(game1), black1.getRounds().indexOf(game1));
+        int roundNo2 = Integer.min(white2.getRounds().indexOf(game2), white2.getRounds().indexOf(game2));
+
+        float maxPoints1 = Math.max(white1.getPointInRound(roundNo1), black1.getPointInRound(roundNo1));
+        float maxPoints2 = Math.max(white2.getPointInRound(roundNo2), black3.getPointInRound(roundNo2));
+
+        if (maxPoints1 != maxPoints2) {
+            return Float.compare(maxPoints2, maxPoints1);
+        }
+
+        float sumPoints1 = white1.getPointInRound(roundNo1) + black1.getPointInRound(roundNo1);
+        float sumPoints2 = white2.getPointInRound(roundNo2) + black3.getPointInRound(roundNo2);
+
+        if (sumPoints1 != sumPoints2) {
+            return Float.compare(sumPoints2, sumPoints1);
+        }
+
+        int maxRating1 = Math.max(white1.getFideRating(), black1.getFideRating());
+        int maxRating2 = Math.max(white2.getFideRating(), black3.getFideRating());
+
+        return Integer.compare(maxRating2, maxRating1);
     }
 
     public ObservableList<Player> getPlayersObs() {

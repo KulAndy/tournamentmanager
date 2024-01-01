@@ -94,6 +94,7 @@ public class TournamentOperation {
             controller.getTournament().getScheduleElementsObs().set(0, tournament.getSchedule().getBriefing());
             controller.getTournament().getSchedule().setBriefing(tournament.getSchedule().getBriefing());
             controller.getTournament().getSchedule().setClosing(tournament.getSchedule().getClosing());
+            controller.getTournament().setRoundsNumber(tournament.getRoundsNumber());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria1().setValue(tournament.getPlayers().getComparator().getCriteria1());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria2().setValue(tournament.getPlayers().getComparator().getCriteria2());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria3().setValue(tournament.getPlayers().getComparator().getCriteria3());

@@ -284,13 +284,15 @@ public class Tournament implements Serializable {
                         blackResult = Result.WIN;
                         forfeit = true;
                         if (round.getStatus() == 0) {
-                            getWithdrawsObs().add(
-                                    new Withdraw(
-                                            white,
-                                            Withdraw.WithdrawType.TOURNAMENT,
-                                            null
-                                    )
-                            );
+                            if (!isTournamentWithdrew(white)){
+                                getWithdrawsObs().add(
+                                        new Withdraw(
+                                                white,
+                                                Withdraw.WithdrawType.TOURNAMENT,
+                                                null
+                                        )
+                                );
+                            }
                         } else {
                             getWithdrawsObs().add(
                                     new Withdraw(
@@ -774,6 +776,15 @@ public class Tournament implements Serializable {
 
         setPairingComparator(new PairingComparator(getPlayersObs()));
         setResultsComparator(new ResultsComparator(getTiebreak()));
+    }
+
+    public boolean isTournamentWithdrew(Player player){
+        for (Withdraw withdraw: getWithdraws()){
+            if (withdraw.getPlayer() == player){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

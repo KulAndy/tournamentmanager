@@ -79,13 +79,15 @@ public class WithdrawHelper {
                 roundNo = null;
             }
             if (player != null) {
-                getTournament().getWithdrawsObs().add(
-                        new Withdraw(
-                                player,
-                                getWithdrawTypeSelect().getValue(),
-                                roundNo
-                        )
-                );
+                if (getWithdrawTypeSelect().getValue() != Withdraw.WithdrawType.TOURNAMENT || !getTournament().isTournamentWithdrew(player)){
+                    getTournament().getWithdrawsObs().add(
+                            new Withdraw(
+                                    player,
+                                    getWithdrawTypeSelect().getValue(),
+                                    roundNo
+                            )
+                    );
+                }
             }
         });
 
