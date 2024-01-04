@@ -11,7 +11,12 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -108,7 +113,7 @@ public class TournamentOperation {
         }
     }
 
-    public static void saveAs(MainController controller)  {
+    public static void saveAs(MainController controller) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create New File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
@@ -159,20 +164,90 @@ public class TournamentOperation {
                 .create();
 
         String json = gson.toJson(tournament);
-        String fileName = "tournament.json";
-        String fileContent = json;
+        String tournamentFileName = "tournament.json";
+        String settingsFileName = "settings.toml";
+        String tournamentFileContent = json;
+
+        Path tempDir = Files.createTempDirectory("tempZip");
+
+        boolean tournamentFileExists = false;
+
+        if (file.exists()) {
+            try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(file))) {
+                ZipEntry entry;
+                while ((entry = zipIn.getNextEntry()) != null) {
+                    Path filePath = tempDir.resolve(entry.getName());
+
+                    if (entry.isDirectory()) {
+                        Files.createDirectories(filePath);
+                    } else {
+                        Files.copy(zipIn, filePath, StandardCopyOption.REPLACE_EXISTING);
+                    }
+
+                    if (entry.getName().equals(tournamentFileName)) {
+                        tournamentFileExists = true;
+                    }
+
+                    zipIn.closeEntry();
+                }
+            }
+        }
+
+        Path tournamentFilePath = tempDir.resolve(tournamentFileName);
+        Files.write(tournamentFilePath, tournamentFileContent.getBytes());
+
+        if (tournamentFileExists) {
+            Files.copy(tournamentFilePath, tempDir.resolve(tournamentFileName), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        Path settingsFilePath = tempDir.resolve(settingsFileName);
+        boolean settingsFileExists = Files.exists(settingsFilePath);
+
+        if (!settingsFileExists) {
+            String settingsTemplateContent = "";
+            try {
+                Path settingsTemplatePath = Paths.get("settings.toml");
+                settingsTemplateContent = Files.readString(settingsTemplatePath);
+            } catch (IOException e) {
+                String url = "https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml";
+                try (InputStream inputStream = new URL(url).openStream()) {
+                    Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
+                    settingsTemplateContent = scanner.hasNext() ? scanner.next() : "";
+                } catch (IOException ignored) {}
+                try (BufferedWriter ou = new BufferedWriter(new FileWriter("settings.toml"))
+                ) {
+                    ou.write(settingsTemplateContent);
+                }
+
+            } finally {
+                Files.write(settingsFilePath, settingsTemplateContent.getBytes());
+            }
+        }
 
         try (FileOutputStream fos = new FileOutputStream(file);
              ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-
-            ZipEntry zipEntry = new ZipEntry(fileName);
-            zipOut.putNextEntry(zipEntry);
-
-            byte[] contentBytes = fileContent.getBytes();
-            zipOut.write(contentBytes, 0, contentBytes.length);
-            zipOut.closeEntry();
-        } catch (IOException e) {
-            e.printStackTrace();
+            Files.walk(tempDir)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(tempDir.relativize(path).toString());
+                        try {
+                            zipOut.putNextEntry(zipEntry);
+                            Files.copy(path, zipOut);
+                            zipOut.closeEntry();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        } finally {
+            Files.walk(tempDir)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
         }
     }
 

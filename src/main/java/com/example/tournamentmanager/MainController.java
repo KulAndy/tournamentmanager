@@ -7,6 +7,9 @@ import com.example.tournamentmanager.operation.ExcelOperation;
 import com.example.tournamentmanager.operation.FIDEOperation;
 import com.example.tournamentmanager.operation.FileOperation;
 import com.example.tournamentmanager.operation.TournamentOperation;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.moandjiezana.toml.Toml;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
@@ -15,26 +18,40 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.HttpClients;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
 import static com.example.tournamentmanager.helper.GeneralHelper.*;
+import static com.example.tournamentmanager.operation.FileOperation.updateTomlInZip;
 import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
 public class MainController implements Initializable {
@@ -86,6 +103,8 @@ public class MainController implements Initializable {
     private MenuItem downloadFideMenu;
     @FXML
     private MenuItem trfRaport;
+    @FXML
+    private MenuItem upload;
     @FXML
     private MenuItem about;
 
@@ -688,35 +707,35 @@ public class MainController implements Initializable {
 
     public void setupEvents() {
         getNewMenu().setOnAction(e -> {
-                save(this);
-                setTournament(new Tournament());
-                loadTournament(new Tournament(), this);
-                tournamentSelect.setValue(null);
-                setFile(null);
+            save(this);
+            setTournament(new Tournament());
+            loadTournament(new Tournament(), this);
+            tournamentSelect.setValue(null);
+            setFile(null);
         });
         getQuitMenu().setOnAction(e -> quit());
         getSaveAsMenu().setOnAction(e -> {
-                saveAs(this);
+            saveAs(this);
         });
         getSaveMenu().setOnAction(e -> {
-                save(this);
+            save(this);
         });
         getNewButton().setOnAction(e -> {
-                save(this);
-                setTournament(new Tournament());
-                loadTournament(new Tournament(), this);
-                tournamentSelect.setValue(null);
-                setFile(null);
+            save(this);
+            setTournament(new Tournament());
+            loadTournament(new Tournament(), this);
+            tournamentSelect.setValue(null);
+            setFile(null);
         });
         getSaveButton().setOnAction(e -> {
-                save(this);
+            save(this);
         });
         getOpenMenu().setOnAction(e -> open(this));
         getOpenButton().setOnAction(e -> open(this));
         getPrintButton().setOnAction(e -> shortcutsHelper.print());
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
-        about.setOnAction(e-> {
+        about.setOnAction(e -> {
             try {
                 Desktop.getDesktop().open(new File(this.getClass().getResource("man.pdf").toURI()));
             } catch (Exception ex) {
@@ -726,6 +745,81 @@ public class MainController implements Initializable {
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException | URISyntaxException ex2) {
                     error("Could open project page");
+                }
+            }
+        });
+        upload.setOnAction(e -> {
+            Toml toml;
+            String serverUrl;
+
+            try {
+                toml = new Toml().read(new File("settings.toml"));
+                serverUrl = toml.getTable("remote").getString("api");
+            } catch (Exception ex) {
+                try {
+                    URL defaultTomlURL = new URL("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                    byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
+                    String defaultTomlContent = new String(defaultTomlBytes);
+
+                    toml = new Toml().read(defaultTomlContent);
+                    serverUrl = toml.getTable("remote").getString("api");
+                } catch (IOException | URISyntaxException ex1) {
+                    error("Couldn't read server location");
+                    return;
+                }
+            }
+
+            if (file == null) {
+                error("Can not upload unsaved tournament");
+            } else {
+                if (file.exists()) {
+                    HttpClient httpClient = HttpClients.createDefault();
+                    HttpPost httpPost = new HttpPost("http://" + serverUrl + "/upload");
+
+                    try {
+                        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                        builder.addPart("zipFile", new FileBody(file, ContentType.DEFAULT_BINARY, file.getName()));
+
+                        HttpEntity multipart = builder.build();
+                        httpPost.setEntity(multipart);
+
+                        HttpResponse response = httpClient.execute(httpPost);
+                        int statusCode = response.getStatusLine().getStatusCode();
+
+                        if (statusCode >= 200 && statusCode < 300) {
+                            HttpEntity entity = response.getEntity();
+                            if (entity != null) {
+                                try (InputStream inputStream = entity.getContent();
+                                     InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+
+                                    StringBuilder result = new StringBuilder();
+                                    char[] buffer = new char[1024];
+                                    int length;
+                                    while ((length = reader.read(buffer)) != -1) {
+                                        result.append(buffer, 0, length);
+                                    }
+
+                                    JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
+                                    String insertedId = jsonObject.get("insertedId").getAsString();
+
+                                    updateTomlInZip(file, "remote", "tournamentId", insertedId);
+                                }
+                                info("Sucessfully upload tournament");
+                            } else {
+                                error("Error  - no tournament ID returned");
+                            }
+                        } else if (statusCode >= 400 && statusCode < 500) {
+                            error("Corrupted file - couldn't save on server");
+                        } else if (statusCode >= 500 && statusCode < 600) {
+                            error("Internal server error");
+                        } else {
+                            warning("Unknown status code: " + statusCode);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    error("File not found");
                 }
             }
         });
@@ -944,7 +1038,9 @@ public class MainController implements Initializable {
     public void setFile(File file) {
         this.file = file;
         if (!files.contains(file)) {
-            files.add(file);
+            if (file != null) {
+                files.add(file);
+            }
             tournamentSelect.setValue(file);
         }
     }

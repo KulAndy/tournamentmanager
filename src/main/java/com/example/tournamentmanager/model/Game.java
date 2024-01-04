@@ -1,13 +1,14 @@
 package com.example.tournamentmanager.model;
 
+import org.bson.types.ObjectId;
+
 import java.io.Serializable;
-import java.util.UUID;
 
 public class Game implements Serializable {
     transient private Player white;
     transient private Player black;
-    private UUID whiteUUDI;
-    private UUID blackUUID;
+    private ObjectId whiteUUDI;
+    private ObjectId blackUUID;
     private String whiteName;
     private String blackName;
     private Result whiteResult;
@@ -139,19 +140,19 @@ public class Game implements Serializable {
         this.blackName = blackName;
     }
 
-    public UUID getWhiteUUDI() {
+    public ObjectId getWhiteUUDI() {
         return whiteUUDI;
     }
 
-    public void setWhiteUUDI(UUID whiteUUDI) {
+    public void setWhiteUUDI(ObjectId whiteUUDI) {
         this.whiteUUDI = whiteUUDI;
     }
 
-    public UUID getBlackUUID() {
+    public ObjectId getBlackUUID() {
         return blackUUID;
     }
 
-    public void setBlackUUID(UUID blackUUID) {
+    public void setBlackUUID(ObjectId blackUUID) {
         this.blackUUID = blackUUID;
     }
 

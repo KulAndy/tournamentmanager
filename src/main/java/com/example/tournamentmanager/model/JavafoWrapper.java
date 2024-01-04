@@ -110,7 +110,7 @@ public class JavafoWrapper implements Engine {
         File reportFile = new File(reportFilePath);
         outputFile.delete();
         reportFile.delete();
-        saveTrfReport(trfReport(tournament), reportFile);
+        saveTrfReport(trfReport(tournament).replaceAll("(?m)^XXZ.*$", ""), reportFile);
         List<String> command = new ArrayList<>();
         command.add(javaPath);
         command.add("-jar");

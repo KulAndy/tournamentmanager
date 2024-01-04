@@ -9,12 +9,12 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -134,7 +134,7 @@ public class Tournament implements Serializable {
         ArrayList<SwsxTournament.SwsxPlayer> swsxPlayers = swsxTournament.getPlayers();
         ArrayList<ArrayList<Game>> rounds = new ArrayList<>();
         PlayerList players = new PlayerList();
-        ArrayList<ArrayList<UUID>> roundIds = new ArrayList<>();
+        ArrayList<ArrayList<ObjectId>> roundIds = new ArrayList<>();
         getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
@@ -189,8 +189,12 @@ public class Tournament implements Serializable {
                     Player black;
                     Result whiteResult = null;
                     Result blackResult = null;
-                    long longNumber = ((int) round.getOpponentId()) & 0xFFFFFFFFL;
-                    UUID opponentId = new UUID(0, longNumber);
+                    String hexString = Integer.toHexString(round.getOpponentId());
+
+                    while (hexString.length() < 24) {
+                        hexString = "0" + hexString;
+                    }
+                    ObjectId opponentId = new ObjectId(hexString);
                     boolean forfeit = true;
                     if (round.getColor() == Player.Color.BLACK) {
                         black = players.get(player.getPlayerId());
@@ -284,7 +288,7 @@ public class Tournament implements Serializable {
                         blackResult = Result.WIN;
                         forfeit = true;
                         if (round.getStatus() == 0) {
-                            if (!isTournamentWithdrew(white)){
+                            if (!isTournamentWithdrew(white)) {
                                 getWithdrawsObs().add(
                                         new Withdraw(
                                                 white,
@@ -778,9 +782,9 @@ public class Tournament implements Serializable {
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
 
-    public boolean isTournamentWithdrew(Player player){
-        for (Withdraw withdraw: getWithdraws()){
-            if (withdraw.getPlayer() == player){
+    public boolean isTournamentWithdrew(Player player) {
+        for (Withdraw withdraw : getWithdraws()) {
+            if (withdraw.getPlayer() == player) {
                 return true;
             }
         }
@@ -824,11 +828,11 @@ public class Tournament implements Serializable {
         rounds.get(roundNo).add(game);
     }
 
-    public void addPair(UUID white, UUID black) {
+    public void addPair(ObjectId white, ObjectId black) {
         addPair(white, black, rounds.size() - 1);
     }
 
-    public void addPair(UUID white, UUID black, int roundNo) {
+    public void addPair(ObjectId white, ObjectId black, int roundNo) {
         Player whitePlayer = players.get(white);
         Player blackPlayer = players.get(black);
         Game game = new Game(whitePlayer, blackPlayer);

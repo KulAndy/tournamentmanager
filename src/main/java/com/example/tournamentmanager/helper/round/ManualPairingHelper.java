@@ -277,13 +277,14 @@ public class ManualPairingHelper {
         });
     }
 
+    public ObservableList<Integer> getRoundsNumbersObs() {
+        return roundsNumbersObs;
+    }
 
     public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {
         this.roundsNumbersObs = roundsNumbersObs;
     }
-    public ObservableList<Integer> getRoundsNumbersObs() {
-        return roundsNumbersObs;
-    }
+
     public Tournament getTournament() {
         return tournament;
     }

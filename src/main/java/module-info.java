@@ -14,6 +14,11 @@ module com.example.tournamentmanager {
     requires kernel;
     requires java.desktop;
     requires org.apache.pdfbox;
+    requires org.apache.httpcomponents.httpcore;
+    requires org.apache.httpcomponents.httpclient;
+    requires org.apache.httpcomponents.httpmime;
+    requires toml4j;
+    requires org.mongodb.bson;
 
     opens com.example.tournamentmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
     opens com.example.tournamentmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;

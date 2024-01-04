@@ -12,11 +12,31 @@ public class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserial
 
     @Override
     public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(formatter.format(date));
+        String formattedDate = formatter.format(date);
+        String cleanFormattedDate = removeNonUTF8Characters(formattedDate);
+        return new JsonPrimitive(cleanFormattedDate);
     }
 
     @Override
     public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return LocalDate.parse(json.getAsString(), formatter);
+    }
+
+    private String removeNonUTF8Characters(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        StringBuilder cleanString = new StringBuilder();
+
+        for (char ch : input.toCharArray()) {
+            if (ch >= 0x20 && ch <= 0x7F) {
+                cleanString.append(ch);
+            } else {
+                cleanString.append(' ');
+            }
+        }
+
+        return cleanString.toString();
     }
 }

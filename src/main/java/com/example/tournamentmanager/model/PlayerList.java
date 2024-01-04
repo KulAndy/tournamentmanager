@@ -4,6 +4,7 @@ import com.example.tournamentmanager.comparator.StartListComparator;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.util.*;
@@ -15,7 +16,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     private Player halfbye;
     private Player unpaired;
     private StartListComparator comparator;
-    private Map<UUID, Integer> uuid2startNo = new HashMap<>();
+    private Map<ObjectId, Integer> uuid2startNo = new HashMap<ObjectId, Integer>();
 
     public PlayerList() {
         add("bye");
@@ -124,7 +125,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
         return null;
     }
 
-    public Player get(UUID uuid) {
+    public Player get(ObjectId uuid) {
         if (Objects.equals(uuid.toString(), getBye().getPlayerid().toString())) {
             return getBye();
         } else if (Objects.equals(uuid.toString(), getHalfbye().getPlayerid().toString())) {
@@ -195,11 +196,11 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
         rehash();
     }
 
-    public Map<UUID, Integer> getUuid2startNo() {
+    public Map<ObjectId, Integer> getUuid2startNo() {
         return uuid2startNo;
     }
 
-    public void setUuid2startNo(Map<UUID, Integer> uuid2startNo) {
+    public void setUuid2startNo(Map<ObjectId, Integer> uuid2startNo) {
         this.uuid2startNo = uuid2startNo;
     }
 

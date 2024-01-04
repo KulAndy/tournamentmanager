@@ -2,6 +2,8 @@ package com.example.tournamentmanager.operation;
 
 import com.example.tournamentmanager.helper.GeneralHelper;
 import com.example.tournamentmanager.model.Federation;
+import com.moandjiezana.toml.Toml;
+import com.moandjiezana.toml.TomlWriter;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
@@ -16,13 +18,19 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 
 public class FileOperation {
@@ -441,5 +449,139 @@ public class FileOperation {
         }
 
         return sb.toString();
+    }
+
+    public static void updateTomlInZip(File zipFile, String section, String key, String value) {
+        try {
+            String tempDirPath = "tempDir";
+            unzip(zipFile, tempDirPath);
+
+            String settingsTomlPath = tempDirPath + "/settings.toml";
+            File tomlFile = new File(settingsTomlPath);
+
+            if (!tomlFile.exists()) {
+                File templateFile = new File("settings.toml");
+                if (templateFile.exists()) {
+                    Files.copy(templateFile.toPath(), tomlFile.toPath());
+                } else {
+                    String remoteSettingsURL = "https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml";
+                    try (
+                            BufferedReader in = new BufferedReader(new InputStreamReader(new URL(remoteSettingsURL).openStream(), StandardCharsets.UTF_8))
+                    ) {
+                        StringBuilder content = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null) {
+                            content.append(inputLine).append("\n");
+                        }
+                        try (FileWriter fileWriter = new FileWriter(settingsTomlPath);
+                             BufferedWriter ou = new BufferedWriter(new FileWriter("settings.toml"))
+                        ) {
+                            fileWriter.write(content.toString());
+                            ou.write(content.toString());
+                        }
+                    } catch (IOException e) {
+                        try (FileWriter fileWriter = new FileWriter(settingsTomlPath)) {
+                            fileWriter.write("");
+                        }
+                    }
+                }
+            }
+
+            Toml toml = new Toml().read(tomlFile);
+            Map<String, Object> tomlMap = toml.toMap();
+
+            Map<String, Object> remoteSection = (Map<String, Object>) tomlMap.get(section);
+            if (remoteSection != null) {
+                remoteSection.put(key, value);
+            } else {
+                throw new IllegalArgumentException("Section '" + section + "' not found in settings.toml.");
+            }
+
+            TomlWriter writer = new TomlWriter();
+            String updatedToml = writer.write(tomlMap);
+
+            FileWriter fileWriter = new FileWriter(settingsTomlPath);
+            fileWriter.write(updatedToml);
+            fileWriter.close();
+
+            zip(tempDirPath, zipFile);
+            deleteDirectory(new File(tempDirPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void unzip(File zipFile, String destDir) throws IOException {
+        byte[] buffer = new byte[1024];
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+        ZipEntry zipEntry = zis.getNextEntry();
+        while (zipEntry != null) {
+            File newFile = newFile(destDir, zipEntry);
+            if (zipEntry.isDirectory()) {
+                if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                    throw new IOException("Failed to create directory " + newFile);
+                }
+            } else {
+                File parent = newFile.getParentFile();
+                if (!parent.isDirectory() && !parent.mkdirs()) {
+                    throw new IOException("Failed to create directory " + parent);
+                }
+
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
+    }
+
+    public static void zip(String sourceDirPath, File zipFile) throws IOException {
+        Path sourcePath = Paths.get(sourceDirPath);
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            Files.walk(sourcePath)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(sourcePath.relativize(path).toString());
+                        try {
+                            zos.putNextEntry(zipEntry);
+                            Files.copy(path, zos);
+                            zos.closeEntry();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
+    }
+
+    public static File newFile(String destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destFile.getCanonicalPath();
+        String rootDirPath = new File(destinationDir).getCanonicalPath();
+
+        if (!destDirPath.startsWith(rootDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
+    }
+
+    public static void deleteDirectory(File directory) {
+        if (directory.isDirectory()) {
+            File[] entries = directory.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    deleteDirectory(entry);
+                }
+            }
+        }
+        if (!directory.delete()) {
+            System.err.println("Failed to delete " + directory);
+        }
     }
 }

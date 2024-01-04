@@ -199,9 +199,10 @@ public class FIDEOperation {
                 int k = resultSet.getInt("k");
                 int birthday = resultSet.getInt("birthday");
                 Federation fed = Federation.FIDE;
-                try{
+                try {
                     fed = Federation.valueOf(country);
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException ignored) {
+                }
 
                 players.add(new Player(
                         fed, null, name, Title.getTitle(title),

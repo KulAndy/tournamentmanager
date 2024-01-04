@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.model;
 
 import com.example.tournamentmanager.comparator.StartListComparator;
+import org.bson.types.ObjectId;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -17,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -806,7 +806,7 @@ public class SwsxTournament {
         private byte dayOfBorn;
         private byte monthOfBorn;
         private short yearOfBorn;
-        private UUID playerId;
+        private ObjectId playerId;
         private short fideRatingClassic;
         private short fideRatingRapid;
         private short fideRatingBlitz;
@@ -891,8 +891,12 @@ public class SwsxTournament {
             setLicense(licence);
             setClub(club);
 
-            long longNumber = Integer.parseInt(playerId) & 0xFFFFFFFFL;
-            UUID uuid = new UUID(0, longNumber);
+            String hexString = Integer.toHexString(Integer.parseInt(playerId));
+
+            while (hexString.length() < 24) {
+                hexString = "0" + hexString;
+            }
+            ObjectId uuid = new ObjectId(hexString);
             setPlayerId(uuid);
 
 
@@ -1012,11 +1016,11 @@ public class SwsxTournament {
             this.yearOfBorn = yearOfBorn;
         }
 
-        public UUID getPlayerId() {
+        public ObjectId getPlayerId() {
             return playerId;
         }
 
-        public void setPlayerId(UUID playerId) {
+        public void setPlayerId(ObjectId playerId) {
             this.playerId = playerId;
         }
 

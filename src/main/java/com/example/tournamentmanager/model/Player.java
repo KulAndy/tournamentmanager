@@ -5,12 +5,12 @@ import com.example.tournamentmanager.calculation.PZSzachCalculation;
 import jakarta.xml.bind.annotation.XmlAnyElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.UUID;
 
 import static com.example.tournamentmanager.calculation.PZSzachCalculation.getNorm;
 
@@ -39,7 +39,7 @@ public class Player implements Serializable {
     private Short phonePrefix;
     private Integer phoneNumber;
     private ArrayList<Game> rounds;
-    private UUID playerid;
+    private ObjectId playerid;
     private int YearOfBirth;
     private byte MonthOfBirth;
     private byte DayOfBirth;
@@ -113,7 +113,7 @@ public class Player implements Serializable {
         setLocalId(localId);
         setFideId(fideId);
         setRemarks(remarks);
-        setPlayerid(UUID.randomUUID());
+        setPlayerid(new ObjectId());
         setRounds(new ArrayList<>());
     }
 
@@ -388,7 +388,7 @@ public class Player implements Serializable {
             } else {
                 addition = (float) (opponent.getFidePoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber()));
             }
-            if (!addition.isNaN()){
+            if (!addition.isNaN()) {
                 bucholz += addition;
             }
         }
@@ -857,17 +857,21 @@ public class Player implements Serializable {
         this.eMail = eMail;
     }
 
-    public UUID getPlayerid() {
+    public ObjectId getPlayerid() {
         return playerid;
     }
 
-    public void setPlayerid(UUID playerid) {
+    public void setPlayerid(ObjectId playerid) {
         this.playerid = playerid;
     }
 
     public void setPlayerid(int number) {
-        long longNumber = number & 0xFFFFFFFFL;
-        UUID uuid = new UUID(0, longNumber);
+        String hexString = Integer.toHexString(number);
+
+        while (hexString.length() < 24) {
+            hexString = "0" + hexString;
+        }
+        ObjectId uuid = new ObjectId(hexString);
         setPlayerid(uuid);
     }
 

@@ -84,9 +84,11 @@ public class TiebreakHelper {
             if (newValue != null) {
                 if (newValue) {
                     setupFIDEMode();
+                    getTournament().getTiebreak().setFIDEMode(true);
                     getPointsPane().setDisable(true);
                 } else {
                     getPointsPane().setDisable(false);
+                    getTournament().getTiebreak().setFIDEMode(false);
                 }
             }
         });
