@@ -3,24 +3,24 @@ package com.example.tournamentmanager.adapter;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+public class DateAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu, hh:mm:ss a");
 
     @Override
-    public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(Date date, Type typeOfSrc, JsonSerializationContext context) {
         String formattedDate = formatter.format(date);
         String cleanFormattedDate = removeNonUTF8Characters(formattedDate);
         return new JsonPrimitive(cleanFormattedDate);
     }
 
     @Override
-    public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         try{
-            return LocalDate.parse(json.getAsString(), formatter);
+            return formatter.parse(json.getAsString());
         } catch (Exception e) {
             return null;
         }

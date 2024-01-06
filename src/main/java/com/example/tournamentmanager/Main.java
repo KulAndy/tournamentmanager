@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Main extends Application {
     private final String programName = "andchess";
@@ -20,6 +21,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Locale.setDefault(new Locale("en", "US"));
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("main-view.fxml"));
         Parent root = fxmlLoader.load();

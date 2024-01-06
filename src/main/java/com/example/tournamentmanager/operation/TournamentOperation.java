@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.operation;
 
 import com.example.tournamentmanager.MainController;
+import com.example.tournamentmanager.adapter.DateAdapter;
 import com.example.tournamentmanager.adapter.LocalDateAdapter;
 import com.example.tournamentmanager.model.*;
 import com.google.gson.Gson;
@@ -161,6 +162,7 @@ public class TournamentOperation {
     private static void exportTournament(Tournament tournament, File file) throws IOException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .registerTypeAdapter(Date.class, new DateAdapter())
                 .create();
 
         String json = gson.toJson(tournament);
@@ -272,6 +274,7 @@ public class TournamentOperation {
                     Gson gson = new GsonBuilder()
                             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                             .registerTypeAdapter(Schedule.class, new Schedule.ScheduleDeserializer())
+                            .registerTypeAdapter(Date.class, new DateAdapter())
                             .create();
                     Type tournamentType = new TypeToken<Tournament>() {
                     }.getType();
