@@ -54,6 +54,33 @@ public class CupEngine implements Engine {
             }
         } else {
             round = createPairings(tournament.getPlayers());
+            Player.Color color;
+            if (tournament.getFirstColor() == null) {
+                SecureRandom secureRandom = new SecureRandom();
+                byte[] randomBytes = new byte[1];
+                secureRandom.nextBytes(randomBytes);
+                int randomValue = Math.abs(randomBytes[0] % 2);
+                if (randomValue == 0) {
+                    color = Player.Color.WHITE;
+                } else {
+                    color = Player.Color.BLACK;
+                }
+            } else {
+                color = tournament.getFirstColor();
+            }
+            for (int j = 0; j < round.size(); j++) {
+                if (
+                        color == Player.Color.BLACK && j % 2 == 0
+                                && !round.get(j).getBlack().getPlayerid().toString().equals(tournament.getPlayers().getBye().getPlayerid().toString())
+                ) {
+                    round.get(j).swapPlayers();
+                } else if (
+                        color == Player.Color.WHITE && j % 2 == 1
+                                && !round.get(j).getBlack().getPlayerid().toString().equals(tournament.getPlayers().getBye().getPlayerid().toString())
+                ) {
+                    round.get(j).swapPlayers();
+                }
+            }
             paired = round.size();
         }
         tournament.getRoundsObs().add(round);
@@ -113,7 +140,7 @@ public class CupEngine implements Engine {
             ArrayList<Game> pairingA = createPairings(groupA);
             ArrayList<Game> pairingB = createPairings(groupB);
 
-            for (int i = pairingA.size() - 1 ; i >= 0 && pairingA.size() < pairingB.size() ; i--) {
+            for (int i = pairingA.size() - 1; i >= 0 && pairingA.size() < pairingB.size(); i--) {
                 Game game = pairingA.get(i);
                 Player player1 = game.getWhite();
                 Player player2 = game.getBlack();
@@ -125,7 +152,7 @@ public class CupEngine implements Engine {
                 game.setForfeit(true);
             }
 
-            for (int i = pairingB.size() - 1 ; i >= 0 && pairingA.size() > pairingB.size() ; i--) {
+            for (int i = pairingB.size() - 1; i >= 0 && pairingA.size() > pairingB.size(); i--) {
                 Game game = pairingB.get(i);
                 Player player1 = game.getWhite();
                 Player player2 = game.getBlack();
@@ -189,56 +216,26 @@ public class CupEngine implements Engine {
                     Math.log(tournament.getPlayers().size()) / Math.log(2)
             );
             for (int i = 0; i < roundsNo; i++) {
-                    int paired = generatePairing(tournament, false);
-                    if (i==0){
-                        Player.Color color;
-                        if (tournament.getFirstColor() == null) {
-                            SecureRandom secureRandom = new SecureRandom();
-                            byte[] randomBytes = new byte[1];
-                            secureRandom.nextBytes(randomBytes);
-                            int randomValue = Math.abs(randomBytes[0] % 2);
-                            if (randomValue == 0) {
-                                color = Player.Color.WHITE;
-                            } else {
-                                color = Player.Color.BLACK;
-                            }
-                        } else {
-                            color = tournament.getFirstColor();
-                        }
-                        for (int j = 0; j < tournament.getRoundsObs().get(0).size(); j++) {
-                            if (
-                                    color == Player.Color.BLACK && j % 2 == 0
-                                    && !tournament.getRoundsObs().get(0).get(j).getBlack().getPlayerid().toString().equals(tournament.getPlayers().getBye().getPlayerid().toString())
-                            ){
-                                tournament.getRoundsObs().get(0).get(j).swapPlayers();
-                            } else if (
-                                    color == Player.Color.WHITE && j % 2 == 1
-                                    && !tournament.getRoundsObs().get(0).get(j).getBlack().getPlayerid().toString().equals(tournament.getPlayers().getBye().getPlayerid().toString())
-                            ) {
-                                tournament.getRoundsObs().get(0).get(j).swapPlayers();
-                            }
-                        }
-
+                int paired = generatePairing(tournament, false);
+                for (int j = 0; j < paired; j++) {
+                    if (tournament.getRoundsObs().get(i).get(j).getBlack() == tournament.getPlayers().getBye()) {
+                        continue;
                     }
-                    for (int j = 0; j < paired; j++) {
-                        if (tournament.getRoundsObs().get(i).get(j).getBlack() == tournament.getPlayers().getBye()) {
-                            continue;
-                        }
-                        SecureRandom secureRandom = new SecureRandom();
-                        byte[] randomBytes = new byte[1];
+                    SecureRandom secureRandom = new SecureRandom();
+                    byte[] randomBytes = new byte[1];
 
-                        secureRandom.nextBytes(randomBytes);
-                        int randomValue = Math.abs(randomBytes[0] % 2);
-                        if (randomValue == 0) {
-                            tournament.getRoundsObs().get(i).get(j).setWhiteResult(Result.WIN);
-                            tournament.getRoundsObs().get(i).get(j).setBlackResult(Result.LOSE);
-                            tournament.getRoundsObs().get(i).get(j).setForfeit(false);
-                        } else {
-                            tournament.getRoundsObs().get(i).get(j).setWhiteResult(Result.LOSE);
-                            tournament.getRoundsObs().get(i).get(j).setBlackResult(Result.WIN);
-                            tournament.getRoundsObs().get(i).get(j).setForfeit(false);
-                        }
+                    secureRandom.nextBytes(randomBytes);
+                    int randomValue = Math.abs(randomBytes[0] % 2);
+                    if (randomValue == 0) {
+                        tournament.getRoundsObs().get(i).get(j).setWhiteResult(Result.WIN);
+                        tournament.getRoundsObs().get(i).get(j).setBlackResult(Result.LOSE);
+                        tournament.getRoundsObs().get(i).get(j).setForfeit(false);
+                    } else {
+                        tournament.getRoundsObs().get(i).get(j).setWhiteResult(Result.LOSE);
+                        tournament.getRoundsObs().get(i).get(j).setBlackResult(Result.WIN);
+                        tournament.getRoundsObs().get(i).get(j).setForfeit(false);
                     }
+                }
             }
 
             return tournament;
