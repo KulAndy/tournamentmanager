@@ -31,6 +31,35 @@ public class Game implements Serializable {
         setBlackResult(blackResult);
     }
 
+    public Player getLoser() {
+        if (
+                getWhiteResult() == Result.WIN && getBlackResult() == Result.LOSE
+        ) {
+            return getBlack();
+        } else if (getWhiteResult() == Result.LOSE && getBlackResult() == Result.WIN) {
+            return getWhite();
+        } else {
+            return null;
+        }
+
+    }
+
+    public Player getWinner() {
+        if (getWhiteName().equals("bye")) {
+            return getBlack();
+        } else if (getBlackName().equals("bye")) {
+            return getWhite();
+        } else if (
+                getWhiteResult() == Result.WIN && getBlackResult() == Result.LOSE
+        ) {
+            return getWhite();
+        } else if (getWhiteResult() == Result.LOSE && getBlackResult() == Result.WIN) {
+            return getBlack();
+        } else {
+            return null;
+        }
+    }
+
     public Float getPointsForWhite() {
         switch (blackName) {
             case "bye" -> {

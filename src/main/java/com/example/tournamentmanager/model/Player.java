@@ -184,6 +184,40 @@ public class Player implements Serializable {
         return phonePrefixesList;
     }
 
+    public int getColorPreference() {
+        int preference = 0;
+        Color color = getLastColor();
+        if (color != null) {
+            for (int i = getRounds().size() - 1; i >= 0; i--) {
+                Game game = getRound(i);
+                if (!game.isForfeit()) {
+                    if (getRoundColor(game) == color) {
+                        if (color == Color.WHITE) {
+                            preference++;
+                        } else {
+                            preference--;
+                        }
+                    } else {
+                        return preference;
+                    }
+                }
+            }
+        }
+        return preference;
+    }
+
+    public Color getLastColor() {
+        if (getRounds().size() != 0) {
+            for (int i = getRounds().size() - 1; i >= 0; i--) {
+                Game game = getRound(i);
+                if (!game.isForfeit()) {
+                    return getRoundColor(game);
+                }
+            }
+        }
+        return null;
+    }
+
     public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak) {
         switch (tiebreak) {
             case KOYA -> {
@@ -232,7 +266,7 @@ public class Player implements Serializable {
     }
 
     public float getRatingPerformanceFide() {
-        return FIDECalculation.getRatingPerformance(getOpponents(), getPoints());
+        return FIDECalculation.getRatingPerformance(getFideOpponents(), getPoints());
     }
 
     @Override
@@ -298,7 +332,7 @@ public class Player implements Serializable {
     }
 
     public int getAverageFideRating() {
-        return FIDECalculation.getAverageRating(getOpponents());
+        return FIDECalculation.getAverageRating(getFideOpponents());
     }
 
     public float getFideChange() {
@@ -556,6 +590,18 @@ public class Player implements Serializable {
         for (Game round : getRounds()) {
             if (!round.isForfeit()) {
                 opponents.add(getOpponent(round));
+            }
+        }
+
+        return opponents;
+    }
+
+    public ArrayList<Player> getFideOpponents() {
+        ArrayList<Player> opponents = new ArrayList<>();
+        for (Game round : getRounds()) {
+            Player opponent = getOpponent(round);
+            if (!round.isForfeit() && opponent.getFideRating() != null && opponent.getFideRating() > 1000) {
+                opponents.add(opponent);
             }
         }
 
@@ -866,12 +912,12 @@ public class Player implements Serializable {
     }
 
     public void setPlayerid(int number) {
-        String hexString = Integer.toHexString(number);
+        StringBuilder hexString = new StringBuilder(Integer.toHexString(number));
 
         while (hexString.length() < 24) {
-            hexString = "0" + hexString;
+            hexString.insert(0, "0");
         }
-        ObjectId uuid = new ObjectId(hexString);
+        ObjectId uuid = new ObjectId(hexString.toString());
         setPlayerid(uuid);
     }
 
@@ -914,7 +960,6 @@ public class Player implements Serializable {
         return Objects.equals(getPlayerid().toString(), other.getPlayerid().toString()) && Objects.equals(getName(), other.getName());
     }
 
-
     public enum Sex {
         MALE,
         FEMALE
@@ -924,5 +969,4 @@ public class Player implements Serializable {
         WHITE,
         BLACK
     }
-
 }

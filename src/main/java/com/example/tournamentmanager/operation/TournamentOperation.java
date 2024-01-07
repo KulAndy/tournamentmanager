@@ -215,7 +215,8 @@ public class TournamentOperation {
                 try (InputStream inputStream = new URL(url).openStream()) {
                     Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
                     settingsTemplateContent = scanner.hasNext() ? scanner.next() : "";
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
                 try (BufferedWriter ou = new BufferedWriter(new FileWriter("settings.toml"))
                 ) {
                     ou.write(settingsTemplateContent);

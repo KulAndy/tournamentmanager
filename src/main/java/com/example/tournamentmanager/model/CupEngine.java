@@ -1,0 +1,213 @@
+package com.example.tournamentmanager.model;
+
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
+
+public class CupEngine implements Engine {
+
+    public static int generatePairing(Tournament tournament, boolean reversColors) throws UnfinishedRound {
+        ArrayList<ArrayList<Game>> rounds = tournament.getRounds();
+        int roundNo = rounds.size() + 1;
+        ArrayList<Game> round = new ArrayList<>();
+        int paired = 0;
+        if (roundNo > 1) {
+            ArrayList<Game> prevRound = rounds.get(rounds.size() - 1);
+            for (int i = 0; i < prevRound.size(); i += 2) {
+                Player winner1 = prevRound.get(i).getWinner();
+                Player loser1 = prevRound.get(i).getLoser();
+                Player winner2 = prevRound.get(i + 1).getWinner();
+                Player loser2 = prevRound.get(i + 1).getLoser();
+                if (winner1 == null || loser1 == null || winner2 == null || loser2 == null) {
+                    throw new UnfinishedRound();
+                }
+                Game game;
+                if (winner1.getPlayerid().toString().equals(tournament.getPlayers().getBye().getPlayerid().toString())) {
+                    game = new Game(winner2, winner1, Result.WIN, Result.LOSE, true);
+                } else if (winner2.getPlayerid().toString().equals(tournament.getPlayers().getBye().getPlayerid().toString())) {
+                    game = new Game(winner1, winner2, Result.WIN, Result.LOSE, true);
+                } else {
+                    int startNo1 = tournament.getPlayers().indexOf(winner1);
+                    int startNo2 = tournament.getPlayers().indexOf(winner2);
+                    int colorPreference1 = winner1.getColorPreference();
+                    int colorPreference2 = winner2.getColorPreference();
+                    if (startNo1 < startNo2 && Math.abs(colorPreference1) < Math.abs(colorPreference2)) {
+                        if (colorPreference2 > 0) {
+                            game = new Game(winner1, winner2);
+                        } else {
+                            game = new Game(winner2, winner1);
+                        }
+                    } else {
+                        if (colorPreference1 > 0) {
+                            game = new Game(winner2, winner1);
+                        } else {
+                            game = new Game(winner1, winner2);
+                        }
+                    }
+                }
+                round.add(game);
+                winner1.addRound(game);
+                winner2.addRound(game);
+                paired++;
+            }
+        } else {
+            round = createPairings(tournament.getPlayers());
+            paired = round.size();
+        }
+        tournament.getRoundsObs().add(round);
+        return paired;
+    }
+
+    private static ArrayList<Game> createPairings(PlayerList players) {
+        PlayerList playersCopy = new PlayerList();
+        playersCopy.addAll(players);
+        playersCopy.setBye(players.getBye());
+        playersCopy.setUnpaired(players.getUnpaired());
+        ArrayList<Game> pairing = new ArrayList<>();
+        if (playersCopy.size() == 0) {
+            return pairing;
+        } else if (playersCopy.size() == 1) {
+            pairing.add(new Game(playersCopy.get(0), playersCopy.getBye(), Result.WIN, Result.LOSE, true));
+            return pairing;
+        } else if (playersCopy.size() == 2) {
+            pairing.add(new Game(playersCopy.get(0), playersCopy.get(1)));
+            return pairing;
+        } else {
+            PlayerList groupA = new PlayerList();
+            PlayerList groupB = new PlayerList();
+
+            groupA.add(playersCopy.remove(0));
+            groupA.add(playersCopy.remove(playersCopy.size() - 1));
+            byte flag = 1; //0 - A, 1 - B, 2 - B, 3 - A
+            while (playersCopy.size() > 0) {
+                if (flag == 0 || flag == 3) {
+                    groupA.add(playersCopy.remove(0));
+                    if (playersCopy.size() > 0) {
+                        if (groupA.size() - 1 == groupB.size() && playersCopy.size() == 1) {
+                            groupB.add(playersCopy.remove(0));
+                        } else {
+                            groupA.add(playersCopy.remove(playersCopy.size() - 1));
+                        }
+                    }
+                } else {
+                    groupB.add(playersCopy.remove(0));
+                    if (playersCopy.size() > 0) {
+                        if (groupA.size() == groupB.size() - 1 && playersCopy.size() == 1) {
+                            groupA.add(playersCopy.remove(0));
+                        } else {
+                            groupB.add(playersCopy.remove(playersCopy.size() - 1));
+                        }
+                    }
+
+
+                }
+                flag++;
+                flag %= 4;
+            }
+
+            Collections.sort(groupA, Comparator.comparingInt(players::indexOf));
+            Collections.sort(groupB, Comparator.comparingInt(players::indexOf));
+
+            ArrayList<Game> pairingA = createPairings(groupA);
+            ArrayList<Game> pairingB = createPairings(groupB);
+
+            while (pairingA.size() < pairingB.size()) {
+                pairingA.add(new Game(playersCopy.getBye(), playersCopy.getBye(), Result.WIN, Result.LOSE, true));
+            }
+            while (pairingA.size() > pairingB.size()) {
+                pairingB.add(new Game(playersCopy.getBye(), playersCopy.getBye(), Result.WIN, Result.LOSE, true));
+            }
+
+            Collections.reverse(pairingB);
+            pairing.addAll(pairingA);
+            pairing.addAll(pairingB);
+
+            return pairing;
+        }
+    }
+
+    public static void checkPairing(Tournament tournament, byte round) {
+    }
+
+    public static Tournament generateRandomTournament() {
+        Tournament tournament = new Tournament();
+        tournament.setSystem(Tournament.TournamentSystem.CUP);
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        int minPlayers = 4;
+        int maxPlayers = 32;
+        int minNameLength = 5;
+        int maxNameLength = 25;
+        Random random = new Random();
+        Title[] titles = Title.values();
+        int players = random.nextInt(maxPlayers - minPlayers + 1) + minPlayers;
+        for (int i = 0; i < players; i++) {
+            Player player = new Player();
+            player.setName("player" + (i + 1));
+            player.setFideRating(players - i);
+            player.setTitle(titles[random.nextInt(titles.length)]);
+            tournament.getPlayersObs().add(player);
+        }
+
+        StringBuilder nameBuilder = new StringBuilder();
+
+        for (int i = 0; i < random.nextInt(maxNameLength - minNameLength + 1) + minNameLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            nameBuilder.append(randomChar);
+        }
+
+        StringBuilder placeBuilder = new StringBuilder();
+
+        for (int i = 0; i < random.nextInt(maxNameLength - minNameLength + 1) + minNameLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            placeBuilder.append(randomChar);
+        }
+        tournament.setName(nameBuilder.toString());
+        tournament.setPlace(placeBuilder.toString());
+        try {
+            int roundsNo = (byte) Math.ceil(
+                    Math.log(tournament.getPlayers().size()) / Math.log(2)
+            );
+            for (int i = 0; i < roundsNo; i++) {
+                int paired = generatePairing(tournament, false);
+                for (int j = 0; j < paired; j++) {
+                    if (tournament.getRoundsObs().get(i).get(j).getBlack() == tournament.getPlayers().getBye()) {
+                        continue;
+                    }
+                    SecureRandom secureRandom = new SecureRandom();
+                    byte[] randomBytes = new byte[1];
+
+                    secureRandom.nextBytes(randomBytes);
+                    int randomValue = Math.abs(randomBytes[0] % 2);
+                    if (randomValue == 0) {
+                        tournament.getRoundsObs().get(i).get(j).setWhiteResult(Result.WIN);
+                        tournament.getRoundsObs().get(i).get(j).setBlackResult(Result.LOSE);
+                        tournament.getRoundsObs().get(i).get(j).setForfeit(false);
+                    } else {
+                        tournament.getRoundsObs().get(i).get(j).setWhiteResult(Result.LOSE);
+                        tournament.getRoundsObs().get(i).get(j).setBlackResult(Result.WIN);
+                        tournament.getRoundsObs().get(i).get(j).setForfeit(false);
+                    }
+                }
+            }
+
+            return tournament;
+        } catch (UnfinishedRound e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class UnfinishedRound extends Exception {
+        public UnfinishedRound() {
+            super("Previous round has not been finished");
+        }
+
+        public UnfinishedRound(String message) {
+            super(message);
+        }
+    }
+}

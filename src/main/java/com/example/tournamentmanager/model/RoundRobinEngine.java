@@ -90,6 +90,7 @@ public class RoundRobinEngine implements Engine {
 
     public static Tournament generateRandomTournament() throws IOException, InterruptedException {
         Tournament tournament = new Tournament();
+        tournament.setSystem(Tournament.TournamentSystem.ROUND_ROBIN);
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         int minRounds = 6;
         int maxRounds = 20;

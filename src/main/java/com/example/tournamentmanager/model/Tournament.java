@@ -1052,7 +1052,11 @@ public class Tournament implements Serializable {
     }
 
     public PairingComparator getPairingComparator() {
-        return pairingComparator;
+        if (getSystem() == TournamentSystem.SWISS) {
+            return pairingComparator;
+        } else {
+            return null;
+        }
     }
 
     public void setPairingComparator(PairingComparator pairingComparator) {

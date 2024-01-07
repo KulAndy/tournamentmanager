@@ -12,7 +12,6 @@ import com.google.gson.JsonParser;
 import com.moandjiezana.toml.Toml;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -750,80 +749,80 @@ public class MainController implements Initializable {
             }
         });
         upload.setOnAction(e -> CompletableFuture.runAsync(() -> {
-                Toml toml;
-                String serverUrl;
+                    Toml toml;
+                    String serverUrl;
 
-                try {
-                    toml = new Toml().read(new File("settings.toml"));
-                    serverUrl = toml.getTable("remote").getString("api");
-                } catch (Exception ex) {
                     try {
-                        URL defaultTomlURL = new URL("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
-                        byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
-                        String defaultTomlContent = new String(defaultTomlBytes);
-
-                        toml = new Toml().read(defaultTomlContent);
+                        toml = new Toml().read(new File("settings.toml"));
                         serverUrl = toml.getTable("remote").getString("api");
-                    } catch (IOException | URISyntaxException ex1) {
-                        error("Couldn't read server location");
-                        return;
-                    }
-                }
-
-                if (file == null) {
-                    error("Can not upload unsaved tournament");
-                } else {
-                    if (file.exists()) {
-                        HttpClient httpClient = HttpClients.createDefault();
-                        HttpPost httpPost = new HttpPost("http://" + serverUrl + "/upload");
-
+                    } catch (Exception ex) {
                         try {
-                            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-                            builder.addPart("zipFile", new FileBody(file, ContentType.DEFAULT_BINARY, file.getName()));
+                            URL defaultTomlURL = new URL("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                            byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
+                            String defaultTomlContent = new String(defaultTomlBytes);
 
-                            HttpEntity multipart = builder.build();
-                            httpPost.setEntity(multipart);
-
-                            HttpResponse response = httpClient.execute(httpPost);
-                            int statusCode = response.getStatusLine().getStatusCode();
-
-                            if (statusCode >= 200 && statusCode < 300) {
-                                HttpEntity entity = response.getEntity();
-                                if (entity != null) {
-                                    try (InputStream inputStream = entity.getContent();
-                                         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-
-                                        StringBuilder result = new StringBuilder();
-                                        char[] buffer = new char[1024];
-                                        int length;
-                                        while ((length = reader.read(buffer)) != -1) {
-                                            result.append(buffer, 0, length);
-                                        }
-
-                                        JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
-                                        String insertedId = jsonObject.get("insertedId").getAsString();
-
-                                        updateTomlInZip(file, "remote", "tournamentId", insertedId);
-                                    }
-                                    info("Sucessfully upload tournament");
-                                } else {
-                                    error("Error  - no tournament ID returned");
-                                }
-                            } else if (statusCode >= 400 && statusCode < 500) {
-                                error("Corrupted file - couldn't save on server");
-                            } else if (statusCode >= 500 && statusCode < 600) {
-                                error("Internal server error");
-                            } else {
-                                warning("Unknown status code: " + statusCode);
-                            }
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
+                            toml = new Toml().read(defaultTomlContent);
+                            serverUrl = toml.getTable("remote").getString("api");
+                        } catch (IOException | URISyntaxException ex1) {
+                            error("Couldn't read server location");
+                            return;
                         }
-                    } else {
-                        error("File not found");
                     }
-                }
-            })
+
+                    if (file == null) {
+                        error("Can not upload unsaved tournament");
+                    } else {
+                        if (file.exists()) {
+                            HttpClient httpClient = HttpClients.createDefault();
+                            HttpPost httpPost = new HttpPost("http://" + serverUrl + "/upload");
+
+                            try {
+                                MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                                builder.addPart("zipFile", new FileBody(file, ContentType.DEFAULT_BINARY, file.getName()));
+
+                                HttpEntity multipart = builder.build();
+                                httpPost.setEntity(multipart);
+
+                                HttpResponse response = httpClient.execute(httpPost);
+                                int statusCode = response.getStatusLine().getStatusCode();
+
+                                if (statusCode >= 200 && statusCode < 300) {
+                                    HttpEntity entity = response.getEntity();
+                                    if (entity != null) {
+                                        try (InputStream inputStream = entity.getContent();
+                                             InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+
+                                            StringBuilder result = new StringBuilder();
+                                            char[] buffer = new char[1024];
+                                            int length;
+                                            while ((length = reader.read(buffer)) != -1) {
+                                                result.append(buffer, 0, length);
+                                            }
+
+                                            JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
+                                            String insertedId = jsonObject.get("insertedId").getAsString();
+
+                                            updateTomlInZip(file, "remote", "tournamentId", insertedId);
+                                        }
+                                        info("Sucessfully upload tournament");
+                                    } else {
+                                        error("Error  - no tournament ID returned");
+                                    }
+                                } else if (statusCode >= 400 && statusCode < 500) {
+                                    error("Corrupted file - couldn't save on server");
+                                } else if (statusCode >= 500 && statusCode < 600) {
+                                    error("Internal server error");
+                                } else {
+                                    warning("Unknown status code: " + statusCode);
+                                }
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            error("File not found");
+                        }
+                    }
+                })
         );
         exportPgnMenu.setOnAction(e ->
                 GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
@@ -874,6 +873,9 @@ public class MainController implements Initializable {
                 } else if (getTournament().getSystem() == Tournament.TournamentSystem.ROUND_ROBIN) {
                     TournamentOperation.loadTournament(RoundRobinEngine.generateRandomTournament(), this);
                     getTourSystem().setValue(Tournament.TournamentSystem.ROUND_ROBIN);
+                } else if (getTournament().getSystem() == Tournament.TournamentSystem.CUP) {
+                    TournamentOperation.loadTournament(CupEngine.generateRandomTournament(), this);
+                    getTourSystem().setValue(Tournament.TournamentSystem.CUP);
                 }
                 getTourNoRounds().setText(String.valueOf(getTournament().getRounds().size()));
                 ArrayList<Integer> rounds = new ArrayList<>();
@@ -954,55 +956,90 @@ public class MainController implements Initializable {
 
         tourTB1.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getResultsComparator().setCriteria1(newValue);
-            String tiebreak = newValue.prettyText();
+            String tiebreak;
+            if (newValue != null) {
+                tiebreak = newValue.prettyText();
+            } else {
+                tiebreak = "";
+            }
             playerCardTB1.setText(tiebreak);
             Player player = playerCardSelect.getValue();
-            if (player != null) {
+            if (player != null && newValue != null) {
                 playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            } else {
+                playerCardTB1Value.setText("");
             }
             resultTb1.setText(tiebreak);
             tablesHelper.getResultTableHelper().refreshList();
         });
         tourTB2.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getResultsComparator().setCriteria2(newValue);
-            String tiebreak = newValue.prettyText();
+            String tiebreak;
+            if (newValue != null) {
+                tiebreak = newValue.prettyText();
+            } else {
+                tiebreak = "";
+            }
             playerCardTB2.setText(tiebreak);
             Player player = playerCardSelect.getValue();
-            if (player != null) {
-                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            if (player != null && newValue != null) {
+                playerCardTB2Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            } else {
+                playerCardTB2Value.setText("");
             }
             resultTb2.setText(tiebreak);
             tablesHelper.getResultTableHelper().refreshList();
         });
         tourTB3.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getResultsComparator().setCriteria3(newValue);
-            String tiebreak = newValue.prettyText();
+            String tiebreak;
+            if (newValue != null) {
+                tiebreak = newValue.prettyText();
+            } else {
+                tiebreak = "";
+            }
             playerCardTB3.setText(tiebreak);
             Player player = playerCardSelect.getValue();
-            if (player != null) {
-                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            if (player != null && newValue != null) {
+                playerCardTB3Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            } else {
+                playerCardTB3Value.setText("");
             }
             resultTb3.setText(tiebreak);
             tablesHelper.getResultTableHelper().refreshList();
         });
         tourTB4.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getResultsComparator().setCriteria4(newValue);
-            String tiebreak = newValue.prettyText();
+            String tiebreak;
+            if (newValue != null) {
+                tiebreak = newValue.prettyText();
+            } else {
+                tiebreak = "";
+            }
             playerCardTB4.setText(tiebreak);
             Player player = playerCardSelect.getValue();
-            if (player != null) {
-                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            if (player != null && newValue != null) {
+                playerCardTB4Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            } else {
+                playerCardTB4Value.setText("");
             }
             resultTb4.setText(tiebreak);
             tablesHelper.getResultTableHelper().refreshList();
         });
         tourTB5.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getResultsComparator().setCriteria5(newValue);
-            String tiebreak = newValue.prettyText();
+            String tiebreak;
+            if (newValue != null) {
+                tiebreak = newValue.prettyText();
+            } else {
+                tiebreak = "";
+            }
             playerCardTB5.setText(tiebreak);
             Player player = playerCardSelect.getValue();
-            if (player != null) {
-                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            if (player != null && newValue != null) {
+                playerCardTB5Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+            } else {
+                playerCardTB5Value.setText("");
             }
             resultTb5.setText(tiebreak);
             tablesHelper.getResultTableHelper().refreshList();

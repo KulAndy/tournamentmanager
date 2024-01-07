@@ -1,9 +1,8 @@
 package com.example.tournamentmanager.model;
 
-import java.io.IOException;
 
 public interface Engine {
-    static int generatePairing(Tournament tournament, boolean reversColors) throws IOException, InterruptedException {
+    static int generatePairing(Tournament tournament, boolean reversColors) {
         return 0;
     }
 

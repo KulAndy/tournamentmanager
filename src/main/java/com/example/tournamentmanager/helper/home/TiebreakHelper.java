@@ -132,11 +132,11 @@ public class TiebreakHelper {
                 getPointsHalfBye().setText("0");
             }
             case CUP -> {
-                getTourTB1().setValue(Tournament.Tiebreak.TbMethod.DUEL);
-                getTourTB2().setValue(null);
-                getTourTB3().setValue(null);
-                getTourTB4().setValue(null);
-                getTourTB5().setValue(null);
+                getTourTB1().setValue(Tournament.Tiebreak.TbMethod.POINTS);
+                getTourTB2().setValue(Tournament.Tiebreak.TbMethod.DUEL);
+                getTourTB3().setValue(Tournament.Tiebreak.TbMethod.DUEL);
+                getTourTB4().setValue(Tournament.Tiebreak.TbMethod.DUEL);
+                getTourTB5().setValue(Tournament.Tiebreak.TbMethod.DUEL);
                 getPointsBye().setText("0");
                 getPointsHalfBye().setText("0");
             }

@@ -162,23 +162,23 @@ public class ResultTableHelper {
         getResultsTable().setItems(sortedPlayers);
         getResultTb1().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
-            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria1()));
+            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria1()).floatValue());
         });
         getResultTb2().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
-            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria2()));
+            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria2()).floatValue());
         });
         getResultTb3().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
-            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria3()));
+            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria3()).floatValue());
         });
         getResultTb4().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
-            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria4()));
+            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria4()).floatValue());
         });
         getResultTb5().setCellValueFactory(cellData -> {
             Player player = cellData.getValue();
-            return new SimpleFloatProperty((Float) player.getTiebreak(getTournament().getResultsComparator().getCriteria5()));
+            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria5()).floatValue());
         });
         getResultsTable().refresh();
     }

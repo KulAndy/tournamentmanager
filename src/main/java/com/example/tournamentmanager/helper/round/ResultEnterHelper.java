@@ -395,6 +395,23 @@ public class ResultEnterHelper {
                             }
                             getTournament().setRoundsNumber((byte) (replays * Math.round(getTournament().getPlayersObs().size())));
                         });
+                    } else if (getTournament().getSystem() == Tournament.TournamentSystem.CUP) {
+                        int pairing = 0;
+                        boolean success = true;
+                        try {
+                            pairing += CupEngine.generatePairing(getTournament(), false);
+                        } catch (CupEngine.UnfinishedRound ex) {
+                            success = false;
+                        }
+                        if (success) {
+                            info("Paired successfully\nGenerated " + pairing + " pairings");
+                        } else {
+                            error("Couldn't generate pairing - unfinished round");
+                        }
+                        getTournament().setRoundsNumber((byte) (
+                                Math.ceil(Math.log(getTournament().getPlayers().size()) / Math.log(2)))
+                        );
+
                     } else {
                         int pairing = JavafoWrapper.generatePairing(getTournament(), false);
                         getRoundsViewSelect().getSelectionModel().selectLast();
@@ -625,8 +642,9 @@ public class ResultEnterHelper {
 
     public void setCurrentRound(ObservableList<Game> currentRound) {
         this.currentRound = currentRound;
-        if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
-            this.currentRound.sort(new PairingComparator(getTournament().getPlayersObs()));
+        PairingComparator pairingComparator = getTournament().getPairingComparator();
+        if (pairingComparator != null) {
+            this.currentRound.sort(pairingComparator);
         }
     }
 

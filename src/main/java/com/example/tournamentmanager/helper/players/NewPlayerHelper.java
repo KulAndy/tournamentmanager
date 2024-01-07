@@ -1,10 +1,7 @@
 package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
-import com.example.tournamentmanager.model.Federation;
-import com.example.tournamentmanager.model.Player;
-import com.example.tournamentmanager.model.Title;
-import com.example.tournamentmanager.model.Tournament;
+import com.example.tournamentmanager.model.*;
 import com.example.tournamentmanager.operation.FIDEOperation;
 import com.example.tournamentmanager.operation.FileOperation;
 import javafx.application.Platform;
@@ -430,6 +427,9 @@ public class NewPlayerHelper {
                 fideID,
                 getRemarksField().getText()
         );
+        for (int i = 0; i < getTournament().getRoundsObs().size(); i++) {
+            player.addRound(new Game(player, getTournament().getPlayers().getUnpaired()));
+        }
         getTournament().getPlayersObs().add(player);
         if (counter > 1) {
             info("player with that name already exists - was added as " + name);
