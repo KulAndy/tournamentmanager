@@ -1,19 +1,30 @@
 package com.example.tournamentmanager.helper;
 
 import com.example.tournamentmanager.model.Tournament;
+import com.moandjiezana.toml.Toml;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
 
 public class GeneralHelper {
     public static void bindTextFieldStringProperty(TextField tf, Object obj, String attr) {
@@ -304,6 +315,195 @@ public class GeneralHelper {
         return future;
     }
 
+    public static void showLoginPopup() {
+        Stage loginStage = new Stage();
+        loginStage.initModality(Modality.APPLICATION_MODAL);
+
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(20));
+
+        Label usernameLabel = new Label("Username:");
+        TextField usernameField = new TextField();
+
+        Label passwordLabel = new Label("Password:");
+        PasswordField passwordField = new PasswordField();
+
+        Button loginButton = new Button("Login");
+        loginButton.setOnAction(e -> {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+
+            try {
+                Toml toml = new Toml().read(new File("settings.toml"));
+                String serverUrl = toml.getTable("remote").getString("api");
+
+                URL url = new URL(serverUrl + "login");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setDoOutput(true);
+
+                String postData = "login=" + URLEncoder.encode(username, StandardCharsets.UTF_8) +
+                        "&password=" + URLEncoder.encode(password, StandardCharsets.UTF_8);
+
+                try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+                    byte[] postDataBytes = postData.getBytes(StandardCharsets.UTF_8);
+                    outputStream.write(postDataBytes);
+                }
+
+                int responseCode = connection.getResponseCode();
+
+                if (responseCode >= 200 && responseCode < 300){
+                    StringBuilder responseContent = new StringBuilder();
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                        String line;
+                        while ((line = in.readLine()) != null) {
+                            responseContent.append(line);
+                        }
+                    }
+
+                    try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream("auth.txt"))) {
+                        out.write((username + "\n").getBytes());
+                        out.write(responseContent.toString().getBytes());
+                        info("Login successfully");
+                    }catch (IOException e1){
+                        error("Couldn't save password hash");
+                    }
+                } else if (responseCode >= 400 && responseCode < 500) {
+                    if (responseCode == 400){
+                        error("Wrong form data - no login, email or password");
+                    } else if (responseCode == 403) {
+                        error("Authentication failed");
+                    }else {
+                        error("Client status code: " + responseCode);
+                    }
+                } else {
+                    warning("Unknown status code: " + responseCode);
+                }
+
+                connection.disconnect();
+
+            } catch (Exception ex) {
+                System.err.println("Error: " + ex.getMessage());
+            }
+
+            loginStage.close();
+        });
+
+        root.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, loginButton);
+
+        Scene scene = new Scene(root, 300, 200);
+        loginStage.setScene(scene);
+        loginStage.setTitle("Login");
+
+        loginStage.showAndWait();
+    }
+
+    public static void showRegisterPopup() {
+        Stage registerStage = new Stage();
+        registerStage.initModality(Modality.APPLICATION_MODAL);
+
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(20));
+
+        Label usernameLabel = new Label("Username:");
+        TextField usernameField = new TextField();
+
+        Label emailLabel = new Label("Email:");
+        TextField emailField = new TextField();
+
+        Label passwordLabel = new Label("Password:");
+        PasswordField passwordField = new PasswordField();
+
+        Button registerButton = new Button("Register");
+        registerButton.setOnAction(e -> {
+            String username = usernameField.getText().trim();
+            String email = emailField.getText().trim();
+            String password = passwordField.getText();
+
+            if (Pattern.matches("\\b[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z_+])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9}\\b", email)) {
+                Toml toml;
+                String serverUrl;
+
+                try {
+                    toml = new Toml().read(new File("settings.toml"));
+                    serverUrl = toml.getTable("remote").getString("api");
+                } catch (Exception ex) {
+                    try {
+                        URL defaultTomlURL = new URL("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                        byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
+                        String defaultTomlContent = new String(defaultTomlBytes);
+
+                        toml = new Toml().read(defaultTomlContent);
+                        serverUrl = toml.getTable("remote").getString("api");
+                    } catch (IOException | URISyntaxException ex1) {
+                        error("Couldn't read server location");
+                        return;
+                    }
+                }
+                try {
+                    URL url = new URL(serverUrl + "register");
+
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setDoOutput(true);
+
+                    String postData = "login=" + URLEncoder.encode(username, StandardCharsets.UTF_8) + "&password=" + URLEncoder.encode(password, StandardCharsets.UTF_8) + "&mail=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+
+                    try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+                        byte[] postDataBytes = postData.getBytes(StandardCharsets.UTF_8);
+                        outputStream.write(postDataBytes);
+                        outputStream.flush();
+                    }
+
+                    int statusCode = connection.getResponseCode();
+
+                    if (statusCode >= 200 && statusCode < 300) {
+                        info("Successfully registred, go to mail to active account");
+                    } else if (statusCode >= 400 && statusCode < 500) {
+                        if (statusCode == 400) {
+                            error("Wrong form data - no login, email or password");
+                        } else if (statusCode == 409) {
+                            error("User with this name or email already exists");
+                        } else {
+                            error("Unknown user error. Status code: " + statusCode);
+                        }
+                    } else if (statusCode >= 500 && statusCode < 600) {
+                        if (statusCode == 500) {
+                            error("Internal server error");
+                        } else if (statusCode == 520) {
+                            error("Couldn't send email with active link");
+                        } else {
+                            error("Unknown server error. Status code: " + statusCode);
+                        }
+                    } else {
+                        warning("Unknown status code: " + statusCode);
+                    }
+
+                    connection.disconnect();
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                registerStage.close();
+            } else {
+                error("Invalid email");
+            }
+        });
+
+        root.getChildren().addAll(usernameLabel, usernameField, emailLabel, emailField, passwordLabel, passwordField, registerButton);
+
+        Scene scene = new Scene(root, 300, 250);
+        registerStage.setScene(scene);
+        registerStage.setTitle("Register");
+
+        registerStage.showAndWait();
+    }
+
     public static class ProgressMessageBox {
         private final Stage stage;
         private final ProgressBar progressBar;
@@ -360,4 +560,5 @@ public class GeneralHelper {
             }
         }
     }
+
 }

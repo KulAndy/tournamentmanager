@@ -35,6 +35,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -105,6 +106,11 @@ public class MainController implements Initializable {
     private MenuItem trfRaport;
     @FXML
     private MenuItem upload;
+
+    @FXML
+    private MenuItem login;
+    @FXML
+    private MenuItem register;
     @FXML
     private MenuItem about;
 
@@ -773,8 +779,28 @@ public class MainController implements Initializable {
                         error("Can not upload unsaved tournament");
                     } else {
                         if (file.exists()) {
+
                             HttpClient httpClient = HttpClients.createDefault();
-                            HttpPost httpPost = new HttpPost("http://" + serverUrl + "/upload");
+                            HttpPost httpPost = new HttpPost(serverUrl + "/upload");
+                            ArrayList<String> lines = null;
+                            try {
+                                lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
+                            } catch (IOException ex) {
+                                error("You must first log in");
+                                return;
+                            }
+
+
+                            if (lines.size() >= 2) {
+                                String login = lines.get(0);
+                                String hashedPassword = lines.get(1);
+
+                                httpPost.setHeader("login", login);
+                                httpPost.setHeader("hash", hashedPassword);
+                            }else {
+                                error("Corrupted auth file");
+                                return;
+                            }
 
                             try {
                                 MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -815,7 +841,11 @@ public class MainController implements Initializable {
                                 } else {
                                     warning("Unknown status code: " + statusCode);
                                 }
+                            } catch (SSLPeerUnverifiedException ex) {
+                                error("Couldn't connect - insecure connection");
+                                ex.printStackTrace();
                             } catch (IOException ex) {
+                                error("Connection error");
                                 ex.printStackTrace();
                             }
                         } else {
@@ -824,6 +854,8 @@ public class MainController implements Initializable {
                     }
                 })
         );
+        login.setOnAction(e -> showLoginPopup());
+        register.setOnAction(e -> showRegisterPopup());
         exportPgnMenu.setOnAction(e ->
                 GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
                         .thenAccept(choice -> {
