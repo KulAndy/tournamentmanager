@@ -1,11 +1,11 @@
 package com.example.tournamentmanager.helper;
 
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ResetCommand;
@@ -17,8 +17,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -91,21 +91,33 @@ public class CommitViewer {
     }
 
     private void showResultWindow() {
-        Stage resultStage = new Stage();
-        resultStage.setTitle("Commits");
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Commits");
+        dialog.setHeaderText(null);
 
         VBox vBox = new VBox(10);
 
         Button mergeButton = new Button("Update to selected version");
-        mergeButton.setOnAction(e -> mergeSelectedCommits());
+        mergeButton.setOnAction(e -> {
+            mergeSelectedCommits();
+            dialog.close();
+        });
 
         vBox.getChildren().addAll(commitListView, mergeButton);
 
-        resultStage.setOnCloseRequest(event -> removeTempDir());
+        dialog.getDialogPane().setContent(vBox);
 
-        Scene scene = new Scene(vBox, 600, 400);
-        resultStage.setScene(scene);
-        resultStage.show();
+        ButtonType closeButton = new ButtonType("Close", ButtonType.CANCEL.getButtonData());
+        dialog.getDialogPane().getButtonTypes().add(closeButton);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == closeButton) {
+                removeTempDir();
+            }
+            return null;
+        });
+
+        dialog.showAndWait();
     }
 
     private void mergeSelectedCommits() {
@@ -131,7 +143,9 @@ public class CommitViewer {
                     }
 
                     if (selectedCommitId != null) {
-                        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(selectedCommitId).call();
+                        tempGit.reset().setRef(selectedCommitId).setMode(ResetCommand.ResetType.HARD).call();
+
+                        copyFiles(tempDir, Path.of("."));
 
                         MergeResult mergeResult = git.merge().include(tempRepo.resolve(selectedCommitId)).call();
 
@@ -141,13 +155,26 @@ public class CommitViewer {
                             error("Update failed: " + mergeResult.getMergeStatus().toString());
                         }
                     } else {
-                        error("Commit not found for the selected commit message: " + selectedCommitMessage);
+                        error("Invalid selected commit: " + selectedCommitMessage);
                     }
                 }
             } catch (IOException | GitAPIException e) {
                 error("Update failed");
+                e.printStackTrace();
             }
         }
+    }
+
+    private void copyFiles(Path source, Path destination) throws IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path relativePath = source.relativize(file);
+                Path destinationFile = destination.resolve(relativePath);
+                Files.copy(file, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private void removeTempDir() {
@@ -156,8 +183,7 @@ public class CommitViewer {
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
-        } catch (IOException e) {
-            error("Failed to delete the temporary directory");
+        } catch (IOException ignored) {
         }
     }
 }
