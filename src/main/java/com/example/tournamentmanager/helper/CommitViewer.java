@@ -7,14 +7,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeResult;
-import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.FetchResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,11 +37,15 @@ public class CommitViewer {
 
         try (Repository repository = new RepositoryBuilder().setGitDir(repo).build()) {
             try (Git git = new Git(repository)) {
-                PullResult pullResult = git.pull().call();
-                if (!pullResult.isSuccessful()) {
-                    error("Failed to fetch updates from the remote repository.");
+                // Fetch latest changes from the remote
+                FetchResult fetchResult = git.fetch().call();
+                if (fetchResult.getMessages() != null && !fetchResult.getMessages().isEmpty()) {
+                    error("Failed to fetch updates from the remote repository: " + fetchResult.getMessages());
                     return;
                 }
+
+                // Switch to the local master branch
+                git.checkout().setName("master").call();
 
                 ObjectId currentCommitId = repository.resolve("HEAD");
 
@@ -51,10 +54,10 @@ public class CommitViewer {
 
                     Iterable<RevCommit> commits = git.log().call();
                     for (RevCommit commit : commits) {
+                        newerCommits.add(commit.getShortMessage());
                         if (commit.getId().equals(currentCommitId)) {
                             break;
                         }
-                        newerCommits.add(commit.getShortMessage());
                     }
 
                     commitListView.getItems().addAll(newerCommits);
