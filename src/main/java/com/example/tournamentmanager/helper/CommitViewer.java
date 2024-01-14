@@ -1,5 +1,6 @@
 package com.example.tournamentmanager.helper;
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.example.tournamentmanager.helper.GeneralHelper.error;
 import static com.example.tournamentmanager.helper.GeneralHelper.info;
@@ -46,11 +48,9 @@ public class CommitViewer {
 
         commitListView = new ListView<>();
 
-        fetchUpdatesIntoTempDir();
-
-        displayCommits();
-
-        showResultWindow();
+        CompletableFuture.runAsync(this::fetchUpdatesIntoTempDir)
+                .thenRunAsync(this::displayCommits, Platform::runLater)
+                .thenRunAsync(this::showResultWindow, Platform::runLater);
     }
 
     private void fetchUpdatesIntoTempDir() {
