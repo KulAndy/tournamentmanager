@@ -109,7 +109,7 @@ public class ExcelOperation {
                 addRow(sheet, rowsNum++, "Contact Email", tournament.getEmail());
                 addRow(sheet, rowsNum++, "Internet homepage", "");
                 addRow(sheet, rowsNum++, "Prize Fund", "");
-                addRow(sheet, rowsNum++, "Remarks", "");
+                addRow(sheet, rowsNum, "Remarks", "");
 
                 sheet.autoSizeColumn(0);
                 sheet.autoSizeColumn(1);

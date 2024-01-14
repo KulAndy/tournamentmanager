@@ -716,7 +716,7 @@ public class SwsxTournament {
         }
     }
 
-    public class TournamentReportFide {
+    public static class TournamentReportFide {
         private String name;
         private String place;
         private Federation federation;
@@ -753,7 +753,7 @@ public class SwsxTournament {
                     Object fieldValue = field.get(this);
                     result.append(fieldName).append(": ").append(fieldValue).append("\n");
                 }
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException ignored) {
             }
             return result.toString();
         }
@@ -799,10 +799,9 @@ public class SwsxTournament {
         }
     }
 
-    public class SwsxPlayer {
-        private boolean forfeitFromTournament;
+    public static class SwsxPlayer {
+        private boolean withdrawFromTournament;
         private Player.Sex sex;
-        private Float manualTiebreak;
         private byte dayOfBorn;
         private byte monthOfBorn;
         private short yearOfBorn;
@@ -818,7 +817,6 @@ public class SwsxTournament {
         private String club;
         private String license;
         private String fullName;
-        private String state;
         private ArrayList<SwsxRound> rounds = new ArrayList<>();
 
         SwsxPlayer(Element cobarrayItem) throws XPathExpressionException {
@@ -891,12 +889,12 @@ public class SwsxTournament {
             setLicense(licence);
             setClub(club);
 
-            String hexString = Integer.toHexString(Integer.parseInt(playerId));
+            StringBuilder hexString = new StringBuilder(Integer.toHexString(Integer.parseInt(playerId)));
 
             while (hexString.length() < 24) {
-                hexString = "0" + hexString;
+                hexString.insert(0, "0");
             }
-            ObjectId uuid = new ObjectId(hexString);
+            ObjectId uuid = new ObjectId(hexString.toString());
             setPlayerId(uuid);
 
 
@@ -940,6 +938,10 @@ public class SwsxTournament {
                     forfeit = true;
                 }
 
+                if (playerStatus.equals("0")) {
+                    setWithdrawFromTournament(true);
+                }
+
                 rounds.add(new SwsxRound(color, Byte.parseByte(playerStatus), result, Float.parseFloat(resultPoints.replaceAll(",", ".")), Short.parseShort(opponentId), Short.parseShort(pairNo), forfeit));
             }
         }
@@ -968,12 +970,12 @@ public class SwsxTournament {
 
         }
 
-        public boolean isForfeitFromTournament() {
-            return forfeitFromTournament;
+        public boolean isWithdrawFromTournament() {
+            return withdrawFromTournament;
         }
 
-        public void setForfeitFromTournament(boolean forfeitFromTournament) {
-            this.forfeitFromTournament = forfeitFromTournament;
+        public void setWithdrawFromTournament(boolean withdrawFromTournament) {
+            this.withdrawFromTournament = withdrawFromTournament;
         }
 
         public Player.Sex getSex() {
@@ -982,14 +984,6 @@ public class SwsxTournament {
 
         public void setSex(Player.Sex sex) {
             this.sex = sex;
-        }
-
-        public Float getManualTiebreak() {
-            return manualTiebreak;
-        }
-
-        public void setManualTiebreak(Float manualTiebreak) {
-            this.manualTiebreak = manualTiebreak;
         }
 
         public byte getDayOfBorn() {
@@ -1112,14 +1106,6 @@ public class SwsxTournament {
             this.fullName = fullName;
         }
 
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-
         public ArrayList<SwsxRound> getRounds() {
             return rounds;
         }
@@ -1131,7 +1117,7 @@ public class SwsxTournament {
 
     }
 
-    public class SwsxRound {
+    public static class SwsxRound {
         private Player.Color color;
         private byte status;
         private Result result;
@@ -1139,10 +1125,6 @@ public class SwsxTournament {
         private short opponentId;
         private short pairNo;
         private boolean forfeit;
-
-        public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo) {
-            this(color, status, result, points, opponentId, pairNo, false);
-        }
 
         public SwsxRound(Player.Color color, byte status, Result result, Float points, short opponentId, short pairNo, boolean forfeit) {
             setColor(color);
@@ -1198,10 +1180,6 @@ public class SwsxTournament {
 
         public void setOpponentId(short opponentId) {
             this.opponentId = opponentId;
-        }
-
-        public short getPairNo() {
-            return pairNo;
         }
 
         public void setPairNo(short pairNo) {

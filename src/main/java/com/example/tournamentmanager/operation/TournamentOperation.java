@@ -111,6 +111,7 @@ public class TournamentOperation {
             } else {
                 controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(null);
             }
+            controller.getHomeTabHelper().getTiebreakHelper().getTourFIDEMode().setSelected(tournament.getTiebreak().isFIDEMode());
         }
     }
 
@@ -168,7 +169,6 @@ public class TournamentOperation {
         String json = gson.toJson(tournament);
         String tournamentFileName = "tournament.json";
         String settingsFileName = "settings.toml";
-        String tournamentFileContent = json;
 
         Path tempDir = Files.createTempDirectory("tempZip");
 
@@ -196,7 +196,7 @@ public class TournamentOperation {
         }
 
         Path tournamentFilePath = tempDir.resolve(tournamentFileName);
-        Files.write(tournamentFilePath, tournamentFileContent.getBytes());
+        Files.write(tournamentFilePath, json.getBytes());
 
         if (tournamentFileExists) {
             Files.copy(tournamentFilePath, tempDir.resolve(tournamentFileName), StandardCopyOption.REPLACE_EXISTING);

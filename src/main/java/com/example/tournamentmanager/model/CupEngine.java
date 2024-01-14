@@ -142,7 +142,6 @@ public class CupEngine implements Engine {
 
             for (int i = pairingA.size() - 1; i >= 0 && pairingA.size() < pairingB.size(); i--) {
                 Game game = pairingA.get(i);
-                Player player1 = game.getWhite();
                 Player player2 = game.getBlack();
                 player2.getRounds().remove(game);
                 pairingA.add(new Game(player2, players.getBye(), Result.WIN, Result.LOSE, true));
@@ -154,7 +153,6 @@ public class CupEngine implements Engine {
 
             for (int i = pairingB.size() - 1; i >= 0 && pairingA.size() > pairingB.size(); i--) {
                 Game game = pairingB.get(i);
-                Player player1 = game.getWhite();
                 Player player2 = game.getBlack();
                 player2.getRounds().remove(game);
                 pairingB.add(new Game(player2, players.getBye(), Result.WIN, Result.LOSE, true));
@@ -248,10 +246,6 @@ public class CupEngine implements Engine {
     public static class UnfinishedRound extends Exception {
         public UnfinishedRound() {
             super("Previous round has not been finished");
-        }
-
-        public UnfinishedRound(String message) {
-            super(message);
         }
     }
 }

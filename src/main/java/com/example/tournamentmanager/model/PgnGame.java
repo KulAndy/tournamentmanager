@@ -55,9 +55,7 @@ public class PgnGame {
             boolean startReading = false;
             byte counter = 0;
             while ((line = reader.readLine()) != null && counter < 2) {
-                if (!startReading && line.trim().isEmpty()) {
-                    continue;
-                } else {
+                if (!(!startReading && line.trim().isEmpty())) {
                     startReading = true;
                     if (line.isEmpty()) {
                         counter++;

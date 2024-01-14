@@ -160,11 +160,6 @@ public class BasicInfoHelper {
         return tourGameTime;
     }
 
-    private void setTourGameTime(short time) {
-        tourGameTime.setText(String.valueOf(time));
-        tournament.setGameTime(time);
-    }
-
     public void setTourGameTime(TextField tourGameTime) {
         this.tourGameTime = tourGameTime;
     }

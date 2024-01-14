@@ -70,9 +70,7 @@ public class ScheduleHelper {
             }
         });
 
-        getTournament().getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) e -> {
-            getScheduleTable().refresh();
-        });
+        getTournament().getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) e -> getScheduleTable().refresh());
         getScheduleTable().setItems(getTournament().getScheduleElementsObs());
     }
 

@@ -63,10 +63,10 @@ public class Game implements Serializable {
     public Float getPointsForWhite() {
         switch (blackName) {
             case "bye" -> {
-                return Player.getPointsForBye();
+                return Player.getByePoints();
             }
             case "halfbye" -> {
-                return Player.getPointsForHalfBye();
+                return Player.getHalfByePoints();
             }
             case "unpaired" -> {
                 return 0F;
@@ -78,13 +78,13 @@ public class Game implements Serializable {
         }
         switch (getWhiteResult()) {
             case WIN -> {
-                return Player.getPointsForWin();
+                return Player.getWinPoints();
             }
             case DRAW -> {
-                return Player.getPointsForDraw();
+                return Player.getDrawPoints();
             }
             case LOSE -> {
-                return Player.getPointsForLose();
+                return Player.getLosePoints();
             }
             default -> {
                 return Float.NaN;
@@ -98,22 +98,18 @@ public class Game implements Serializable {
         }
         switch (getBlackResult()) {
             case WIN -> {
-                return Player.getPointsForWin();
+                return Player.getWinPoints();
             }
             case DRAW -> {
-                return Player.getPointsForDraw();
+                return Player.getDrawPoints();
             }
             case LOSE -> {
-                return Player.getPointsForLose();
+                return Player.getLosePoints();
             }
             default -> {
                 return Float.NaN;
             }
         }
-    }
-
-    public Boolean isForfeit() {
-        return forfeit;
     }
 
     public void swapPlayers() {
@@ -185,7 +181,7 @@ public class Game implements Serializable {
         this.blackUUID = blackUUID;
     }
 
-    public Boolean getForfeit() {
+    public Boolean isForfeit() {
         return forfeit;
     }
 

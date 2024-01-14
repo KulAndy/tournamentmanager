@@ -106,9 +106,7 @@ public class ShortcutsHelper {
                     loadTournament(new Tournament(), controller);
                     controller.getTournamentSelect().setValue(null);
                 }
-                case S -> {
-                    save(controller);
-                }
+                case S -> save(controller);
                 case O -> open(controller);
                 case Q -> quit();
                 case P -> print();

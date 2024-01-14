@@ -132,13 +132,9 @@ public class ResultTableHelper {
 
         getResultsTable().setItems(getSortedPlayers());
 
-        getTournament().getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
-            setUnfilteredList();
-        });
+        getTournament().getPlayersObs().addListener((ListChangeListener<? super Player>) change -> setUnfilteredList());
 
-        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
-            setUnfilteredList();
-        });
+        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> setUnfilteredList());
 
     }
 

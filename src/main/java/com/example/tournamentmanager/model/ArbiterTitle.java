@@ -4,11 +4,11 @@ public enum ArbiterTitle {
     IA,
     FA,
     NA,
-    PAŃSTWOWA,
+    PANSTWOWA,
     PIERWSZA,
     DRUGA,
     TRZECIA,
-    MŁODZIEŻOWA;
+    MLODZIEZOWA;
 
     public static ArbiterTitle getAribterTitle(String symbol) {
         switch (symbol.toLowerCase()) {
@@ -19,7 +19,7 @@ public enum ArbiterTitle {
                 return FA;
             }
             case "p", "państwowa" -> {
-                return PAŃSTWOWA;
+                return PANSTWOWA;
             }
             case "i", "pierwsza" -> {
                 return PIERWSZA;
@@ -31,7 +31,7 @@ public enum ArbiterTitle {
                 return TRZECIA;
             }
             case "m", "młodzieżowa" -> {
-                return MŁODZIEŻOWA;
+                return MLODZIEZOWA;
             }
             case "na" -> {
                 return NA;

@@ -8,6 +8,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +37,7 @@ public class FIDEOperation {
                     standardProcessed[0] = 1;
                     convertXMLToSQLite("standard_rating_list.xml", "standard_rating_list.db");
                     standardProcessed[0] = 0;
-                } catch (IOException ignored) {
+                } catch (IOException | URISyntaxException ignored) {
                 }
                 return null;
             }
@@ -48,7 +50,7 @@ public class FIDEOperation {
                     rapidProcessed[0] = 1;
                     convertXMLToSQLite("rapid_rating_list.xml", "rapid_rating_list.db");
                     rapidProcessed[0] = 0;
-                } catch (IOException ignored) {
+                } catch (IOException | URISyntaxException ignored) {
                 }
                 return null;
             }
@@ -61,7 +63,7 @@ public class FIDEOperation {
                     blitzProcessed[0] = 1;
                     convertXMLToSQLite("blitz_rating_list.xml", "blitz_rating_list.db");
                     blitzProcessed[0] = 0;
-                } catch (IOException ignored) {
+                } catch (IOException | URISyntaxException ignored) {
                 }
                 return null;
             }
@@ -108,10 +110,11 @@ public class FIDEOperation {
 
     }
 
-    public static void downloadFIDEfile(String url, String filename) throws IOException {
+    public static void downloadFIDEfile(String url, String filename) throws IOException, URISyntaxException {
         String savePath = "./";
 
-        URL downloadUrl = new URL(url);
+        URI uri = new URI(url);
+        URL downloadUrl = uri.toURL();
         InputStream in = new BufferedInputStream(downloadUrl.openStream());
         Path archive = Path.of(savePath + filename);
         Files.copy(in, archive, StandardCopyOption.REPLACE_EXISTING);
@@ -173,7 +176,7 @@ public class FIDEOperation {
     }
 
     private static ArrayList<Player> searchInFideDb(String player, Tournament.Type type) throws SQLException {
-        Connection connection = null;
+        Connection connection;
         try {
             Class.forName("org.sqlite.JDBC");
             String url = "jdbc:sqlite:";
@@ -223,7 +226,7 @@ public class FIDEOperation {
     }
 
     private static ArrayList<Player> searchInPolDb(String player, Tournament.Type type) throws SQLException {
-        Connection connection = null;
+        Connection connection;
         try {
             Class.forName("org.sqlite.JDBC");
             String url = "jdbc:sqlite:rejestr_czlonkow.db";
@@ -339,7 +342,7 @@ public class FIDEOperation {
         ArrayList<Player> players = new ArrayList<>();
         Integer polId = player.getLocalId();
         if (polId != null && polId > 0) {
-            Connection connection = null;
+            Connection connection;
             try {
                 Class.forName("org.sqlite.JDBC");
                 String url = "jdbc:sqlite:rejestr_czlonkow.db";

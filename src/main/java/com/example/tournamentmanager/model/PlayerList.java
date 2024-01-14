@@ -16,7 +16,7 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
     private Player halfbye;
     private Player unpaired;
     private StartListComparator comparator;
-    private Map<ObjectId, Integer> uuid2startNo = new HashMap<ObjectId, Integer>();
+    private final Map<ObjectId, Integer> uuid2startNo = new HashMap<>();
 
     public PlayerList() {
         add("bye");
@@ -198,10 +198,6 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
 
     public Map<ObjectId, Integer> getUuid2startNo() {
         return uuid2startNo;
-    }
-
-    public void setUuid2startNo(Map<ObjectId, Integer> uuid2startNo) {
-        this.uuid2startNo = uuid2startNo;
     }
 
 }

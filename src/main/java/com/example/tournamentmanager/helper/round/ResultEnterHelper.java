@@ -137,7 +137,7 @@ public class ResultEnterHelper {
             Player white = game.getWhite();
             return new SimpleFloatProperty(white.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
-        getWhitePoints().setCellFactory(column -> new TableCell<Game, Float>() {
+        getWhitePoints().setCellFactory(column -> new TableCell<>() {
             {
                 setAlignment(javafx.geometry.Pos.CENTER);
             }
@@ -158,7 +158,7 @@ public class ResultEnterHelper {
             Player white = game.getWhite();
             return new SimpleIntegerProperty(white.getFideRating()).asObject();
         });
-        getWhiteRating().setCellFactory(column -> new TableCell<Game, Integer>() {
+        getWhiteRating().setCellFactory(column -> new TableCell<>() {
             {
                 setAlignment(javafx.geometry.Pos.CENTER);
             }
@@ -180,7 +180,7 @@ public class ResultEnterHelper {
             return new SimpleStringProperty(white.getName());
         });
 
-        getWhitePlayer().setCellFactory(column -> new TableCell<Game, String>() {
+        getWhitePlayer().setCellFactory(column -> new TableCell<>() {
             private final HBox content = new HBox(); // Use HBox or StackPane here
             private final Label label = new Label();
 
@@ -265,7 +265,7 @@ public class ResultEnterHelper {
             Player black = game.getBlack();
             return new SimpleIntegerProperty(black.getFideRating()).asObject();
         });
-        getBlackRating().setCellFactory(column -> new TableCell<Game, Integer>() {
+        getBlackRating().setCellFactory(column -> new TableCell<>() {
             {
                 setAlignment(javafx.geometry.Pos.CENTER);
             }
@@ -287,7 +287,7 @@ public class ResultEnterHelper {
             return new SimpleFloatProperty(black.getPointInRound(currentRoundNo.get() - 1)).asObject();
         });
 
-        getBlackPoints().setCellFactory(column -> new TableCell<Game, Float>() {
+        getBlackPoints().setCellFactory(column -> new TableCell<>() {
             {
                 setAlignment(javafx.geometry.Pos.CENTER);
             }
@@ -393,7 +393,7 @@ public class ResultEnterHelper {
                             } else {
                                 error("An error occurred during pairing");
                             }
-                            getTournament().setRoundsNumber((byte) (replays * Math.round(getTournament().getPlayersObs().size())));
+                            getTournament().setRoundsNumber((byte) (replays * (getTournament().getPlayersObs().size() - 1)));
                         });
                     } else if (getTournament().getSystem() == Tournament.TournamentSystem.CUP) {
                         int pairing = 0;
@@ -626,14 +626,6 @@ public class ResultEnterHelper {
 
     public void setEnginePairButton(Button enginePairButton) {
         this.enginePairButton = enginePairButton;
-    }
-
-    public ObservableList<Integer> getRoundsNumbersObs() {
-        return roundsNumbersObs;
-    }
-
-    public void setRoundsNumbersObs(ObservableList<Integer> roundsNumbersObs) {
-        this.roundsNumbersObs = roundsNumbersObs;
     }
 
     public ObservableList<Game> getCurrentRound() {

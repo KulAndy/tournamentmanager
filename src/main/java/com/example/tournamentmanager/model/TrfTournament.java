@@ -336,7 +336,7 @@ public class TrfTournament {
 
     }
 
-    public class TrfPlayer {
+    public static class TrfPlayer {
         private int startRank;
         private Player.Sex sex;
         private Title title;

@@ -5,6 +5,8 @@ import com.example.tournamentmanager.model.Player;
 import java.util.ArrayList;
 
 public class FIDECalculation {
+    public static final short RATING_FLOOR = 1000;
+
     public static int getAverageRating(ArrayList<Player> players) {
         int sum = 0;
         int count = 0;
@@ -146,6 +148,9 @@ public class FIDECalculation {
     }
 
     public static float getInitRating(ArrayList<Player> players, float points) {
+        if (players.size() == 0) {
+            return 0;
+        }
         float averageRating = getAverageRating(players);
         float percent = points / players.size();
         if (percent <= 0.5) {

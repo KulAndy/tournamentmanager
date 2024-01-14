@@ -19,6 +19,7 @@ public class JavafoWrapper implements Engine {
         File reportFile = new File(reportFilePath);
         outputFile.delete();
         reportFile.delete();
+        reportFile.createNewFile();
         saveTrfReport(trfReport(tournament), reportFile);
         List<String> command = new ArrayList<>();
         command.add(javaPath);

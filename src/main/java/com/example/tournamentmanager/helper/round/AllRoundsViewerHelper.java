@@ -19,11 +19,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AllRoundsViewerHelper {
+    private final VBox container = new VBox();
     private ScrollPane allRoundsScroll;
     private Tournament tournament;
-    private VBox container = new VBox();
 
     public AllRoundsViewerHelper(Tournament tournament, ScrollPane allRoundsScroll) {
         setAllRoundsScroll(allRoundsScroll);
@@ -155,7 +156,20 @@ public class AllRoundsViewerHelper {
                     return new SimpleIntegerProperty(rowIndex).asObject();
                 });
 
-                table.getColumns().addAll(leftBoardNo, whitePoints, whiteRating, whitePlayer, result, blackPlayer, blackRating, blackPoints, rightBoardNo);
+                List<TableColumn<Game, ?>> columns = new ArrayList<>();
+                columns.add(leftBoardNo);
+                columns.add(whitePoints);
+                columns.add(whiteRating);
+                columns.add(whitePlayer);
+                columns.add(result);
+                columns.add(blackPlayer);
+                columns.add(blackRating);
+                columns.add(blackPoints);
+                columns.add(rightBoardNo);
+
+                @SuppressWarnings("unchecked")
+                TableColumn<Game, ?>[] columnsArray = columns.toArray(new TableColumn[0]);
+                table.getColumns().addAll(columnsArray);
                 getContainer().getChildren().add(table);
             }
         });
@@ -192,10 +206,6 @@ public class AllRoundsViewerHelper {
 
     public VBox getContainer() {
         return container;
-    }
-
-    public void setContainer(VBox container) {
-        this.container = container;
     }
 
     private static class CenterAlignedTableCell<S, T> extends TableCell<S, T> {

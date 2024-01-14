@@ -19,6 +19,7 @@ import static com.example.tournamentmanager.helper.GeneralHelper.*;
 public class ManualPairingHelper {
     private final StringProperty whiteStart = new SimpleStringProperty("");
     private final StringProperty blackStart = new SimpleStringProperty("");
+    private final ObservableList<Player> paired = FXCollections.observableArrayList();
     private Tournament tournament;
     private ComboBox<Integer> roundUpdateSelect;
     private TextField whiteSearch;
@@ -36,7 +37,6 @@ public class ManualPairingHelper {
     private Button swapColorPairButton;
     private Button applyManualButton;
     private ListView<Game> pairsList;
-    private ObservableList<Player> paired = FXCollections.observableArrayList();
     private FilteredList<Player> whitePairedFilter;
     private FilteredList<Player> blackPairedFilter;
     private ObservableList<Integer> roundsNumbersObs = FXCollections.observableArrayList(1);
@@ -275,6 +275,9 @@ public class ManualPairingHelper {
                 }
             }
         });
+
+        getAutoColorCheckbox().setOnAction(e -> info("Coming soon"));
+        getPairRestButton().setOnAction(e -> info("Coming soon"));
     }
 
     public ObservableList<Integer> getRoundsNumbersObs() {
@@ -439,10 +442,6 @@ public class ManualPairingHelper {
 
     public ObservableList<Player> getPaired() {
         return paired;
-    }
-
-    public void setPaired(ObservableList<Player> paired) {
-        this.paired = paired;
     }
 
     public FilteredList<Player> getWhitePairedFilter() {

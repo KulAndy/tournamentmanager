@@ -117,7 +117,7 @@ public class ResultPredicate<T extends Player> implements Predicate<T> {
         };
     }
 
-    private <T extends Comparable<T>> boolean compare(CompareOperator compareOperator, T predicateValue, T value) {
+    private <T2 extends Comparable<T2>> boolean compare(CompareOperator compareOperator, T2 predicateValue, T2 value) {
         if (compareOperator == null) {
             return true;
         }

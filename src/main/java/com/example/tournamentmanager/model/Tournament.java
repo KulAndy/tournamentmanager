@@ -14,7 +14,6 @@ import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +21,13 @@ import static com.example.tournamentmanager.helper.GeneralHelper.ProgressMessage
 
 @XmlRootElement(name = "tournament")
 public class Tournament implements Serializable {
+    private final Tiebreak tiebreak = new Tiebreak();
+    private final transient ObservableList<ArrayList<Game>> roundsObs = FXCollections.observableArrayList();
+    private final ArrayList<Withdraw> withdraws = new ArrayList<>();
+    private final transient ObservableList<Withdraw> withdrawsObs = FXCollections.observableArrayList();
+    private final ArrayList<ResultPredicate<Player>> predicates = new ArrayList<>();
+    private final transient ObservableList<ResultPredicate<Player>> predicatesObs = FXCollections.observableArrayList();
+    private final transient ObservableList<Schedule.ScheduleElement> scheduleElementsObs = FXCollections.observableArrayList();
     private String name;
     private Date startDate;
     private Date endDate;
@@ -39,17 +45,10 @@ public class Tournament implements Serializable {
     private String organizer;
     private transient ObservableList<Player> playersObs;
     private PlayerList players = new PlayerList();
-    private Tiebreak tiebreak = new Tiebreak();
     private ArrayList<ArrayList<Game>> rounds = new ArrayList<>();
-    private transient ObservableList<ArrayList<Game>> roundsObs = FXCollections.observableArrayList();
     private PairingComparator pairingComparator;
     private ResultsComparator resultsComparator;
-    private ArrayList<Withdraw> withdraws = new ArrayList<>();
-    private transient ObservableList<Withdraw> withdrawsObs = FXCollections.observableArrayList();
-    private ArrayList<ResultPredicate<Player>> predicates = new ArrayList<>();
-    private transient ObservableList<ResultPredicate<Player>> predicatesObs = FXCollections.observableArrayList();
     private Schedule schedule;
-    private transient ObservableList<Schedule.ScheduleElement> scheduleElementsObs = FXCollections.observableArrayList();
     private Player.Color firstColor = null;
 
 
@@ -67,6 +66,9 @@ public class Tournament implements Serializable {
         }
 
         setRoundsNumber(swsxTournament.getRoundsNo());
+        setPlace(swsxTournament.getPlace());
+        getRating().setMaxTitle(swsxTournament.getMaxNorm());
+
         String allottedTimes = swsxTournament.getRate();
 
         String basicTimeRegex = "(\\d+)'|'*(\\d+)'*"; // Matches basic time in minutes
@@ -170,6 +172,15 @@ public class Tournament implements Serializable {
             playerTmp.setPlayerid(player.getPlayerId());
 
             players.add(playerTmp);
+            if (player.isWithdrawFromTournament()) {
+                getWithdrawsObs().add(
+                        new Withdraw(
+                                playerTmp,
+                                Withdraw.WithdrawType.TOURNAMENT,
+                                null
+                        )
+                );
+            }
         }
 
         for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
@@ -187,14 +198,14 @@ public class Tournament implements Serializable {
                     SwsxTournament.SwsxRound round = playerRounds.get(i);
                     Player white;
                     Player black;
-                    Result whiteResult = null;
+                    Result whiteResult;
                     Result blackResult = null;
-                    String hexString = Integer.toHexString(round.getOpponentId());
+                    StringBuilder hexString = new StringBuilder(Integer.toHexString(round.getOpponentId()));
 
                     while (hexString.length() < 24) {
-                        hexString = "0" + hexString;
+                        hexString.insert(0, "0");
                     }
-                    ObjectId opponentId = new ObjectId(hexString);
+                    ObjectId opponentId = new ObjectId(hexString.toString());
                     boolean forfeit = true;
                     if (round.getColor() == Player.Color.BLACK) {
                         black = players.get(player.getPlayerId());
@@ -288,7 +299,7 @@ public class Tournament implements Serializable {
                         blackResult = Result.WIN;
                         forfeit = true;
                         if (round.getStatus() == 0) {
-                            if (!isTournamentWithdrew(white)) {
+                            if (!isTournamentWithdraw(white)) {
                                 getWithdrawsObs().add(
                                         new Withdraw(
                                                 white,
@@ -386,6 +397,11 @@ public class Tournament implements Serializable {
 
         setPairingComparator(new PairingComparator(getPlayersObs()));
         setResultsComparator(new ResultsComparator(getTiebreak()));
+        getPlayers().getComparator().setCriteria1(swsxTournament.getSort0());
+        getPlayers().getComparator().setCriteria2(swsxTournament.getSort1());
+        getPlayers().getComparator().setCriteria3(swsxTournament.getSort2());
+        getPlayers().getComparator().setCriteria4(swsxTournament.getSort3());
+        getPlayers().getComparator().setCriteria5(swsxTournament.getSort4());
     }
 
 
@@ -782,7 +798,7 @@ public class Tournament implements Serializable {
         setResultsComparator(new ResultsComparator(getTiebreak()));
     }
 
-    public boolean isTournamentWithdrew(Player player) {
+    public boolean isTournamentWithdraw(Player player) {
         for (Withdraw withdraw : getWithdraws()) {
             if (withdraw.getPlayer() == player) {
                 return true;
@@ -820,57 +836,8 @@ public class Tournament implements Serializable {
     }
 
 
-    public void addPair(Game game) {
-        addPair(game, rounds.size() - 1);
-    }
-
-    public void addPair(Game game, int roundNo) {
-        rounds.get(roundNo).add(game);
-    }
-
-    public void addPair(ObjectId white, ObjectId black) {
-        addPair(white, black, rounds.size() - 1);
-    }
-
-    public void addPair(ObjectId white, ObjectId black, int roundNo) {
-        Player whitePlayer = players.get(white);
-        Player blackPlayer = players.get(black);
-        Game game = new Game(whitePlayer, blackPlayer);
-        rounds.get(roundNo).add(game);
-    }
-
     public ArrayList<Game> getRound(int roundNo) {
         return rounds.get(roundNo);
-    }
-
-    public void setGameResult(String white, String black, Result whiteResult, Result blackResult) {
-        setGameResult(white, black, whiteResult, blackResult, false);
-    }
-
-    public void setGameResult(String white, String black, Result whiteResult, Result blackResult, boolean forfeit) {
-        for (ArrayList<Game> round : rounds) {
-            for (Game game : round) {
-                if (
-                        Objects.equals(game.getWhite().getName(), white)
-                                && Objects.equals(game.getBlack().getName(), black)
-                ) {
-                    game.setWhiteResult(whiteResult);
-                    game.setBlackResult(blackResult);
-                    game.setForfeit(forfeit);
-                }
-            }
-        }
-    }
-
-    public void setGameResult(int roundNo, int boardNo, Result whiteResult, Result blackResult) {
-        setGameResult(roundNo, boardNo, whiteResult, blackResult, false);
-    }
-
-    public void setGameResult(int roundNo, int boardNo, Result whiteResult, Result blackResult, boolean forfeit) {
-        Game game = getRounds().get(roundNo).get(boardNo);
-        game.setWhiteResult(whiteResult);
-        game.setBlackResult(blackResult);
-        game.setForfeit(forfeit);
     }
 
     public Schedule getSchedule() {
@@ -879,10 +846,6 @@ public class Tournament implements Serializable {
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
-    }
-
-    public void newRound() {
-        rounds.add(new ArrayList<>());
     }
 
     public String getName() {
@@ -927,10 +890,6 @@ public class Tournament implements Serializable {
 
     public Tiebreak getTiebreak() {
         return tiebreak;
-    }
-
-    public void setTiebreak(Tiebreak tiebreak) {
-        this.tiebreak = tiebreak;
     }
 
     public Date getStartDate() {
@@ -1047,10 +1006,6 @@ public class Tournament implements Serializable {
         return playersObs;
     }
 
-    public void setPlayersObs(ObservableList<Player> playersObs) {
-        this.playersObs = playersObs;
-    }
-
     public PairingComparator getPairingComparator() {
         if (getSystem() == TournamentSystem.SWISS) {
             return pairingComparator;
@@ -1067,48 +1022,24 @@ public class Tournament implements Serializable {
         return roundsObs;
     }
 
-    public void setRoundsObs(ObservableList<ArrayList<Game>> roundsObs) {
-        this.roundsObs = roundsObs;
-    }
-
     public ArrayList<Withdraw> getWithdraws() {
         return withdraws;
-    }
-
-    public void setWithdraws(ArrayList<Withdraw> withdraws) {
-        this.withdraws = withdraws;
     }
 
     public ObservableList<Withdraw> getWithdrawsObs() {
         return withdrawsObs;
     }
 
-    public void setWithdrawsObs(ObservableList<Withdraw> withdrawsObs) {
-        this.withdrawsObs = withdrawsObs;
-    }
-
     public ArrayList<ResultPredicate<Player>> getPredicates() {
         return predicates;
-    }
-
-    public void setPredicates(ArrayList<ResultPredicate<Player>> predicates) {
-        this.predicates = predicates;
     }
 
     public ObservableList<ResultPredicate<Player>> getPredicatesObs() {
         return predicatesObs;
     }
 
-    public void setPredicatesObs(ObservableList<ResultPredicate<Player>> predicatesObs) {
-        this.predicatesObs = predicatesObs;
-    }
-
     public ObservableList<Schedule.ScheduleElement> getScheduleElementsObs() {
         return scheduleElementsObs;
-    }
-
-    public void setScheduleElementsObs(ObservableList<Schedule.ScheduleElement> scheduleElementsObs) {
-        this.scheduleElementsObs = scheduleElementsObs;
     }
 
     public Player.Color getFirstColor() {
@@ -1248,6 +1179,7 @@ public class Tournament implements Serializable {
 
         public void setWinPoints(Float winPoints) {
             this.winPoints = winPoints;
+            Player.setWinPoints(winPoints);
         }
 
         public Float getDrawPoints() {
@@ -1256,6 +1188,7 @@ public class Tournament implements Serializable {
 
         public void setDrawPoints(Float drawPoints) {
             this.drawPoints = drawPoints;
+            Player.setDrawPoints(drawPoints);
         }
 
         public Float getLosePoints() {
@@ -1264,6 +1197,7 @@ public class Tournament implements Serializable {
 
         public void setLosePoints(Float losePoints) {
             this.losePoints = losePoints;
+            Player.setLosePoints(losePoints);
         }
 
         public Float getForfeitWinPoints() {
@@ -1272,6 +1206,7 @@ public class Tournament implements Serializable {
 
         public void setForfeitWinPoints(Float forfeitWinPoints) {
             this.forfeitWinPoints = forfeitWinPoints;
+            Player.setForfeitWinPoints(forfeitWinPoints);
         }
 
         public Float getForfeitLosePoints() {
@@ -1280,6 +1215,7 @@ public class Tournament implements Serializable {
 
         public void setForfeitLosePoints(Float forfeitLosePoints) {
             this.forfeitLosePoints = forfeitLosePoints;
+            Player.setForfeitLosePoints(forfeitLosePoints);
         }
 
         public Float getByePoints() {
@@ -1288,6 +1224,7 @@ public class Tournament implements Serializable {
 
         public void setByePoints(Float byePoints) {
             this.byePoints = byePoints;
+            Player.setByePoints(byePoints);
         }
 
         public enum TbMethod implements Serializable {
@@ -1514,7 +1451,7 @@ public class Tournament implements Serializable {
         }
 
         public void setPZSzach47(Boolean PZSzach47) {
-            if (PZSzach47) {
+            if (PZSzach47 != null) {
                 this.PZSzach47 = PZSzach47;
             }
         }

@@ -25,8 +25,8 @@ import static com.example.tournamentmanager.helper.GeneralHelper.info;
 
 public class CommitViewer {
 
-    private ListView<String> commitListView;
     private final File repo = new File(".", ".git");
+    private ListView<String> commitListView;
 
     public void displayCommitViewer() {
         if (!repo.exists()) {

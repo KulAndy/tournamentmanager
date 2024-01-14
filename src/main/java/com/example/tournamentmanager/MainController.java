@@ -49,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -368,11 +369,7 @@ public class MainController implements Initializable {
     @FXML
     private Label playerCardTB5Value;
     @FXML
-    private Label playerCardElo;
-    @FXML
     private Label playerCardEloValue;
-    @FXML
-    private Label playerCardPZSzach;
     @FXML
     private Label playerCardPZSzachValue;
     @FXML
@@ -389,8 +386,6 @@ public class MainController implements Initializable {
     private TableColumn<Game, String> playerCardOppName;
     @FXML
     private TableColumn<Game, Integer> playerCardOppRtg;
-    @FXML
-    private GridPane cardGrid;
 
     private RoundsHelper roundsHelper;
     @FXML
@@ -617,7 +612,7 @@ public class MainController implements Initializable {
     @FXML
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
-        homeTabHelper = new HomeTabHelper(
+        setHomeTabHelper(new HomeTabHelper(
                 tournament, tourName, tourStartDate, tourEndDate, tourPlace, tourGameTime,
                 tourIncrement, tourControlMove, tourControlAddition, tourType, tourRtPZSzach, tourRtFIDE,
                 tourNoRounds, tourSystem, tourArbiter, tourOrganizer, tourEmail,
@@ -627,8 +622,8 @@ public class MainController implements Initializable {
                 pointsBye, pointsHalfBye,
                 minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,
                 scheduleTable, scheduleName, scheduleDate
-        );
-        playersHelper = new PlayersHelper(
+        ));
+        setPlayersHelper(new PlayersHelper(
                 tournament,
                 correctFide, correctPl,
                 playersListTable,
@@ -648,12 +643,12 @@ public class MainController implements Initializable {
                 playerCardName, playerCardTB1, playerCardTB1Value,
                 playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
                 playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
-                playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
+                playerCardEloValue, playerCardPZSzachValue,
                 playerCardGames, playerCardOppRound, playerCardOppColor, playerCardOppResult,
-                playerCardOppTitle, playerCardOppName, playerCardOppRtg, cardGrid
-        );
+                playerCardOppTitle, playerCardOppName, playerCardOppRtg
+        ));
 
-        roundsHelper = new RoundsHelper(
+        setRoundsHelper(new RoundsHelper(
                 tournament, roundUpdateSelect, whiteSearch, blackSearch, whiteList, blackList,
                 autoColorCheckbox, pairRestButton, pairButton, whithdrawButton, byePairButton, halfByePairButton,
                 clearManualButton, unpairButton, swapColorPairButton,
@@ -665,7 +660,7 @@ public class MainController implements Initializable {
                 withdrawPlayerSelect, withdrawTypeSelect, withdrawRound, acceptWithdrawButton, withdrawTable,
                 withdrawNoCol, withdrawNameCol, withdrawTypeCol, withdrawRoundCol, withdrawBackCol
 
-        );
+        ));
 
         setTablesHelper(new TablesHelper(
                 tournament, rtgPolTable, rtPolId, rtPolTitle, rtPolName, rtPolGames, rtPolPoints, rtPolAverage, rtPolPerformance, rtPolNorm, rtPolRemarks,
@@ -723,12 +718,8 @@ public class MainController implements Initializable {
             setFile(null);
         });
         getQuitMenu().setOnAction(e -> quit());
-        getSaveAsMenu().setOnAction(e -> {
-            saveAs(this);
-        });
-        getSaveMenu().setOnAction(e -> {
-            save(this);
-        });
+        getSaveAsMenu().setOnAction(e -> saveAs(this));
+        getSaveMenu().setOnAction(e -> save(this));
         getNewButton().setOnAction(e -> {
             save(this);
             setTournament(new Tournament());
@@ -736,9 +727,7 @@ public class MainController implements Initializable {
             tournamentSelect.setValue(null);
             setFile(null);
         });
-        getSaveButton().setOnAction(e -> {
-            save(this);
-        });
+        getSaveButton().setOnAction(e -> save(this));
         getOpenMenu().setOnAction(e -> open(this));
         getOpenButton().setOnAction(e -> open(this));
         getPrintButton().setOnAction(e -> shortcutsHelper.print());
@@ -746,7 +735,7 @@ public class MainController implements Initializable {
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         about.setOnAction(e -> {
             try {
-                Desktop.getDesktop().open(new File(this.getClass().getResource("man.pdf").toURI()));
+                Desktop.getDesktop().open(new File(Objects.requireNonNull(this.getClass().getResource("man.pdf")).toURI()));
             } catch (Exception ex) {
                 error("Could open manual");
                 try {
@@ -766,7 +755,8 @@ public class MainController implements Initializable {
                         serverUrl = toml.getTable("remote").getString("api");
                     } catch (Exception ex) {
                         try {
-                            URL defaultTomlURL = new URL("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                            URI uri = new URI("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                            URL defaultTomlURL = uri.toURL();
                             byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
                             String defaultTomlContent = new String(defaultTomlBytes);
 
@@ -785,7 +775,7 @@ public class MainController implements Initializable {
 
                             HttpClient httpClient = HttpClients.createDefault();
                             HttpPost httpPost = new HttpPost(serverUrl + "/upload");
-                            ArrayList<String> lines = null;
+                            ArrayList<String> lines;
                             try {
                                 lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
                             } catch (IOException ex) {
@@ -800,7 +790,7 @@ public class MainController implements Initializable {
 
                                 httpPost.setHeader("login", login);
                                 httpPost.setHeader("hash", hashedPassword);
-                            }else {
+                            } else {
                                 error("Corrupted auth file");
                                 return;
                             }
@@ -887,24 +877,16 @@ public class MainController implements Initializable {
                                 }
                             }
                         }));
-        checkUpdates.setOnAction(e -> {
-            Platform.runLater(() -> {
-                CommitViewer commitViewer = new CommitViewer();
-                commitViewer.displayCommitViewer();
-            });
-        });
-        downloadFideMenu.setOnAction(e -> {
-            CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
-                    .exceptionally(ex -> null);
-        });
-        downloadFideButton.setOnAction(e -> {
-            CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
-                    .exceptionally(ex -> null);
-        });
-        downloadPolButton.setOnAction(e -> {
-            CompletableFuture.runAsync(FileOperation::downloadPolList)
-                    .exceptionally(ex -> null);
-        });
+        checkUpdates.setOnAction(e -> Platform.runLater(() -> {
+            CommitViewer commitViewer = new CommitViewer();
+            commitViewer.displayCommitViewer();
+        }));
+        downloadFideMenu.setOnAction(e -> CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
+                .exceptionally(ex -> null));
+        downloadFideButton.setOnAction(e -> CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
+                .exceptionally(ex -> null));
+        downloadPolButton.setOnAction(e -> CompletableFuture.runAsync(FileOperation::downloadPolList)
+                .exceptionally(ex -> null));
         importPgn.setOnAction(e -> TournamentOperation.importPgn(this));
 
         randomTournament.setOnAction(e -> {
@@ -979,9 +961,7 @@ public class MainController implements Initializable {
             }
         });
 
-        closeMenu.setOnAction(e -> {
-            files.remove(getFile());
-        });
+        closeMenu.setOnAction(e -> files.remove(getFile()));
         tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
             if (newValue != oldValue && newValue != getFile() && newValue != null) {
                 save(this);
@@ -1429,11 +1409,11 @@ public class MainController implements Initializable {
         this.homeTabHelper = homeTabHelper;
     }
 
-    public TableColumn getDeleteCol() {
+    public TableColumn<Player, Void> getDeleteCol() {
         return deleteCol;
     }
 
-    public void setDeleteCol(TableColumn deleteCol) {
+    public void setDeleteCol(TableColumn<Player, Void> deleteCol) {
         this.deleteCol = deleteCol;
     }
 

@@ -54,9 +54,7 @@ public class FideTableHelper {
         getRtgFideChg().setCellValueFactory(new PropertyValueFactory<>("fideChange"));
         getRtgFideTable().setItems(tournament.getPlayersObs());
 
-        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
-            getRtgFideTable().refresh();
-        });
+        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> getRtgFideTable().refresh());
 
     }
 

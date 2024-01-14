@@ -8,8 +8,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-import java.lang.reflect.Method;
-
 import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class TiebreakHelper {
@@ -51,13 +49,13 @@ public class TiebreakHelper {
         setPointsBye(pointsBye);
         setPointsHalfBye(pointsHalfBye);
 
-        bindPointField(getPointsWin(), getTournament().getTiebreak(), "winPoints", "pointsForWin");
-        bindPointField(getPointsDraw(), getTournament().getTiebreak(), "drawPoints", "pointsForDraw");
-        bindPointField(getPointsLose(), getTournament().getTiebreak(), "losePoints", "pointsForLose");
-        bindPointField(getPointsForfeitWin(), getTournament().getTiebreak(), "forfeitWinPoints", "pointsForForfeitWin");
-        bindPointField(getPointsForfeitLose(), getTournament().getTiebreak(), "forfeitLosePoints", "pointsForForfeitLose");
-        bindPointField(getPointsBye(), getTournament().getTiebreak(), "byePoints", "pointsForBye");
-        bindPointField(getPointsHalfBye(), getTournament().getTiebreak(), "halfByePoints", "pointsForHalfBye");
+        bindPointField(getPointsWin(), getTournament().getTiebreak(), "winPoints");
+        bindPointField(getPointsDraw(), getTournament().getTiebreak(), "drawPoints");
+        bindPointField(getPointsLose(), getTournament().getTiebreak(), "losePoints");
+        bindPointField(getPointsForfeitWin(), getTournament().getTiebreak(), "forfeitWinPoints");
+        bindPointField(getPointsForfeitLose(), getTournament().getTiebreak(), "forfeitLosePoints");
+        bindPointField(getPointsBye(), getTournament().getTiebreak(), "byePoints");
+        bindPointField(getPointsHalfBye(), getTournament().getTiebreak(), "halfByePoints");
 
         validateTextFieldFloat(getPointsWin());
         validateTextFieldFloat(getPointsDraw());
@@ -96,19 +94,12 @@ public class TiebreakHelper {
         getTourFIDEMode().setSelected(true);
     }
 
-    public void bindPointField(TextField tf, Object obj, String tbAttr, String plAttr) {
+    public void bindPointField(TextField tf, Object obj, String tbAttr) {
         bindTextFieldFloat(tf, obj, tbAttr);
-        try {
-            Method setter = Player.class.getMethod("set" + Character.toUpperCase(plAttr.charAt(0)) + plAttr.substring(1), Float.class);
-            Method getter1 = obj.getClass().getMethod("get" + Character.toUpperCase(tbAttr.charAt(0)) + tbAttr.substring(1));
-            tf.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                try {
-                    setter.invoke(null, getter1.invoke(obj));
-                } catch (Exception ignored) {
-                }
-            });
-        } catch (Exception ignored) {
-        }
+        tf.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            getTournament().getPlayersObs().add(new Player());
+            getTournament().getPlayersObs().remove(getTournament().getPlayersObs().size() - 1);
+        });
     }
 
     public void setupFIDEMode() {

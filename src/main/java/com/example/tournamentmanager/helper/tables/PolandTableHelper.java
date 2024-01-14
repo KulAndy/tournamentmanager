@@ -58,9 +58,7 @@ public class PolandTableHelper {
         getRtgPolTable().setItems(getTournament().getPlayersObs());
 
 
-        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
-            getRtgPolTable().refresh();
-        });
+        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> getRtgPolTable().refresh());
     }
 
     public Tournament getTournament() {

@@ -8,7 +8,6 @@ import com.example.tournamentmanager.helper.players.StartListHelper;
 import com.example.tournamentmanager.model.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 
 public class PlayersHelper {
     private Tournament tournament;
@@ -42,11 +41,11 @@ public class PlayersHelper {
             Label playerCardName, Label playerCardTB1, Label playerCardTB1Value,
             Label playerCardTB2, Label playerCardTB2Value, Label playerCardTB3, Label playerCardTB3Value,
             Label playerCardTB4, Label playerCardTB4Value, Label playerCardTB5, Label playerCardTB5Value,
-            Label playerCardElo, Label playerCardEloValue, Label playerCardPZSzach, Label playerCardPZSzachValue,
+            Label playerCardEloValue, Label playerCardPZSzachValue,
             TableView<Game> playerCardGames, TableColumn<Game, Integer> playerCardOppRound,
             TableColumn<Game, Player.Color> playerCardOppColor, TableColumn<Game, String> playerCardOppResult,
             TableColumn<Game, Title> playerCardOppTitle, TableColumn<Game, String> playerCardOppName,
-            TableColumn<Game, Integer> playerCardOppRtg, GridPane cardGrid
+            TableColumn<Game, Integer> playerCardOppRtg
 
     ) {
         setTournament(tournament);
@@ -87,9 +86,9 @@ public class PlayersHelper {
                         playerCardName, playerCardTB1, playerCardTB1Value,
                         playerCardTB2, playerCardTB2Value, playerCardTB3, playerCardTB3Value,
                         playerCardTB4, playerCardTB4Value, playerCardTB5, playerCardTB5Value,
-                        playerCardElo, playerCardEloValue, playerCardPZSzach, playerCardPZSzachValue,
+                        playerCardEloValue, playerCardPZSzachValue,
                         playerCardGames, playerCardOppRound, playerCardOppColor, playerCardOppResult,
-                        playerCardOppTitle, playerCardOppName, playerCardOppRtg, cardGrid
+                        playerCardOppTitle, playerCardOppName, playerCardOppRtg
 
                 )
         );

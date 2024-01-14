@@ -9,7 +9,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 
 public class PlayerCardHelper {
     private Tournament tournament;
@@ -25,9 +24,7 @@ public class PlayerCardHelper {
     private Label playerCardTB4Value;
     private Label playerCardTB5;
     private Label playerCardTB5Value;
-    private Label playerCardElo;
     private Label playerCardEloValue;
-    private Label playerCardPZSzach;
     private Label playerCardPZSzachValue;
     private TableView<Game> playerCardGames;
     private TableColumn<Game, Integer> playerCardOppRound;
@@ -44,11 +41,11 @@ public class PlayerCardHelper {
             Label playerCardName, Label playerCardTB1, Label playerCardTB1Value,
             Label playerCardTB2, Label playerCardTB2Value, Label playerCardTB3, Label playerCardTB3Value,
             Label playerCardTB4, Label playerCardTB4Value, Label playerCardTB5, Label playerCardTB5Value,
-            Label playerCardElo, Label playerCardEloValue, Label playerCardPZSzach, Label playerCardPZSzachValue,
+            Label playerCardEloValue, Label playerCardPZSzachValue,
             TableView<Game> playerCardGames, TableColumn<Game, Integer> playerCardOppRound,
             TableColumn<Game, Player.Color> playerCardOppColor, TableColumn<Game, String> playerCardOppResult,
             TableColumn<Game, Title> playerCardOppTitle, TableColumn<Game, String> playerCardOppName,
-            TableColumn<Game, Integer> playerCardOppRtg, GridPane cardGrid
+            TableColumn<Game, Integer> playerCardOppRtg
     ) {
         setTournament(tournament);
         setPlayerCardSelect(playerCardSelect);
@@ -95,9 +92,7 @@ public class PlayerCardHelper {
         setPlayerCardTB5(playerCardTB5);
         getPlayerCardTB5().setText(String.valueOf(getTournament().getTiebreak().getTiebreak5()));
         setPlayerCardTB5Value(playerCardTB5Value);
-        setPlayerCardElo(playerCardElo);
         setPlayerCardEloValue(playerCardEloValue);
-        setPlayerCardPZSzach(playerCardPZSzach);
         setPlayerCardPZSzachValue(playerCardPZSzachValue);
 
         setPlayerCardGames(playerCardGames);
@@ -158,7 +153,7 @@ public class PlayerCardHelper {
                         (color == Player.Color.WHITE && game.getWhiteResult() == Result.DRAW)
                                 || (color == Player.Color.BLACK && game.getBlackResult() == Result.DRAW)
                 ) {
-                    result = "\u00BD";
+                    result = "½";
                 } else {
                     result = "0";
                 }
@@ -294,28 +289,12 @@ public class PlayerCardHelper {
         this.playerCardTB5Value = playerCardTB5Value;
     }
 
-    public Label getPlayerCardElo() {
-        return playerCardElo;
-    }
-
-    public void setPlayerCardElo(Label playerCardElo) {
-        this.playerCardElo = playerCardElo;
-    }
-
     public Label getPlayerCardEloValue() {
         return playerCardEloValue;
     }
 
     public void setPlayerCardEloValue(Label playerCardEloValue) {
         this.playerCardEloValue = playerCardEloValue;
-    }
-
-    public Label getPlayerCardPZSzach() {
-        return playerCardPZSzach;
-    }
-
-    public void setPlayerCardPZSzach(Label playerCardPZSzach) {
-        this.playerCardPZSzach = playerCardPZSzach;
     }
 
     public Label getPlayerCardPZSzachValue() {

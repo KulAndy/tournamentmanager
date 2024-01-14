@@ -14,10 +14,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -337,7 +334,15 @@ public class GeneralHelper {
                 Toml toml = new Toml().read(new File("settings.toml"));
                 String serverUrl = toml.getTable("remote").getString("api");
 
-                URL url = new URL(serverUrl + "login");
+                URL url;
+                try {
+                    URI uri = new URI(serverUrl + "login");
+                    url = uri.toURL();
+                } catch (URISyntaxException | MalformedURLException ex) {
+                    error("Couldn't connect with server");
+                    ex.printStackTrace();
+                    return;
+                }
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");
@@ -354,7 +359,7 @@ public class GeneralHelper {
 
                 int responseCode = connection.getResponseCode();
 
-                if (responseCode >= 200 && responseCode < 300){
+                if (responseCode >= 200 && responseCode < 300) {
                     StringBuilder responseContent = new StringBuilder();
                     try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                         String line;
@@ -367,15 +372,15 @@ public class GeneralHelper {
                         out.write((username + "\n").getBytes());
                         out.write(responseContent.toString().getBytes());
                         info("Login successfully");
-                    }catch (IOException e1){
+                    } catch (IOException e1) {
                         error("Couldn't save password hash");
                     }
                 } else if (responseCode >= 400 && responseCode < 500) {
-                    if (responseCode == 400){
+                    if (responseCode == 400) {
                         error("Wrong form data - no login, email or password");
                     } else if (responseCode == 403) {
                         error("Authentication failed");
-                    }else {
+                    } else {
                         error("Client status code: " + responseCode);
                     }
                 } else {
@@ -431,7 +436,15 @@ public class GeneralHelper {
                     serverUrl = toml.getTable("remote").getString("api");
                 } catch (Exception ex) {
                     try {
-                        URL defaultTomlURL = new URL("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                        URL defaultTomlURL;
+                        try {
+                            URI uri = new URI("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                            defaultTomlURL = uri.toURL();
+                        } catch (URISyntaxException | MalformedURLException ex1) {
+                            error("Couldn't connect with server");
+                            ex1.printStackTrace();
+                            return;
+                        }
                         byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
                         String defaultTomlContent = new String(defaultTomlBytes);
 
@@ -443,7 +456,15 @@ public class GeneralHelper {
                     }
                 }
                 try {
-                    URL url = new URL(serverUrl + "register");
+                    URL url;
+                    try {
+                        URI uri = new URI(serverUrl + "register");
+                        url = uri.toURL();
+                    } catch (URISyntaxException | MalformedURLException ex) {
+                        error("Couldn't connect with server");
+                        ex.printStackTrace();
+                        return;
+                    }
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -509,7 +530,7 @@ public class GeneralHelper {
         private final ProgressBar progressBar;
         private final Label label;
 
-        public ProgressMessageBox(String title, double maxValue) {
+        public ProgressMessageBox(String title) {
             stage = new Stage();
             stage.setTitle(title);
 

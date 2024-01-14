@@ -100,7 +100,7 @@ public class StartListComparator implements Comparator<Player>, Serializable {
                 return -player1.getDateOfBirth().compareTo(player2.getDateOfBirth());
             }
             case ALPHABETIC -> {
-                Collator collator = Collator.getInstance(new Locale("pl", "PL"));
+                Collator collator = Collator.getInstance(new Locale.Builder().setLanguage("pl").setRegion("PL").build());
                 return collator.compare(player1.getName(), player2.getName());
             }
             case RANDOM -> {

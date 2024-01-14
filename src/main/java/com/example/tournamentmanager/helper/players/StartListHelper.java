@@ -81,7 +81,7 @@ public class StartListHelper {
                 error("Can't find fide list");
                 return;
             }
-            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
+            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog");
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
 
@@ -92,9 +92,7 @@ public class StartListHelper {
                         Player player = getTournament().getPlayersObs().get(i);
 
                         float finalI = i + 1;
-                        Platform.runLater(() -> {
-                            progressMessageBox.setValue(finalI / n);
-                        });
+                        Platform.runLater(() -> progressMessageBox.setValue(finalI / n));
 
                         ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
                         if (players.size() == 1) {
@@ -120,7 +118,7 @@ public class StartListHelper {
                 error("Can't found polish list");
                 return;
             }
-            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog", 1.0);
+            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog");
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
 
@@ -131,9 +129,7 @@ public class StartListHelper {
                         Player player = getTournament().getPlayersObs().get(i);
 
                         float finalI = i + 1;
-                        Platform.runLater(() -> {
-                            progressMessageBox.setValue(finalI / n);
-                        });
+                        Platform.runLater(() -> progressMessageBox.setValue(finalI / n));
 
                         ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
                         if (players.size() == 1) {
