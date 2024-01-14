@@ -20,6 +20,7 @@ module com.example.tournamentmanager {
     requires toml4j;
     requires org.mongodb.bson;
     requires org.jetbrains.annotations;
+    requires org.eclipse.jgit;
 
     opens com.example.tournamentmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
     opens com.example.tournamentmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;

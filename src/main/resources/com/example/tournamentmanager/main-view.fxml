@@ -94,8 +94,9 @@
                 <Menu mnemonicParsing="false" text="Internet">
                     <items>
                         <MenuItem fx:id="upload" mnemonicParsing="false" text="↥ Upload" />
-                        <MenuItem fx:id="login" mnemonicParsing="false" text="Login" />
-                        <MenuItem fx:id="register" mnemonicParsing="false" text="Register" />
+                        <MenuItem fx:id="login" mnemonicParsing="false" text="🔑Login" />
+                        <MenuItem fx:id="register" mnemonicParsing="false" text="📝 Register" />
+                  <MenuItem fx:id="checkUpdates" mnemonicParsing="false" text="🔄 check updates" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">

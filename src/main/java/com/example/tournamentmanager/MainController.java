@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 import com.moandjiezana.toml.Toml;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -111,6 +112,8 @@ public class MainController implements Initializable {
     private MenuItem login;
     @FXML
     private MenuItem register;
+    @FXML
+    private MenuItem checkUpdates;
     @FXML
     private MenuItem about;
 
@@ -884,6 +887,12 @@ public class MainController implements Initializable {
                                 }
                             }
                         }));
+        checkUpdates.setOnAction(e -> {
+            Platform.runLater(() -> {
+                CommitViewer commitViewer = new CommitViewer();
+                commitViewer.displayCommitViewer();
+            });
+        });
         downloadFideMenu.setOnAction(e -> {
             CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
                     .exceptionally(ex -> null);
