@@ -76,10 +76,10 @@ public class CommitViewer {
 
                 Iterable<RevCommit> remoteCommits = git.log().call();
                 for (RevCommit commit : remoteCommits) {
-                    newerCommits.add(commit.getShortMessage());
                     if (commit.getId().equals(currentCommitId)) {
                         break;
                     }
+                    newerCommits.add(commit.getShortMessage());
                 }
 
                 commitListView.getItems().addAll(newerCommits);
