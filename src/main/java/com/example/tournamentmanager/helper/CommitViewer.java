@@ -1,6 +1,6 @@
 package com.example.tournamentmanager.helper;
 
-import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -14,6 +14,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,45 +49,71 @@ public class CommitViewer {
 
         commitListView = new ListView<>();
 
-        CompletableFuture.runAsync(this::fetchUpdatesIntoTempDir)
-                .thenRunAsync(this::displayCommits, Platform::runLater)
-                .thenRunAsync(this::showResultWindow, Platform::runLater);
+        Task<Void> fetchAndDisplayTask = getFetchAndDisplayTask();
+
+        CompletableFuture.runAsync(fetchAndDisplayTask);
     }
 
-    private void fetchUpdatesIntoTempDir() {
-        try (Repository repository = new RepositoryBuilder().setGitDir(repo).build();
-             Git git = Git.cloneRepository()
-                     .setURI(repository.getConfig().getString("remote", "origin", "url"))
-                     .setDirectory(tempDir.toFile())
-                     .call()) {
+    @NotNull
+    private Task<Void> getFetchAndDisplayTask() {
+        Task<Void> fetchAndDisplayTask = new Task<>() {
+            @Override
+            protected Void call() {
+                Repository repository = fetchUpdatesIntoTempDir();
+                if (repository != null) {
+                    displayCommits(repository);
+                }
+                return null;
+            }
+        };
+
+        fetchAndDisplayTask.setOnSucceeded(event -> showResultWindow());
+
+        fetchAndDisplayTask.setOnFailed(event -> {
+            error("Failed to fetch updates into the temporary directory");
+            removeTempDir();
+        });
+        return fetchAndDisplayTask;
+    }
+
+    private Repository fetchUpdatesIntoTempDir() {
+        try {
+            Repository repository = new RepositoryBuilder().setGitDir(repo).build();
+            Git git = Git.cloneRepository()
+                    .setURI(repository.getConfig().getString("remote", "origin", "url"))
+                    .setDirectory(tempDir.toFile())
+                    .call();
             git.fetch().call();
+            return repository;
         } catch (IOException | GitAPIException e) {
-            error("Couldn't fetch updates into temporary directory");
+            return null;
         }
     }
 
-    private void displayCommits() {
-        try (Repository repository = new RepositoryBuilder().setGitDir(tempDir.resolve(".git").toFile()).build();
-             Git git = new Git(repository)) {
+    private void displayCommits(Repository repository) {
+        try (Git git = new Git(repository)) {
+            // Use tempRepo instead of the local repository
+            try (Repository tempRepo = new RepositoryBuilder().setGitDir(tempDir.resolve(".git").toFile()).build();
+                 Git tempGit = new Git(tempRepo)) {
 
-            ObjectId currentCommitId = repository.resolve("HEAD");
+                ObjectId currentCommitId = repository.resolve("HEAD");
 
-            if (currentCommitId != null) {
-                List<String> newerCommits = new ArrayList<>();
+                if (currentCommitId != null) {
+                    List<String> newerCommits = new ArrayList<>();
 
-                Iterable<RevCommit> remoteCommits = git.log().call();
-                for (RevCommit commit : remoteCommits) {
-                    if (commit.getId().equals(currentCommitId)) {
-                        break;
+                    Iterable<RevCommit> remoteCommits = tempGit.log().call();
+                    for (RevCommit commit : remoteCommits) {
+                        if (commit.getId().equals(currentCommitId)) {
+                            break;
+                        }
+                        newerCommits.add(commit.getShortMessage());
                     }
-                    newerCommits.add(commit.getShortMessage());
+
+                    commitListView.getItems().addAll(newerCommits);
                 }
-
-                commitListView.getItems().addAll(newerCommits);
-
+            } catch (IOException | GitAPIException e) {
+                error("Couldn't display commits");
             }
-        } catch (IOException | GitAPIException e) {
-            error("Couldn't display commits");
         }
     }
 
@@ -145,7 +172,7 @@ public class CommitViewer {
                     if (selectedCommitId != null) {
                         tempGit.reset().setRef(selectedCommitId).setMode(ResetCommand.ResetType.HARD).call();
 
-                        copyFiles(tempDir, Path.of("."));
+                        copyFiles(tempDir, Paths.get("."));
 
                         MergeResult mergeResult = git.merge().include(tempRepo.resolve(selectedCommitId)).call();
 
