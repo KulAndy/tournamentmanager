@@ -79,7 +79,6 @@ public class CommitViewer {
             Repository localRepository = new RepositoryBuilder().setGitDir(repo).build();
 
             String remoteUrl = localRepository.getConfig().getString("remote", "origin", "url");
-            System.out.println(remoteUrl);
 
             if (remoteUrl == null || remoteUrl.isEmpty()) {
                 error("Remote URL not found in the local repository.");
@@ -114,8 +113,6 @@ public class CommitViewer {
 
                 List<String> newerCommits = new ArrayList<>();
                 for (RevCommit commit : remoteCommits) {
-                    System.out.println(commit.getShortMessage());
-                    System.out.println(commit.getId());
                     if (commit.getId().equals(localCommitId)) {
                         break;
                     }
