@@ -7,7 +7,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
@@ -18,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -40,14 +39,9 @@ public class CommitViewer {
             return;
         }
 
-        try {
-            tempDir = Files.createTempDirectory("tempGitRepo");
-        } catch (IOException e) {
-            error("Failed to create a temporary directory");
-            return;
-        }
-
         commitListView = new ListView<>();
+        commitListView.setMouseTransparent(true);
+        commitListView.setFocusTraversable(false);
 
         Task<Void> fetchAndDisplayTask = getFetchAndDisplayTask();
 
@@ -59,9 +53,11 @@ public class CommitViewer {
         Task<Void> fetchAndDisplayTask = new Task<>() {
             @Override
             protected Void call() {
-                Repository repository = fetchUpdatesIntoTempDir();
+                Repository repository = cloneRepoToTempDir();
                 if (repository != null) {
-                    displayCommits(repository);
+                    displayNewerCommits(repository);
+                } else {
+                    error("Couldn't fetch updates");
                 }
                 return null;
             }
@@ -70,50 +66,67 @@ public class CommitViewer {
         fetchAndDisplayTask.setOnSucceeded(event -> showResultWindow());
 
         fetchAndDisplayTask.setOnFailed(event -> {
-            error("Failed to fetch updates into the temporary directory");
-            removeTempDir();
+            Throwable exception = fetchAndDisplayTask.getException();
+            error("Failed to fetch updates into the temporary repository: " + exception.getMessage());
+            exception.printStackTrace();
         });
+
         return fetchAndDisplayTask;
     }
 
-    private Repository fetchUpdatesIntoTempDir() {
+    private Repository cloneRepoToTempDir() {
         try {
-            Repository repository = new RepositoryBuilder().setGitDir(repo).build();
-            Git git = Git.cloneRepository()
-                    .setURI(repository.getConfig().getString("remote", "origin", "url"))
+            Repository localRepository = new RepositoryBuilder().setGitDir(repo).build();
+
+            String remoteUrl = localRepository.getConfig().getString("remote", "origin", "url");
+            System.out.println(remoteUrl);
+
+            if (remoteUrl == null || remoteUrl.isEmpty()) {
+                error("Remote URL not found in the local repository.");
+                return null;
+            }
+
+            tempDir = Files.createTempDirectory("tempGitRepo");
+            Git.cloneRepository()
+                    .setURI(remoteUrl)
                     .setDirectory(tempDir.toFile())
                     .call();
-            git.fetch().call();
-            return repository;
+
+            return new RepositoryBuilder().setGitDir(tempDir.resolve(".git").toFile()).build();
         } catch (IOException | GitAPIException e) {
+            error("Failed to clone repository to a temporary directory");
             return null;
         }
     }
 
-    private void displayCommits(Repository repository) {
+
+    private void displayNewerCommits(Repository repository) {
         try (Git git = new Git(repository)) {
-            // Use tempRepo instead of the local repository
-            try (Repository tempRepo = new RepositoryBuilder().setGitDir(tempDir.resolve(".git").toFile()).build();
-                 Git tempGit = new Git(tempRepo)) {
+            Repository local = new RepositoryBuilder().setGitDir(repo).build();
+            ObjectId localCommitId = local.resolve("HEAD");
 
-                ObjectId currentCommitId = repository.resolve("HEAD");
+            if (localCommitId != null) {
+                git.fetch()
+                        .setRemote("origin")
+                        .call();
 
-                if (currentCommitId != null) {
-                    List<String> newerCommits = new ArrayList<>();
+                Iterable<RevCommit> remoteCommits = git.log().call();
 
-                    Iterable<RevCommit> remoteCommits = tempGit.log().call();
-                    for (RevCommit commit : remoteCommits) {
-                        if (commit.getId().equals(currentCommitId)) {
-                            break;
-                        }
-                        newerCommits.add(commit.getShortMessage());
+                List<String> newerCommits = new ArrayList<>();
+                for (RevCommit commit : remoteCommits) {
+                    System.out.println(commit.getShortMessage());
+                    System.out.println(commit.getId());
+                    if (commit.getId().equals(localCommitId)) {
+                        break;
                     }
-
-                    commitListView.getItems().addAll(newerCommits);
+                    newerCommits.add(commit.getShortMessage());
                 }
-            } catch (IOException | GitAPIException e) {
-                error("Couldn't display commits");
+
+                commitListView.getItems().addAll(newerCommits);
             }
+        } catch (IOException | GitAPIException e) {
+            error("Couldn't display commits");
+            e.printStackTrace();
         }
     }
 
@@ -124,13 +137,13 @@ public class CommitViewer {
 
         VBox vBox = new VBox(10);
 
-        Button mergeButton = new Button("Update to selected version");
-        mergeButton.setOnAction(e -> {
-            mergeSelectedCommits();
+        Button updateButton = new Button("Update");
+        updateButton.setOnAction(e -> {
+            performUpdate();
             dialog.close();
         });
 
-        vBox.getChildren().addAll(commitListView, mergeButton);
+        vBox.getChildren().addAll(commitListView, updateButton);
 
         dialog.getDialogPane().setContent(vBox);
 
@@ -147,61 +160,20 @@ public class CommitViewer {
         dialog.showAndWait();
     }
 
-    private void mergeSelectedCommits() {
-        String selectedCommitMessage = commitListView.getSelectionModel().getSelectedItem();
+    private void performUpdate() {
+        try (Repository repository = new RepositoryBuilder().setGitDir(repo).build();
+             Git git = new Git(repository)) {
 
-        if (selectedCommitMessage != null) {
-            try (Repository repository = new RepositoryBuilder().setGitDir(repo).build();
-                 Git git = new Git(repository)) {
+            git.clean().setCleanDirectories(true).call();
+            git.reset().setMode(ResetCommand.ResetType.HARD).call();
 
-                git.clean().setCleanDirectories(true).call();
+            git.fetch().call();
 
-                try (Repository tempRepo = new RepositoryBuilder().setGitDir(tempDir.resolve(".git").toFile()).build();
-                     Git tempGit = new Git(tempRepo)) {
-
-                    Iterable<RevCommit> commits = tempGit.log().call();
-                    String selectedCommitId = null;
-
-                    for (RevCommit commit : commits) {
-                        if (commit.getShortMessage().equals(selectedCommitMessage)) {
-                            selectedCommitId = commit.getName();
-                            break;
-                        }
-                    }
-
-                    if (selectedCommitId != null) {
-                        tempGit.reset().setRef(selectedCommitId).setMode(ResetCommand.ResetType.HARD).call();
-
-                        copyFiles(tempDir, Paths.get("."));
-
-                        MergeResult mergeResult = git.merge().include(tempRepo.resolve(selectedCommitId)).call();
-
-                        if (mergeResult.getMergeStatus().isSuccessful()) {
-                            info("Update successful!");
-                        } else {
-                            error("Update failed: " + mergeResult.getMergeStatus().toString());
-                        }
-                    } else {
-                        error("Invalid selected commit: " + selectedCommitMessage);
-                    }
-                }
-            } catch (IOException | GitAPIException e) {
-                error("Update failed");
-                e.printStackTrace();
-            }
+            info("Update successful!");
+        } catch (IOException | GitAPIException e) {
+            error("Update failed");
+            e.printStackTrace();
         }
-    }
-
-    private void copyFiles(Path source, Path destination) throws IOException {
-        Files.walkFileTree(source, new SimpleFileVisitor<>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Path relativePath = source.relativize(file);
-                Path destinationFile = destination.resolve(relativePath);
-                Files.copy(file, destinationFile, StandardCopyOption.REPLACE_EXISTING);
-                return FileVisitResult.CONTINUE;
-            }
-        });
     }
 
     private void removeTempDir() {
