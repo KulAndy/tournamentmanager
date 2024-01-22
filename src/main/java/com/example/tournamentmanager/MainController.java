@@ -47,6 +47,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -111,6 +112,8 @@ public class MainController implements Initializable {
 
     @FXML
     private MenuItem login;
+    @FXML
+    private MenuItem logout;
     @FXML
     private MenuItem register;
     @FXML
@@ -848,6 +851,14 @@ public class MainController implements Initializable {
                 })
         );
         login.setOnAction(e -> showLoginPopup());
+        logout.setOnAction(e-> {
+            try {
+                Files.delete(Path.of("auth.txt"));
+                info("Logout successfully");
+            } catch (IOException ex) {
+                error("Couldn't logout");
+            }
+        });
         register.setOnAction(e -> showRegisterPopup());
         exportPgnMenu.setOnAction(e ->
                 GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
