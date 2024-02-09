@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class Game implements Serializable {
     transient private Player white;
     transient private Player black;
-    private ObjectId whiteUUDI;
+    private ObjectId whiteUUID;
     private ObjectId blackUUID;
     private String whiteName;
     private String blackName;
@@ -22,7 +22,7 @@ public class Game implements Serializable {
     public Game(Player white, Player black, Result whiteResult, Result blackResult, Boolean forfeit) {
         setWhite(white);
         setBlack(black);
-        setWhiteUUDI(white.getPlayerid());
+        setWhiteUUID(white.getPlayerid());
         setBlackUUID(black.getPlayerid());
         setWhiteName(white.getName());
         setBlackName(black.getName());
@@ -119,7 +119,7 @@ public class Game implements Serializable {
         Result blackResult = getBlackResult();
         setWhite(black);
         setBlack(white);
-        setWhiteUUDI(getWhite().getPlayerid());
+        setWhiteUUID(getWhite().getPlayerid());
         setBlackUUID(getBlack().getPlayerid());
         setWhiteName(getWhite().getName());
         setBlackName(getBlack().getName());
@@ -138,7 +138,7 @@ public class Game implements Serializable {
         }
 
         Game other = (Game) obj;
-        return this.getWhiteUUDI() == other.getWhiteUUDI() && this.blackUUID == other.getBlackUUID();
+        return this.getWhiteUUID() == other.getWhiteUUID() && this.blackUUID == other.getBlackUUID();
     }
 
     @Override
@@ -165,12 +165,12 @@ public class Game implements Serializable {
         this.blackName = blackName;
     }
 
-    public ObjectId getWhiteUUDI() {
-        return whiteUUDI;
+    public ObjectId getWhiteUUID() {
+        return whiteUUID;
     }
 
-    public void setWhiteUUDI(ObjectId whiteUUDI) {
-        this.whiteUUDI = whiteUUDI;
+    public void setWhiteUUID(ObjectId whiteUUID) {
+        this.whiteUUID = whiteUUID;
     }
 
     public ObjectId getBlackUUID() {
@@ -213,7 +213,7 @@ public class Game implements Serializable {
 
         this.white = white;
         if (white != null) {
-            setWhiteUUDI(white.getPlayerid());
+            setWhiteUUID(white.getPlayerid());
             setWhiteName(white.getName());
         }
     }

@@ -287,7 +287,7 @@ public class TournamentOperation {
 
                     for (ArrayList<Game> round : tournament.getRounds()) {
                         for (Game game : round) {
-                            Player white = players.get(game.getWhiteUUDI());
+                            Player white = players.get(game.getWhiteUUID());
                             Player black = players.get(game.getBlackUUID());
                             game.setWhite(white);
                             game.setBlack(black);
