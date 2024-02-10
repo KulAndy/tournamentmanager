@@ -925,6 +925,11 @@ public class Player implements Serializable {
         setPlayerid(uuid);
     }
 
+    public void setPlayerid(String hexString) {
+        ObjectId uuid = new ObjectId(hexString);
+        setPlayerid(uuid);
+    }
+
     public int getYearOfBirth() {
         return YearOfBirth;
     }

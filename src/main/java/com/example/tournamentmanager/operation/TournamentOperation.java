@@ -3,12 +3,14 @@ package com.example.tournamentmanager.operation;
 import com.example.tournamentmanager.MainController;
 import com.example.tournamentmanager.adapter.DateAdapter;
 import com.example.tournamentmanager.adapter.LocalDateAdapter;
+import com.example.tournamentmanager.adapter.ObjectIdAdapter;
 import com.example.tournamentmanager.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.bson.types.ObjectId;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -164,6 +166,7 @@ public class TournamentOperation {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .registerTypeAdapter(Date.class, new DateAdapter())
+                .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
                 .create();
 
         String json = gson.toJson(tournament);
@@ -276,6 +279,7 @@ public class TournamentOperation {
                             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                             .registerTypeAdapter(Schedule.class, new Schedule.ScheduleDeserializer())
                             .registerTypeAdapter(Date.class, new DateAdapter())
+                            .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
                             .create();
                     Type tournamentType = new TypeToken<Tournament>() {
                     }.getType();
