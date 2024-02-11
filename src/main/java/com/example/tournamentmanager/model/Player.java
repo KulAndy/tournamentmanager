@@ -464,7 +464,9 @@ public class Player implements Serializable {
         float points = 0f;
         for (Game round : getRounds()) {
             if (round.isForfeit()){
-                points+=0.5;
+                if (round.getWhiteResult() != null && round.getBlackResult()!= null){
+                    points+=0.5;
+                }
             }else{
                 float roundPoints = getRoundPoints(round);
                 if (!Float.isNaN(roundPoints)) {
