@@ -165,7 +165,7 @@ public class Player implements Serializable {
                 return getKoya();
             }
             case WINS -> {
-                return getWonsNumber();
+                return getWinsNumber();
             }
             case POINTS -> {
                 return getPoints();
@@ -401,7 +401,7 @@ public class Player implements Serializable {
         return wons;
     }
 
-    public int getWonsNumber() {
+    public int getWinsNumber() {
         int wons = 0;
         for (int i = 0; i < getRounds().size(); i++) {
             if (isRoundWon(i)) {
