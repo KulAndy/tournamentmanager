@@ -919,16 +919,21 @@ public class Player implements Serializable {
 
     public int getAverageFideRatingCut1() {
         int minRating = Integer.MAX_VALUE;
-        int ARO = FIDECalculation.getAverageRating(getFideOpponents());
-        for (Player player:getOpponents()){
+        int minIndex = -1;
+        ArrayList<Player> opponents = getFideOpponents();
+        for (int i = 0; i < opponents.size(); i++) {
+            Player player = opponents.get(i);
             if (player.getFideRating() > FIDECalculation.RATING_FLOOR){
                 minRating = Integer.min(minRating, player.getFideRating());
+                minIndex = i;
             }
+
         }
         if (minRating == Integer.MAX_VALUE){
             return 0;
         }else{
-            return ARO - minRating;
+            opponents.remove(minIndex);
+            return FIDECalculation.getAverageRating(opponents);
         }
     }
 
