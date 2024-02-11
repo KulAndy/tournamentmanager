@@ -186,7 +186,7 @@ public class Player implements Serializable {
                 return getBerger();
             }
             case WINS_WITH_BLACK -> {
-                return getWonsWithBlackNumber();
+                return getWinsWithBlackNumber();
             }
             case GAMES_WITH_BLACK -> {
                 return getGamesPlayedWithBlack();
@@ -304,22 +304,24 @@ public class Player implements Serializable {
     public float getBerger() {
         float berger = 0;
         for (Game round : getRounds()) {
-            Result result = getRoundResult(round);
-            Color color = getRoundColor(round);
-            if (result != null) {
-                switch (result) {
-                    case WIN -> {
-                        if (color == Color.WHITE) {
-                            berger += round.getBlack().getPoints();
-                        } else if (color == Color.BLACK) {
-                            berger += round.getWhite().getPoints();
+            if (!round.isForfeit()){
+                Result result = getRoundResult(round);
+                Color color = getRoundColor(round);
+                if (result != null) {
+                    switch (result) {
+                        case WIN -> {
+                            if (color == Color.WHITE) {
+                                berger += round.getBlack().getStandardizedPoints();
+                            } else if (color == Color.BLACK) {
+                                berger += round.getWhite().getStandardizedPoints();
+                            }
                         }
-                    }
-                    case DRAW -> {
-                        if (color == Color.WHITE) {
-                            berger += round.getBlack().getPoints() / 2;
-                        } else if (color == Color.BLACK) {
-                            berger += round.getWhite().getPoints() / 2;
+                        case DRAW -> {
+                            if (color == Color.WHITE) {
+                                berger += round.getBlack().getStandardizedPoints() / 2;
+                            } else if (color == Color.BLACK) {
+                                berger += round.getWhite().getStandardizedPoints() / 2;
+                            }
                         }
                     }
                 }
@@ -337,8 +339,8 @@ public class Player implements Serializable {
         float minPoints = Float.MAX_VALUE;
         float maxPoints = Float.MIN_VALUE;
         for (Player player : getOpponents()) {
-            minPoints = Float.min(player.getPoints(), minPoints);
-            maxPoints = Float.max(player.getPoints(), minPoints);
+            minPoints = Float.min(player.getStandardizedPoints(), minPoints);
+            maxPoints = Float.max(player.getStandardizedPoints(), minPoints);
         }
 
         if (minPoints == Float.MAX_VALUE || maxPoints == Float.MIN_VALUE) {
@@ -356,13 +358,13 @@ public class Player implements Serializable {
         float bucholz = getBucholz();
         float minPoints = Float.MAX_VALUE;
         for (Player player : getOpponents()) {
-            minPoints = Float.min(player.getPoints(), minPoints);
+            minPoints = Float.min(player.getStandardizedPoints(), minPoints);
         }
 
         if (minPoints == Float.MAX_VALUE) {
             return bucholz;
         } else {
-            return bucholz - minPoints;
+            return bucholz - minPoints ;
         }
     }
 
@@ -372,17 +374,22 @@ public class Player implements Serializable {
         }
         float bucholz = 0;
         String[] reservedNames = {"bye", "haslfbye", "unpaired"};
-        for (Game round : getRounds()) {
+        for (int i = 0; i < getRounds().size(); i++) {
+            Game round = getRounds().get(i);
             Player opponent = getOpponent(round);
             Float addition;
             if (Arrays.asList(reservedNames).contains(opponent.getName())) {
-                addition = (float) (0.5 * (getRounds().size() - getRounds().indexOf(round) - 1));
+                if (i == getRounds().size() -1 ){
+                    addition = (float) (getStandardizedPointsInRound(i) +(0.5 * (getRounds().size() - i - 1)));
+                }else{
+                    addition = (float) (getStandardizedPointsInRound(i) + 1 - getPointInGame(round) +(0.5 * (getRounds().size() - i - 1)));
+                }
             } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
             ) {
-                addition = opponent.getBucholztPoints();
+                addition = opponent.getStandardizedPoints();
             } else {
-                addition = (float) (opponent.getFidePoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber()));
+                addition = opponent.getStandardizedPoints();
             }
             if (!addition.isNaN()) {
                 bucholz += addition;
@@ -391,7 +398,7 @@ public class Player implements Serializable {
         return bucholz;
     }
 
-    public int getWonsWithBlackNumber() {
+    public int getWinsWithBlackNumber() {
         int wons = 0;
         for (Game round : getRounds()) {
             if (isRoundWon(round) && getRoundColor(round) == Color.BLACK) {
@@ -460,7 +467,7 @@ public class Player implements Serializable {
         return points;
     }
 
-    public Float getBucholztPoints() {
+    public Float getStandardizedPoints() {
         float points = 0f;
         for (Game round : getRounds()) {
             if (round.isForfeit()){
@@ -473,6 +480,22 @@ public class Player implements Serializable {
                     points += roundPoints;
                 }
             }
+        }
+        return points;
+    }
+    public Float getStandardizedPointsInRound(int n) {
+        float points = 0f;
+        for (int i = 0; i < getRounds().size() && i < n; i++) {
+            Game round = getRounds().get(i);
+            if (round.isForfeit()){
+                points+=0.5;
+            }else {
+                float roundPoints = getRoundPoints(round);
+                if (!Float.isNaN(roundPoints)) {
+                    points += roundPoints;
+                }
+            }
+
         }
         return points;
     }

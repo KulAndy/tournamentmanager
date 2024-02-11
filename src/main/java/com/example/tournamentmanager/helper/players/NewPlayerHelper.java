@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
+import com.example.tournamentmanager.comparator.StartListComparator;
 import com.example.tournamentmanager.model.*;
 import com.example.tournamentmanager.operation.FIDEOperation;
 import com.example.tournamentmanager.operation.FileOperation;
@@ -8,6 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 
@@ -81,7 +83,11 @@ public class NewPlayerHelper {
         setInsertFromList(insertFromList);
         setNewPlayerHint(newPlayerHint);
 
-        getPlayerSelect().setItems(getTournament().getPlayersObs());
+        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs());
+        StartListComparator comparator = new StartListComparator();
+        comparator.setCriteria1(StartListComparator.SortCriteria.ALPHABETIC);
+        sortedList.setComparator(comparator);
+        getPlayerSelect().setItems(sortedList);
         getPlayerSelect().setOnAction(e -> {
             Player player = getPlayerSelect().getValue();
             if (player != null) {
