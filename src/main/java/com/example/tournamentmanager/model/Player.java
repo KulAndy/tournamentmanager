@@ -380,7 +380,7 @@ public class Player implements Serializable {
             } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
             ) {
-                addition = opponent.getPoints();
+                addition = opponent.getBucholztPoints();
             } else {
                 addition = (float) (opponent.getFidePoints() + 0.5 * (opponent.getRounds().size() - opponent.getPlayedGamedNumber()));
             }
@@ -455,6 +455,21 @@ public class Player implements Serializable {
             float roundPoints = getRoundPoints(round);
             if (!Float.isNaN(roundPoints)) {
                 points += roundPoints;
+            }
+        }
+        return points;
+    }
+
+    public Float getBucholztPoints() {
+        float points = 0f;
+        for (Game round : getRounds()) {
+            if (round.isForfeit()){
+                points+=0.5;
+            }else{
+                float roundPoints = getRoundPoints(round);
+                if (!Float.isNaN(roundPoints)) {
+                    points += roundPoints;
+                }
             }
         }
         return points;
