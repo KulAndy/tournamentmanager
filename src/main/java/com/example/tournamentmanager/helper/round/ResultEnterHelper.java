@@ -143,7 +143,7 @@ public class ResultEnterHelper {
             }
 
             @Override
-            protected void updateItem(Float item, boolean empty) {
+            private void updateItem(Float item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -164,7 +164,7 @@ public class ResultEnterHelper {
             }
 
             @Override
-            protected void updateItem(Integer item, boolean empty) {
+            private void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -191,7 +191,7 @@ public class ResultEnterHelper {
             }
 
             @Override
-            protected void updateItem(String item, boolean empty) {
+            private void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -209,7 +209,7 @@ public class ResultEnterHelper {
             private Game game;
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            private void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
@@ -271,7 +271,7 @@ public class ResultEnterHelper {
             }
 
             @Override
-            protected void updateItem(Integer item, boolean empty) {
+            private void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -293,7 +293,7 @@ public class ResultEnterHelper {
             }
 
             @Override
-            protected void updateItem(Float item, boolean empty) {
+            private void updateItem(Float item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);

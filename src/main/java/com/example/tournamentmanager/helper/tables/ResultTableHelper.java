@@ -90,7 +90,7 @@ public class ResultTableHelper {
 
         getResultFilter().setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(ResultPredicate<Player> item, boolean empty) {
+            private void updateItem(ResultPredicate<Player> item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);

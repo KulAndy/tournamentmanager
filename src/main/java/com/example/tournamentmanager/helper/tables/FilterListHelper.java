@@ -90,7 +90,7 @@ public class FilterListHelper {
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            private void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty) {
                     setGraphic(deleteButton);

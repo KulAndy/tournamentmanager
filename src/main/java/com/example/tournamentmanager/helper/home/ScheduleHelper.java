@@ -54,7 +54,7 @@ public class ScheduleHelper {
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            private void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 Schedule.ScheduleElement element = getTableRow().getItem();
                 if (element != null) {

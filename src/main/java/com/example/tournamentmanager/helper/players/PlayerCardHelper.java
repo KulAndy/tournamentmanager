@@ -51,7 +51,7 @@ public class PlayerCardHelper {
         setPlayerCardSelect(playerCardSelect);
         getPlayerCardSelect().setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(Player item, boolean empty) {
+            private void updateItem(Player item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);

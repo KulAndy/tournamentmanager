@@ -9,7 +9,6 @@ import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static com.example.tournamentmanager.calculation.PZSzachCalculation.getNorm;
@@ -124,6 +123,65 @@ public class Player implements Serializable {
         );
     }
 
+    public static Float getWinPoints() {
+        return winPoints;
+    }
+
+    public static void setWinPoints(Float winPoints) {
+        Player.winPoints = winPoints;
+    }
+
+    public static Float getDrawPoints() {
+        return drawPoints;
+    }
+
+    public static void setDrawPoints(Float drawPoints) {
+        Player.drawPoints = drawPoints;
+    }
+
+    public static Float getLosePoints() {
+        return losePoints;
+    }
+
+    public static void setLosePoints(Float losePoints) {
+        Player.losePoints = losePoints;
+    }
+
+    public static Float getForfeitWinPoints() {
+        return forfeitWinPoints;
+    }
+
+    public static void setForfeitWinPoints(Float forfeitWinPoints) {
+        Player.forfeitWinPoints = forfeitWinPoints;
+    }
+
+    public static Float getForfeitLosePoints() {
+        return forfeitLosePoints;
+    }
+
+    public static void setForfeitLosePoints(Float forfeitLosePoints) {
+        Player.forfeitLosePoints = forfeitLosePoints;
+    }
+
+    public static Float getByePoints() {
+        return byePoints;
+    }
+
+    public static void setByePoints(Float byePoints) {
+        Player.byePoints = byePoints;
+    }
+
+    public static Float getHalfByePoints() {
+        return halfByePoints;
+    }
+
+    public static void setHalfByePoints(Float halfByePoints) {
+        Player.halfByePoints = halfByePoints;
+    }
+
+    public static Short[] getPhonePrefixesList() {
+        return phonePrefixesList;
+    }
 
     public int getColorPreference() {
         int preference = 0;
@@ -197,7 +255,7 @@ public class Player implements Serializable {
             case AVERAGE_OPPONENTS_RATING -> {
                 return getAverageFideRating();
             }
-            case AVERAGE_OPPONENTS_RATING_CUT1 ->{
+            case AVERAGE_OPPONENTS_RATING_CUT1 -> {
                 return getAverageFideRatingCut1();
             }
             case RATING_PERFORMENCE_PZSZACH -> {
@@ -266,7 +324,6 @@ public class Player implements Serializable {
         return koya;
     }
 
-
     public float getFideChange() {
         float chg = 0.0F;
         if (getFideRating() == FIDECalculation.RATING_FLOOR) {
@@ -304,7 +361,7 @@ public class Player implements Serializable {
     public float getBerger() {
         float berger = 0;
         for (Game round : getRounds()) {
-            if (!round.isForfeit()){
+            if (!round.isForfeit()) {
                 Result result = getRoundResult(round);
                 Color color = getRoundColor(round);
                 if (result != null) {
@@ -332,7 +389,7 @@ public class Player implements Serializable {
     }
 
     public float getBucholzMedian() {
-        if (getOpponents().size() == 0){
+        if (getOpponents().size() == 0) {
             return 0;
         }
         float bucholz = getBucholz();
@@ -350,39 +407,63 @@ public class Player implements Serializable {
         }
     }
 
-
     public float getBucholzCut1() {
-        if (getOpponents().size() == 0){
-            return 0;
-        }
-        float bucholz = getBucholz();
-        float minPoints = Float.MAX_VALUE;
-        for (Player player : getOpponents()) {
-            minPoints = Float.min(player.getStandardizedPoints(), minPoints);
-        }
-
-        if (minPoints == Float.MAX_VALUE) {
-            return bucholz;
-        } else {
-            return bucholz - minPoints ;
-        }
-    }
-
-    public float getBucholz() {
-        if (getOpponents().size() == 0){
+        if (getOpponents().size() == 0) {
             return 0;
         }
         float bucholz = 0;
-        String[] reservedNames = {"bye", "haslfbye", "unpaired"};
+        float minPoints = Float.MAX_VALUE;
         for (int i = 0; i < getRounds().size(); i++) {
             Game round = getRounds().get(i);
             Player opponent = getOpponent(round);
             Float addition;
-            if (Arrays.asList(reservedNames).contains(opponent.getName())) {
-                if (i == getRounds().size() -1 ){
-                    addition = (float) (getStandardizedPointsInRound(i) +(0.5 * (getRounds().size() - i - 1)));
-                }else{
-                    addition = (float) (getStandardizedPointsInRound(i) + 1 - getPointInGame(round) +(0.5 * (getRounds().size() - i - 1)));
+            if (round.isForfeit()) {
+                if (i == getRounds().size() - 1 && (
+                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
+                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
+                                opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
+                )) {
+                    addition = (float) (getStandardizedPointsInRound(i) + (0.5 * (getRounds().size() - i - 1)));
+                } else {
+                    addition = (float) (getStandardizedPointsInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
+                }
+            } else if (
+                    opponent.getRounds().size() == opponent.getPlayedGamedNumber()
+            ) {
+                addition = opponent.getStandardizedPoints();
+            } else {
+                addition = opponent.getStandardizedPoints();
+            }
+            if (!addition.isNaN()) {
+                minPoints = Float.min(minPoints, addition);
+                bucholz += addition;
+            }
+        }
+        if (minPoints == Float.MAX_VALUE) {
+            return 0;
+        } else {
+            return bucholz - minPoints;
+        }
+    }
+
+    public float getBucholz() {
+        if (getOpponents().size() == 0) {
+            return 0;
+        }
+        float bucholz = 0;
+        for (int i = 0; i < getRounds().size(); i++) {
+            Game round = getRounds().get(i);
+            Player opponent = getOpponent(round);
+            Float addition;
+            if (round.isForfeit()) {
+                if (i == getRounds().size() - 1 && (
+                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
+                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
+                                opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
+                )) {
+                    addition = (float) (getStandardizedPointsInRound(i) + (0.5 * (getRounds().size() - i - 1)));
+                } else {
+                    addition = (float) (getStandardizedPointsInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
                 }
             } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
@@ -470,11 +551,11 @@ public class Player implements Serializable {
     public Float getStandardizedPoints() {
         float points = 0f;
         for (Game round : getRounds()) {
-            if (round.isForfeit()){
-                if (round.getWhiteResult() != null && round.getBlackResult()!= null){
-                    points+=0.5;
+            if (round.isForfeit()) {
+                if (round.getWhiteResult() != null && round.getBlackResult() != null) {
+                    points += 0.5;
                 }
-            }else{
+            } else {
                 float roundPoints = getRoundPoints(round);
                 if (!Float.isNaN(roundPoints)) {
                     points += roundPoints;
@@ -483,13 +564,14 @@ public class Player implements Serializable {
         }
         return points;
     }
+
     public Float getStandardizedPointsInRound(int n) {
         float points = 0f;
         for (int i = 0; i < getRounds().size() && i < n; i++) {
             Game round = getRounds().get(i);
-            if (round.isForfeit()){
-                points+=0.5;
-            }else {
+            if (round.isForfeit()) {
+                points += 0.5;
+            } else {
                 float roundPoints = getRoundPoints(round);
                 if (!Float.isNaN(roundPoints)) {
                     points += roundPoints;
@@ -946,15 +1028,15 @@ public class Player implements Serializable {
         ArrayList<Player> opponents = getFideOpponents();
         for (int i = 0; i < opponents.size(); i++) {
             Player player = opponents.get(i);
-            if (player.getFideRating() > FIDECalculation.RATING_FLOOR){
+            if (player.getFideRating() > FIDECalculation.RATING_FLOOR) {
                 minRating = Integer.min(minRating, player.getFideRating());
                 minIndex = i;
             }
 
         }
-        if (minRating == Integer.MAX_VALUE){
+        if (minRating == Integer.MAX_VALUE) {
             return 0;
-        }else{
+        } else {
             opponents.remove(minIndex);
             return FIDECalculation.getAverageRating(opponents);
         }
@@ -963,6 +1045,7 @@ public class Player implements Serializable {
     public int getAverageFideRating() {
         return FIDECalculation.getAverageRating(getFideOpponents());
     }
+
     public int getYearOfBirth() {
         return YearOfBirth;
     }
@@ -985,66 +1068,6 @@ public class Player implements Serializable {
 
     public void setDayOfBirth(byte dayOfBirth) {
         DayOfBirth = dayOfBirth;
-    }
-
-    public static Float getWinPoints() {
-        return winPoints;
-    }
-
-    public static void setWinPoints(Float winPoints) {
-        Player.winPoints = winPoints;
-    }
-
-    public static Float getDrawPoints() {
-        return drawPoints;
-    }
-
-    public static void setDrawPoints(Float drawPoints) {
-        Player.drawPoints = drawPoints;
-    }
-
-    public static Float getLosePoints() {
-        return losePoints;
-    }
-
-    public static void setLosePoints(Float losePoints) {
-        Player.losePoints = losePoints;
-    }
-
-    public static Float getForfeitWinPoints() {
-        return forfeitWinPoints;
-    }
-
-    public static void setForfeitWinPoints(Float forfeitWinPoints) {
-        Player.forfeitWinPoints = forfeitWinPoints;
-    }
-
-    public static Float getForfeitLosePoints() {
-        return forfeitLosePoints;
-    }
-
-    public static void setForfeitLosePoints(Float forfeitLosePoints) {
-        Player.forfeitLosePoints = forfeitLosePoints;
-    }
-
-    public static Float getByePoints() {
-        return byePoints;
-    }
-
-    public static void setByePoints(Float byePoints) {
-        Player.byePoints = byePoints;
-    }
-
-    public static Float getHalfByePoints() {
-        return halfByePoints;
-    }
-
-    public static void setHalfByePoints(Float halfByePoints) {
-        Player.halfByePoints = halfByePoints;
-    }
-
-    public static Short[] getPhonePrefixesList() {
-        return phonePrefixesList;
     }
 
     @Override

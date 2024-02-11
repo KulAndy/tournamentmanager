@@ -75,7 +75,7 @@ public class ManualPairingHelper {
         getPairsList().setItems(manualRound);
         getPairsList().setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(Game item, boolean empty) {
+            private void updateItem(Game item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     String white = String.format("%-4d %-3s %35s", item.getWhite().getFideRating(), item.getWhite().getTitle(), item.getWhite().getName());
@@ -248,7 +248,7 @@ public class ManualPairingHelper {
         getWhiteList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
         getWhiteList().setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(Player item, boolean empty) {
+            private void updateItem(Player item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     int index = getTournament().getPlayersObs().indexOf(item) + 1;
@@ -264,7 +264,7 @@ public class ManualPairingHelper {
         getBlackList().setStyle("-fx-font-family: 'Courier New', monospace; -fx-font-weight: bold;");
         getBlackList().setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(Player item, boolean empty) {
+            private void updateItem(Player item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     int index = getTournament().getPlayersObs().indexOf(item) + 1;
