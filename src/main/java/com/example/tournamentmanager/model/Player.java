@@ -124,65 +124,6 @@ public class Player implements Serializable {
         );
     }
 
-    public static Float getWinPoints() {
-        return winPoints;
-    }
-
-    public static void setWinPoints(Float winPoints) {
-        Player.winPoints = winPoints;
-    }
-
-    public static Float getDrawPoints() {
-        return drawPoints;
-    }
-
-    public static void setDrawPoints(Float drawPoints) {
-        Player.drawPoints = drawPoints;
-    }
-
-    public static Float getLosePoints() {
-        return losePoints;
-    }
-
-    public static void setLosePoints(Float losePoints) {
-        Player.losePoints = losePoints;
-    }
-
-    public static Float getForfeitWinPoints() {
-        return forfeitWinPoints;
-    }
-
-    public static void setForfeitWinPoints(Float forfeitWinPoints) {
-        Player.forfeitWinPoints = forfeitWinPoints;
-    }
-
-    public static Float getForfeitLosePoints() {
-        return forfeitLosePoints;
-    }
-
-    public static void setForfeitLosePoints(Float forfeitLosePoints) {
-        Player.forfeitLosePoints = forfeitLosePoints;
-    }
-
-    public static Float getByePoints() {
-        return byePoints;
-    }
-
-    public static void setByePoints(Float byePoints) {
-        Player.byePoints = byePoints;
-    }
-
-    public static Float getHalfByePoints() {
-        return halfByePoints;
-    }
-
-    public static void setHalfByePoints(Float halfByePoints) {
-        Player.halfByePoints = halfByePoints;
-    }
-
-    public static Short[] getPhonePrefixesList() {
-        return phonePrefixesList;
-    }
 
     public int getColorPreference() {
         int preference = 0;
@@ -238,6 +179,9 @@ public class Player implements Serializable {
             case BUCHOLZ_CUT1 -> {
                 return getBucholzCut1();
             }
+            case MEDIA_BUCHOLZ -> {
+                return getBucholzMedian();
+            }
             case SONNEN_BERGER -> {
                 return getBerger();
             }
@@ -252,6 +196,9 @@ public class Player implements Serializable {
             }
             case AVERAGE_OPPONENTS_RATING -> {
                 return getAverageFideRating();
+            }
+            case AVERAGE_OPPONENTS_RATING_CUT1 ->{
+                return getAverageFideRatingCut1();
             }
             case RATING_PERFORMENCE_PZSZACH -> {
                 return getRatingPerformancePZSzach();
@@ -319,21 +266,6 @@ public class Player implements Serializable {
         return koya;
     }
 
-    public int getRatingPerformancePZSzach() {
-        return PZSzachCalculation.getRatingPerformance(this);
-    }
-
-    public int getRatingDelta() {
-        return PZSzachCalculation.getRatingDelta(this);
-    }
-
-    public int getAverageRatingPZSzach() {
-        return PZSzachCalculation.getAverageRating(this);
-    }
-
-    public int getAverageFideRating() {
-        return FIDECalculation.getAverageRating(getFideOpponents());
-    }
 
     public float getFideChange() {
         float chg = 0.0F;
@@ -397,7 +329,30 @@ public class Player implements Serializable {
         return berger;
     }
 
+    public float getBucholzMedian() {
+        if (getOpponents().size() == 0){
+            return 0;
+        }
+        float bucholz = getBucholz();
+        float minPoints = Float.MAX_VALUE;
+        float maxPoints = Float.MIN_VALUE;
+        for (Player player : getOpponents()) {
+            minPoints = Float.min(player.getPoints(), minPoints);
+            maxPoints = Float.max(player.getPoints(), minPoints);
+        }
+
+        if (minPoints == Float.MAX_VALUE || maxPoints == Float.MIN_VALUE) {
+            return bucholz;
+        } else {
+            return bucholz - minPoints - maxPoints;
+        }
+    }
+
+
     public float getBucholzCut1() {
+        if (getOpponents().size() == 0){
+            return 0;
+        }
         float bucholz = getBucholz();
         float minPoints = Float.MAX_VALUE;
         for (Player player : getOpponents()) {
@@ -412,6 +367,9 @@ public class Player implements Serializable {
     }
 
     public float getBucholz() {
+        if (getOpponents().size() == 0){
+            return 0;
+        }
         float bucholz = 0;
         String[] reservedNames = {"bye", "haslfbye", "unpaired"};
         for (Game round : getRounds()) {
@@ -930,6 +888,36 @@ public class Player implements Serializable {
         setPlayerid(uuid);
     }
 
+    public int getRatingPerformancePZSzach() {
+        return PZSzachCalculation.getRatingPerformance(this);
+    }
+
+    public int getRatingDelta() {
+        return PZSzachCalculation.getRatingDelta(this);
+    }
+
+    public int getAverageRatingPZSzach() {
+        return PZSzachCalculation.getAverageRating(this);
+    }
+
+    public int getAverageFideRatingCut1() {
+        int minRating = Integer.MAX_VALUE;
+        int ARO = FIDECalculation.getAverageRating(getFideOpponents());
+        for (Player player:getOpponents()){
+            if (player.getFideRating() > FIDECalculation.RATING_FLOOR){
+                minRating = Integer.min(minRating, player.getFideRating());
+            }
+        }
+        if (minRating == Integer.MAX_VALUE){
+            return 0;
+        }else{
+            return ARO - minRating;
+        }
+    }
+
+    public int getAverageFideRating() {
+        return FIDECalculation.getAverageRating(getFideOpponents());
+    }
     public int getYearOfBirth() {
         return YearOfBirth;
     }
@@ -952,6 +940,66 @@ public class Player implements Serializable {
 
     public void setDayOfBirth(byte dayOfBirth) {
         DayOfBirth = dayOfBirth;
+    }
+
+    public static Float getWinPoints() {
+        return winPoints;
+    }
+
+    public static void setWinPoints(Float winPoints) {
+        Player.winPoints = winPoints;
+    }
+
+    public static Float getDrawPoints() {
+        return drawPoints;
+    }
+
+    public static void setDrawPoints(Float drawPoints) {
+        Player.drawPoints = drawPoints;
+    }
+
+    public static Float getLosePoints() {
+        return losePoints;
+    }
+
+    public static void setLosePoints(Float losePoints) {
+        Player.losePoints = losePoints;
+    }
+
+    public static Float getForfeitWinPoints() {
+        return forfeitWinPoints;
+    }
+
+    public static void setForfeitWinPoints(Float forfeitWinPoints) {
+        Player.forfeitWinPoints = forfeitWinPoints;
+    }
+
+    public static Float getForfeitLosePoints() {
+        return forfeitLosePoints;
+    }
+
+    public static void setForfeitLosePoints(Float forfeitLosePoints) {
+        Player.forfeitLosePoints = forfeitLosePoints;
+    }
+
+    public static Float getByePoints() {
+        return byePoints;
+    }
+
+    public static void setByePoints(Float byePoints) {
+        Player.byePoints = byePoints;
+    }
+
+    public static Float getHalfByePoints() {
+        return halfByePoints;
+    }
+
+    public static void setHalfByePoints(Float halfByePoints) {
+        Player.halfByePoints = halfByePoints;
+    }
+
+    public static Short[] getPhonePrefixesList() {
+        return phonePrefixesList;
     }
 
     @Override
