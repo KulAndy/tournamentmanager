@@ -415,13 +415,12 @@ public class Player implements Serializable {
             Float addition;
             if (round.isForfeit()) {
                 if (i == getRounds().size() - 1 && (
-                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
                 )) {
-                    addition = (float) (getStandardizedPointsInRound(i) + (0.5 * (getRounds().size() - i - 1)));
+                    addition = (float) (getStandardizedPointsInRound(i) + 0.5);
                 } else {
-                    addition = (float) (getStandardizedPointsInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
+                    addition = (float) (getPointInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
                 }
             } else if (
                     opponent.getRounds().size() == opponent.getPlayedGamedNumber()
@@ -453,18 +452,13 @@ public class Player implements Serializable {
             Float addition;
             if (round.isForfeit()) {
                 if (i == getRounds().size() - 1 && (
-                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
                 )) {
-                    addition = (float) (getStandardizedPointsInRound(i) + (0.5 * (getRounds().size() - i - 1)));
+                    addition = (float) (getStandardizedPointsInRound(i) + 0.5);
                 } else {
-                    addition = (float) (getStandardizedPointsInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
+                    addition = (float) (getPointInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
                 }
-            } else if (
-                    opponent.getRounds().size() == opponent.getPlayedGamedNumber()
-            ) {
-                addition = opponent.getStandardizedPoints();
             } else {
                 addition = opponent.getStandardizedPoints();
             }
