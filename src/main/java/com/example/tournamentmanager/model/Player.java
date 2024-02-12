@@ -361,26 +361,22 @@ public class Player implements Serializable {
     public float getBerger() {
         float berger = 0;
         for (Game round : getRounds()) {
-            if (!round.isForfeit()) {
-                Result result = getRoundResult(round);
-                Color color = getRoundColor(round);
-                if (result != null) {
-                    switch (result) {
-                        case WIN -> {
-                            if (color == Color.WHITE) {
-                                berger += round.getBlack().getStandardizedPoints();
-                            } else if (color == Color.BLACK) {
-                                berger += round.getWhite().getStandardizedPoints();
+            Player opponent = getOpponent(round);
+            switch (opponent.getPlayerid().toString()){
+                case "0000000000000000ffffffff", "0000000000000000fffffffe", "0000000000000000fffffffd"-> {}
+                default -> {
+                    Result result = getRoundResult(round);
+                    if (result != null) {
+                        switch (result) {
+                            case WIN -> {
+                                berger += opponent.getStandardizedPoints();
                             }
-                        }
-                        case DRAW -> {
-                            if (color == Color.WHITE) {
-                                berger += round.getBlack().getStandardizedPoints() / 2;
-                            } else if (color == Color.BLACK) {
-                                berger += round.getWhite().getStandardizedPoints() / 2;
+                            case DRAW -> {
+                                berger += opponent.getStandardizedPoints()/2;
                             }
                         }
                     }
+
                 }
             }
         }

@@ -47,7 +47,7 @@ public class WithdrawHelper {
 
         getWithdrawPlayerSelect().setCellFactory(param -> new ListCell<>() {
             @Override
-            private void updateItem(Player item, boolean empty) {
+            protected void updateItem(Player item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -131,7 +131,7 @@ public class WithdrawHelper {
             }
 
             @Override
-            private void updateItem(Void item, boolean empty) {
+            protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty) {
                     setGraphic(backButton);
