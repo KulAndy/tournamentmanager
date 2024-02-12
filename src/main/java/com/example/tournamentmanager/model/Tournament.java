@@ -422,7 +422,6 @@ public class Tournament implements Serializable {
                     getPredicates().addAll(from, change.getList().subList(from, to + 1));
                 }
             }
-            System.out.println(predicates);
         });
 
         setSchedule(new Schedule());
@@ -730,7 +729,6 @@ public class Tournament implements Serializable {
                     getPredicates().addAll(from, change.getList().subList(from, to + 1));
                 }
             }
-            System.out.println(predicates);
         });
 
         setSchedule(new Schedule());
@@ -881,7 +879,6 @@ public class Tournament implements Serializable {
                     getPredicates().addAll(from, change.getList().subList(from, to + 1));
                 }
             }
-            System.out.println(predicates);
         });
 
         setSchedule(new Schedule());
