@@ -253,7 +253,7 @@ public class Player implements Serializable {
         float points = 0;
         for(Game game:getRounds()){
             Player opponent = getOpponent(game);
-            if (Objects.equals(opponent.getPoints(), getPoints())){
+            if (!game.isForfeit() && Objects.equals(opponent.getPoints(), getPoints())){
                 points += getRoundPoints(game);
             }
         }
