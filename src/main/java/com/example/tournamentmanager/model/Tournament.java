@@ -344,6 +344,7 @@ public class Tournament implements Serializable {
         getPlayers().getComparator().setCriteria3(swsxTournament.getSort2());
         getPlayers().getComparator().setCriteria4(swsxTournament.getSort3());
         getPlayers().getComparator().setCriteria5(swsxTournament.getSort4());
+        playersObs = FXCollections.observableArrayList(getPlayers());
         getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
@@ -651,6 +652,7 @@ public class Tournament implements Serializable {
         setSchedule(schedule1);
 
         getScheduleElementsObs().addAll(getSchedule());
+        playersObs = FXCollections.observableArrayList(getPlayers());
         getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
