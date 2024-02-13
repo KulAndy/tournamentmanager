@@ -1345,7 +1345,6 @@ public class Tournament implements Serializable {
 
         public enum TbMethod implements Serializable {
             POINTS,
-            PLAYOFF,
             DUEL,
             WINS,
             GAMES_WITH_BLACK,
@@ -1358,7 +1357,6 @@ public class Tournament implements Serializable {
             BUCHOLZ,
             MEDIA_BUCHOLZ,
             BUCHOLZ_CUT1,
-            MODIFIED_BUCHOLZ,
             SONNEN_BERGER,
             PROGRESS,
             KOYA;
@@ -1444,9 +1442,6 @@ public class Tournament implements Serializable {
                     }
                     case RATING_PERFORMENCE_FIDE -> {
                         return "RtgPerf";
-                    }
-                    case MODIFIED_BUCHOLZ -> {
-                        return "MoBch";
                     }
                     default -> {
                         return convertToTitleCase(toString());

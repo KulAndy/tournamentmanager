@@ -123,66 +123,6 @@ public class Player implements Serializable {
         );
     }
 
-    public static Float getWinPoints() {
-        return winPoints;
-    }
-
-    public static void setWinPoints(Float winPoints) {
-        Player.winPoints = winPoints;
-    }
-
-    public static Float getDrawPoints() {
-        return drawPoints;
-    }
-
-    public static void setDrawPoints(Float drawPoints) {
-        Player.drawPoints = drawPoints;
-    }
-
-    public static Float getLosePoints() {
-        return losePoints;
-    }
-
-    public static void setLosePoints(Float losePoints) {
-        Player.losePoints = losePoints;
-    }
-
-    public static Float getForfeitWinPoints() {
-        return forfeitWinPoints;
-    }
-
-    public static void setForfeitWinPoints(Float forfeitWinPoints) {
-        Player.forfeitWinPoints = forfeitWinPoints;
-    }
-
-    public static Float getForfeitLosePoints() {
-        return forfeitLosePoints;
-    }
-
-    public static void setForfeitLosePoints(Float forfeitLosePoints) {
-        Player.forfeitLosePoints = forfeitLosePoints;
-    }
-
-    public static Float getByePoints() {
-        return byePoints;
-    }
-
-    public static void setByePoints(Float byePoints) {
-        Player.byePoints = byePoints;
-    }
-
-    public static Float getHalfByePoints() {
-        return halfByePoints;
-    }
-
-    public static void setHalfByePoints(Float halfByePoints) {
-        Player.halfByePoints = halfByePoints;
-    }
-
-    public static Short[] getPhonePrefixesList() {
-        return phonePrefixesList;
-    }
-
     public int getColorPreference() {
         int preference = 0;
         Color color = getLastColor();
@@ -264,6 +204,9 @@ public class Player implements Serializable {
             case AVERAGE_OPPONENTS_LOCAL_RATING -> {
                 return getAverageRatingPZSzach();
             }
+            case DUEL -> {
+                return getDuel();
+            }
             default -> {
                 return 0;
             }
@@ -304,6 +247,17 @@ public class Player implements Serializable {
             return norm;
         }
         return null;
+    }
+
+    public float getDuel(){
+        float points = 0;
+        for(Game game:getRounds()){
+            Player opponent = getOpponent(game);
+            if (Objects.equals(opponent.getPoints(), getPoints())){
+                points += getRoundPoints(game);
+            }
+        }
+        return points;
     }
 
     public float getKoya() {
@@ -1083,5 +1037,64 @@ public class Player implements Serializable {
     public enum Color {
         WHITE,
         BLACK
+    }
+    public static Float getWinPoints() {
+        return winPoints;
+    }
+
+    public static void setWinPoints(Float winPoints) {
+        Player.winPoints = winPoints;
+    }
+
+    public static Float getDrawPoints() {
+        return drawPoints;
+    }
+
+    public static void setDrawPoints(Float drawPoints) {
+        Player.drawPoints = drawPoints;
+    }
+
+    public static Float getLosePoints() {
+        return losePoints;
+    }
+
+    public static void setLosePoints(Float losePoints) {
+        Player.losePoints = losePoints;
+    }
+
+    public static Float getForfeitWinPoints() {
+        return forfeitWinPoints;
+    }
+
+    public static void setForfeitWinPoints(Float forfeitWinPoints) {
+        Player.forfeitWinPoints = forfeitWinPoints;
+    }
+
+    public static Float getForfeitLosePoints() {
+        return forfeitLosePoints;
+    }
+
+    public static void setForfeitLosePoints(Float forfeitLosePoints) {
+        Player.forfeitLosePoints = forfeitLosePoints;
+    }
+
+    public static Float getByePoints() {
+        return byePoints;
+    }
+
+    public static void setByePoints(Float byePoints) {
+        Player.byePoints = byePoints;
+    }
+
+    public static Float getHalfByePoints() {
+        return halfByePoints;
+    }
+
+    public static void setHalfByePoints(Float halfByePoints) {
+        Player.halfByePoints = halfByePoints;
+    }
+
+    public static Short[] getPhonePrefixesList() {
+        return phonePrefixesList;
     }
 }
