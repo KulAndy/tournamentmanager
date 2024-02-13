@@ -165,11 +165,6 @@ public class StartListHelper {
                                 player.setFideId(playerPl.getFideId());
                             }
                         }else {
-                            System.out.println(player.getName() + " " + player.getYearOfBirth());
-                            System.out.println(players);
-                            for (Player player1: players){
-                                System.out.println(player1.getName() + " " + player1.getYearOfBirth());
-                            }
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
                                     .collect(Collectors.toList());
