@@ -388,22 +388,6 @@ public class FIDEOperation {
             try {
                 final String decodedName = unidecode(player.getName()).replaceAll(",", "");
                 players = searchInPolDb(decodedName, type);
-                if (players.size() > 1) {
-                    players = (ArrayList<Player>) players.parallelStream()
-                            .filter(elem ->
-                                    Objects.equals(elem.getName(), decodedName)
-                                            && elem.getYearOfBirth() == player.getYearOfBirth()
-                            )
-                            .collect(Collectors.toList());
-                    if (players.size() > 1) {
-                        players = (ArrayList<Player>) players.parallelStream()
-                                .filter(elem ->
-                                        Objects.equals(elem.getName(), decodedName)
-                                                && Objects.equals(elem.getDateOfBirth(), player.getDateOfBirth())
-                                )
-                                .collect(Collectors.toList());
-                    }
-                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

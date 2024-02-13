@@ -89,6 +89,7 @@ public class NewPlayerHelper {
         sortedList.setComparator(comparator);
         getPlayerSelect().setItems(sortedList);
         getPlayerSelect().setOnAction(e -> {
+            resetForm(false);
             Player player = getPlayerSelect().getValue();
             if (player != null) {
                 getFedSelect().setValue(player.getFederation());
@@ -340,16 +341,18 @@ public class NewPlayerHelper {
             }
         });
 
-        getClearPlayerButton().setOnAction(event -> resetForm());
+        getClearPlayerButton().setOnAction(event -> resetForm(true));
         getAddClearPlayerButton().setOnAction(event -> {
             addPlayer();
-            resetForm();
+            resetForm(true);
         });
 
     }
 
-    public void resetForm() {
-        getPlayerSelect().setValue(null);
+    public void resetForm(boolean setNull) {
+        if (setNull){
+            getPlayerSelect().setValue(null);
+        }
         getFedSelect().setValue(Federation.POL);
         getStateSelect().setValue(null);
         getPlayerNameField().setText("");
