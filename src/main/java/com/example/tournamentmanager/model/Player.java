@@ -123,6 +123,66 @@ public class Player implements Serializable {
         );
     }
 
+    public static Float getWinPoints() {
+        return winPoints;
+    }
+
+    public static void setWinPoints(Float winPoints) {
+        Player.winPoints = winPoints;
+    }
+
+    public static Float getDrawPoints() {
+        return drawPoints;
+    }
+
+    public static void setDrawPoints(Float drawPoints) {
+        Player.drawPoints = drawPoints;
+    }
+
+    public static Float getLosePoints() {
+        return losePoints;
+    }
+
+    public static void setLosePoints(Float losePoints) {
+        Player.losePoints = losePoints;
+    }
+
+    public static Float getForfeitWinPoints() {
+        return forfeitWinPoints;
+    }
+
+    public static void setForfeitWinPoints(Float forfeitWinPoints) {
+        Player.forfeitWinPoints = forfeitWinPoints;
+    }
+
+    public static Float getForfeitLosePoints() {
+        return forfeitLosePoints;
+    }
+
+    public static void setForfeitLosePoints(Float forfeitLosePoints) {
+        Player.forfeitLosePoints = forfeitLosePoints;
+    }
+
+    public static Float getByePoints() {
+        return byePoints;
+    }
+
+    public static void setByePoints(Float byePoints) {
+        Player.byePoints = byePoints;
+    }
+
+    public static Float getHalfByePoints() {
+        return halfByePoints;
+    }
+
+    public static void setHalfByePoints(Float halfByePoints) {
+        Player.halfByePoints = halfByePoints;
+    }
+
+    public static Short[] getPhonePrefixesList() {
+        return phonePrefixesList;
+    }
+
     public int getColorPreference() {
         int preference = 0;
         Color color = getLastColor();
@@ -249,11 +309,11 @@ public class Player implements Serializable {
         return null;
     }
 
-    public float getDuel(){
+    public float getDuel() {
         float points = 0;
-        for(Game game:getRounds()){
+        for (Game game : getRounds()) {
             Player opponent = getOpponent(game);
-            if (!game.isForfeit() && Objects.equals(opponent.getPoints(), getPoints())){
+            if (!game.isForfeit() && Objects.equals(opponent.getPoints(), getPoints())) {
                 points += getRoundPoints(game);
             }
         }
@@ -316,8 +376,9 @@ public class Player implements Serializable {
         float berger = 0;
         for (Game round : getRounds()) {
             Player opponent = getOpponent(round);
-            switch (opponent.getPlayerid().toString()){
-                case "0000000000000000ffffffff", "0000000000000000fffffffe", "0000000000000000fffffffd"-> {}
+            switch (opponent.getPlayerid().toString()) {
+                case "0000000000000000ffffffff", "0000000000000000fffffffe", "0000000000000000fffffffd" -> {
+                }
                 default -> {
                     Result result = getRoundResult(round);
                     if (result != null) {
@@ -326,7 +387,7 @@ public class Player implements Serializable {
                                 berger += opponent.getStandardizedPoints();
                             }
                             case DRAW -> {
-                                berger += opponent.getStandardizedPoints()/2;
+                                berger += opponent.getStandardizedPoints() / 2;
                             }
                         }
                     }
@@ -369,7 +430,7 @@ public class Player implements Serializable {
             Float addition;
             if (round.isForfeit()) {
                 if (i == getRounds().size() - 1 && (
-                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
+                        opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
                 )) {
                     addition = (float) (getStandardizedPointsInRound(i) + 0.5);
@@ -406,7 +467,7 @@ public class Player implements Serializable {
             Float addition;
             if (round.isForfeit()) {
                 if (i == getRounds().size() - 1 && (
-                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
+                        opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
                 )) {
                     addition = (float) (getStandardizedPointsInRound(i) + 0.5);
@@ -1037,64 +1098,5 @@ public class Player implements Serializable {
     public enum Color {
         WHITE,
         BLACK
-    }
-    public static Float getWinPoints() {
-        return winPoints;
-    }
-
-    public static void setWinPoints(Float winPoints) {
-        Player.winPoints = winPoints;
-    }
-
-    public static Float getDrawPoints() {
-        return drawPoints;
-    }
-
-    public static void setDrawPoints(Float drawPoints) {
-        Player.drawPoints = drawPoints;
-    }
-
-    public static Float getLosePoints() {
-        return losePoints;
-    }
-
-    public static void setLosePoints(Float losePoints) {
-        Player.losePoints = losePoints;
-    }
-
-    public static Float getForfeitWinPoints() {
-        return forfeitWinPoints;
-    }
-
-    public static void setForfeitWinPoints(Float forfeitWinPoints) {
-        Player.forfeitWinPoints = forfeitWinPoints;
-    }
-
-    public static Float getForfeitLosePoints() {
-        return forfeitLosePoints;
-    }
-
-    public static void setForfeitLosePoints(Float forfeitLosePoints) {
-        Player.forfeitLosePoints = forfeitLosePoints;
-    }
-
-    public static Float getByePoints() {
-        return byePoints;
-    }
-
-    public static void setByePoints(Float byePoints) {
-        Player.byePoints = byePoints;
-    }
-
-    public static Float getHalfByePoints() {
-        return halfByePoints;
-    }
-
-    public static void setHalfByePoints(Float halfByePoints) {
-        Player.halfByePoints = halfByePoints;
-    }
-
-    public static Short[] getPhonePrefixesList() {
-        return phonePrefixesList;
     }
 }
