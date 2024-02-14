@@ -152,12 +152,15 @@ public class TournamentOperation {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
-        File selectedFile = fileChooser.showOpenDialog(fileStage);
-
-        if (selectedFile != null) {
-            importJson(selectedFile, controller);
-        } else {
-            warning("No file selected");
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(fileStage);
+        if (selectedFiles != null) {
+            for (File file : selectedFiles) {
+                if (file != null) {
+                    importJson(file, controller);
+                } else {
+                    warning("No file selected");
+                }
+            }
         }
 
     }
