@@ -382,14 +382,7 @@ public class Player implements Serializable {
                 default -> {
                     Result result = getRoundResult(round);
                     if (result != null) {
-                        switch (result) {
-                            case WIN -> {
-                                berger += opponent.getStandardizedPoints();
-                            }
-                            case DRAW -> {
-                                berger += opponent.getStandardizedPoints() / 2;
-                            }
-                        }
+                        berger += opponent.getStandardizedPoints() * getRoundPoints(round);
                     }
 
                 }
