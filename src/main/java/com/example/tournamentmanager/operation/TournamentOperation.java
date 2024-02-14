@@ -30,7 +30,7 @@ import java.util.zip.ZipOutputStream;
 import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class TournamentOperation {
-    private static final Stage fileStage = new Stage();
+    public static final Stage fileStage = new Stage();
 
     public static void loadTournament(Tournament tournament, MainController controller) {
         if (tournament != null && controller != null) {
@@ -165,7 +165,7 @@ public class TournamentOperation {
 
     }
 
-    private static void exportTournament(Tournament tournament, File file) throws IOException {
+    public static void exportTournament(Tournament tournament, File file) throws IOException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .registerTypeAdapter(Date.class, new DateAdapter())

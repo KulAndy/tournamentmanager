@@ -1,27 +1,50 @@
 package com.example.tournamentmanager.helper;
 
+import com.example.tournamentmanager.MainController;
+import com.example.tournamentmanager.model.RemoteTournament;
 import com.example.tournamentmanager.model.Tournament;
+import com.google.gson.*;
 import com.moandjiezana.toml.Toml;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.HttpClients;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
 public class GeneralHelper {
     public static void bindTextFieldStringProperty(TextField tf, Object obj, String attr) {
@@ -336,7 +359,7 @@ public class GeneralHelper {
 
                 URL url;
                 try {
-                    URI uri = new URI(serverUrl + "login");
+                    URI uri = new URI(serverUrl + toml.getTable("remote").getString("login"));
                     url = uri.toURL();
                 } catch (URISyntaxException | MalformedURLException ex) {
                     error("Couldn't connect with server");
@@ -457,7 +480,7 @@ public class GeneralHelper {
                 try {
                     URL url;
                     try {
-                        URI uri = new URI(serverUrl + "register");
+                        URI uri = new URI(serverUrl + toml.getTable("remote").getString("register"));
                         url = uri.toURL();
                     } catch (URISyntaxException | MalformedURLException ex) {
                         error("Couldn't connect with server");
@@ -524,6 +547,270 @@ public class GeneralHelper {
         registerStage.showAndWait();
     }
 
+    static public void showUserTournaments(MainController controller) {
+        Toml toml;
+        String serverUrl;
+
+        try {
+            toml = new Toml().read(new File("settings.toml"));
+            serverUrl = toml.getTable("remote").getString("api");
+        } catch (Exception ex) {
+            try {
+                URI uri = new URI("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                URL defaultTomlURL = uri.toURL();
+                byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
+                String defaultTomlContent = new String(defaultTomlBytes);
+
+                toml = new Toml().read(defaultTomlContent);
+                serverUrl = toml.getTable("remote").getString("api");
+            } catch (IOException | URISyntaxException ex1) {
+                error("Couldn't read server location");
+                return;
+            }
+        }
+
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost;
+        ArrayList<String> lines;
+        try {
+            lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            error("You aren't log in or session expired");
+            return;
+        }
+
+
+        if (lines.size() >= 1) {
+            String token = lines.get(0);
+            httpPost = new HttpPost(serverUrl + toml.getTable("remote").getString("logged") + "/" + token);
+        } else {
+            error("Corrupted auth file");
+            return;
+        }
+
+        try {
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+            HttpEntity multipart = builder.build();
+            httpPost.setEntity(multipart);
+
+            HttpResponse response = httpClient.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+
+            if (statusCode >= 200 && statusCode < 300) {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (InputStream inputStream = entity.getContent();
+                         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+
+                        StringBuilder result = new StringBuilder();
+                        char[] buffer = new char[1024];
+                        int length;
+                        while ((length = reader.read(buffer)) != -1) {
+                            result.append(buffer, 0, length);
+                        }
+
+                        ObservableList<RemoteTournament> remoteTournamentObservableList = FXCollections.observableArrayList();
+                        JsonArray jsonArray = JsonParser.parseString(result.toString()).getAsJsonArray();
+                        for (JsonElement jsonElement : jsonArray) {
+                            try {
+                                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                JsonObject dataObject = jsonObject.getAsJsonObject("data");
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+                                RemoteTournament remoteTournament = new RemoteTournament(
+                                        jsonObject.get("_id").getAsString(),
+                                        dataObject.get("name").getAsString(),
+                                        sdf.parse(dataObject.get("startDate").getAsString()),
+                                        sdf.parse(dataObject.get("endDate").getAsString()),
+                                        dataObject.get("place").getAsString(),
+                                        dataObject.get("gameTime").getAsShort(),
+                                        dataObject.get("increment").getAsShort(),
+                                        dataObject.get("controlMove").getAsByte(),
+                                        dataObject.get("controlAddition").getAsByte(),
+                                        Tournament.Type.valueOf(dataObject.get("type").getAsString()),
+                                        Tournament.TournamentSystem.valueOf(dataObject.get("system").getAsString())
+                                );
+
+                                remoteTournamentObservableList.add(remoteTournament);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        Stage tournamentsStage = new Stage();
+                        tournamentsStage.initModality(Modality.APPLICATION_MODAL);
+                        VBox root = new VBox(10);
+                        root.setPadding(new Insets(20));
+                        TableView<RemoteTournament> tableView = new TableView<>();
+                        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+                        TableColumn<RemoteTournament, String> name = new TableColumn<>("Name");
+                        name.setCellValueFactory(cellDate -> {
+                            RemoteTournament remoteTournament = cellDate.getValue();
+                            return new SimpleStringProperty(remoteTournament.name());
+                        });
+                        TableColumn<RemoteTournament, String> rate = new TableColumn<>("Rate");
+                        rate.setCellValueFactory(cellDate -> {
+                            RemoteTournament remoteTournament = cellDate.getValue();
+                            StringBuilder builder1 = new StringBuilder(remoteTournament.gameTime() + "'");
+                            if (remoteTournament.controlMove() > 0 && remoteTournament.controlAddition() > 0) {
+                                builder1.append("/")
+                                        .append(remoteTournament.controlMove())
+                                        .append(" ")
+                                        .append(remoteTournament.controlAddition())
+                                        .append("'");
+                            }
+
+                            if (remoteTournament.increment() > 0) {
+                                builder1.append(" + ")
+                                        .append(remoteTournament.increment())
+                                        .append("''/move");
+                            }
+                            return new SimpleStringProperty(builder1.toString());
+                        });
+                        TableColumn<RemoteTournament, String> startDate = new TableColumn<>("Start");
+                        startDate.setCellValueFactory(cellDate -> {
+                            RemoteTournament remoteTournament = cellDate.getValue();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                            return new SimpleStringProperty(dateFormat.format(remoteTournament.startDate()));
+                        });
+                        TableColumn<RemoteTournament, String> endDate = new TableColumn<>("End");
+                        endDate.setCellValueFactory(cellDate -> {
+                            RemoteTournament remoteTournament = cellDate.getValue();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                            return new SimpleStringProperty(dateFormat.format(remoteTournament.endDate()));
+                        });
+                        TableColumn<RemoteTournament, String> type = new TableColumn<>("Type");
+                        type.setCellValueFactory(cellDate -> {
+                            RemoteTournament remoteTournament = cellDate.getValue();
+                            return new SimpleStringProperty(remoteTournament.type().toString());
+                        });
+                        TableColumn<RemoteTournament, String> system = new TableColumn<>("System");
+                        system.setCellValueFactory(cellDate -> {
+                            RemoteTournament remoteTournament = cellDate.getValue();
+                            return new SimpleStringProperty(remoteTournament.system().toString());
+                        });
+                        tableView.getColumns().addAll(name, rate, startDate, endDate, type, system);
+                        tableView.setItems(remoteTournamentObservableList);
+
+                        Button download = new Button("Download");
+                        String finalServerUrl = serverUrl;
+                        Toml finalToml = toml;
+                        download.setOnAction(e -> {
+                            RemoteTournament remoteTournamentTmp = tableView.getSelectionModel().getSelectedItem();
+                            if (remoteTournamentTmp != null) {
+                                FileChooser fileChooser = new FileChooser();
+                                fileChooser.setTitle("Create New File");
+                                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
+                                File newFile = fileChooser.showSaveDialog(fileStage);
+
+                                if (newFile != null) {
+                                    String filePath = newFile.getAbsolutePath();
+                                    if (!filePath.endsWith("." + controller.getProgramExtension())) {
+                                        filePath += "." + controller.getProgramExtension();
+                                    }
+                                    newFile = new File(filePath);
+                                    try {
+                                        URL url = new URL(finalServerUrl + finalToml.getTable("remote").getString("tournament") + "/" + remoteTournamentTmp._id());
+                                        URLConnection connection = url.openConnection();
+
+                                        try (InputStream inputStream2 = connection.getInputStream();
+                                             BufferedReader reader2 = new BufferedReader(new InputStreamReader(inputStream2))) {
+
+                                            StringBuilder content = new StringBuilder();
+                                            String line;
+
+                                            while ((line = reader2.readLine()) != null) {
+                                                content.append(line).append("\n");
+                                            }
+
+                                            String fileContent = content.toString();
+
+                                            JsonObject object =  JsonParser.parseString(fileContent).getAsJsonObject();
+                                            JsonObject tournamentData = object.get("data").getAsJsonObject();
+
+                                            try {
+                                                Path tempDir = Files.createTempDirectory("tempDir");
+
+                                                Path tournamentJsonPath = tempDir.resolve("tournament.json");
+                                                Files.write(tournamentJsonPath, tournamentData.toString().getBytes());
+
+                                                Files.copy(Paths.get("settings.toml"), tempDir.resolve("settings.toml"), StandardCopyOption.REPLACE_EXISTING);
+
+                                                String tournamentId = object.get("_id").getAsString();
+                                                Files.write(tempDir.resolve("settings.toml"), ("\ntournamentId = \"" + tournamentId + "\"").getBytes(), StandardOpenOption.APPEND);
+
+                                                Path zipFilePath = Paths.get(newFile.getAbsolutePath());
+                                                try (OutputStream fos = Files.newOutputStream(zipFilePath);
+                                                     ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+                                                    Files.walk(tempDir)
+                                                            .filter(path -> !Files.isDirectory(path))
+                                                            .forEach(path -> {
+                                                                ZipEntry zipEntry = new ZipEntry(tempDir.relativize(path).toString());
+                                                                try {
+                                                                    zipOut.putNextEntry(zipEntry);
+                                                                    Files.copy(path, zipOut);
+                                                                    zipOut.closeEntry();
+                                                                } catch (IOException ioException) {
+                                                                    ioException.printStackTrace();
+                                                                }
+                                                            });
+                                                }
+
+                                                importJson(newFile, controller);
+                                                info("File downloaded successfully");
+
+                                                Files.walk(tempDir)
+                                                        .sorted(Comparator.reverseOrder())
+                                                        .map(Path::toFile)
+                                                        .forEach(File::delete);
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+
+
+                                        }
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+
+                                }
+                            }
+                        });
+                        Button close = new Button("Close");
+                        close.setOnAction(e -> tournamentsStage.close());
+
+                        HBox hBox = new HBox(25);
+                        hBox.getChildren().addAll(download, close);
+
+                        root.getChildren().addAll(tableView, hBox);
+                        Scene scene = new Scene(root, 1280, 720);
+                        tournamentsStage.setScene(scene);
+                        tournamentsStage.setTitle("My tournaments");
+
+                        tournamentsStage.showAndWait();
+
+                    }
+                } else {
+                    error("Error  - no tournament ID returned");
+                }
+            } else if (statusCode >= 400 && statusCode < 500) {
+                error("Corrupted file - couldn't save on server");
+            } else if (statusCode >= 500 && statusCode < 600) {
+                error("Internal server error");
+            } else {
+                warning("Unknown status code: " + statusCode);
+            }
+        } catch (SSLPeerUnverifiedException ex) {
+            error("Couldn't connect - insecure connection");
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            error("Connection error");
+            ex.printStackTrace();
+        }
+
+    }
+
     public static class ProgressMessageBox {
         private final Stage stage;
         private final ProgressBar progressBar;
@@ -580,5 +867,4 @@ public class GeneralHelper {
             }
         }
     }
-
 }

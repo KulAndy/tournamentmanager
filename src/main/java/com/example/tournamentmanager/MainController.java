@@ -108,7 +108,8 @@ public class MainController implements Initializable {
     private MenuItem trfRaport;
     @FXML
     private MenuItem upload;
-
+    @FXML
+    private MenuItem userTournaments;
     @FXML
     private MenuItem login;
     @FXML
@@ -774,7 +775,7 @@ public class MainController implements Initializable {
                         if (file.exists()) {
 
                             HttpClient httpClient = HttpClients.createDefault();
-                            HttpPost httpPost = new HttpPost(serverUrl + "/upload");
+                            HttpPost httpPost = new HttpPost(serverUrl + toml.getTable("remote").getString("upload"));
                             ArrayList<String> lines;
                             try {
                                 lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
@@ -846,6 +847,7 @@ public class MainController implements Initializable {
                     }
                 })
         );
+        userTournaments.setOnAction(e->showUserTournaments(this));
         login.setOnAction(e -> showLoginPopup());
         register.setOnAction(e -> showRegisterPopup());
         exportPgnMenu.setOnAction(e ->

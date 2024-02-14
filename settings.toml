@@ -1,2 +1,7 @@
 [remote]
-api = "https://api.tournamentmanager.bazaszachowa.smallhost.pl/"
+api = "https://api.tournamentmanager.bazaszachowa.smallhost.pl"
+upload = "/upload"
+login = "/login"
+register = "/register"
+logged = "/logged"
+tournament = "/tournament"
