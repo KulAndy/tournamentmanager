@@ -1233,14 +1233,6 @@ public class Tournament implements Serializable {
                     "\n\thalfbye points: " + getHalfByePoints();
         }
 
-        public Float getHalfByePoints() {
-            return halfByePoints;
-        }
-
-        public void setHalfByePoints(Float halfByePoints) {
-            this.halfByePoints = halfByePoints;
-        }
-
         public boolean isFIDEMode() {
             return FIDEMode;
         }
@@ -1341,6 +1333,16 @@ public class Tournament implements Serializable {
         public void setByePoints(Float byePoints) {
             this.byePoints = byePoints;
             Player.setByePoints(byePoints);
+        }
+
+        public Float getHalfByePoints() {
+            return halfByePoints;
+        }
+
+        public void setHalfByePoints(Float halfByePoints) {
+
+            this.halfByePoints = halfByePoints;
+            Player.setHalfByePoints(halfByePoints);
         }
 
         public enum TbMethod implements Serializable {

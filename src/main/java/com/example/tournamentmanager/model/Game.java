@@ -76,18 +76,32 @@ public class Game implements Serializable {
         if (getWhiteResult() == null) {
             return 0F;
         }
-        switch (getWhiteResult()) {
-            case WIN -> {
-                return Player.getWinPoints();
+        if (isForfeit()){
+            switch (getWhiteResult()) {
+                case WIN -> {
+                    return Player.getForfeitWinPoints();
+                }
+                case LOSE -> {
+                    return Player.getForfeitLosePoints();
+                }
+                default -> {
+                    return Float.NaN;
+                }
             }
-            case DRAW -> {
-                return Player.getDrawPoints();
-            }
-            case LOSE -> {
-                return Player.getLosePoints();
-            }
-            default -> {
-                return Float.NaN;
+        }else{
+            switch (getWhiteResult()) {
+                case WIN -> {
+                    return Player.getWinPoints();
+                }
+                case DRAW -> {
+                    return Player.getDrawPoints();
+                }
+                case LOSE -> {
+                    return Player.getLosePoints();
+                }
+                default -> {
+                    return Float.NaN;
+                }
             }
         }
     }
@@ -96,18 +110,32 @@ public class Game implements Serializable {
         if (getBlackResult() == null) {
             return 0F;
         }
-        switch (getBlackResult()) {
-            case WIN -> {
-                return Player.getWinPoints();
+        if (isForfeit()){
+            switch (getBlackResult()) {
+                case WIN -> {
+                    return Player.getForfeitWinPoints();
+                }
+                case LOSE -> {
+                    return Player.getForfeitLosePoints();
+                }
+                default -> {
+                    return Float.NaN;
+                }
             }
-            case DRAW -> {
-                return Player.getDrawPoints();
-            }
-            case LOSE -> {
-                return Player.getLosePoints();
-            }
-            default -> {
-                return Float.NaN;
+        }else{
+            switch (getBlackResult()) {
+                case WIN -> {
+                    return Player.getWinPoints();
+                }
+                case DRAW -> {
+                    return Player.getDrawPoints();
+                }
+                case LOSE -> {
+                    return Player.getLosePoints();
+                }
+                default -> {
+                    return Float.NaN;
+                }
             }
         }
     }
