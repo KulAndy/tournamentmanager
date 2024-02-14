@@ -369,7 +369,6 @@ public class GeneralHelper {
                     }
 
                     try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream("auth.txt"))) {
-                        out.write((username + "\n").getBytes());
                         out.write(responseContent.toString().getBytes());
                         info("Login successfully");
                     } catch (IOException e1) {

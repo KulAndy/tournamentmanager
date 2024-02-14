@@ -779,17 +779,15 @@ public class MainController implements Initializable {
                             try {
                                 lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
                             } catch (IOException ex) {
-                                error("You must first log in");
+                                error("You aren't log in or session expired");
                                 return;
                             }
 
 
-                            if (lines.size() >= 2) {
-                                String login = lines.get(0);
-                                String hashedPassword = lines.get(1);
+                            if (lines.size() >= 1) {
+                                String token = lines.get(0);
 
-                                httpPost.setHeader("login", login);
-                                httpPost.setHeader("hash", hashedPassword);
+                                httpPost.setHeader("token", token);
                             } else {
                                 error("Corrupted auth file");
                                 return;
@@ -818,6 +816,7 @@ public class MainController implements Initializable {
                                                 result.append(buffer, 0, length);
                                             }
 
+                                            System.out.println(result.toString());
                                             JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
                                             String insertedId = jsonObject.get("insertedId").getAsString();
 
