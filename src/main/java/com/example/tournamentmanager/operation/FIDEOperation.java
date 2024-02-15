@@ -609,7 +609,7 @@ public class FIDEOperation {
             try {
                 Tournament tournament = new Tournament(new TrfTournament(selectedFile));
                 TournamentOperation.loadTournament(tournament, controller);
-                info("Imported successfully");
+                //info("Imported successfully");
             } catch (Exception e) {
                 e.printStackTrace();
                 error("An error eccured");

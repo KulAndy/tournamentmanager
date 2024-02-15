@@ -6,6 +6,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
+import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
 import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class RtgOptHelper {
@@ -42,7 +43,7 @@ public class RtgOptHelper {
         bindTextFieldInt(getRatingFloor(), getTournament().getRating(), "ratingFloor", "short");
         bindTextFieldInt(getMinTitleGames(), getTournament().getRating(), "minTitleGames", "byte");
         getMinInitGames().setText("5");
-        getRatingFloor().setText("1000");
+        getRatingFloor().setText(String.valueOf(FIDE_FLOOR));
         getMinTitleGames().setText("9");
 
         bindComboBox(getMaxTitle(), getTournament().getRating(), "maxTitle", Title.class);

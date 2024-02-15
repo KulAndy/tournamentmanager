@@ -16,6 +16,7 @@ import javafx.util.Callback;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
+import static com.example.tournamentmanager.calculation.PZSzachCalculation.PZSZACH_FLOOR;
 import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class NewPlayerHelper {
@@ -424,8 +425,8 @@ public class NewPlayerHelper {
                 getStateSelect().getValue() == null ? "" : getStateSelect().getValue(),
                 name,
                 getPlayerTitleSelect().getValue(),
-                localRtg >= 1000 ? localRtg : PZSzachCalculation.getTitleValue(getPlayerTitleSelect().getValue(), getSexSelect().getValue()),
-                Math.max(fideRtg, 1000),
+                localRtg >= PZSZACH_FLOOR ? localRtg : PZSzachCalculation.getTitleValue(getPlayerTitleSelect().getValue(), getSexSelect().getValue()),
+                Math.max(fideRtg, PZSZACH_FLOOR),
                 getClubField().getText(),
                 date,
                 getSexSelect().getValue(),

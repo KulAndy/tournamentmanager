@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
 import static com.example.tournamentmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
 
 @XmlRootElement(name = "tournament")
@@ -1468,7 +1469,7 @@ public class Tournament implements Serializable {
         private byte minTitleGames;
 
         Rating() {
-            this((byte) 5, (short) 1000, Title.M, (byte) 9);
+            this((byte) 5, FIDE_FLOOR, Title.M, (byte) 9);
         }
 
         Rating(byte minInitGames, short ratingFloor, Title maxTitle, byte minTitleGames) {

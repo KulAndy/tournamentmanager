@@ -5,7 +5,7 @@ import com.example.tournamentmanager.model.Player;
 import java.util.ArrayList;
 
 public class FIDECalculation {
-    public static final short RATING_FLOOR = 1000;
+    public static final short FIDE_FLOOR = 1000;
 
     public static int getAverageRating(ArrayList<Player> players) {
         int sum = 0;

@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
+
 public class SwsxTournament {
     private Title maxNorm = Title.bk;
     private boolean rematch = false;
@@ -181,7 +183,7 @@ public class SwsxTournament {
                 try {
                     setEloFloor(Short.parseShort(eloFloor));
                 } catch (NumberFormatException e) {
-                    setEloFloor((short) 1000);
+                    setEloFloor(FIDE_FLOOR);
                 }
                 try {
                     setMinGamesForElo(Byte.parseByte(minGamesForElo));

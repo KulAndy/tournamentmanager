@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
+import static com.example.tournamentmanager.calculation.PZSzachCalculation.PZSZACH_FLOOR;
 import static com.example.tournamentmanager.calculation.PZSzachCalculation.getNorm;
 
 @XmlRootElement(name = "player")
@@ -51,7 +53,7 @@ public class Player implements Serializable {
 
     public Player(String name) {
         this(
-                Federation.FIDE, "", name, Title.bk, 1000, 1000,
+                Federation.FIDE, "", name, Title.bk, PZSZACH_FLOOR, (int) FIDE_FLOOR,
                 null, null, null, null, null, null, null, null, null
         );
     }
@@ -65,14 +67,14 @@ public class Player implements Serializable {
 
     public Player(String name, Title title) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), 1000,
+                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), (int) FIDE_FLOOR,
                 null, null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Title title, Sex sex) {
         this(
-                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), 1000,
+                Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), (int) FIDE_FLOOR,
                 null, null, sex, null, null, null, null, null, null
         );
     }
@@ -302,6 +304,9 @@ public class Player implements Serializable {
     }
 
     public Title getPlayerNorm() {
+        if (getPZSzachPoints() < getPZSzachRounds().size()/3.0f){
+            return null;
+        }
         Title norm = getNorm(getRatingPerformancePZSzach(), getPlayedGamedNumber(), getSex());
         if (norm != null && PZSzachCalculation.getTitleValue(norm, getSex()) > PZSzachCalculation.getTitleValue(getTitle(), getSex())) {
             return norm;
@@ -340,7 +345,7 @@ public class Player implements Serializable {
 
     public float getFideChange() {
         float chg = 0.0F;
-        if (getFideRating() == FIDECalculation.RATING_FLOOR) {
+        if (getFideRating() == FIDE_FLOOR) {
             return FIDECalculation.getInitRating(getFideOpponents(), getFidePoints());
         } else {
             for (Game game : getFideRounds()) {
@@ -498,6 +503,17 @@ public class Player implements Serializable {
         return wons;
     }
 
+    public int getLosesNumber() {
+        int loses = 0;
+        for (int i = 0; i < getRounds().size(); i++) {
+            if (isRoundLost(i)) {
+                loses++;
+            }
+        }
+
+        return loses;
+    }
+
     public int getGamesPlayedWithBlack() {
         int blacks = 0;
         for (Game round : getRounds()) {
@@ -600,7 +616,7 @@ public class Player implements Serializable {
         for (Game round : rounds) {
             if (!round.isForfeit()) {
                 Player opponent = getOpponent(round);
-                if (opponent.getFideRating() != null && opponent.getFideRating() > 1000) {
+                if (opponent.getFideRating() != null && opponent.getFideRating() > FIDE_FLOOR) {
                     fideRounds.add(round);
                 }
             }
@@ -610,16 +626,16 @@ public class Player implements Serializable {
 
     public ArrayList<Game> getPZSzachRounds() {
         ArrayList<Game> rounds = getRounds();
-        ArrayList<Game> fideRounds = new ArrayList<>();
+        ArrayList<Game> pzszachRounds = new ArrayList<>();
         for (Game round : rounds) {
             if (!round.isForfeit()) {
                 Player opponent = getOpponent(round);
-                if (opponent.getLocalRating() != null && opponent.getLocalRating() > 1000) {
-                    fideRounds.add(round);
+                if (opponent.getLocalRating() != null && opponent.getLocalRating() >= PZSZACH_FLOOR) {
+                    pzszachRounds.add(round);
                 }
             }
         }
-        return fideRounds;
+        return pzszachRounds;
     }
 
     public float getPointInRound(int n) {
@@ -682,7 +698,7 @@ public class Player implements Serializable {
         ArrayList<Player> opponents = new ArrayList<>();
         for (Game round : getRounds()) {
             Player opponent = getOpponent(round);
-            if (!round.isForfeit() && opponent.getFideRating() != null && opponent.getFideRating() > 1000) {
+            if (!round.isForfeit() && opponent.getFideRating() != null && opponent.getFideRating() > FIDE_FLOOR) {
                 opponents.add(opponent);
             }
         }
@@ -698,35 +714,18 @@ public class Player implements Serializable {
     }
 
     public boolean isRoundWon(int n) {
-        Color color = getRoundColor(n);
         Game round = getRound(n);
-        if (color == Color.WHITE && round.getPointsForWhite() == 1.0) {
-            return true;
-        } else return color == Color.BLACK && round.getPointsForBlack() == 1.0;
+        return getRoundResult(round) == Result.WIN;
+    }
+
+    public boolean isRoundLost(int n) {
+        Game round = getRound(n);
+        return getRoundResult(round) == Result.LOSE;
     }
 
     public boolean hasRoundBeenPlayed(int n) {
         Game round = getRound(n);
         return !round.isForfeit();
-    }
-
-    public Result getRoundResult(int n) {
-        Game round = getRound(n);
-        Color color = getRoundColor(n);
-        if (color == Color.WHITE) {
-            if (round.getPointsForWhite() == 1) {
-                return Result.WIN;
-            } else if (round.getPointsForWhite() == 0.5) {
-                return Result.DRAW;
-            }
-        } else {
-            if (round.getPointsForBlack() == 1) {
-                return Result.WIN;
-            } else if (round.getPointsForBlack() == 0.5) {
-                return Result.DRAW;
-            }
-        }
-        return Result.LOSE;
     }
 
     public Result getRoundResult(Game round) {
@@ -836,11 +835,77 @@ public class Player implements Serializable {
         return localRating;
     }
 
+    public Integer getPZSzachRating(){
+        if (title == Title.bk && getFederation() != Federation.POL){
+            if (getSex() == Sex.FEMALE){
+                if (getFideRating() > 2450){
+                    return 2600;
+                }else if (getFideRating()>2400){
+                    return 2450;
+                }else if (getFideRating()>2300){
+                    return 2400;
+                }else if (getFideRating()>2250){
+                    return 2300;
+                }else if (getFideRating()>2200){
+                    return 2250;
+                }else if (getFideRating()>2100){
+                    return 2200;
+                }else if (getFideRating()>2000){
+                    return 2100;
+                }else if (getFideRating()>1900){
+                    return 2000;
+                }else if (getFideRating()>1800){
+                    return 1900;
+                }else if (getFideRating()>1700){
+                    return 1800;
+                }else if (getFideRating()>1600){
+                    return 1700;
+                }else if (getFideRating()>1400){
+                    return 1600;
+                }else if (getFideRating()>1250){
+                    return 1400;
+                }else if (getFideRating()>1100){
+                    return 1250;
+                }else if (getFideRating()>1000) {
+                    return 1100;
+                }
+            }else{
+                if (getFideRating() > 2450){
+                    return 2600;
+                }else if (getFideRating()>2400){
+                    return 2450;
+                }else if (getFideRating()>2300){
+                    return 2400;
+                }else if (getFideRating()>2200){
+                    return 2300;
+                }else if (getFideRating()>2100){
+                    return 2200;
+                }else if (getFideRating()>2000){
+                    return 2100;
+                }else if (getFideRating()>1900){
+                    return 2000;
+                }else if (getFideRating()>1800){
+                    return 1900;
+                }else if (getFideRating()>1600){
+                    return 1800;
+                }else if (getFideRating()>1400){
+                    return 1600;
+                }else if (getFideRating()>1200){
+                    return 1400;
+                }else if (getFideRating()>1000) {
+                    return 1200;
+                }
+            }
+        }
+
+        return PZSzachCalculation.getTitleValue(getTitle(), getSex());
+    }
+
     public void setLocalRating(Integer localRating) {
         if (localRating != null && localRating > 0) {
             this.localRating = localRating;
         } else {
-            this.localRating = 1000;
+            this.localRating = PZSZACH_FLOOR;
         }
     }
 
@@ -852,7 +917,7 @@ public class Player implements Serializable {
         if (fideRating != null && fideRating > 0) {
             this.fideRating = fideRating;
         } else {
-            this.fideRating = 1000;
+            this.fideRating = PZSZACH_FLOOR;
         }
     }
 
@@ -1026,7 +1091,7 @@ public class Player implements Serializable {
         ArrayList<Player> opponents = getFideOpponents();
         for (int i = 0; i < opponents.size(); i++) {
             Player player = opponents.get(i);
-            if (player.getFideRating() > FIDECalculation.RATING_FLOOR) {
+            if (player.getFideRating() > FIDE_FLOOR) {
                 minRating = Integer.min(minRating, player.getFideRating());
                 minIndex = i;
             }
