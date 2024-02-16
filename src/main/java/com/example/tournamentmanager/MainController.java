@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -736,17 +737,27 @@ public class MainController implements Initializable {
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         about.setOnAction(e -> {
-            try {
-                Desktop.getDesktop().open(new File(Objects.requireNonNull(this.getClass().getResource("man.pdf")).toURI()));
-            } catch (Exception ex) {
-                DialogHelper.error("Could open manual");
-                try {
-                    URI uri = new URI("https://github.com/KulAndy/tournamentmanager");
-                    Desktop.getDesktop().browse(uri);
-                } catch (IOException | URISyntaxException ex2) {
-                    DialogHelper.error("Could open project page");
+            Task<Void> openPdfTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        Desktop.getDesktop().open(new File(Objects.requireNonNull(getClass().getResource("man.pdf")).toURI()));
+                    } catch (IOException | URISyntaxException ex) {
+                        DialogHelper.error("Could not open manual");
+                        try {
+                            URI uri = new URI("https://github.com/KulAndy/tournamentmanager");
+                            Desktop.getDesktop().browse(uri);
+                        } catch (IOException | URISyntaxException ex2) {
+                            DialogHelper.error("Could not open project page");
+                        }
+                    }
+                    return null;
                 }
-            }
+            };
+
+            Thread thread = new Thread(openPdfTask);
+            thread.setDaemon(true);
+            thread.start();
         });
         upload.setOnAction(e -> CompletableFuture.runAsync(() -> {
                     Toml toml;
