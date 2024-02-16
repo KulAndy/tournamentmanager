@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.info;
+import static com.example.tournamentmanager.helper.DialogHelper.info;
 import static com.example.tournamentmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.tournamentmanager.operation.FIDEOperation.trfReport;
 

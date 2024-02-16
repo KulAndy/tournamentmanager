@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.helper.GeneralHelper;
 import com.example.tournamentmanager.model.Federation;
 import com.example.tournamentmanager.model.Player;
@@ -25,7 +26,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.error;
+import static com.example.tournamentmanager.helper.DialogHelper.error;
 
 public class StartListHelper {
     private Tournament tournament;
@@ -82,7 +83,7 @@ public class StartListHelper {
                 error("Can't find fide list");
                 return;
             }
-            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog");
+            DialogHelper.ProgressMessageBox progressMessageBox = new DialogHelper.ProgressMessageBox("Progress Dialog");
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
 
@@ -133,7 +134,7 @@ public class StartListHelper {
                 error("Can't found polish list");
                 return;
             }
-            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog");
+            DialogHelper.ProgressMessageBox progressMessageBox = new DialogHelper.ProgressMessageBox("Progress Dialog");
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
 

@@ -1,7 +1,7 @@
 package com.example.tournamentmanager.operation;
 
 import com.example.tournamentmanager.MainController;
-import com.example.tournamentmanager.helper.GeneralHelper;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
 import static com.example.tournamentmanager.operation.FileOperation.*;
 
 public class FIDEOperation {
@@ -33,7 +32,7 @@ public class FIDEOperation {
             @Override
             protected Void call() {
                 try {
-                    downloadFIDEfile("http://ratings.fide.com/download/standard_rating_list_xml.zip", "standard_rating_list_xml.zip");
+                    downloadZip("http://ratings.fide.com/download/standard_rating_list_xml.zip", "standard_rating_list_xml.zip");
                     standardProcessed[0] = 1;
                     convertXMLToSQLite("standard_rating_list.xml", "standard_rating_list.db");
                     standardProcessed[0] = 0;
@@ -46,7 +45,7 @@ public class FIDEOperation {
             @Override
             protected Void call() {
                 try {
-                    downloadFIDEfile("http://ratings.fide.com/download/rapid_rating_list_xml.zip", "rapid_rating_list_xml.zip");
+                    downloadZip("http://ratings.fide.com/download/rapid_rating_list_xml.zip", "rapid_rating_list_xml.zip");
                     rapidProcessed[0] = 1;
                     convertXMLToSQLite("rapid_rating_list.xml", "rapid_rating_list.db");
                     rapidProcessed[0] = 0;
@@ -59,7 +58,7 @@ public class FIDEOperation {
             @Override
             protected Void call() {
                 try {
-                    downloadFIDEfile("http://ratings.fide.com/download/blitz_rating_list_xml.zip", "blitz_rating_list_xml.zip");
+                    downloadZip("http://ratings.fide.com/download/blitz_rating_list_xml.zip", "blitz_rating_list_xml.zip");
                     blitzProcessed[0] = 1;
                     convertXMLToSQLite("blitz_rating_list.xml", "blitz_rating_list.db");
                     blitzProcessed[0] = 0;
@@ -100,23 +99,11 @@ public class FIDEOperation {
             default -> statment.append("Couldn't download blitz list");
         }
         if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0) {
-            info(String.valueOf(statment));
+            DialogHelper.info(String.valueOf(statment));
         } else {
-            error(String.valueOf(statment));
+            DialogHelper.error(String.valueOf(statment));
         }
 
-    }
-
-    public static void downloadFIDEfile(String url, String filename) throws IOException, URISyntaxException {
-        String savePath = "./";
-
-        URI uri = new URI(url);
-        URL downloadUrl = uri.toURL();
-        InputStream in = new BufferedInputStream(downloadUrl.openStream());
-        Path archive = Path.of(savePath + filename);
-        Files.copy(in, archive, StandardCopyOption.REPLACE_EXISTING);
-        unzipFile(savePath + filename, savePath);
-        Files.delete(archive);
     }
 
     public static ArrayList<Player> searchPlayer(String name, Tournament.Type type) {
@@ -408,10 +395,10 @@ public class FIDEOperation {
 
         try {
             saveTrfReport(trfReport(tournament), newFile);
-            GeneralHelper.info("Created report");
+            DialogHelper.info("Created report");
         } catch (Exception e) {
             e.printStackTrace();
-            GeneralHelper.error("Couldn't create trf report");
+            DialogHelper.error("Couldn't create trf report");
         }
     }
 
@@ -429,7 +416,7 @@ public class FIDEOperation {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(trf);
             } catch (IOException e) {
-                GeneralHelper.error("Couldn't create trf report");
+                DialogHelper.error("Couldn't create trf report");
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
@@ -612,11 +599,11 @@ public class FIDEOperation {
                 //info("Imported successfully");
             } catch (Exception e) {
                 e.printStackTrace();
-                error("An error eccured");
+                DialogHelper.error("An error eccured");
             }
 
         } else {
-            warning("No file selected");
+            DialogHelper.warning("No file selected");
         }
     }
 }

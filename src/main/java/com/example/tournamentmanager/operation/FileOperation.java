@@ -1,6 +1,6 @@
 package com.example.tournamentmanager.operation;
 
-import com.example.tournamentmanager.helper.GeneralHelper;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.Federation;
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
@@ -15,6 +15,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -22,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -89,25 +92,13 @@ public class FileOperation {
         }
     }
 
-    private static String extractFileToString(ZipInputStream zipIn) throws IOException {
-        StringBuilder extractedContent = new StringBuilder();
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = zipIn.read(buffer)) != -1) {
-            extractedContent.append(new String(buffer, 0, bytesRead));
-        }
-        return extractedContent.toString();
-    }
-
-    private static String removeLinesWithPattern(String input) {
-        return input.replaceAll("<(foa_title|o_title|w_title|games|rapid_games|blitz_games|flag)>.*</(foa_title|o_title|w_title|games|rapid_games|blitz_games|flag)>\n", "");
-    }
-
     private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
         try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filePath))) {
-            String extractedContent = extractFileToString(zipIn);
-            String contentWithoutPattern = removeLinesWithPattern(extractedContent);
-            out.write(contentWithoutPattern.getBytes());
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = zipIn.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
         }
     }
 
@@ -337,6 +328,19 @@ public class FileOperation {
         }
     }
 
+    public static void downloadZip(String url, String filename) throws IOException, URISyntaxException {
+        String savePath = "./";
+
+        URI uri = new URI(url);
+        URL downloadUrl = uri.toURL();
+        InputStream in = new BufferedInputStream(downloadUrl.openStream());
+        Path archive = Path.of(savePath + filename);
+        Files.copy(in, archive, StandardCopyOption.REPLACE_EXISTING);
+        unzipFile(savePath + filename, savePath);
+        Files.delete(archive);
+    }
+
+
     public static void downloadPolList() {
         String server = "51.68.11.200";
         String username = "crpzszac-rnk";
@@ -365,20 +369,20 @@ public class FileOperation {
                     }
                 }
             } catch (IOException e) {
-                GeneralHelper.error("An error occurred while downloading");
+                DialogHelper.error("An error occurred while downloading");
                 e.printStackTrace();
             }
         } catch (IOException e) {
-            GeneralHelper.error("An error occurred");
+            DialogHelper.error("An error occurred");
             e.printStackTrace();
             return;
         }
 
         try {
             convertCsvToSqlite("rejestr_czlonkow.csv", "rejestr_czlonkow.db");
-            GeneralHelper.info("Pl list downloaded successfully");
+            DialogHelper.info("Pl list downloaded successfully");
         } catch (RuntimeException e) {
-            GeneralHelper.error("An error occurred during conversion to SQLite");
+            DialogHelper.error("An error occurred during conversion to SQLite");
             e.printStackTrace();
         }
     }

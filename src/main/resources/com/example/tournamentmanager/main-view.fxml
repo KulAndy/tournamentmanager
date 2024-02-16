@@ -76,7 +76,12 @@
                         <Menu mnemonicParsing="false" text="Import">
                             <items>
                                 <MenuItem fx:id="importTrf" mnemonicParsing="false" text="trf" />
-                                <MenuItem fx:id="importSwsx" mnemonicParsing="false" text="swsx file" />
+                        <Menu mnemonicParsing="false" text="ChessArbiter">
+                          <items>
+                                      <MenuItem fx:id="importSwsx" mnemonicParsing="false" text="local file" />
+                            <MenuItem fx:id="remoteSwsx" mnemonicParsing="false" text="remote file" />
+                          </items>
+                        </Menu>
                                 <MenuItem fx:id="importPgn" mnemonicParsing="false" text="pgn" />
                             </items>
                         </Menu>

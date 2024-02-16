@@ -2,6 +2,7 @@ package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
 import com.example.tournamentmanager.comparator.StartListComparator;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import com.example.tournamentmanager.operation.FIDEOperation;
 import com.example.tournamentmanager.operation.FileOperation;
@@ -275,7 +276,7 @@ public class NewPlayerHelper {
         getUpdatePlayerBth().setOnAction(event -> {
             Player player = getPlayerSelect().getValue();
             if (player == null) {
-                error("No player selected");
+                DialogHelper.error("No player selected");
             } else {
                 int localRtg;
                 try {
@@ -442,7 +443,7 @@ public class NewPlayerHelper {
         }
         getTournament().getPlayersObs().add(player);
         if (counter > 1) {
-            info("player with that name already exists - was added as " + name);
+            DialogHelper.info("player with that name already exists - was added as " + name);
         }
 
     }

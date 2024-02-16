@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
-import static com.example.tournamentmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
+import static com.example.tournamentmanager.helper.DialogHelper.ProgressMessageBox.convertToTitleCase;
 
 @XmlRootElement(name = "tournament")
 public class Tournament implements Serializable {

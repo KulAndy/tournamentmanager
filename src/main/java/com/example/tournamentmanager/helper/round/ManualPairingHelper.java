@@ -1,5 +1,6 @@
 package com.example.tournamentmanager.helper.round;
 
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.Game;
 import com.example.tournamentmanager.model.Player;
 import com.example.tournamentmanager.model.Tournament;
@@ -13,8 +14,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.*;
 
 import java.util.ArrayList;
-
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class ManualPairingHelper {
     private final StringProperty whiteStart = new SimpleStringProperty("");
@@ -135,9 +134,9 @@ public class ManualPairingHelper {
             Player white = getWhiteList().getSelectionModel().getSelectedItem();
             Player black = getBlackList().getSelectionModel().getSelectedItem();
             if (white == black) {
-                error("Player cannot be paired with himself !!!");
+                DialogHelper.error("Player cannot be paired with himself !!!");
             } else if (white == null || black == null) {
-                warning("Two players are needed for pairing");
+                DialogHelper.warning("Two players are needed for pairing");
             } else {
                 getManualRound().add(new Game(white, black));
                 getPaired().add(white);
@@ -208,7 +207,7 @@ public class ManualPairingHelper {
                 if (black != getTournament().getPlayers().getBye() && black != getTournament().getPlayers().getHalfbye() && black != getTournament().getPlayers().getUnpaired()) {
                     game.swapPlayers();
                 } else {
-                    warning("Cannot swap colors for bye/halfbye");
+                    DialogHelper.warning("Cannot swap colors for bye/halfbye");
                 }
                 getPairsList().getSelectionModel().clearSelection();
             }
@@ -217,9 +216,9 @@ public class ManualPairingHelper {
             int currentRound = getRoundUpdateSelect().getValue();
             ArrayList<Game> pom = new ArrayList<>(getManualRound());
             if (pom.isEmpty()) {
-                warning("Round cannot be empty");
+                DialogHelper.warning("Round cannot be empty");
             } else if (getPaired().size() < getTournament().getPlayersObs().size()) {
-                confirm("Not every player was paired")
+                DialogHelper.confirm("Not every player was paired")
                         .thenAccept(result -> {
                             if (result) {
                                 if (getTournament().getRoundsObs().size() >= currentRound) {
@@ -276,8 +275,8 @@ public class ManualPairingHelper {
             }
         });
 
-        getAutoColorCheckbox().setOnAction(e -> info("Coming soon"));
-        getPairRestButton().setOnAction(e -> info("Coming soon"));
+        getAutoColorCheckbox().setOnAction(e -> DialogHelper.info("Coming soon"));
+        getPairRestButton().setOnAction(e -> DialogHelper.info("Coming soon"));
     }
 
     public ObservableList<Integer> getRoundsNumbersObs() {

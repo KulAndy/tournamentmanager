@@ -1,5 +1,6 @@
 package com.example.tournamentmanager.helper.tables;
 
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import com.example.tournamentmanager.operation.FileOperation;
 import javafx.beans.value.ObservableValue;
@@ -101,7 +102,7 @@ public class FilterCreatorHelper {
         getFilterCreate().setOnAction(e -> {
             String name = getFilterNameField().getText();
             if (name.isEmpty()) {
-                error("Name cannot be empty");
+                DialogHelper.error("Name cannot be empty");
                 return;
             }
             Player.Sex sex = getFilterSexSelect().getValue();

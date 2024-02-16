@@ -4,6 +4,7 @@ import com.example.tournamentmanager.MainController;
 import com.example.tournamentmanager.adapter.DateAdapter;
 import com.example.tournamentmanager.adapter.LocalDateAdapter;
 import com.example.tournamentmanager.adapter.ObjectIdAdapter;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,8 +27,6 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class TournamentOperation {
     public static final Stage fileStage = new Stage();
@@ -142,7 +141,7 @@ public class TournamentOperation {
             try {
                 exportTournament(controller.getTournament(), controller.getFile());
             } catch (IOException e) {
-                error("An error occured");
+                DialogHelper.error("An error occured");
             }
 
         }
@@ -158,7 +157,7 @@ public class TournamentOperation {
                 if (file != null) {
                     importJson(file, controller);
                 } else {
-                    warning("No file selected");
+                    DialogHelper.warning("No file selected");
                 }
             }
         }
@@ -387,10 +386,10 @@ public class TournamentOperation {
             if (controller.getTournament().getRoundsObs().size() > controller.getTournament().getRoundsNumber()) {
                 controller.getHomeTabHelper().getBasicInfoHelper().getTourNoRounds().setText(String.valueOf(controller.getTournament().getRoundsObs().size()));
             }
-            info("Imported pgn successfully");
+            DialogHelper.info("Imported pgn successfully");
 
         } else {
-            warning("No file selected");
+            DialogHelper.warning("No file selected");
         }
 
     }

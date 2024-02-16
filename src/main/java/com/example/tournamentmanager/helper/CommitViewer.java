@@ -24,8 +24,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.error;
-import static com.example.tournamentmanager.helper.GeneralHelper.info;
+import static com.example.tournamentmanager.helper.DialogHelper.error;
+import static com.example.tournamentmanager.helper.DialogHelper.info;
 
 public class CommitViewer {
 
