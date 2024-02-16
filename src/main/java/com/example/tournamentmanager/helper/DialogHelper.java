@@ -676,6 +676,8 @@ public class DialogHelper {
                             e.printStackTrace();
                         }
                     }
+                }else {
+                    error("File not exists or isn't swsx file");
                 }
                 String encodedName = URLEncoder.encode(field.getText(), StandardCharsets.UTF_8);
                 String url = "https://www.chessarbiter.com/skrcap/capro_get_turnieje.php" +
