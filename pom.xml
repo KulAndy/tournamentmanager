@@ -36,6 +36,13 @@
             <version>${javafx.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>20</version> <!-- or the version you are using -->
+        </dependency>
+
+
         <!-- ControlsFX -->
         <dependency>
             <groupId>org.controlsfx</groupId>
