@@ -629,7 +629,7 @@ public class DialogHelper {
 
     public static void showRemoteChessarbiter(MainController controller) {
         Stage tournamentsStage = new Stage();
-        tournamentsStage.initModality(Modality.APPLICATION_MODAL);
+        tournamentsStage.initModality(Modality.WINDOW_MODAL);
         VBox root = new VBox(10);
         root.setPadding(new Insets(20));
         HBox hBox = new HBox(25);
