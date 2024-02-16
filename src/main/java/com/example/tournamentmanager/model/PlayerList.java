@@ -12,11 +12,11 @@ import java.util.*;
 @XmlRootElement(name = "players")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlayerList extends ArrayList<Player> implements Serializable {
+    private final Map<ObjectId, Integer> uuid2startNo = new HashMap<>();
     private Player bye;
     private Player halfbye;
     private Player unpaired;
     private StartListComparator comparator;
-    private final Map<ObjectId, Integer> uuid2startNo = new HashMap<>();
 
     public PlayerList() {
         add("bye");

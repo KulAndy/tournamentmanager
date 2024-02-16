@@ -47,14 +47,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
 import static com.example.tournamentmanager.operation.FileOperation.updateTomlInZip;
 import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
@@ -96,6 +94,8 @@ public class MainController implements Initializable {
     @FXML
     private MenuItem importSwsx;
     @FXML
+    private MenuItem remoteSwsx;
+    @FXML
     private MenuItem importPgn;
     @FXML
     private CheckMenuItem autosaveMenu;
@@ -109,11 +109,10 @@ public class MainController implements Initializable {
     private MenuItem trfRaport;
     @FXML
     private MenuItem upload;
-
+    @FXML
+    private MenuItem userTournaments;
     @FXML
     private MenuItem login;
-    @FXML
-    private MenuItem logout;
     @FXML
     private MenuItem register;
     @FXML
@@ -740,12 +739,12 @@ public class MainController implements Initializable {
             try {
                 Desktop.getDesktop().open(new File(Objects.requireNonNull(this.getClass().getResource("man.pdf")).toURI()));
             } catch (Exception ex) {
-                error("Could open manual");
+                DialogHelper.error("Could open manual");
                 try {
                     URI uri = new URI("https://github.com/KulAndy/tournamentmanager");
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException | URISyntaxException ex2) {
-                    error("Could open project page");
+                    DialogHelper.error("Could open project page");
                 }
             }
         });
@@ -766,35 +765,33 @@ public class MainController implements Initializable {
                             toml = new Toml().read(defaultTomlContent);
                             serverUrl = toml.getTable("remote").getString("api");
                         } catch (IOException | URISyntaxException ex1) {
-                            error("Couldn't read server location");
+                            DialogHelper.error("Couldn't read server location");
                             return;
                         }
                     }
 
                     if (file == null) {
-                        error("Can not upload unsaved tournament");
+                        DialogHelper.error("Can not upload unsaved tournament");
                     } else {
                         if (file.exists()) {
 
                             HttpClient httpClient = HttpClients.createDefault();
-                            HttpPost httpPost = new HttpPost(serverUrl + "/upload");
+                            HttpPost httpPost = new HttpPost(serverUrl + toml.getTable("remote").getString("upload"));
                             ArrayList<String> lines;
                             try {
                                 lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
                             } catch (IOException ex) {
-                                error("You must first log in");
+                                DialogHelper.error("You aren't log in or session expired");
                                 return;
                             }
 
 
-                            if (lines.size() >= 2) {
-                                String login = lines.get(0);
-                                String hashedPassword = lines.get(1);
+                            if (lines.size() >= 1) {
+                                String token = lines.get(0);
 
-                                httpPost.setHeader("login", login);
-                                httpPost.setHeader("hash", hashedPassword);
+                                httpPost.setHeader("token", token);
                             } else {
-                                error("Corrupted auth file");
+                                DialogHelper.error("Corrupted auth file");
                                 return;
                             }
 
@@ -821,69 +818,63 @@ public class MainController implements Initializable {
                                                 result.append(buffer, 0, length);
                                             }
 
+                                            System.out.println(result.toString());
                                             JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
                                             String insertedId = jsonObject.get("insertedId").getAsString();
 
                                             updateTomlInZip(file, "remote", "tournamentId", insertedId);
                                         }
-                                        info("Sucessfully upload tournament");
+                                        DialogHelper.info("Sucessfully upload tournament");
                                     } else {
-                                        error("Error  - no tournament ID returned");
+                                        DialogHelper.error("Error  - no tournament ID returned");
                                     }
                                 } else if (statusCode >= 400 && statusCode < 500) {
-                                    error("Corrupted file - couldn't save on server");
+                                    DialogHelper.error("Corrupted file - couldn't save on server");
                                 } else if (statusCode >= 500 && statusCode < 600) {
-                                    error("Internal server error");
+                                    DialogHelper.error("Internal server error");
                                 } else {
-                                    warning("Unknown status code: " + statusCode);
+                                    DialogHelper.warning("Unknown status code: " + statusCode);
                                 }
                             } catch (SSLPeerUnverifiedException ex) {
-                                error("Couldn't connect - insecure connection");
+                                DialogHelper.error("Couldn't connect - insecure connection");
                                 ex.printStackTrace();
                             } catch (IOException ex) {
-                                error("Connection error");
+                                DialogHelper.error("Connection error");
                                 ex.printStackTrace();
                             }
                         } else {
-                            error("File not found");
+                            DialogHelper.error("File not found");
                         }
                     }
                 })
         );
-        login.setOnAction(e -> showLoginPopup());
-        logout.setOnAction(e-> {
-            try {
-                Files.delete(Path.of("auth.txt"));
-                info("Logout successfully");
-            } catch (IOException ex) {
-                error("Couldn't logout");
-            }
-        });
-        register.setOnAction(e -> showRegisterPopup());
+        userTournaments.setOnAction(e-> DialogHelper.showUserTournaments(this));
+        login.setOnAction(e -> DialogHelper.showLoginPopup());
+        register.setOnAction(e -> DialogHelper.showRegisterPopup());
         exportPgnMenu.setOnAction(e ->
-                GeneralHelper.threeOptionsDialog("Export mode", "tournament", "round")
+                DialogHelper.threeOptionsDialog("Export mode", "tournament", "round")
                         .thenAccept(choice -> {
                             if (choice.equals("A")) {
                                 try {
                                     TournamentOperation.exportPgn(getTournament());
-                                    info("Exported games to pgn successfully");
+                                    DialogHelper.info("Exported games to pgn successfully");
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                     System.out.println(ex.getMessage());
-                                    error("Error during exporting rounds");
+                                    DialogHelper.error("Error during exporting rounds");
                                 }
                             } else if (choice.equals("B")) {
                                 Integer currentRound = getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
                                 if (currentRound == null) {
-                                    warning("Nothing exported\nNo round has been selected");
+                                    DialogHelper.warning("Nothing exported\nNo round has been selected");
                                 } else {
                                     try {
                                         TournamentOperation.exportRoundPgn(getTournament().getRound(currentRound - 1), getTournament());
-                                        info("Export round %d successfully".formatted(currentRound));
+                                        DialogHelper.info("Export round %d successfully".formatted(currentRound));
                                     } catch (IOException ex) {
                                         ex.printStackTrace();
                                         System.out.println(ex.getMessage());
-                                        error("Error during export round %d".formatted(currentRound));
+                                        DialogHelper.error("Error during export round %d".formatted(currentRound));
                                     }
                                 }
                             }
@@ -919,7 +910,7 @@ public class MainController implements Initializable {
                 getRoundsHelper().getManualPairingHelper().setRoundsNumbersObs(FXCollections.observableArrayList(rounds));
                 getRoundsHelper().getManualPairingHelper().getRoundUpdateSelect().setItems(getRoundsHelper().getManualPairingHelper().getRoundsNumbersObs());
             } catch (IOException | InterruptedException ex) {
-                error("Couldn't generate random tournament");
+                DialogHelper.error("Couldn't generate random tournament");
             }
         });
 
@@ -931,13 +922,13 @@ public class MainController implements Initializable {
                     RoundRobinEngine.checkPairing(getTournament(), (byte) 0);
                 }
             } catch (IOException | InterruptedException ex) {
-                error("An error occurred during validate");
+                DialogHelper.error("An error occurred during validate");
             }
         });
 
         roundValidation.setOnAction(e -> {
                     if (roundsViewSelect.getValue() == null) {
-                        error("No round selected");
+                        DialogHelper.error("No round selected");
                     } else {
                         try {
                             if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
@@ -946,7 +937,7 @@ public class MainController implements Initializable {
                                 RoundRobinEngine.checkPairing(getTournament(), roundsViewSelect.getValue().byteValue());
                             }
                         } catch (IOException | InterruptedException ex) {
-                            error("An error occurred during validate");
+                            DialogHelper.error("An error occurred during validate");
                         }
                     }
                 }
@@ -961,17 +952,18 @@ public class MainController implements Initializable {
                     SwsxTournament swsxTournament = new SwsxTournament(swsx);
                     Tournament tournament = new Tournament(swsxTournament);
                     TournamentOperation.loadTournament(tournament, this);
-                    info("Imported successfully");
+                    DialogHelper.info("Imported successfully");
                 } catch (Exception ex) {
-                    error("An error eccured");
+                    DialogHelper.error("An error eccured");
                     ex.printStackTrace();
                     System.out.println(ex.getMessage());
                 }
             } else {
-                warning("No file selected");
+                DialogHelper.warning("No file selected");
             }
         });
 
+        remoteSwsx.setOnAction(e-> DialogHelper.showRemoteChessarbiter(this));
         closeMenu.setOnAction(e -> files.remove(getFile()));
         tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
             if (newValue != oldValue && newValue != getFile() && newValue != null) {

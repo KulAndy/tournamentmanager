@@ -3,12 +3,15 @@ package com.example.tournamentmanager.operation;
 import com.example.tournamentmanager.MainController;
 import com.example.tournamentmanager.adapter.DateAdapter;
 import com.example.tournamentmanager.adapter.LocalDateAdapter;
+import com.example.tournamentmanager.adapter.ObjectIdAdapter;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.bson.types.ObjectId;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -25,10 +28,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
-
 public class TournamentOperation {
-    private static final Stage fileStage = new Stage();
+    public static final Stage fileStage = new Stage();
 
     public static void loadTournament(Tournament tournament, MainController controller) {
         if (tournament != null && controller != null) {
@@ -140,7 +141,7 @@ public class TournamentOperation {
             try {
                 exportTournament(controller.getTournament(), controller.getFile());
             } catch (IOException e) {
-                error("An error occured");
+                DialogHelper.error("An error occured");
             }
 
         }
@@ -150,20 +151,24 @@ public class TournamentOperation {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
-        File selectedFile = fileChooser.showOpenDialog(fileStage);
-
-        if (selectedFile != null) {
-            importJson(selectedFile, controller);
-        } else {
-            warning("No file selected");
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(fileStage);
+        if (selectedFiles != null) {
+            for (File file : selectedFiles) {
+                if (file != null) {
+                    importJson(file, controller);
+                } else {
+                    DialogHelper.warning("No file selected");
+                }
+            }
         }
 
     }
 
-    private static void exportTournament(Tournament tournament, File file) throws IOException {
+    public static void exportTournament(Tournament tournament, File file) throws IOException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .registerTypeAdapter(Date.class, new DateAdapter())
+                .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
                 .create();
 
         String json = gson.toJson(tournament);
@@ -276,6 +281,7 @@ public class TournamentOperation {
                             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                             .registerTypeAdapter(Schedule.class, new Schedule.ScheduleDeserializer())
                             .registerTypeAdapter(Date.class, new DateAdapter())
+                            .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
                             .create();
                     Type tournamentType = new TypeToken<Tournament>() {
                     }.getType();
@@ -287,7 +293,7 @@ public class TournamentOperation {
 
                     for (ArrayList<Game> round : tournament.getRounds()) {
                         for (Game game : round) {
-                            Player white = players.get(game.getWhiteUUDI());
+                            Player white = players.get(game.getWhiteUUID());
                             Player black = players.get(game.getBlackUUID());
                             game.setWhite(white);
                             game.setBlack(black);
@@ -380,10 +386,10 @@ public class TournamentOperation {
             if (controller.getTournament().getRoundsObs().size() > controller.getTournament().getRoundsNumber()) {
                 controller.getHomeTabHelper().getBasicInfoHelper().getTourNoRounds().setText(String.valueOf(controller.getTournament().getRoundsObs().size()));
             }
-            info("Imported pgn successfully");
+            DialogHelper.info("Imported pgn successfully");
 
         } else {
-            warning("No file selected");
+            DialogHelper.warning("No file selected");
         }
 
     }

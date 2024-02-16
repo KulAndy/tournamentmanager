@@ -61,7 +61,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tournamentmanager.MainController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tournamentmanager.MainController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -76,7 +76,12 @@
                         <Menu mnemonicParsing="false" text="Import">
                             <items>
                                 <MenuItem fx:id="importTrf" mnemonicParsing="false" text="trf" />
-                                <MenuItem fx:id="importSwsx" mnemonicParsing="false" text="swsx file" />
+                        <Menu mnemonicParsing="false" text="ChessArbiter">
+                          <items>
+                                      <MenuItem fx:id="importSwsx" mnemonicParsing="false" text="local file" />
+                            <MenuItem fx:id="remoteSwsx" mnemonicParsing="false" text="remote file" />
+                          </items>
+                        </Menu>
                                 <MenuItem fx:id="importPgn" mnemonicParsing="false" text="pgn" />
                             </items>
                         </Menu>
@@ -94,8 +99,8 @@
                 <Menu mnemonicParsing="false" text="Internet">
                     <items>
                         <MenuItem fx:id="upload" mnemonicParsing="false" text="↥ Upload" />
+                  <MenuItem fx:id="userTournaments" mnemonicParsing="false" text="🌐 My tournaments" />
                         <MenuItem fx:id="login" mnemonicParsing="false" text="🔑Login" />
-                  <MenuItem fx:id="logout" mnemonicParsing="false" text="🚪 logout" />
                         <MenuItem fx:id="register" mnemonicParsing="false" text="📝 Register" />
                         <MenuItem fx:id="checkUpdates" mnemonicParsing="false" text="🔄 check updates" />
                     </items>
@@ -806,7 +811,7 @@
                                                 </AnchorPane>
                                             </content>
                                         </Tab>
-                                        <Tab text="Add player">
+                                        <Tab text="Player data">
                                             <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                     <children>

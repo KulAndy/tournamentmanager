@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 
+import static com.example.tournamentmanager.calculation.PZSzachCalculation.PZSZACH_FLOOR;
+
 public class TrfTournament {
     private String name;
     private String city;
@@ -107,7 +109,7 @@ public class TrfTournament {
                         try {
                             playerRating = Integer.parseInt(line.substring(48, 52).trim());
                         } catch (NumberFormatException e) {
-                            playerRating = 1000;
+                            playerRating = PZSZACH_FLOOR;
                         }
                         Federation playerFederation;
                         try {

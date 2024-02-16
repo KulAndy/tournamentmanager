@@ -4,13 +4,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.info;
+import static com.example.tournamentmanager.helper.DialogHelper.info;
 import static com.example.tournamentmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.tournamentmanager.operation.FIDEOperation.trfReport;
 
 public class JavafoWrapper implements Engine {
     private static final String javaPath = "java";
-    private static final String javafoPath = String.valueOf(JavafoWrapper.class.getResource("javafo.jar"));
+    private static final String javafoPath = "javafo.jar";
     private static final String outputFilePath = "pairing.txt";
     private static final String reportFilePath = "report.txt";
 
@@ -68,8 +68,7 @@ public class JavafoWrapper implements Engine {
                             round.add(new Game(player, tournament.getPlayers().getHalfbye(), Result.DRAW, Result.DRAW, true));
                         }
                     }
-                    default ->
-                            round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
+                    default -> round.add(new Game(player, tournament.getPlayers().getUnpaired(), Result.LOSE, Result.WIN, true));
 
                 }
             }

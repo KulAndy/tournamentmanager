@@ -4,12 +4,16 @@ import com.example.tournamentmanager.model.Game;
 import com.example.tournamentmanager.model.Player;
 import com.example.tournamentmanager.model.Title;
 import com.example.tournamentmanager.model.Tournament;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.ArrayList;
+
+import static com.example.tournamentmanager.calculation.PZSzachCalculation.*;
 
 public class PolandTableHelper {
 
@@ -49,15 +53,26 @@ public class PolandTableHelper {
         getRtPolId().setCellValueFactory(new PropertyValueFactory<>("localId"));
         getRtPolTitle().setCellValueFactory(new PropertyValueFactory<>("title"));
         getRtPolName().setCellValueFactory(new PropertyValueFactory<>("name"));
-        getRtPolGames().setCellValueFactory(new PropertyValueFactory<>("playedGamedNumber"));
+        getRtPolGames().setCellValueFactory(cellDate -> new SimpleIntegerProperty(cellDate.getValue().getPZSzachRounds().size()).asObject());
         getRtPolPoints().setCellValueFactory(new PropertyValueFactory<>("PZSzachPoints"));
         getRtPolAverage().setCellValueFactory(new PropertyValueFactory<>("averageRatingPZSzach"));
         getRtPolPerformence().setCellValueFactory(new PropertyValueFactory<>("ratingPerformancePZSzach"));
-        getRtPolNorm().setCellValueFactory(new PropertyValueFactory<>("playerNorm"));
+        getRtPolNorm().setCellValueFactory(cellDate -> {
+            Player player = cellDate.getValue();
+            Title title = getNorm(player, getTournament().getSystem(), getTournament().getRating().getMaxTitle());
+            if (title != null && getTitleValue(title, player.getSex()) > getTitleValue(player.getTitle(), player.getSex())){
+                return new SimpleStringProperty(title.toString());
+            }else{
+                return new SimpleStringProperty("");
+            }
+        });
+
+        getRtPolRemarks().setCellValueFactory(cellDate -> {
+            Player player = cellDate.getValue();
+            return new SimpleStringProperty(getNormRemarks(player, getTournament().getSystem(), getTournament().getRating().getMaxTitle()));
+        });
 
         getRtgPolTable().setItems(getTournament().getPlayersObs());
-
-
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> getRtgPolTable().refresh());
     }
 

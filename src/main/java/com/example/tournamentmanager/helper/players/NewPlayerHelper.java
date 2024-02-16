@@ -1,6 +1,8 @@
 package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
+import com.example.tournamentmanager.comparator.StartListComparator;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import com.example.tournamentmanager.operation.FIDEOperation;
 import com.example.tournamentmanager.operation.FileOperation;
@@ -8,12 +10,14 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
+import static com.example.tournamentmanager.calculation.PZSzachCalculation.PZSZACH_FLOOR;
 import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class NewPlayerHelper {
@@ -81,8 +85,13 @@ public class NewPlayerHelper {
         setInsertFromList(insertFromList);
         setNewPlayerHint(newPlayerHint);
 
-        getPlayerSelect().setItems(getTournament().getPlayersObs());
+        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs());
+        StartListComparator comparator = new StartListComparator();
+        comparator.setCriteria1(StartListComparator.SortCriteria.ALPHABETIC);
+        sortedList.setComparator(comparator);
+        getPlayerSelect().setItems(sortedList);
         getPlayerSelect().setOnAction(e -> {
+            resetForm(false);
             Player player = getPlayerSelect().getValue();
             if (player != null) {
                 getFedSelect().setValue(player.getFederation());
@@ -267,7 +276,7 @@ public class NewPlayerHelper {
         getUpdatePlayerBth().setOnAction(event -> {
             Player player = getPlayerSelect().getValue();
             if (player == null) {
-                error("No player selected");
+                DialogHelper.error("No player selected");
             } else {
                 int localRtg;
                 try {
@@ -334,16 +343,18 @@ public class NewPlayerHelper {
             }
         });
 
-        getClearPlayerButton().setOnAction(event -> resetForm());
+        getClearPlayerButton().setOnAction(event -> resetForm(true));
         getAddClearPlayerButton().setOnAction(event -> {
             addPlayer();
-            resetForm();
+            resetForm(true);
         });
 
     }
 
-    public void resetForm() {
-        getPlayerSelect().setValue(null);
+    public void resetForm(boolean setNull) {
+        if (setNull){
+            getPlayerSelect().setValue(null);
+        }
         getFedSelect().setValue(Federation.POL);
         getStateSelect().setValue(null);
         getPlayerNameField().setText("");
@@ -415,8 +426,8 @@ public class NewPlayerHelper {
                 getStateSelect().getValue() == null ? "" : getStateSelect().getValue(),
                 name,
                 getPlayerTitleSelect().getValue(),
-                localRtg >= 1000 ? localRtg : PZSzachCalculation.getTitleValue(getPlayerTitleSelect().getValue(), getSexSelect().getValue()),
-                Math.max(fideRtg, 1000),
+                localRtg >= PZSZACH_FLOOR ? localRtg : PZSzachCalculation.getTitleValue(getPlayerTitleSelect().getValue(), getSexSelect().getValue()),
+                Math.max(fideRtg, PZSZACH_FLOOR),
                 getClubField().getText(),
                 date,
                 getSexSelect().getValue(),
@@ -432,7 +443,7 @@ public class NewPlayerHelper {
         }
         getTournament().getPlayersObs().add(player);
         if (counter > 1) {
-            info("player with that name already exists - was added as " + name);
+            DialogHelper.info("player with that name already exists - was added as " + name);
         }
 
     }

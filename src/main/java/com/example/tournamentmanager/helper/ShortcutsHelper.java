@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.example.tournamentmanager.MainController.quit;
-import static com.example.tournamentmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
-import static com.example.tournamentmanager.helper.GeneralHelper.info;
-import static com.example.tournamentmanager.helper.GeneralHelper.warning;
+import static com.example.tournamentmanager.helper.DialogHelper.ProgressMessageBox.convertToTitleCase;
+import static com.example.tournamentmanager.helper.DialogHelper.info;
+import static com.example.tournamentmanager.helper.DialogHelper.warning;
 import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {

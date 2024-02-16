@@ -79,39 +79,16 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
                 return Float.compare(player1.getPoints(), player2.getPoints());
             }
             case DUEL -> {
-                ArrayList<Player> opponents = player1.getOpponents();
-                if (opponents.contains(player2)) {
-                    ArrayList<Game> rounds = player1.getRounds();
-                    for (Game round : rounds) {
-                        if (round.getWhite() == player2) {
-                            if (round.getPointsForWhite() == 1.0) {
-                                return -1;
-                            } else if (round.getPointsForBlack() == 0.0) {
-                                return 1;
-                            } else {
-                                return 0;
-                            }
-                        } else if (round.getBlack() == player2) {
-                            if (round.getPointsForWhite() == 1.0) {
-                                return 1;
-                            } else if (round.getPointsForBlack() == 0.0) {
-                                return -1;
-                            } else {
-                                return 0;
-                            }
-                        }
-                    }
-                }
-                return 0;
+                return Float.compare(player1.getDuel(), player2.getDuel());
             }
             case WINS -> {
-                return Integer.compare(player1.getWonsNumber(), player2.getWonsNumber());
+                return Integer.compare(player1.getWinsNumber(), player2.getWinsNumber());
             }
             case GAMES_WITH_BLACK -> {
                 return Integer.compare(player1.getGamesPlayedWithBlack(), player2.getGamesPlayedWithBlack());
             }
             case WINS_WITH_BLACK -> {
-                return Integer.compare(player1.getWonsWithBlackNumber(), player2.getWonsWithBlackNumber());
+                return Integer.compare(player1.getWinsWithBlackNumber(), player2.getWinsWithBlackNumber());
             }
             case BUCHOLZ -> {
                 return Float.compare(player1.getBucholz(), player2.getBucholz());

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.error;
+import static com.example.tournamentmanager.helper.DialogHelper.error;
 
 public class ExcelOperation {
     private static final Stage fileStage = new Stage();

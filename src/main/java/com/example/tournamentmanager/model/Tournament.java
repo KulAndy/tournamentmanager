@@ -17,7 +17,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.ProgressMessageBox.convertToTitleCase;
+import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
+import static com.example.tournamentmanager.helper.DialogHelper.ProgressMessageBox.convertToTitleCase;
 
 @XmlRootElement(name = "tournament")
 public class Tournament implements Serializable {
@@ -137,23 +138,6 @@ public class Tournament implements Serializable {
         ArrayList<ArrayList<Game>> rounds = new ArrayList<>();
         PlayerList players = new PlayerList();
         ArrayList<ArrayList<ObjectId>> roundIds = new ArrayList<>();
-        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
-            while (change.next()) {
-                if (change.wasAdded()) {
-                    getWithdraws().addAll(change.getAddedSubList());
-                }
-                if (change.wasRemoved()) {
-                    getWithdraws().removeAll(change.getRemoved());
-                }
-                if (change.wasUpdated()) {
-                    int from = change.getFrom();
-                    int to = change.getTo();
-                    getWithdraws().subList(from, to + 1).clear();
-                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
-                }
-            }
-        });
-
         for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
             Player playerTmp = new Player(
                     player.getFullName(),
@@ -351,6 +335,80 @@ public class Tournament implements Serializable {
         }
         getScheduleElementsObs().addAll(getSchedule());
 
+        setSchedule(new Schedule());
+        getScheduleElementsObs().addAll(getSchedule());
+
+        setPairingComparator(new PairingComparator(getPlayersObs()));
+        setResultsComparator(new ResultsComparator(getTiebreak()));
+        getPlayers().getComparator().setCriteria1(swsxTournament.getSort0());
+        getPlayers().getComparator().setCriteria2(swsxTournament.getSort1());
+        getPlayers().getComparator().setCriteria3(swsxTournament.getSort2());
+        getPlayers().getComparator().setCriteria4(swsxTournament.getSort3());
+        getPlayers().getComparator().setCriteria5(swsxTournament.getSort4());
+        playersObs = FXCollections.observableArrayList(getPlayers());
+        getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getPlayers().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getPlayers().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getPlayers().subList(from, to + 1).clear();
+                    getPlayers().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+        getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getRounds().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getRounds().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getRounds().subList(from, to + 1).clear();
+                    getRounds().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+
+            for (Player player : getPlayersObs()) {
+                player.getRounds().clear();
+            }
+
+            for (ArrayList<Game> round : getRoundsObs()) {
+                for (Game game : round) {
+                    game.getWhite().addRound(game);
+                    game.getBlack().addRound(game);
+                }
+            }
+
+        });
+
+        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getWithdraws().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getWithdraws().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getWithdraws().subList(from, to + 1).clear();
+                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
         getPredicatesObs().addListener((ListChangeListener<? super ResultPredicate<Player>>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
@@ -393,15 +451,6 @@ public class Tournament implements Serializable {
                 }
             }
         });
-
-
-        setPairingComparator(new PairingComparator(getPlayersObs()));
-        setResultsComparator(new ResultsComparator(getTiebreak()));
-        getPlayers().getComparator().setCriteria1(swsxTournament.getSort0());
-        getPlayers().getComparator().setCriteria2(swsxTournament.getSort1());
-        getPlayers().getComparator().setCriteria3(swsxTournament.getSort2());
-        getPlayers().getComparator().setCriteria4(swsxTournament.getSort3());
-        getPlayers().getComparator().setCriteria5(swsxTournament.getSort4());
     }
 
 
@@ -412,22 +461,6 @@ public class Tournament implements Serializable {
         setEndDate(trfTournament.getEndDate());
         setArbiter(trfTournament.getChiefArbiter());
         setRoundsNumber(trfTournament.getRoundsNo());
-        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
-            while (change.next()) {
-                if (change.wasAdded()) {
-                    getWithdraws().addAll(change.getAddedSubList());
-                }
-                if (change.wasRemoved()) {
-                    getWithdraws().removeAll(change.getRemoved());
-                }
-                if (change.wasUpdated()) {
-                    int from = change.getFrom();
-                    int to = change.getTo();
-                    getWithdraws().subList(from, to + 1).clear();
-                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
-                }
-            }
-        });
 
         String allottedTimes = trfTournament.getAllottedTimes();
 
@@ -620,6 +653,90 @@ public class Tournament implements Serializable {
         setSchedule(schedule1);
 
         getScheduleElementsObs().addAll(getSchedule());
+        playersObs = FXCollections.observableArrayList(getPlayers());
+        getPlayersObs().addListener((ListChangeListener<? super Player>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getPlayers().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getPlayers().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getPlayers().subList(from, to + 1).clear();
+                    getPlayers().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+        getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getRounds().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getRounds().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getRounds().subList(from, to + 1).clear();
+                    getRounds().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+
+            for (Player player : getPlayersObs()) {
+                player.getRounds().clear();
+            }
+
+            for (ArrayList<Game> round : getRoundsObs()) {
+                for (Game game : round) {
+                    game.getWhite().addRound(game);
+                    game.getBlack().addRound(game);
+                }
+            }
+
+        });
+
+        getWithdrawsObs().addListener((ListChangeListener<? super Withdraw>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getWithdraws().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getWithdraws().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getWithdraws().subList(from, to + 1).clear();
+                    getWithdraws().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+        getPredicatesObs().addListener((ListChangeListener<? super ResultPredicate<Player>>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    getPredicates().addAll(change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    getPredicates().removeAll(change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    int from = change.getFrom();
+                    int to = change.getTo();
+                    getPredicates().subList(from, to + 1).clear();
+                    getPredicates().addAll(from, change.getList().subList(from, to + 1));
+                }
+            }
+        });
+
+        setSchedule(new Schedule());
+        getScheduleElementsObs().addAll(getSchedule());
+
         getScheduleElementsObs().addListener((ListChangeListener<? super Schedule.ScheduleElement>) change -> {
             while (change.next()) {
                 if (change.wasAdded()) {
@@ -1117,14 +1234,6 @@ public class Tournament implements Serializable {
                     "\n\thalfbye points: " + getHalfByePoints();
         }
 
-        public Float getHalfByePoints() {
-            return halfByePoints;
-        }
-
-        public void setHalfByePoints(Float halfByePoints) {
-            this.halfByePoints = halfByePoints;
-        }
-
         public boolean isFIDEMode() {
             return FIDEMode;
         }
@@ -1227,9 +1336,18 @@ public class Tournament implements Serializable {
             Player.setByePoints(byePoints);
         }
 
+        public Float getHalfByePoints() {
+            return halfByePoints;
+        }
+
+        public void setHalfByePoints(Float halfByePoints) {
+
+            this.halfByePoints = halfByePoints;
+            Player.setHalfByePoints(halfByePoints);
+        }
+
         public enum TbMethod implements Serializable {
             POINTS,
-            PLAYOFF,
             DUEL,
             WINS,
             GAMES_WITH_BLACK,
@@ -1242,7 +1360,6 @@ public class Tournament implements Serializable {
             BUCHOLZ,
             MEDIA_BUCHOLZ,
             BUCHOLZ_CUT1,
-            MODIFIED_BUCHOLZ,
             SONNEN_BERGER,
             PROGRESS,
             KOYA;
@@ -1329,9 +1446,6 @@ public class Tournament implements Serializable {
                     case RATING_PERFORMENCE_FIDE -> {
                         return "RtgPerf";
                     }
-                    case MODIFIED_BUCHOLZ -> {
-                        return "MoBch";
-                    }
                     default -> {
                         return convertToTitleCase(toString());
                     }
@@ -1355,7 +1469,7 @@ public class Tournament implements Serializable {
         private byte minTitleGames;
 
         Rating() {
-            this((byte) 5, (short) 1000, Title.M, (byte) 9);
+            this((byte) 5, FIDE_FLOOR, Title.M, (byte) 9);
         }
 
         Rating(byte minInitGames, short ratingFloor, Title maxTitle, byte minTitleGames) {

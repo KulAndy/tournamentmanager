@@ -20,20 +20,7 @@
 /standard_rating_list.db
 /standard_rating_list.xml
 /.idea/uiDesigner.xml
-/.idea/vcs.xml
-/blitz_rating_list.db
-/blitz_rating_list.xml
-/.idea/compiler.xml
-/.idea/encodings.xml
-/.idea/jarRepositories.xml
-/.idea/artifacts/lolmanager.xml
-/.idea/artifacts/lolmanager_jar.xml
 /.idea/artifacts/lolmanager_jar2.xml
-/.idea/misc.xml
-/rapid_rating_list.db
-/rapid_rating_list.xml
-/rejestr_czlonkow.csv
-/rejestr_czlonkow.db
 /pairing.txt
 /report.txt
 /dependency-reduced-pom.xml
@@ -43,3 +30,4 @@
 /standard_rating_list_xml.zip
 /print.pdf
 /auth.txt
+/rapid_rating_list_xml.zip

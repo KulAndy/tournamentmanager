@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.helper.GeneralHelper;
 import com.example.tournamentmanager.model.Federation;
 import com.example.tournamentmanager.model.Player;
@@ -23,8 +24,9 @@ import javafx.util.converter.IntegerStringConverter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.error;
+import static com.example.tournamentmanager.helper.DialogHelper.error;
 
 public class StartListHelper {
     private Tournament tournament;
@@ -81,7 +83,7 @@ public class StartListHelper {
                 error("Can't find fide list");
                 return;
             }
-            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog");
+            DialogHelper.ProgressMessageBox progressMessageBox = new DialogHelper.ProgressMessageBox("Progress Dialog");
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
 
@@ -104,6 +106,20 @@ public class StartListHelper {
                             player.setFederation(playerFide.getFederation());
                             player.setFideRating(playerFide.getFideRating());
                             player.setFideId(playerFide.getFideId());
+                        }else {
+                            players = (ArrayList<Player>) players.stream()
+                                    .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
+                                    .collect(Collectors.toList());
+                            if (players.size() == 1) {
+                                Player playerFide = players.get(0);
+                                if (playerFide.getTitle() != Title.bk &&
+                                        PZSzachCalculation.getTitleValue(playerFide.getTitle(), playerFide.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
+                                    player.setTitle(playerFide.getTitle());
+                                }
+                                player.setFederation(playerFide.getFederation());
+                                player.setFideRating(playerFide.getFideRating());
+                                player.setFideId(playerFide.getFideId());
+                            }
                         }
                     }
                     getPlayersListTable().refresh();
@@ -118,7 +134,7 @@ public class StartListHelper {
                 error("Can't found polish list");
                 return;
             }
-            GeneralHelper.ProgressMessageBox progressMessageBox = new GeneralHelper.ProgressMessageBox("Progress Dialog");
+            DialogHelper.ProgressMessageBox progressMessageBox = new DialogHelper.ProgressMessageBox("Progress Dialog");
             progressMessageBox.show();
             int n = getTournament().getPlayersObs().size();
 
@@ -148,6 +164,50 @@ public class StartListHelper {
                             player.setLocalId(playerPl.getLocalId());
                             if (playerPl.getFideId() != null) {
                                 player.setFideId(playerPl.getFideId());
+                            }
+                        }else {
+                            players = (ArrayList<Player>) players.stream()
+                                    .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
+                                    .collect(Collectors.toList());
+                            if (players.size() == 1) {
+                                Player playerPl = players.get(0);
+                                player.setName(playerPl.getName());
+                                if (playerPl.getTitle() != Title.bk &&
+                                        PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
+                                    player.setTitle(playerPl.getTitle());
+                                }
+                                player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
+                                player.setClub(playerPl.getClub());
+                                player.setYearOfBirth(playerPl.getYearOfBirth());
+                                player.setMonthOfBirth(playerPl.getMonthOfBirth());
+                                player.setDayOfBirth(playerPl.getDayOfBirth());
+                                player.setSex(playerPl.getSex());
+                                player.setLocalId(playerPl.getLocalId());
+                                if (playerPl.getFideId() != null) {
+                                    player.setFideId(playerPl.getFideId());
+                                }
+                            }else{
+                                players = (ArrayList<Player>) players.stream()
+                                        .filter(item -> item.getDateOfBirth() == player.getDateOfBirth())
+                                        .collect(Collectors.toList());
+                                if (players.size() == 1) {
+                                    Player playerPl = players.get(0);
+                                    player.setName(playerPl.getName());
+                                    if (playerPl.getTitle() != Title.bk &&
+                                            PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
+                                        player.setTitle(playerPl.getTitle());
+                                    }
+                                    player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
+                                    player.setClub(playerPl.getClub());
+                                    player.setYearOfBirth(playerPl.getYearOfBirth());
+                                    player.setMonthOfBirth(playerPl.getMonthOfBirth());
+                                    player.setDayOfBirth(playerPl.getDayOfBirth());
+                                    player.setSex(playerPl.getSex());
+                                    player.setLocalId(playerPl.getLocalId());
+                                    if (playerPl.getFideId() != null) {
+                                        player.setFideId(playerPl.getFideId());
+                                    }
+                                }
                             }
                         }
                     }

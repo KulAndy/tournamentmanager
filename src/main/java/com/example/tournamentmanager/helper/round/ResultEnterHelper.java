@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.helper.round;
 
 import com.example.tournamentmanager.comparator.PairingComparator;
+import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
@@ -16,8 +17,6 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
 
 public class ResultEnterHelper {
     private final IntegerProperty currentRoundNo = new SimpleIntegerProperty();
@@ -349,7 +348,7 @@ public class ResultEnterHelper {
                         getGamesView().refresh();
                     }
                 } else {
-                    confirm("This will also remove subsequent rounds")
+                    DialogHelper.confirm("This will also remove subsequent rounds")
                             .thenAccept(result -> {
                                 if (result) {
                                     if (roundsNumbersObs.size() > 1) {
@@ -389,9 +388,9 @@ public class ResultEnterHelper {
                                 }
                             }
                             if (success) {
-                                info("Paired successfully\nGenerated " + pairing + " pairings");
+                                DialogHelper.info("Paired successfully\nGenerated " + pairing + " pairings");
                             } else {
-                                error("An error occurred during pairing");
+                                DialogHelper.error("An error occurred during pairing");
                             }
                             getTournament().setRoundsNumber((byte) (replays * (getTournament().getPlayersObs().size() - 1)));
                         });
@@ -404,9 +403,9 @@ public class ResultEnterHelper {
                             success = false;
                         }
                         if (success) {
-                            info("Paired successfully\nGenerated " + pairing + " pairings");
+                            DialogHelper.info("Paired successfully\nGenerated " + pairing + " pairings");
                         } else {
-                            error("Couldn't generate pairing - unfinished round");
+                            DialogHelper.error("Couldn't generate pairing - unfinished round");
                         }
                         getTournament().setRoundsNumber((byte) (
                                 Math.ceil(Math.log(getTournament().getPlayers().size()) / Math.log(2)))
@@ -416,18 +415,18 @@ public class ResultEnterHelper {
                         int pairing = JavafoWrapper.generatePairing(getTournament(), false);
                         getRoundsViewSelect().getSelectionModel().selectLast();
                         if (pairing == 0) {
-                            error("Couldn't generate pairing");
+                            DialogHelper.error("Couldn't generate pairing");
                         } else {
-                            info("Paired successfully\nGenerated " + pairing + " pairings");
+                            DialogHelper.info("Paired successfully\nGenerated " + pairing + " pairings");
                         }
                     }
                 } catch (IOException | InterruptedException ex) {
-                    error("An error occurred during pairing");
+                    DialogHelper.error("An error occurred during pairing");
                     ex.printStackTrace();
                     System.out.println(ex.getMessage());
                 }
             } else {
-                error("Unable to pairing - number of rounds in tournament reached");
+                DialogHelper.error("Unable to pairing - number of rounds in tournament reached");
             }
         });
     }
