@@ -165,6 +165,7 @@ public class CommitViewer {
             git.reset().setMode(ResetCommand.ResetType.HARD).call();
 
             git.fetch().call();
+            git.pull().call();
 
             info("Update successful!");
         } catch (IOException | GitAPIException e) {
