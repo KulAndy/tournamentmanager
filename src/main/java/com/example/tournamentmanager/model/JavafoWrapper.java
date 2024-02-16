@@ -10,7 +10,7 @@ import static com.example.tournamentmanager.operation.FIDEOperation.trfReport;
 
 public class JavafoWrapper implements Engine {
     private static final String javaPath = "java";
-    private static final String javafoPath = String.valueOf(JavafoWrapper.class.getResource("javafo.jar"));
+    private static final String javafoPath = "javafo.jar";
     private static final String outputFilePath = "pairing.txt";
     private static final String reportFilePath = "report.txt";
 
