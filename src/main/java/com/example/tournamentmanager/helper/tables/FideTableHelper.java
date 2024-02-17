@@ -1,6 +1,7 @@
 package com.example.tournamentmanager.helper.tables;
 
 import com.example.tournamentmanager.model.*;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,7 +19,7 @@ public class FideTableHelper {
     private TableColumn<Player, Integer> rtgFideElo;
     private TableColumn<Player, Float> rtgFidePoints;
     private TableColumn<Player, Integer> rtgFideGames;
-    private TableColumn<Player, Integer> rtgFideAverage;
+    private TableColumn<Player, Float> rtgFideAverage;
     private TableColumn<Player, Float> rtgFideChg;
     private TableColumn<Player, Title> rtgFideNorm;
 
@@ -27,7 +28,7 @@ public class FideTableHelper {
             TableColumn<Player, Integer> rtgFideId, TableColumn<Player, Title> rtgFideTitle,
             TableColumn<Player, Federation> rtgFideFed, TableColumn<Player, Integer> rtgFideElo,
             TableColumn<Player, Float> rtgFidePoints, TableColumn<Player, Integer> rtgFideGames,
-            TableColumn<Player, Integer> rtgFideAverage, TableColumn<Player, Float> rtgFideChg,
+            TableColumn<Player, Float> rtgFideAverage, TableColumn<Player, Float> rtgFideChg,
             TableColumn<Player, Title> rtgFideNorm
     ) {
         setTournament(tournament);
@@ -52,6 +53,13 @@ public class FideTableHelper {
         getRtgFideGames().setCellValueFactory(new PropertyValueFactory<>("fidePlayedGamedNumber"));
         getRtgFideAverage().setCellValueFactory(new PropertyValueFactory<>("averageFideRating"));
         getRtgFideChg().setCellValueFactory(new PropertyValueFactory<>("fideChange"));
+        getRtgFideNorm().setCellValueFactory(cellDate -> {
+            if (!getTournament().getRating().getFIDERated()){
+                return null;
+            }
+            Player player = cellDate.getValue();
+            return new SimpleObjectProperty<>(player.getFideNorm( getTournament().getRating().getMinTitleGames(),getTournament().getRating().getTwoOtherFederations()));
+        });
         getRtgFideTable().setItems(tournament.getPlayersObs());
 
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> getRtgFideTable().refresh());
@@ -131,11 +139,11 @@ public class FideTableHelper {
         this.rtgFideGames = rtgFideGames;
     }
 
-    public TableColumn<Player, Integer> getRtgFideAverage() {
+    public TableColumn<Player, Float> getRtgFideAverage() {
         return rtgFideAverage;
     }
 
-    public void setRtgFideAverage(TableColumn<Player, Integer> rtgFideAverage) {
+    public void setRtgFideAverage(TableColumn<Player, Float> rtgFideAverage) {
         this.rtgFideAverage = rtgFideAverage;
     }
 

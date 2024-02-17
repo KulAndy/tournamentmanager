@@ -1470,7 +1470,7 @@ public class Tournament implements Serializable {
         private byte minTitleGames;
 
         Rating() {
-            this((byte) 5, FIDE_FLOOR, Title.M, (byte) 9);
+            this((byte) 9, FIDE_FLOOR, Title.M, (byte) 9);
         }
 
         Rating(byte minInitGames, short ratingFloor, Title maxTitle, byte minTitleGames) {

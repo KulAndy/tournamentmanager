@@ -44,7 +44,7 @@ public class RtgOptHelper {
         bindTextFieldInt(getMinInitGames(), getTournament().getRating(), "minInitGames", "byte");
         bindTextFieldInt(getRatingFloor(), getTournament().getRating(), "ratingFloor", "short");
         bindTextFieldInt(getMinTitleGames(), getTournament().getRating(), "minTitleGames", "byte");
-        getMinInitGames().setText("5");
+        getMinInitGames().setText("9");
         getRatingFloor().setText(String.valueOf(FIDE_FLOOR));
         getMinTitleGames().setText("9");
 

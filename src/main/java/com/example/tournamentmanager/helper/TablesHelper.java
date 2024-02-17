@@ -22,7 +22,7 @@ public class TablesHelper {
                         TableColumn<Player, Integer> rtgFideId, TableColumn<Player, Title> rtgFideTitle,
                         TableColumn<Player, Federation> rtgFideFed, TableColumn<Player, Integer> rtgFideElo,
                         TableColumn<Player, Float> rtgFidePoints, TableColumn<Player, Integer> rtgFideGames,
-                        TableColumn<Player, Integer> rtgFideAverage, TableColumn<Player, Float> rtgFideChg,
+                        TableColumn<Player, Float> rtgFideAverage, TableColumn<Player, Float> rtgFideChg,
                         TableColumn<Player, Title> rtgFideNorm,
                         CheckBox resultFiltered, ComboBox<ResultPredicate<Player>> resultFilter, TableView<Player> resultsTable,
                         TableColumn<Player, Integer> resultPlace, TableColumn<Player, Integer> resultStartNo,

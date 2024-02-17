@@ -513,7 +513,7 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Player, Integer> rtgFideGames;
     @FXML
-    private TableColumn<Player, Integer> rtgFideAverage;
+    private TableColumn<Player, Float> rtgFideAverage;
     @FXML
     private TableColumn<Player, Float> rtgFideChg;
     @FXML

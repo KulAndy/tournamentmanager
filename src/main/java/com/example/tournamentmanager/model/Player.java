@@ -314,6 +314,10 @@ public class Player implements Serializable {
         return null;
     }
 
+    public Title getFideNorm(int minGames ,boolean twoFeds){
+        return FIDECalculation.getNorm(this,minGames, twoFeds);
+    }
+
     public float getDuel() {
         float points = 0;
         for (Game game : getRounds()) {
@@ -910,14 +914,17 @@ public class Player implements Serializable {
     }
 
     public Integer getFideRating() {
-        return fideRating;
+        if (fideRating == null){
+            return (int) FIDE_FLOOR;
+        }
+        return Integer.max(fideRating, FIDE_FLOOR);
     }
 
     public void setFideRating(Integer fideRating) {
         if (fideRating != null && fideRating > 0) {
             this.fideRating = fideRating;
         } else {
-            this.fideRating = PZSZACH_FLOOR;
+            this.fideRating = (int) FIDE_FLOOR;
         }
     }
 
@@ -1085,19 +1092,19 @@ public class Player implements Serializable {
         return PZSzachCalculation.getAverageRating(this);
     }
 
-    public int getAverageFideRatingCut1() {
-        int minRating = Integer.MAX_VALUE;
+    public float getAverageFideRatingCut1() {
+        float minRating = Float.MAX_VALUE;
         int minIndex = -1;
         ArrayList<Player> opponents = getFideOpponents();
         for (int i = 0; i < opponents.size(); i++) {
             Player player = opponents.get(i);
             if (player.getFideRating() > FIDE_FLOOR) {
-                minRating = Integer.min(minRating, player.getFideRating());
+                minRating = Float.min(minRating, player.getFideRating());
                 minIndex = i;
             }
 
         }
-        if (minRating == Integer.MAX_VALUE) {
+        if (minRating == Float.MAX_VALUE) {
             return 0;
         } else {
             opponents.remove(minIndex);
@@ -1105,7 +1112,7 @@ public class Player implements Serializable {
         }
     }
 
-    public int getAverageFideRating() {
+    public float getAverageFideRating() {
         return FIDECalculation.getAverageRating(getFideOpponents());
     }
 

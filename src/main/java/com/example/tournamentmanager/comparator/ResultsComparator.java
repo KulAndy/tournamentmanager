@@ -107,10 +107,10 @@ public class ResultsComparator implements Comparator<Player>, Serializable {
                 return Integer.compare(player1.getRatingPerformancePZSzach(), player2.getRatingPerformancePZSzach());
             }
             case AVERAGE_OPPONENTS_RATING -> {
-                return Integer.compare(player1.getAverageFideRating(), player2.getAverageFideRating());
+                return Float.compare(player1.getAverageFideRating(), player2.getAverageFideRating());
             }
             case AVERAGE_OPPONENTS_LOCAL_RATING -> {
-                return Integer.compare(player1.getAverageRatingPZSzach(), player2.getAverageRatingPZSzach());
+                return Float.compare(player1.getAverageRatingPZSzach(), player2.getAverageRatingPZSzach());
             }
             case RATING_PERFORMENCE_FIDE -> {
                 return Float.compare(player1.getRatingPerformanceFide(), player2.getRatingPerformanceFide());
