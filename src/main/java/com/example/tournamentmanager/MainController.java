@@ -142,6 +142,8 @@ public class MainController implements Initializable {
     private Tab roundsTab;
     @FXML
     private Tab enterResultsTab;
+    @FXML
+    private Tab allRoundsTab;
     private HomeTabHelper homeTabHelper;
     @FXML
     private TextField tourName;
@@ -1480,6 +1482,9 @@ public class MainController implements Initializable {
 
     public Tab getEnterResultsTab() {
         return enterResultsTab;
+    }
+    public Tab getAllRoundsTab() {
+        return allRoundsTab;
     }
 
     public TablesHelper getTablesHelper() {
