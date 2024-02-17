@@ -266,7 +266,7 @@
                                                                     <children>
                                                                         <Label text="Rated" />
                                                                         <Separator opacity="0.0" prefHeight="29.0" prefWidth="26.0" />
-                                                                        <CheckBox fx:id="tourRtPZSzach" mnemonicParsing="false" text="PZszach" />
+                                                                        <CheckBox fx:id="tourRtPZSzach" mnemonicParsing="false" text="PZSzach" />
                                                                         <Separator opacity="0.0" prefHeight="0.0" prefWidth="32.0" />
                                                                         <CheckBox fx:id="tourRtFIDE" mnemonicParsing="false" text="FIDE" />
                                                                     </children>

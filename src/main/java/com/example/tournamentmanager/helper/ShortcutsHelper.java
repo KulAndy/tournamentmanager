@@ -1,24 +1,35 @@
 package com.example.tournamentmanager.helper;
 
 import com.example.tournamentmanager.MainController;
-import com.example.tournamentmanager.model.Game;
-import com.example.tournamentmanager.model.Player;
-import com.example.tournamentmanager.model.Result;
-import com.example.tournamentmanager.model.Tournament;
+import com.example.tournamentmanager.model.*;
+import com.example.tournamentmanager.operation.FIDEOperation;
 import com.example.tournamentmanager.operation.FileOperation;
+import com.example.tournamentmanager.operation.TournamentOperation;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPHeaderCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.moandjiezana.toml.Toml;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.apache.pdfbox.printing.PDFPrintable;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.print.PrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -26,19 +37,23 @@ import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaSizeName;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static com.example.tournamentmanager.MainController.quit;
 import static com.example.tournamentmanager.helper.DialogHelper.ProgressMessageBox.convertToTitleCase;
 import static com.example.tournamentmanager.helper.DialogHelper.info;
 import static com.example.tournamentmanager.helper.DialogHelper.warning;
+import static com.example.tournamentmanager.operation.FileOperation.updateTomlInZip;
 import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
 public class ShortcutsHelper {
@@ -95,9 +110,151 @@ public class ShortcutsHelper {
             controlShortcuts(e);
             controlShiftShortcuts(e);
             resultEnterShortcuts(e);
+            functionShortcuts(e);
         });
     }
 
+    private void functionShortcuts(KeyEvent e)
+    {
+        switch (e.getCode()){
+            case F1 -> CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
+                    .exceptionally(ex -> null);
+            case F2 -> CompletableFuture.runAsync(FileOperation::downloadPolList)
+                    .exceptionally(ex -> null);
+            case F3 -> CompletableFuture.runAsync(() -> {
+                Toml toml;
+                String serverUrl;
+
+                try {
+                    toml = new Toml().read(new File("settings.toml"));
+                    serverUrl = toml.getTable("remote").getString("api");
+                } catch (Exception ex) {
+                    try {
+                        URI uri = new URI("https://raw.githubusercontent.com/KulAndy/tournamentmanager/master/settings.toml");
+                        URL defaultTomlURL = uri.toURL();
+                        byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
+                        String defaultTomlContent = new String(defaultTomlBytes);
+
+                        toml = new Toml().read(defaultTomlContent);
+                        serverUrl = toml.getTable("remote").getString("api");
+                    } catch (IOException | URISyntaxException ex1) {
+                        DialogHelper.error("Couldn't read server location");
+                        return;
+                    }
+                }
+
+                if (controller.getFile() == null) {
+                    DialogHelper.error("Can not upload unsaved tournament");
+                } else {
+                    if (controller.getFile().exists()) {
+
+                        HttpClient httpClient = HttpClients.createDefault();
+                        HttpPost httpPost = new HttpPost(serverUrl + toml.getTable("remote").getString("upload"));
+                        ArrayList<String> lines;
+                        try {
+                            lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
+                        } catch (IOException ex) {
+                            DialogHelper.error("You aren't log in or session expired");
+                            return;
+                        }
+
+
+                        if (lines.size() >= 1) {
+                            String token = lines.get(0);
+
+                            httpPost.setHeader("token", token);
+                        } else {
+                            DialogHelper.error("Corrupted auth file");
+                            return;
+                        }
+
+                        try {
+                            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                            builder.addPart("zipFile", new FileBody(controller.getFile(), ContentType.DEFAULT_BINARY, controller.getFile().getName()));
+
+                            HttpEntity multipart = builder.build();
+                            httpPost.setEntity(multipart);
+
+                            HttpResponse response = httpClient.execute(httpPost);
+                            int statusCode = response.getStatusLine().getStatusCode();
+
+                            if (statusCode >= 200 && statusCode < 300) {
+                                HttpEntity entity = response.getEntity();
+                                if (entity != null) {
+                                    try (InputStream inputStream = entity.getContent();
+                                         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+
+                                        StringBuilder result = new StringBuilder();
+                                        char[] buffer = new char[1024];
+                                        int length;
+                                        while ((length = reader.read(buffer)) != -1) {
+                                            result.append(buffer, 0, length);
+                                        }
+
+                                        System.out.println(result.toString());
+                                        JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
+                                        String insertedId = jsonObject.get("insertedId").getAsString();
+
+                                        updateTomlInZip(controller.getFile(), "remote", "tournamentId", insertedId);
+                                    }
+                                    DialogHelper.info("Sucessfully upload tournament");
+                                } else {
+                                    DialogHelper.error("Error  - no tournament ID returned");
+                                }
+                            } else if (statusCode >= 400 && statusCode < 500) {
+                                DialogHelper.error("Corrupted file - couldn't save on server");
+                            } else if (statusCode >= 500 && statusCode < 600) {
+                                DialogHelper.error("Internal server error");
+                            } else {
+                                DialogHelper.warning("Unknown status code: " + statusCode);
+                            }
+                        } catch (SSLPeerUnverifiedException ex) {
+                            DialogHelper.error("Couldn't connect - insecure connection");
+                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            DialogHelper.error("Connection error");
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        DialogHelper.error("File not found");
+                    }
+                }
+            });
+            case F4 -> DialogHelper.showUserTournaments(controller);
+            case F5 -> {
+                controller.getHomeTabHelper().getScheduleHelper().getScheduleTable().refresh();
+                controller.getPlayersHelper().getStartListHelper().getPlayersListTable().refresh();
+                controller.getRoundsHelper().getWithdrawHelper().getWithdrawTable().refresh();
+                controller.getPlayersHelper().getPlayerCardHelper().getPlayerCardGames().refresh();
+                controller.getRoundsHelper().getResultEnterHelper().getGamesView().refresh();
+                controller.getTablesHelper().getPolandTablesHelper().getRtgPolTable().refresh();
+                controller.getTablesHelper().getFideTableHelper().getRtgFideTable().refresh();
+                controller.getTablesHelper().getResultTableHelper().getResultsTable().refresh();
+                controller.getTablesHelper().getFilterListHelper().getFilterListTable().refresh();
+            }
+
+            case F6 -> FIDEOperation.importTrfReport(controller);
+            case F7 -> {
+                File swsx = FileOperation.selectSwsx();
+                if (swsx != null) {
+                    try {
+                        SwsxTournament swsxTournament = new SwsxTournament(swsx);
+                        Tournament tournament = new Tournament(swsxTournament);
+                        TournamentOperation.loadTournament(tournament, controller);
+                        DialogHelper.info("Imported successfully");
+                    } catch (Exception ex) {
+                        DialogHelper.error("An error eccured");
+                        ex.printStackTrace();
+                        System.out.println(ex.getMessage());
+                    }
+                } else {
+                    DialogHelper.warning("No file selected");
+                }
+            }
+            case F8 -> DialogHelper.showRemoteChessarbiter(controller);
+            case F9 -> TournamentOperation.importPgn(controller);
+        }
+    }
     private void controlShortcuts(KeyEvent e) {
         if (e.isControlDown() && !e.isShiftDown()) {
             switch (e.getCode()) {
@@ -144,6 +301,8 @@ public class ShortcutsHelper {
                 case Z -> getRoundsHelper().getResultEnterHelper().enterResult('z');
                 case X -> getRoundsHelper().getResultEnterHelper().enterResult('x');
                 case C -> getRoundsHelper().getResultEnterHelper().enterResult('c');
+                case V -> getRoundsHelper().getResultEnterHelper().enterResult('v');
+                case B -> getRoundsHelper().getResultEnterHelper().enterResult('b');
             }
         }
     }

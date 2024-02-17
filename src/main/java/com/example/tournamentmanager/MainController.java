@@ -902,7 +902,6 @@ public class MainController implements Initializable {
                 .exceptionally(ex -> null));
         downloadPolButton.setOnAction(e -> CompletableFuture.runAsync(FileOperation::downloadPolList)
                 .exceptionally(ex -> null));
-        importPgn.setOnAction(e -> TournamentOperation.importPgn(this));
 
         randomTournament.setOnAction(e -> {
             try {
@@ -977,6 +976,7 @@ public class MainController implements Initializable {
         });
 
         remoteSwsx.setOnAction(e -> DialogHelper.showRemoteChessarbiter(this));
+        importPgn.setOnAction(e -> TournamentOperation.importPgn(this));
         closeMenu.setOnAction(e -> files.remove(getFile()));
         tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
             if (newValue != oldValue && newValue != getFile() && newValue != null) {
