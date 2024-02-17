@@ -76,7 +76,7 @@ public class Game implements Serializable {
         if (getWhiteResult() == null) {
             return 0F;
         }
-        if (isForfeit()){
+        if (isForfeit()) {
             switch (getWhiteResult()) {
                 case WIN -> {
                     return Player.getForfeitWinPoints();
@@ -88,7 +88,7 @@ public class Game implements Serializable {
                     return Float.NaN;
                 }
             }
-        }else{
+        } else {
             switch (getWhiteResult()) {
                 case WIN -> {
                     return Player.getWinPoints();
@@ -110,7 +110,7 @@ public class Game implements Serializable {
         if (getBlackResult() == null) {
             return 0F;
         }
-        if (isForfeit()){
+        if (isForfeit()) {
             switch (getBlackResult()) {
                 case WIN -> {
                     return Player.getForfeitWinPoints();
@@ -122,7 +122,7 @@ public class Game implements Serializable {
                     return Float.NaN;
                 }
             }
-        }else{
+        } else {
             switch (getBlackResult()) {
                 case WIN -> {
                     return Player.getWinPoints();

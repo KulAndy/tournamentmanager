@@ -50,7 +50,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static com.example.tournamentmanager.operation.FileOperation.downloadZip;
-import static com.example.tournamentmanager.operation.FileOperation.unzip;
 import static com.example.tournamentmanager.operation.TournamentOperation.fileStage;
 import static com.example.tournamentmanager.operation.TournamentOperation.importJson;
 
@@ -652,18 +651,18 @@ public class DialogHelper {
                     String year = matcher.group(1);
                     String id = matcher.group(2);
 
-                    String filename =  year + "_ti_" + id + ".zip";
+                    String filename = year + "_ti_" + id + ".zip";
                     String remoteDir = "https://www.chessarbiter.com/turnieje/" + year + "/ti_" + id + "/";
                     boolean exists = remoteFileExists(remoteDir + filename);
-                    if (!exists){
-                        filename =  year + "_ti_" + id + ".swsx.zip";
+                    if (!exists) {
+                        filename = year + "_ti_" + id + ".swsx.zip";
                         exists = remoteFileExists(remoteDir + filename);
                     }
 
-                    if (!exists){
+                    if (!exists) {
                         error("File not exists or isn't swsx file");
-                    }else {
-                        try{
+                    } else {
+                        try {
                             downloadZip(remoteDir + filename, filename);
                             String swsxFile = year + "_ti_" + id + ".swsx";
                             SwsxTournament swsxTournament = new SwsxTournament(new File(swsxFile));
@@ -676,7 +675,7 @@ public class DialogHelper {
                             e.printStackTrace();
                         }
                     }
-                }else {
+                } else {
                     error("File not exists or isn't swsx file");
                 }
                 String encodedName = URLEncoder.encode(field.getText(), StandardCharsets.UTF_8);
@@ -696,13 +695,13 @@ public class DialogHelper {
         });
 
         Button back = new Button("⬅");
-        back.setOnAction(e->{
+        back.setOnAction(e -> {
             WebHistory history = webEngine.getHistory();
-            if (history.getCurrentIndex() > 1){
+            if (history.getCurrentIndex() > 1) {
                 history.go(-1);
             }
         });
-        root.getChildren().addAll(hBox,back, webView, close);
+        root.getChildren().addAll(hBox, back, webView, close);
         Scene scene = new Scene(root, 1280, 720);
         tournamentsStage.setScene(scene);
         tournamentsStage.setTitle("My tournaments");

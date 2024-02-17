@@ -1462,6 +1462,7 @@ public class Tournament implements Serializable {
         private short ratingFloor;
         private Boolean PZSzach43 = true;
         private Boolean PZSzach44 = true;
+        private Boolean PZSzach45 = true;
         private Boolean PZSzach46 = true;
         private Boolean PZSzach47 = true;
         private Title maxTitle;
@@ -1486,7 +1487,8 @@ public class Tournament implements Serializable {
                     "\n\tmin init games: " + getMinInitGames() +
                     "\n\trating floor: " + getRatingFloor() +
                     "\n\tPZSzach 4.3: " + getPZSzach43() +
-                    "\n\tPZSzach 4.2: " + getPZSzach44() +
+                    "\n\tPZSzach 4.4: " + getPZSzach44() +
+                    "\n\tPZSzach 4.5: " + getPZSzach45() +
                     "\n\tPZSzach 4.6: " + getPZSzach46() +
                     "\n\tPZSzach 4.7: " + getPZSzach47() +
                     "\n\tmax Title: " + getMaxTitle() +
@@ -1548,6 +1550,14 @@ public class Tournament implements Serializable {
             if (PZSzach44 != null) {
                 this.PZSzach44 = PZSzach44;
             }
+        }
+
+        public Boolean getPZSzach45() {
+            return PZSzach45;
+        }
+
+        public void setPZSzach45(Boolean PZSzach45) {
+            this.PZSzach45 = PZSzach45;
         }
 
         public Boolean getPZSzach46() {

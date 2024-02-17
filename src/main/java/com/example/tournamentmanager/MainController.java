@@ -219,6 +219,8 @@ public class MainController implements Initializable {
     @FXML
     private CheckBox PZSzach44Cb;
     @FXML
+    private CheckBox PZSzach45Cb;
+    @FXML
     private CheckBox PZSzach46Cb;
     @FXML
     private CheckBox PZSzach47Cb;
@@ -623,7 +625,7 @@ public class MainController implements Initializable {
                 tourFIDEMode, tourTB1, tourTB2, tourTB3, tourTB4, tourTB5,
                 pointsPane, pointsWin, pointsDraw, pointsLose, pointsForfeitWin, pointsForfeitLose,
                 pointsBye, pointsHalfBye,
-                minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,
+                minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach45Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,
                 scheduleTable, scheduleName, scheduleDate
         ));
         setPlayersHelper(new PlayersHelper(
@@ -859,7 +861,7 @@ public class MainController implements Initializable {
                     }
                 })
         );
-        userTournaments.setOnAction(e-> DialogHelper.showUserTournaments(this));
+        userTournaments.setOnAction(e -> DialogHelper.showUserTournaments(this));
         login.setOnAction(e -> DialogHelper.showLoginPopup());
         register.setOnAction(e -> DialogHelper.showRegisterPopup());
         exportPgnMenu.setOnAction(e ->
@@ -974,7 +976,7 @@ public class MainController implements Initializable {
             }
         });
 
-        remoteSwsx.setOnAction(e-> DialogHelper.showRemoteChessarbiter(this));
+        remoteSwsx.setOnAction(e -> DialogHelper.showRemoteChessarbiter(this));
         closeMenu.setOnAction(e -> files.remove(getFile()));
         tournamentSelect.valueProperty().addListener((ObservableValue<? extends File> observable, File oldValue, File newValue) -> {
             if (newValue != oldValue && newValue != getFile() && newValue != null) {
@@ -1366,6 +1368,15 @@ public class MainController implements Initializable {
     public void setPZSzach44Cb(CheckBox PZSzach44Cb) {
         this.PZSzach44Cb = PZSzach44Cb;
     }
+
+    public CheckBox getPZSzach45Cb() {
+        return PZSzach45Cb;
+    }
+
+    public void setPZSzach45Cb(CheckBox PZSzach45Cb) {
+        this.PZSzach45Cb = PZSzach45Cb;
+    }
+
 
     public CheckBox getPZSzach46Cb() {
         return PZSzach46Cb;

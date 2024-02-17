@@ -25,8 +25,10 @@ public class Schedule extends ArrayList<Schedule.ScheduleElement> implements Ser
         Pattern regex = Pattern.compile(pattern);
         for (SwsxTournament.SwsxEvent event : events) {
             switch (event.getType()) {
-                case BRIEFING -> setBriefing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0, event.getDate()));
-                case ENDING -> setClosing(new ScheduleElement(ScheduleElement.Type.CLOSING_CEREMONY, (byte) 0, event.getDate()));
+                case BRIEFING ->
+                        setBriefing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0, event.getDate()));
+                case ENDING ->
+                        setClosing(new ScheduleElement(ScheduleElement.Type.CLOSING_CEREMONY, (byte) 0, event.getDate()));
                 default -> {
                     Matcher matcher = regex.matcher(event.getName());
                     if (matcher.find()) {

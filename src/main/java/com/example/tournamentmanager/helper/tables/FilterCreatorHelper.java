@@ -10,7 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
+import static com.example.tournamentmanager.helper.GeneralHelper.setupComboBox;
+import static com.example.tournamentmanager.helper.GeneralHelper.validateTextFieldInt;
 
 public class FilterCreatorHelper {
     private Tournament tournament;

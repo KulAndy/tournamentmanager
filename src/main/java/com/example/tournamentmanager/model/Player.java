@@ -304,7 +304,7 @@ public class Player implements Serializable {
     }
 
     public Title getPlayerNorm() {
-        if (getPZSzachPoints() < getPZSzachRounds().size()/3.0f){
+        if (getPZSzachPoints() < getPZSzachRounds().size() / 3.0f) {
             return null;
         }
         Title norm = getNorm(getRatingPerformancePZSzach(), getPlayedGamedNumber(), getSex());
@@ -835,64 +835,64 @@ public class Player implements Serializable {
         return localRating;
     }
 
-    public Integer getPZSzachRating(){
-        if (title == Title.bk && getFederation() != Federation.POL){
-            if (getSex() == Sex.FEMALE){
-                if (getFideRating() > 2450){
+    public Integer getPZSzachRating() {
+        if (title == Title.bk && getFederation() != Federation.POL) {
+            if (getSex() == Sex.FEMALE) {
+                if (getFideRating() > 2450) {
                     return 2600;
-                }else if (getFideRating()>2400){
+                } else if (getFideRating() > 2400) {
                     return 2450;
-                }else if (getFideRating()>2300){
+                } else if (getFideRating() > 2300) {
                     return 2400;
-                }else if (getFideRating()>2250){
+                } else if (getFideRating() > 2250) {
                     return 2300;
-                }else if (getFideRating()>2200){
+                } else if (getFideRating() > 2200) {
                     return 2250;
-                }else if (getFideRating()>2100){
+                } else if (getFideRating() > 2100) {
                     return 2200;
-                }else if (getFideRating()>2000){
+                } else if (getFideRating() > 2000) {
                     return 2100;
-                }else if (getFideRating()>1900){
+                } else if (getFideRating() > 1900) {
                     return 2000;
-                }else if (getFideRating()>1800){
+                } else if (getFideRating() > 1800) {
                     return 1900;
-                }else if (getFideRating()>1700){
+                } else if (getFideRating() > 1700) {
                     return 1800;
-                }else if (getFideRating()>1600){
+                } else if (getFideRating() > 1600) {
                     return 1700;
-                }else if (getFideRating()>1400){
+                } else if (getFideRating() > 1400) {
                     return 1600;
-                }else if (getFideRating()>1250){
+                } else if (getFideRating() > 1250) {
                     return 1400;
-                }else if (getFideRating()>1100){
+                } else if (getFideRating() > 1100) {
                     return 1250;
-                }else if (getFideRating()>1000) {
+                } else if (getFideRating() > 1000) {
                     return 1100;
                 }
-            }else{
-                if (getFideRating() > 2450){
+            } else {
+                if (getFideRating() > 2450) {
                     return 2600;
-                }else if (getFideRating()>2400){
+                } else if (getFideRating() > 2400) {
                     return 2450;
-                }else if (getFideRating()>2300){
+                } else if (getFideRating() > 2300) {
                     return 2400;
-                }else if (getFideRating()>2200){
+                } else if (getFideRating() > 2200) {
                     return 2300;
-                }else if (getFideRating()>2100){
+                } else if (getFideRating() > 2100) {
                     return 2200;
-                }else if (getFideRating()>2000){
+                } else if (getFideRating() > 2000) {
                     return 2100;
-                }else if (getFideRating()>1900){
+                } else if (getFideRating() > 1900) {
                     return 2000;
-                }else if (getFideRating()>1800){
+                } else if (getFideRating() > 1800) {
                     return 1900;
-                }else if (getFideRating()>1600){
+                } else if (getFideRating() > 1600) {
                     return 1800;
-                }else if (getFideRating()>1400){
+                } else if (getFideRating() > 1400) {
                     return 1600;
-                }else if (getFideRating()>1200){
+                } else if (getFideRating() > 1200) {
                     return 1400;
-                }else if (getFideRating()>1000) {
+                } else if (getFideRating() > 1000) {
                     return 1200;
                 }
             }

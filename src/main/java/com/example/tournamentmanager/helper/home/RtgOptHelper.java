@@ -15,6 +15,7 @@ public class RtgOptHelper {
     private TextField ratingFloor;
     private CheckBox PZSzach43Cb;
     private CheckBox PZSzach44Cb;
+    private CheckBox PZSzach45Cb;
     private CheckBox PZSzach46Cb;
     private CheckBox PZSzach47Cb;
     private ComboBox<Title> maxTitle;
@@ -23,7 +24,7 @@ public class RtgOptHelper {
 
     public RtgOptHelper(
             Tournament tournament,
-            TextField minInitGames, TextField ratingFloor, CheckBox PZSzach43Cb, CheckBox PZSzach44Cb,
+            TextField minInitGames, TextField ratingFloor, CheckBox PZSzach43Cb, CheckBox PZSzach44Cb, CheckBox PZSzach45Cb,
             CheckBox PZSzach46Cb, CheckBox PZSzach47Cb, ComboBox<Title> maxTitle, CheckBox twoOtherFeds,
             TextField minTitleGames) {
         setTournament(tournament);
@@ -31,6 +32,7 @@ public class RtgOptHelper {
         setRatingFloor(ratingFloor);
         setPZSzach43Cb(PZSzach43Cb);
         setPZSzach44Cb(PZSzach44Cb);
+        setPZSzach45Cb(PZSzach45Cb);
         setPZSzach46Cb(PZSzach46Cb);
         setPZSzach47Cb(PZSzach47Cb);
         setMaxTitle(maxTitle);
@@ -52,11 +54,13 @@ public class RtgOptHelper {
 
         bindCheckBoxRated(getPZSzach43Cb(), getTournament(), "PZSzach43");
         bindCheckBoxRated(getPZSzach44Cb(), getTournament(), "PZSzach44");
+        bindCheckBoxRated(getPZSzach45Cb(), getTournament(), "PZSzach45");
         bindCheckBoxRated(getPZSzach46Cb(), getTournament(), "PZSzach46");
         bindCheckBoxRated(getPZSzach47Cb(), getTournament(), "PZSzach47");
         bindCheckBoxRated(getTwoOtherFeds(), getTournament(), "twoOtherFederations");
         getPZSzach43Cb().setSelected(true);
         getPZSzach44Cb().setSelected(true);
+        getPZSzach45Cb().setSelected(true);
         getPZSzach46Cb().setSelected(true);
         getPZSzach47Cb().setSelected(true);
         getTwoOtherFeds().setSelected(true);
@@ -100,6 +104,14 @@ public class RtgOptHelper {
 
     public void setPZSzach44Cb(CheckBox PZSzach44Cb) {
         this.PZSzach44Cb = PZSzach44Cb;
+    }
+
+    public CheckBox getPZSzach45Cb() {
+        return PZSzach45Cb;
+    }
+
+    public void setPZSzach45Cb(CheckBox PZSzach45Cb) {
+        this.PZSzach45Cb = PZSzach45Cb;
     }
 
     public CheckBox getPZSzach46Cb() {

@@ -454,14 +454,16 @@
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                     <children>
                                                                         <Label text="PZSzach categories (rules 2023)" GridPane.columnSpan="3" />
                                                                         <CheckBox fx:id="PZSzach43Cb" mnemonicParsing="false" text="4.3 (less game than in table)" GridPane.rowIndex="1" />
                                                                         <CheckBox fx:id="PZSzach44Cb" mnemonicParsing="false" text="4.4 (disregard knockdown games)" GridPane.rowIndex="2" />
-                                                                        <CheckBox fx:id="PZSzach46Cb" mnemonicParsing="false" text="4.6 (count all game in round-robin)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                        <CheckBox fx:id="PZSzach47Cb" mnemonicParsing="false" text="4.7 (central categories in 5-8 round tournament)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+                                                      <CheckBox fx:id="PZSzach45Cb" mnemonicParsing="false" text="4.5 (check rounds between required and total quantity )" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                        <CheckBox fx:id="PZSzach46Cb" mnemonicParsing="false" text="4.6 (count all game in round-robin)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                        <CheckBox fx:id="PZSzach47Cb" mnemonicParsing="false" text="4.7 (central categories in 5-8 round tournament)" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                                                                             <children>
                                                                                 <Label text="Categories up to" />
                                                                                 <Separator opacity="0.0" prefHeight="28.0" prefWidth="28.0" />

@@ -1,11 +1,9 @@
 package com.example.tournamentmanager.comparator;
 
-import com.example.tournamentmanager.model.Game;
 import com.example.tournamentmanager.model.Player;
 import com.example.tournamentmanager.model.Tournament;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class ResultsComparator implements Comparator<Player>, Serializable {

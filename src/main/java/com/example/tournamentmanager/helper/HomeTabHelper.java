@@ -35,6 +35,7 @@ public class HomeTabHelper {
             TextField ratingFloor,
             CheckBox PZSzach43Cb,
             CheckBox PZSzach44Cb,
+            CheckBox PZSzach45Cb,
             CheckBox PZSzach46Cb,
             CheckBox PZSzach47Cb,
             ComboBox<Title> maxTitle,
@@ -62,7 +63,7 @@ public class HomeTabHelper {
         );
         setRtgOptHelper(
                 new RtgOptHelper(tournament,
-                        minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames
+                        minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach45Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames
                 )
         );
 

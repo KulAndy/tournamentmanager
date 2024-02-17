@@ -7,13 +7,11 @@ import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.*;
-import java.net.URI;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -85,17 +83,20 @@ public class FIDEOperation {
         StringBuilder statment = new StringBuilder();
         switch (standardProcessed[0]) {
             case 0 -> statment.append("Standard list downloaded and converted succesfully\n");
-            case 1 -> statment.append("Standard list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
+            case 1 ->
+                    statment.append("Standard list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
             default -> statment.append("Couldn't download standard list\n");
         }
         switch (rapidProcessed[0]) {
             case 0 -> statment.append("Rapid list downloaded and converted succesfully\n");
-            case 1 -> statment.append("Rapid list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
+            case 1 ->
+                    statment.append("Rapid list downloaded and unzipped successfully, but couldn't convert xml to local database\n");
             default -> statment.append("Couldn't download rapid list\n");
         }
         switch (blitzProcessed[0]) {
             case 0 -> statment.append("Blitz list downloaded and converted succesfully");
-            case 1 -> statment.append("Blitz list downloaded and unzipped successfully, but couldn't convert xml to local database");
+            case 1 ->
+                    statment.append("Blitz list downloaded and unzipped successfully, but couldn't convert xml to local database");
             default -> statment.append("Couldn't download blitz list");
         }
         if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0) {

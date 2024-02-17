@@ -18,7 +18,8 @@ import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
 import static com.example.tournamentmanager.calculation.PZSzachCalculation.PZSZACH_FLOOR;
-import static com.example.tournamentmanager.helper.GeneralHelper.*;
+import static com.example.tournamentmanager.helper.GeneralHelper.setupComboBox;
+import static com.example.tournamentmanager.helper.GeneralHelper.validateTextFieldInt;
 
 public class NewPlayerHelper {
     private Tournament tournament;
@@ -352,7 +353,7 @@ public class NewPlayerHelper {
     }
 
     public void resetForm(boolean setNull) {
-        if (setNull){
+        if (setNull) {
             getPlayerSelect().setValue(null);
         }
         getFedSelect().setValue(Federation.POL);

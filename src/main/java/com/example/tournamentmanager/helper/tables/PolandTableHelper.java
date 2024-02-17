@@ -59,17 +59,17 @@ public class PolandTableHelper {
         getRtPolPerformence().setCellValueFactory(new PropertyValueFactory<>("ratingPerformancePZSzach"));
         getRtPolNorm().setCellValueFactory(cellDate -> {
             Player player = cellDate.getValue();
-            Title title = getNorm(player, getTournament().getSystem(), getTournament().getRating().getMaxTitle());
-            if (title != null && getTitleValue(title, player.getSex()) > getTitleValue(player.getTitle(), player.getSex())){
+            Title title = getNorm(player, getTournament());
+            if (title != null && getTitleValue(title, player.getSex()) > getTitleValue(player.getTitle(), player.getSex())) {
                 return new SimpleStringProperty(title.toString());
-            }else{
+            } else {
                 return new SimpleStringProperty("");
             }
         });
 
         getRtPolRemarks().setCellValueFactory(cellDate -> {
             Player player = cellDate.getValue();
-            return new SimpleStringProperty(getNormRemarks(player, getTournament().getSystem(), getTournament().getRating().getMaxTitle()));
+            return new SimpleStringProperty(getNormRemarks(player, getTournament()));
         });
 
         getRtgPolTable().setItems(getTournament().getPlayersObs());

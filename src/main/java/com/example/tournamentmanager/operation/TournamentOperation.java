@@ -80,6 +80,7 @@ public class TournamentOperation {
             controller.getRatingFloor().setText(String.valueOf(tournament.getRating().getRatingFloor()));
             controller.getPZSzach43Cb().setSelected(tournament.getRating().getPZSzach43());
             controller.getPZSzach44Cb().setSelected(tournament.getRating().getPZSzach44());
+            controller.getPZSzach45Cb().setSelected(tournament.getRating().getPZSzach45());
             controller.getPZSzach46Cb().setSelected(tournament.getRating().getPZSzach46());
             controller.getPZSzach47Cb().setSelected(tournament.getRating().getPZSzach47());
             controller.getMaxTitle().setValue(tournament.getRating().getMaxTitle());

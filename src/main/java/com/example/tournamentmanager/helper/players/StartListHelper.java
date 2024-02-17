@@ -2,7 +2,6 @@ package com.example.tournamentmanager.helper.players;
 
 import com.example.tournamentmanager.calculation.PZSzachCalculation;
 import com.example.tournamentmanager.helper.DialogHelper;
-import com.example.tournamentmanager.helper.GeneralHelper;
 import com.example.tournamentmanager.model.Federation;
 import com.example.tournamentmanager.model.Player;
 import com.example.tournamentmanager.model.Title;
@@ -106,7 +105,7 @@ public class StartListHelper {
                             player.setFederation(playerFide.getFederation());
                             player.setFideRating(playerFide.getFideRating());
                             player.setFideId(playerFide.getFideId());
-                        }else {
+                        } else {
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
                                     .collect(Collectors.toList());
@@ -165,7 +164,7 @@ public class StartListHelper {
                             if (playerPl.getFideId() != null) {
                                 player.setFideId(playerPl.getFideId());
                             }
-                        }else {
+                        } else {
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
                                     .collect(Collectors.toList());
@@ -186,7 +185,7 @@ public class StartListHelper {
                                 if (playerPl.getFideId() != null) {
                                     player.setFideId(playerPl.getFideId());
                                 }
-                            }else{
+                            } else {
                                 players = (ArrayList<Player>) players.stream()
                                         .filter(item -> item.getDateOfBirth() == player.getDateOfBirth())
                                         .collect(Collectors.toList());
