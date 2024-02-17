@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FIDECalculation {
-    public static final short FIDE_FLOOR = 1400;
+    public static short FIDE_FLOOR = 1400;
 
     public static float getAverageRating(ArrayList<Player> players) {
         float sum = 0;

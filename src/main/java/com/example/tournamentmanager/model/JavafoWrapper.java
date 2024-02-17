@@ -20,6 +20,8 @@ public class JavafoWrapper implements Engine {
         outputFile.delete();
         reportFile.delete();
         reportFile.createNewFile();
+        reportFile.createNewFile();
+        outputFile.createNewFile();
         saveTrfReport(trfReport(tournament), reportFile);
         List<String> command = new ArrayList<>();
         command.add(javaPath);
@@ -111,6 +113,8 @@ public class JavafoWrapper implements Engine {
         File reportFile = new File(reportFilePath);
         outputFile.delete();
         reportFile.delete();
+        reportFile.createNewFile();
+        outputFile.createNewFile();
         saveTrfReport(trfReport(tournament).replaceAll("(?m)^XXZ.*$", ""), reportFile);
         List<String> command = new ArrayList<>();
         command.add(javaPath);

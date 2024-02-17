@@ -507,9 +507,13 @@ public class FIDEOperation {
                     ))
                     .append("%-34s".formatted(player.getName()))
                     .append(player.getFideRating())
-                    .append(" ")
-                    .append(player.getFederation() == null ? "   " : player.getFederation())
-                    .append(" ")
+                    .append(" ");
+            if (player.getFederation() == null || player.getFederation() == Federation.FIDE) {
+                trf.append("   ");
+            } else {
+                trf.append(player.getFederation());
+            }
+            trf.append(" ")
                     .append("%11s".formatted((player.getFideId() != null && player.getFideId() > 0) ? player.getFideId() : ""))
                     .append(" ")
                     .append("%10s".formatted(player.getDateOfBirth()))

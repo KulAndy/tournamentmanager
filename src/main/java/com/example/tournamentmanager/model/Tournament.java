@@ -1530,6 +1530,7 @@ public class Tournament implements Serializable {
 
         public void setRatingFloor(short ratingFloor) {
             this.ratingFloor = ratingFloor;
+            FIDE_FLOOR = ratingFloor;
         }
 
         public Boolean getPZSzach43() {
