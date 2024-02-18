@@ -249,7 +249,7 @@ public class PZSzachCalculation {
 
                     games.add(player.getRounds().get(games.size()));
                 }
-            } while (games.size() < roundsNorm || games.size() < player.getRounds().size());
+            } while ( games.size() < player.getRounds().size());
         }
 
         return title;
@@ -257,60 +257,74 @@ public class PZSzachCalculation {
 
     private static Title getTitleRangeRound(Player player) {
         int rounds = player.getPlayedGamedNumber();
-        return Stream.of(9, 7, 5)
-                .parallel()
-                .filter(roundsNorm -> rounds > roundsNorm)
-                .map(roundsNorm -> getTitleRangeRound(player, roundsNorm))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+        if (
+                getTitleValue(player.getTitle(), player.getSex()) <
+                        getTitleValue(Title.M, player.getSex())
+        ){
+            return Stream.of(9)
+                    .parallel()
+                    .filter(roundsNorm -> rounds > roundsNorm)
+                    .map(roundsNorm -> getTitleRangeRound(player, roundsNorm))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+        }else if (
+                getTitleValue(player.getTitle(), player.getSex()) <
+                        getTitleValue(Title.I, player.getSex())
+        ){
+            return Stream.of(9, 7)
+                    .parallel()
+                    .filter(roundsNorm -> rounds > roundsNorm)
+                    .map(roundsNorm -> getTitleRangeRound(player, roundsNorm))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+        } else if (getTitleValue(player.getTitle(), player.getSex()) <
+                getTitleValue(Title.III, player.getSex())
+        ) {
+            return Stream.of(9, 7, 5)
+                    .parallel()
+                    .filter(roundsNorm -> rounds > roundsNorm)
+                    .map(roundsNorm -> getTitleRangeRound(player, roundsNorm))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+        }else {
+            return null;
+        }
     }
 
     private static Title smallNorm(Player player) {
-        return (player.getPlayedGamedNumber() > 8)
-                ? null
-                : Stream.of(9)
-                .map(rounds -> {
-                    int sum = 0, count = 0, wins = 0, loses = 0, draws = 0;
-
-                    for (Game game : player.getRounds()) {
-                        if (!game.isForfeit()) {
-                            sum += player.getOpponent(game).getPZSzachRating();
-                            count++;
-                            switch (player.getRoundResult(game)) {
-                                case WIN -> wins++;
-                                case LOSE -> loses++;
-                                case DRAW -> draws++;
-                            }
-                        }
-                    }
-
-                    int avg = getAverageRating(player, sum, count);
-                    int delta = getRatingDelta(count, wins, loses);
-
-                    if (wins + draws * 0.5 < count / 3.0f) {
-                        return null;
-                    }
-
-                    Title title = getNorm(avg + delta, rounds, player.getSex());
-                    return (title == null) ? null : (title == Title.M || title == Title.K || title == Title.I) ? title : null;
-                })
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+        if (player.getPlayedGamedNumber() > 8){
+            return null;
+        }else if (player.getPlayedGamedNumber() < 5){
+            return null;
+        }else{
+            if (player.getPZSzachPoints()< player.getPZSzachRounds().size() / 3.0f){
+                return null;
+            }
+            return getNorm9Rounds(getRatingPerformance(player), player.getSex());
+        }
     }
 
     public static Title getTitleWithoutLowering(Player player) {
-        AtomicInteger wins = new AtomicInteger();
-        int loses = 0;
-        AtomicInteger count = new AtomicInteger();
-        AtomicInteger sum = new AtomicInteger();
+        AtomicInteger wins = new AtomicInteger(0);
+        int loses = player.getLosesNumber();
+        AtomicInteger count = new AtomicInteger(0);
+        AtomicInteger sum = new AtomicInteger(0);
         AtomicReference<Title> title = new AtomicReference<>(null);
-
-        ArrayList<Player> defeated = new ArrayList<>(player.getPZSzachRounds().parallelStream()
-                .filter(game -> player.getRoundResult(game) == Result.WIN)
-                .map(player::getOpponent)
-                .toList());
+        ArrayList<Player> defeated = new ArrayList<>();
+        for (Game game: player.getRounds()){
+            if (!game.isForfeit()){
+                switch (player.getRoundResult(game)){
+                    case WIN -> defeated.add(player.getOpponent(game));
+                    case DRAW, LOSE -> {
+                        count.incrementAndGet();
+                        sum.addAndGet(player.getOpponent(game).getPZSzachRating());
+                    }
+                }
+            }
+        }
 
         defeated.parallelStream().sorted(Comparator.comparingInt(Player::getPZSzachRating).reversed())
                 .forEachOrdered(opponent -> {
@@ -404,10 +418,21 @@ public class PZSzachCalculation {
         Title title1;
 
         if (
-                (tournament.getRating().getPZSzach46() ||
+                (!tournament.getRating().getPZSzach46() ||
                 tournament.getSystem() != Tournament.TournamentSystem.ROUND_ROBIN) &&
                         getTitleValue(player.getTitle(), player.getSex()) < getTitleValue(Title.M, player.getSex())
         ) {
+            if (tournament.getRating().getPZSzach43()) {
+                title1 = getLessRoundTitle(player, ceil);
+                title1 = lowerTitle(title1, ceil);
+                if (
+                        getTitleValue(title1, player.getSex()) > getTitleValue(player.getTitle(), player.getSex()) &&
+                                getTitleValue(title1, player.getSex()) > getTitleValue(title, player.getSex())
+                ) {
+                    title = title1;
+                    remarks = "4.3";
+                }
+            }
             if (tournament.getRating().getPZSzach44()) {
                 title1 = getTitleWithoutLowering(player);
                 title1 = lowerTitle(title1, ceil);
@@ -432,18 +457,6 @@ public class PZSzachCalculation {
                 }
             }
 
-        }
-
-        if (tournament.getRating().getPZSzach43()) {
-            title1 = getLessRoundTitle(player, ceil);
-            title1 = lowerTitle(title1, ceil);
-            if (
-                    getTitleValue(title1, player.getSex()) > getTitleValue(player.getTitle(), player.getSex()) &&
-                            getTitleValue(title1, player.getSex()) > getTitleValue(title, player.getSex())
-            ) {
-                title = title1;
-                remarks = "4.3";
-            }
         }
 
         if (tournament.getRating().getPZSzach47()) {

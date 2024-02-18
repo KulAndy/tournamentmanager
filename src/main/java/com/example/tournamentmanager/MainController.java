@@ -1085,6 +1085,9 @@ public class MainController implements Initializable {
         });
     }
 
+    public ObservableList<File> getFiles() {
+        return files;
+    }
     public ShortcutsHelper getShortcutsHelper() {
         return shortcutsHelper;
     }
