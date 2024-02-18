@@ -157,9 +157,9 @@ public class TournamentOperation {
             for (File file:selectedFiles){
                 if (!controller.getFiles().contains(file)){
                     controller.getFiles().add(file);
-
                 }
             }
+            importJson(selectedFiles.get(selectedFiles.size()-1), controller);
             controller.getTournamentSelect().setValue(selectedFiles.get(selectedFiles.size()-1));
         }
 
