@@ -249,7 +249,7 @@ public class PZSzachCalculation {
 
                     games.add(player.getRounds().get(games.size()));
                 }
-            } while (games.size() < roundsNorm && games.size() < player.getRounds().size());
+            } while (games.size() < roundsNorm || games.size() < player.getRounds().size());
         }
 
         return title;
