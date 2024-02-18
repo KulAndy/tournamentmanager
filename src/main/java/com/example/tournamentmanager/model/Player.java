@@ -314,8 +314,8 @@ public class Player implements Serializable {
         return null;
     }
 
-    public Title getFideNorm(int minGames ,boolean twoFeds){
-        return FIDECalculation.getNorm(this,minGames, twoFeds);
+    public Title getFideNorm(int minGames, boolean twoFeds) {
+        return FIDECalculation.getNorm(this, minGames, twoFeds);
     }
 
     public float getDuel() {
@@ -498,8 +498,8 @@ public class Player implements Serializable {
 
     public int getWinsNumber() {
         int wons = 0;
-        for (int i = 0; i < getRounds().size(); i++) {
-            if (isRoundWon(i)) {
+        for (Game game : getRounds()) {
+            if (!game.isForfeit() && getRoundResult(game) == Result.WIN) {
                 wons++;
             }
         }
@@ -509,13 +509,23 @@ public class Player implements Serializable {
 
     public int getLosesNumber() {
         int loses = 0;
-        for (int i = 0; i < getRounds().size(); i++) {
-            if (isRoundLost(i)) {
+        for (Game game : getRounds()) {
+            if (!game.isForfeit() && getRoundResult(game) == Result.LOSE) {
                 loses++;
             }
         }
-
         return loses;
+    }
+
+    public int getDrawsNumber() {
+        int draws = 0;
+        for (Game game : getRounds()) {
+            if (!game.isForfeit() && getRoundResult(game) == Result.DRAW) {
+                draws++;
+            }
+        }
+
+        return draws;
     }
 
     public int getGamesPlayedWithBlack() {
@@ -717,16 +727,6 @@ public class Player implements Serializable {
         } else return color == Color.BLACK && round.getPointsForBlack() == 1.0;
     }
 
-    public boolean isRoundWon(int n) {
-        Game round = getRound(n);
-        return getRoundResult(round) == Result.WIN;
-    }
-
-    public boolean isRoundLost(int n) {
-        Game round = getRound(n);
-        return getRoundResult(round) == Result.LOSE;
-    }
-
     public boolean hasRoundBeenPlayed(int n) {
         Game round = getRound(n);
         return !round.isForfeit();
@@ -914,7 +914,7 @@ public class Player implements Serializable {
     }
 
     public Integer getFideRating() {
-        if (fideRating == null){
+        if (fideRating == null) {
             return (int) FIDE_FLOOR;
         }
         return Integer.max(fideRating, FIDE_FLOOR);
