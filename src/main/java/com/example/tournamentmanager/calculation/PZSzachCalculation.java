@@ -167,7 +167,7 @@ public class PZSzachCalculation {
     }
 
     private static Title calculateTitle(Player player, int rounds) {
-        int loses = player.getPZSzachRounds().size() == rounds ? player.getPZSzachRounds().size() : player.getLosesNumber() + rounds - player.getPZSzachRounds().size();
+        int loses = player.getPZSzachRounds().size() >= rounds ? player.getPZSzachRounds().size() : player.getLosesNumber() + rounds - player.getPZSzachRounds().size();
         int wins = player.getWinsNumber();
         float points = rounds / 2.0f + (wins - loses) * 0.5f;
         if (points < rounds / 3.0f) {
