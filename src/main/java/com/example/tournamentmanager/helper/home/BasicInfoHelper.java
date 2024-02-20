@@ -86,6 +86,10 @@ public class BasicInfoHelper {
         bindTextFieldInt(getTourControlMove(), getTournament(), "controlMove", "byte");
         bindTextFieldInt(getTourControlAddition(), getTournament(), "controlAddition", "byte");
         bindTextFieldInt(getTourNoRounds(), getTournament(), "roundsNumber", "byte");
+        getTourGameTime().textProperty().addListener(e-> determineType());
+        getTourIncrement().textProperty().addListener(e-> determineType());
+        getTourControlMove().textProperty().addListener(e-> determineType());
+        getTourControlAddition().textProperty().addListener(e-> determineType());
 
         bindComboBox(getTourType(), getTournament(), "type", Tournament.Type.class);
         bindCheckBoxRated(getTourRtPZSzach(), getTournament(), "PZSzachRated");
@@ -114,6 +118,36 @@ public class BasicInfoHelper {
             }
         });
 
+    }
+
+    private void determineType(){
+         short gameTime = 0;
+         try{
+             gameTime = Short.parseShort(getTourGameTime().getText());
+         } catch (NumberFormatException ignored) {}
+        short increment = 0;
+        try{
+            increment = Short.parseShort(getTourGameTime().getText());
+        } catch (NumberFormatException ignored) {}
+        byte controlMove = 0;
+        try{
+            controlMove = Byte.parseByte(getTourGameTime().getText());
+        } catch (NumberFormatException ignored) {}
+        byte controlAddition = 0;
+        try{
+            controlAddition = Byte.parseByte(getTourGameTime().getText());
+        } catch (NumberFormatException ignored) {}
+        int totalTime = gameTime + increment;
+        if (controlMove>0){
+            totalTime += controlAddition;
+        }
+        if (totalTime>=60){
+            getTourType().setValue(Tournament.Type.STANDARD);
+        } else if (totalTime <= 10) {
+            getTourType().setValue(Tournament.Type.BLITZ);
+        }else{
+            getTourType().setValue(Tournament.Type.RAPID);
+        }
     }
 
     public Tournament getTournament() {
