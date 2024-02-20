@@ -278,8 +278,8 @@ public class FIDECalculation {
         if (player.getTitle() == Title.GM) {
             return null;
         }
-        int played = player.getPlayedGamedNumber();
-        ArrayList<Game> games = player.getRounds();
+        int played = player.getFidePlayedGamedNumber();
+        ArrayList<Game> games = player.getFideRounds();
         if (games.size() < minGames || played < minGames - 1) {
             return null;
         }
@@ -317,6 +317,12 @@ public class FIDECalculation {
                 case WIM -> wims++;
                 case WFM -> wfms++;
             }
+
+            switch (player.getRoundResult(game)){
+                case WIN -> points++;
+                case LOSE -> points+=0.5f;
+            }
+
             Federation opponentFed = opponent.getFederation();
             if (feds.containsKey(opponentFed)) {
                 byte currentValue = feds.get(opponentFed);
@@ -332,6 +338,10 @@ public class FIDECalculation {
                     return null;
                 }
             }
+        }
+
+        if (opponents.size() < minGames || points < opponents.size() * 0.35f){
+            return null;
         }
 
         Collections.sort(ratings);
@@ -369,17 +379,20 @@ public class FIDECalculation {
 
         if (gms < played / 3.0f) {
             maxTitle = PZSzachCalculation.lowerTitle(maxTitle, Title.IM);
-        } else if ((gms + ims) < played / 3.0f) {
+        }
+        if ((gms + ims) < played / 3.0f) {
             if (player.getSex() == Player.Sex.MALE) {
                 return null;
             }
             maxTitle = PZSzachCalculation.lowerTitle(maxTitle, Title.WGM);
-        } else if ((gms + ims + wgms) < played / 3.0f) {
+        }
+        if ((gms + ims + wgms) < played / 3.0f) {
             if (player.getSex() == Player.Sex.MALE) {
                 return null;
             }
             maxTitle = PZSzachCalculation.lowerTitle(maxTitle, Title.WIM);
-        } else if ((gms + ims + wgms + wims) < played / 3.0f) {
+        }
+        if ((gms + ims + wgms + wims) < played / 3.0f) {
             return null;
         }
 
@@ -399,10 +412,6 @@ public class FIDECalculation {
             if (count < 2) {
                 return null;
             }
-        }
-
-        if (opponents.size() < minGames || points < opponents.size() * 0.35f) {
-            return null;
         }
 
 
