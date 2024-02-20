@@ -61,7 +61,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tournamentmanager.MainController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tournamentmanager.MainController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -1189,9 +1189,9 @@
                                                     <children>
                                                         <TableView fx:id="rtgPolTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn fx:id="rtPolId" prefWidth="68.0" text="Local ID" />
                                                                 <TableColumn fx:id="rtPolTitle" prefWidth="56.0" text="Title" />
                                                                 <TableColumn fx:id="rtPolName" prefWidth="306.0" text="Name" />
+                                                                <TableColumn fx:id="rtPolId" prefWidth="68.0" text="Local ID" />
                                                                 <TableColumn fx:id="rtPolGames" prefWidth="38.0" text="N" />
                                                                 <TableColumn fx:id="rtPolPoints" prefWidth="67.0" text="Total" />
                                                                 <TableColumn fx:id="rtPolAverage" prefWidth="62.0" text="Rar" />
@@ -1213,9 +1213,9 @@
                                                     <children>
                                                         <TableView fx:id="rtgFideTable" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columns>
+                                                                <TableColumn fx:id="rtgFideTitle" prefWidth="59.0" text="Title" />
                                                                 <TableColumn fx:id="rtgFideName" prefWidth="345.0" text="Name" />
                                                                 <TableColumn fx:id="rtgFideId" prefWidth="87.0" text="FIDE ID" />
-                                                                <TableColumn fx:id="rtgFideTitle" prefWidth="59.0" text="Title" />
                                                                 <TableColumn fx:id="rtgFideFed" prefWidth="93.0" text="FED" />
                                                                 <TableColumn fx:id="rtgFideElo" prefWidth="94.0" text="Elo" />
                                                                 <TableColumn fx:id="rtgFidePoints" prefWidth="67.0" text="Points" />

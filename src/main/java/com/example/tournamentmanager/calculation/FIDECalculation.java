@@ -32,9 +32,7 @@ public class FIDECalculation {
         int difference = rating1 - rating2;
         if (difference < 0) {
             expected = getExpectedResult(rating2, rating1);
-            expected[0] = -expected[0];
-            expected[1] = -expected[1];
-            return expected;
+            return new float[]{expected[1], expected[0]};
         }
         if (difference <= 3) {
             expected = new float[]{0.5F, 0.5F};
