@@ -354,9 +354,9 @@ public class Player implements Serializable {
         } else {
             for (Game game : getFideRounds()) {
                 if (game.getWhite() == this) {
-                    chg += FIDECalculation.getExpectedResult(this.getFideRating(), game.getBlack().getFideRating())[0];
+                    chg += game.getPointsForWhite() - FIDECalculation.getExpectedResult(this.getFideRating(), game.getBlack().getFideRating())[0] ;
                 } else {
-                    chg += FIDECalculation.getExpectedResult(this.getFideRating(), game.getWhite().getFideRating())[0];
+                    chg += game.getPointsForBlack() - FIDECalculation.getExpectedResult(this.getFideRating(), game.getWhite().getFideRating())[0];
                 }
             }
         }

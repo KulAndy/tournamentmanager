@@ -1,6 +1,9 @@
 package com.example.tournamentmanager.calculation;
 
-import com.example.tournamentmanager.model.*;
+import com.example.tournamentmanager.model.Federation;
+import com.example.tournamentmanager.model.Game;
+import com.example.tournamentmanager.model.Player;
+import com.example.tournamentmanager.model.Title;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -273,13 +276,13 @@ public class FIDECalculation {
         }
     }
 
-    public static Title getNorm(Player player,int minGames, boolean twoFeds){
-        if (player.getTitle() == Title.GM){
+    public static Title getNorm(Player player, int minGames, boolean twoFeds) {
+        if (player.getTitle() == Title.GM) {
             return null;
         }
         int played = player.getPlayedGamedNumber();
         ArrayList<Game> games = player.getRounds();
-        if (games.size() < minGames || played < minGames-1){
+        if (games.size() < minGames || played < minGames - 1) {
             return null;
         }
 
@@ -295,20 +298,20 @@ public class FIDECalculation {
         ArrayList<Integer> ratings = new ArrayList<>();
         for (int i = 0; i < games.size(); i++) {
             Game game = games.get(i);
-            if (game.isForfeit() && i < games.size()-1){
+            if (game.isForfeit() && i < games.size() - 1) {
                 continue;
             }
             Player opponent = player.getOpponent(game);
-            if (opponent.getFideId() == null || opponent.getFideId() < 0){
+            if (opponent.getFideId() == null || opponent.getFideId() < 0) {
                 continue;
             }
 
             opponents.add(opponent);
             ratings.add(opponent.getFideRating());
-            if (!game.isForfeit()){
+            if (!game.isForfeit()) {
                 points += player.getRoundPoints(game);
             }
-            switch (opponent.getTitle()){
+            switch (opponent.getTitle()) {
                 case GM -> gms++;
                 case IM -> ims++;
                 case FM -> fms++;
@@ -317,76 +320,76 @@ public class FIDECalculation {
                 case WFM -> wfms++;
             }
             Federation opponentFed = opponent.getFederation();
-            if (feds.containsKey(opponentFed)){
+            if (feds.containsKey(opponentFed)) {
                 byte currentValue = feds.get(opponentFed);
                 feds.put(opponentFed, (byte) (currentValue + 1));
-            }else {
+            } else {
                 feds.put(opponentFed, (byte) 1);
             }
 
-            if (twoFeds){
-                if (opponentFed == player.getFederation() && feds.get(opponentFed) > Math.round(played * (3f/5f))){
+            if (twoFeds) {
+                if (opponentFed == player.getFederation() && feds.get(opponentFed) > Math.round(played * (3f / 5f))) {
                     return null;
-                } else if (opponentFed != player.getFederation() && feds.get(opponentFed) > Math.round(played * (2f/3f)) ) {
+                } else if (opponentFed != player.getFederation() && feds.get(opponentFed) > Math.round(played * (2f / 3f))) {
                     return null;
                 }
             }
         }
 
         Collections.sort(ratings);
-        int avg ;
+        int avg;
         Title maxTitle;
-        ArrayList<Integer> ratingsTmp = new ArrayList<>(ratings) ;
-        ratingsTmp.set(ratingsTmp.size()-1, Integer.max(ratingsTmp.get(ratingsTmp.size()-1), 2200));
+        ArrayList<Integer> ratingsTmp = new ArrayList<>(ratings);
+        ratingsTmp.set(ratingsTmp.size() - 1, Integer.max(ratingsTmp.get(ratingsTmp.size() - 1), 2200));
         avg = (int) Math.round(ratingsTmp.stream().mapToDouble(Integer::doubleValue).average().orElse(0));
-        if (avg >= 2380){
+        if (avg >= 2380) {
             maxTitle = Title.GM;
-        } else{
-            ratingsTmp = new ArrayList<>(ratings) ;
-            ratingsTmp.set(ratingsTmp.size()-1, Integer.max(ratingsTmp.get(ratingsTmp.size()-1), 2050));
+        } else {
+            ratingsTmp = new ArrayList<>(ratings);
+            ratingsTmp.set(ratingsTmp.size() - 1, Integer.max(ratingsTmp.get(ratingsTmp.size() - 1), 2050));
             avg = (int) Math.round(ratingsTmp.stream().mapToDouble(Integer::doubleValue).average().orElse(0));
             if (avg >= 2230 && player.getTitle() != Title.IM) {
                 maxTitle = Title.IM;
-            } else{
-                ratingsTmp = new ArrayList<>(ratings) ;
-                ratingsTmp.set(ratingsTmp.size()-1, Integer.max(ratingsTmp.get(ratingsTmp.size()-1), 2000));
+            } else {
+                ratingsTmp = new ArrayList<>(ratings);
+                ratingsTmp.set(ratingsTmp.size() - 1, Integer.max(ratingsTmp.get(ratingsTmp.size() - 1), 2000));
                 avg = (int) Math.round(ratingsTmp.stream().mapToDouble(Integer::doubleValue).average().orElse(0));
                 if (player.getSex() == Player.Sex.FEMALE && avg >= 2180 && player.getTitle() != Title.WGM) {
                     maxTitle = Title.WGM;
                 } else {
-                    ratingsTmp = new ArrayList<>(ratings) ;
-                    ratingsTmp.set(ratingsTmp.size()-1, Integer.max(ratingsTmp.get(ratingsTmp.size()-1), 1850));
+                    ratingsTmp = new ArrayList<>(ratings);
+                    ratingsTmp.set(ratingsTmp.size() - 1, Integer.max(ratingsTmp.get(ratingsTmp.size() - 1), 1850));
                     avg = (int) Math.round(ratingsTmp.stream().mapToDouble(Integer::doubleValue).average().orElse(0));
-                    if (player.getSex() == Player.Sex.FEMALE && avg >= 2030&& player.getTitle() != Title.WIM) {
+                    if (player.getSex() == Player.Sex.FEMALE && avg >= 2030 && player.getTitle() != Title.WIM) {
                         maxTitle = Title.WIM;
-                    }else {
+                    } else {
                         return null;
                     }
                 }
             }
         }
 
-        if (gms < played/3.0f){
+        if (gms < played / 3.0f) {
             maxTitle = PZSzachCalculation.lowerTitle(maxTitle, Title.IM);
-        }else if ((gms + ims)  < played/3.0f){
-            if (player.getSex() == Player.Sex.MALE){
+        } else if ((gms + ims) < played / 3.0f) {
+            if (player.getSex() == Player.Sex.MALE) {
                 return null;
             }
             maxTitle = PZSzachCalculation.lowerTitle(maxTitle, Title.WGM);
-        }else if ((gms + ims + wgms)  < played/3.0f){
-            if (player.getSex() == Player.Sex.MALE){
+        } else if ((gms + ims + wgms) < played / 3.0f) {
+            if (player.getSex() == Player.Sex.MALE) {
                 return null;
             }
             maxTitle = PZSzachCalculation.lowerTitle(maxTitle, Title.WIM);
-        }else if ((gms + ims + wgms + wims)  < played/3.0f){
+        } else if ((gms + ims + wgms + wims) < played / 3.0f) {
             return null;
         }
 
-        if ((gms + ims + fms + wgms + wims + wfms)  < played/2.0f){
+        if ((gms + ims + fms + wgms + wims + wfms) < played / 2.0f) {
             return null;
         }
 
-        if (twoFeds){
+        if (twoFeds) {
             int count = 0;
 
             for (Map.Entry<Federation, Byte> entry : feds.entrySet()) {
@@ -395,20 +398,20 @@ public class FIDECalculation {
                 }
             }
 
-            if (count <2){
+            if (count < 2) {
                 return null;
             }
         }
 
-        if (opponents.size() < minGames || points < opponents.size() * 0.35f){
+        if (opponents.size() < minGames || points < opponents.size() * 0.35f) {
             return null;
         }
 
 
-        float delta = getDP(points / opponents.size()) ;
+        float delta = getDP(points / opponents.size());
         float perf = avg + delta;
         Title gainedTitle;
-        if (perf >= 2600){
+        if (perf >= 2600) {
             gainedTitle = Title.GM;
         } else if (perf >= 2450) {
             gainedTitle = Title.IM;
@@ -416,13 +419,13 @@ public class FIDECalculation {
             gainedTitle = Title.WGM;
         } else if (player.getSex() == Player.Sex.FEMALE && perf >= 2250) {
             gainedTitle = Title.WIM;
-        }else {
+        } else {
             return null;
         }
         gainedTitle = PZSzachCalculation.lowerTitle(gainedTitle, maxTitle);
-        if (PZSzachCalculation.getTitleValue(gainedTitle, player.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())){
+        if (PZSzachCalculation.getTitleValue(gainedTitle, player.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
             return gainedTitle;
-        }else {
+        } else {
             return null;
         }
     }
