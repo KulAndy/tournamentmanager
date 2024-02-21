@@ -177,11 +177,6 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
         this.comparator = comparator;
     }
 
-    public void sort() {
-
-        super.sort(comparator);
-        rehash();
-    }
 
     public void rehash() {
         getUuid2startNo().clear();
@@ -192,6 +187,11 @@ public class PlayerList extends ArrayList<Player> implements Serializable {
 
     @Override
     public void sort(Comparator c) {
+        super.sort(c);
+        rehash();
+    }
+
+    public void sort() {
         super.sort(comparator);
         rehash();
     }

@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 import static com.example.tournamentmanager.calculation.FIDECalculation.FIDE_FLOOR;
 import static com.example.tournamentmanager.calculation.PZSzachCalculation.PZSZACH_FLOOR;
@@ -44,6 +45,7 @@ public class Player implements Serializable {
     private int YearOfBirth;
     private byte MonthOfBirth;
     private byte DayOfBirth;
+    private int randomValue;
 
 
     public Player() {
@@ -54,28 +56,28 @@ public class Player implements Serializable {
     public Player(String name) {
         this(
                 Federation.FIDE, "", name, Title.bk, PZSZACH_FLOOR, (int) FIDE_FLOOR,
-                null, null, null, null, null, null, null, null, null
+                "", null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Integer fiderating, Integer localRating) {
         this(
                 Federation.FIDE, "", name, Title.bk, localRating, fiderating,
-                null, null, null, null, null, null, null, null, null
+                "", null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Title title) {
         this(
                 Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), (int) FIDE_FLOOR,
-                null, null, null, null, null, null, null, null, null
+                "", null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Title title, Sex sex) {
         this(
                 Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), (int) FIDE_FLOOR,
-                null, null, sex, null, null, null, null, null, null
+                "", null, sex, null, null, null, null, null, null
         );
     }
 
@@ -83,14 +85,14 @@ public class Player implements Serializable {
     public Player(String name, Integer fiderating, Title title) {
         this(
                 Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, null), fiderating,
-                null, null, null, null, null, null, null, null, null
+                "", null, null, null, null, null, null, null, null
         );
     }
 
     public Player(String name, Integer fiderating, Title title, Sex sex) {
         this(
                 Federation.FIDE, "", name, title, PZSzachCalculation.getTitleValue(title, sex), fiderating,
-                null, null, sex, null, null, null, null, null, null
+                "", null, sex, null, null, null, null, null, null
         );
     }
 
@@ -124,6 +126,14 @@ public class Player implements Serializable {
                 null, yearOfBirth + "/" + (monthOfBirth < 10 ? "0" + monthOfBirth : monthOfBirth) + "/" + (dayOfBirth < 10 ? "0" + dayOfBirth : dayOfBirth), sex, null, null, null, null, fideNo, null
         );
     }
+    public void generateRandomValue() {
+        this.randomValue = new Random().nextInt();
+    }
+
+    public int getRandomValue() {
+        return randomValue;
+    }
+
 
     public static Float getWinPoints() {
         return winPoints;

@@ -91,9 +91,23 @@ public class StartListComparator implements Comparator<Player>, Serializable {
                 }
             }
             case CLUB -> {
+                if (player1.getClub() == null){
+                    if (player2.getClub() == null){
+                        return 0;
+                    }else{
+                        return 1;
+                    }
+                }
                 return player1.getClub().compareToIgnoreCase(player2.getClub());
             }
             case FEDERATION -> {
+                if (player1.getFederation() == null){
+                    if (player2.getFederation() == null){
+                        return 0;
+                    }else{
+                        return 1;
+                    }
+                }
                 return -player1.getFederation().toString().compareToIgnoreCase(player2.getFederation().toString());
             }
             case DATE_OF_BIRTH -> {
@@ -104,9 +118,9 @@ public class StartListComparator implements Comparator<Player>, Serializable {
                 return collator.compare(player1.getName(), player2.getName());
             }
             case RANDOM -> {
-                long seed = System.currentTimeMillis();
-                Random random = new Random(seed);
-                return Float.compare(random.nextFloat(), random.nextFloat());
+                player1.generateRandomValue();
+                player2.generateRandomValue();
+                return -Integer.compare(player1.getRandomValue(), player2.getRandomValue());
             }
             default -> {
                 return 0;

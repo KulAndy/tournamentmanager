@@ -154,6 +154,7 @@ public class Tournament implements Serializable {
             );
             playerTmp.setLocalId(player.getPolId());
             playerTmp.setPlayerid(player.getPlayerId());
+            playerTmp.setClub(player.getClub());
 
             players.add(playerTmp);
             if (player.isWithdrawFromTournament()) {

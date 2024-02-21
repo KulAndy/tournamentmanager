@@ -484,7 +484,7 @@ public class FIDEOperation {
 
 
         PlayerList players = tournament.getPlayers();
-        players.sort();
+        players.sort(players.getComparator());
         ArrayList<Title> fideTitles = new ArrayList<>();
         fideTitles.add(Title.GM);
         fideTitles.add(Title.IM);

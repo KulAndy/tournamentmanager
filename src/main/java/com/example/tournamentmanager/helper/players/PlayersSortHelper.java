@@ -53,7 +53,7 @@ public class PlayersSortHelper {
         getCriteria5().setValue(StartListComparator.SortCriteria.RANDOM);
 
         getApplySortButton().setOnAction(event -> {
-            getTournament().getPlayers().sort();
+            getTournament().getPlayers().sort(getTournament().getPlayers().getComparator());
             FXCollections.sort(getTournament().getPlayersObs(), getTournament().getPlayers().getComparator());
         });
     }
