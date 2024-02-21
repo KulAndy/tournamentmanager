@@ -767,42 +767,40 @@
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                             </rowConstraints>
                                                             <children>
-                                                                <Label text="Sort criteria" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                                                <Label text="Sort according" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                                                <Label text="Sort according" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                                                     <children>
                                                                         <Label text="1." />
                                                                         <ComboBox fx:id="criteria1" prefWidth="150.0" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                                                     <children>
                                                                         <Label text="2." />
                                                                         <ComboBox fx:id="criteria2" prefWidth="150.0" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                                                                     <children>
                                                                         <Label text="3." />
                                                                         <ComboBox fx:id="criteria3" prefWidth="150.0" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                                                     <children>
                                                                         <Label text="4." />
                                                                         <ComboBox fx:id="criteria4" prefWidth="150.0" />
                                                                     </children>
                                                                 </HBox>
-                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER">
+                                                                <HBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
                                                                     <children>
                                                                         <Label text="5." />
                                                                         <ComboBox fx:id="criteria5" prefWidth="150.0" />
                                                                     </children>
                                                                 </HBox>
-                                                                <Button fx:id="applySortButton" mnemonicParsing="false" text="Apply" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                                                                <Button fx:id="applySortButton" mnemonicParsing="false" text="Apply" GridPane.columnIndex="2" GridPane.rowIndex="7">
                                                                     <font>
                                                                         <Font name="System Bold" size="18.0" />
                                                                     </font>

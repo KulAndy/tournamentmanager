@@ -630,6 +630,9 @@ public class MainController implements Initializable {
                 minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach45Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,
                 scheduleTable, scheduleName, scheduleDate
         ));
+        tourRtPZSzach.selectedProperty().addListener(e->rtgPolTable.refresh());
+        tourRtFIDE.selectedProperty().addListener(e->rtgFideTable.refresh());
+
         setPlayersHelper(new PlayersHelper(
                 tournament,
                 correctFide, correctPl,
