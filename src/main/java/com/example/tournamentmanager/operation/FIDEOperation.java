@@ -3,6 +3,7 @@ package com.example.tournamentmanager.operation;
 import com.example.tournamentmanager.MainController;
 import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -436,6 +437,7 @@ public class FIDEOperation {
         trf.append("\n052 ").append(dateFormat.format(tournament.getEndDate()));
         trf.append("\n062 ").append(tournament.getPlayers().size());
         trf.append("\n072 ").append(tournament.getPlayers().stream().filter(player -> player.getFideRating() > 1000).count());
+        trf.append("\n082 0");
         trf.append("\n092 ").append(tournament.getSystem()).append(" SYSTEM");
         trf.append("\n102 ").append(tournament.getArbiter());
 
@@ -495,6 +497,8 @@ public class FIDEOperation {
         fideTitles.add(Title.WFM);
         fideTitles.add(Title.WCM);
 
+        SortedList<Player> sortedList = new SortedList<>(tournament.getPlayersObs(), tournament.getResultsComparator());
+
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
             trf.append("\n001 ")
@@ -505,7 +509,7 @@ public class FIDEOperation {
                     .append("%3s".formatted(
                             fideTitles.contains(player.getTitle()) ? player.getTitle() : ""
                     ))
-                    .append("%-34s".formatted(player.getName()))
+                    .append("%-34s".formatted(unidecode(player.getName())))
                     .append(player.getFideRating())
                     .append(" ");
             if (player.getFederation() == null || player.getFederation() == Federation.FIDE) {
@@ -519,7 +523,7 @@ public class FIDEOperation {
                     .append("%10s".formatted(player.getDateOfBirth()))
                     .append(" ")
                     .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
-                    .append("     ")
+                    .append(" %4d".formatted(sortedList.indexOf(player)+1))
             ;
 
             ArrayList<Game> rounds = player.getRounds();
