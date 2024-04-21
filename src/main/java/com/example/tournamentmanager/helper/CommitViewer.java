@@ -33,7 +33,7 @@ public class CommitViewer {
     private ListView<String> commitListView;
     private Path tempDir;
 
-    public void displayCommitViewer() {
+    public void display() {
         if (!repo.exists()) {
             error("Couldn't check version history");
             return;

@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
-import java.util.Random;
 
 public class StartListComparator implements Comparator<Player>, Serializable {
     private SortCriteria criteria1;
@@ -91,20 +90,20 @@ public class StartListComparator implements Comparator<Player>, Serializable {
                 }
             }
             case CLUB -> {
-                if (player1.getClub() == null){
-                    if (player2.getClub() == null){
+                if (player1.getClub() == null) {
+                    if (player2.getClub() == null) {
                         return 0;
-                    }else{
+                    } else {
                         return 1;
                     }
                 }
                 return player1.getClub().compareToIgnoreCase(player2.getClub());
             }
             case FEDERATION -> {
-                if (player1.getFederation() == null){
-                    if (player2.getFederation() == null){
+                if (player1.getFederation() == null) {
+                    if (player2.getFederation() == null) {
                         return 0;
-                    }else{
+                    } else {
                         return 1;
                     }
                 }

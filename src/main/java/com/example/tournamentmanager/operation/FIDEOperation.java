@@ -523,7 +523,7 @@ public class FIDEOperation {
                     .append("%10s".formatted(player.getDateOfBirth()))
                     .append(" ")
                     .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
-                    .append(" %4d".formatted(sortedList.indexOf(player)+1))
+                    .append(" %4d".formatted(sortedList.indexOf(player) + 1))
             ;
 
             ArrayList<Game> rounds = player.getRounds();

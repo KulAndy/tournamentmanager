@@ -114,9 +114,8 @@ public class ShortcutsHelper {
         });
     }
 
-    private void functionShortcuts(KeyEvent e)
-    {
-        switch (e.getCode()){
+    private void functionShortcuts(KeyEvent e) {
+        switch (e.getCode()) {
             case F1 -> CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
                     .exceptionally(ex -> null);
             case F2 -> CompletableFuture.runAsync(FileOperation::downloadPolList)
@@ -191,7 +190,7 @@ public class ShortcutsHelper {
                                             result.append(buffer, 0, length);
                                         }
 
-                                        System.out.println(result.toString());
+                                        System.out.println(result);
                                         JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
                                         String insertedId = jsonObject.get("insertedId").getAsString();
 
@@ -255,6 +254,7 @@ public class ShortcutsHelper {
             case F9 -> TournamentOperation.importPgn(controller);
         }
     }
+
     private void controlShortcuts(KeyEvent e) {
         if (e.isControlDown() && !e.isShiftDown()) {
             switch (e.getCode()) {
@@ -333,7 +333,7 @@ public class ShortcutsHelper {
         return filename;
     }
 
-    private void addGamesList(ArrayList<Game> games,int round, Document document) throws DocumentException {
+    private void addGamesList(ArrayList<Game> games, int round, Document document) throws DocumentException {
         Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Paragraph paragraph = new Paragraph("Round " + round, normalFont);
         paragraph.setAlignment(Element.ALIGN_CENTER);
@@ -428,7 +428,7 @@ public class ShortcutsHelper {
             document.add(header);
             document.add(new Paragraph("\n"));
             for (int i = 0; i < rounds.size(); i++) {
-                addGamesList(rounds.get(i), i+1, document);
+                addGamesList(rounds.get(i), i + 1, document);
             }
             document.close();
             outputStream.close();

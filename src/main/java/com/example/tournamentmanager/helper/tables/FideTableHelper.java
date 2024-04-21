@@ -54,11 +54,11 @@ public class FideTableHelper {
         getRtgFideAverage().setCellValueFactory(new PropertyValueFactory<>("averageFideRating"));
         getRtgFideChg().setCellValueFactory(new PropertyValueFactory<>("fideChange"));
         getRtgFideNorm().setCellValueFactory(cellDate -> {
-            if (!getTournament().getRating().getFIDERated()){
+            if (!getTournament().getRating().getFIDERated()) {
                 return null;
             }
             Player player = cellDate.getValue();
-            return new SimpleObjectProperty<>(player.getFideNorm( getTournament().getRating().getMinTitleGames(),getTournament().getRating().getTwoOtherFederations()));
+            return new SimpleObjectProperty<>(player.getFideNorm(getTournament().getRating().getMinTitleGames(), getTournament().getRating().getTwoOtherFederations()));
         });
         getRtgFideTable().setItems(tournament.getPlayersObs());
 

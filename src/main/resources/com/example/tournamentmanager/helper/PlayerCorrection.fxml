@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="10" xmlns="http://javafx.com/javafx/21">
+
+    <TableView fx:id="playersTable" prefHeight="400" prefWidth="600" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="startNoColumn" prefWidth="50" text="#"/>
+            <TableColumn fx:id="nameColumn" prefWidth="150" text="Name"/>
+            <TableColumn fx:id="titleColumn" editable="false" prefWidth="40" sortable="false">
+                <graphic>
+                    <CheckBox fx:id="titleHeader" text="Title"/>
+                </graphic>
+            </TableColumn>
+            <TableColumn fx:id="ratingColumn" prefWidth="60">
+                <graphic>
+                    <CheckBox fx:id="ratingHeader" text="Rating"/>
+                </graphic>
+            </TableColumn>
+            <TableColumn fx:id="fideIdColumn" prefWidth="100">
+                <graphic>
+                    <CheckBox fx:id="fideIdHeader" text="FIDE ID"/>
+                </graphic>
+            </TableColumn>
+            <TableColumn fx:id="localIdColumn" prefWidth="100">
+                <graphic>
+                    <CheckBox fx:id="localIdHeader" text="Local ID"/>
+                </graphic>
+            </TableColumn>
+            <TableColumn fx:id="birthColumn" prefWidth="80">
+                <graphic>
+                    <CheckBox fx:id="birthHeader" text="Birth"/>
+                </graphic>
+            </TableColumn>
+            <TableColumn fx:id="sexColumn" prefWidth="60">
+                <graphic>
+                    <CheckBox fx:id="sexHeader" text="Sex"/>
+                </graphic>
+            </TableColumn>
+            <TableColumn fx:id="clubColumn" prefWidth="150">
+                <graphic>
+                    <CheckBox fx:id="clubHeader" text="Club"/>
+                </graphic>
+            </TableColumn>
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+    </TableView>
+    <HBox alignment="CENTER" prefHeight="28.0" prefWidth="600.0" VBox.vgrow="NEVER">
+        <children>
+            <Button fx:id="applyButton" onAction="#onApply" text="Apply"/>
+            <Separator opacity="0.0" prefHeight="37.0" prefWidth="36.0"/>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onClose" text="Cancel"/>
+        </children>
+    </HBox>
+</VBox>

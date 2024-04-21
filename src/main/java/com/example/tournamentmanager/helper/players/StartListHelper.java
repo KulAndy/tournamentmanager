@@ -1,7 +1,7 @@
 package com.example.tournamentmanager.helper.players;
 
-import com.example.tournamentmanager.calculation.PZSzachCalculation;
 import com.example.tournamentmanager.helper.DialogHelper;
+import com.example.tournamentmanager.helper.PlayerCorrectionController;
 import com.example.tournamentmanager.model.Federation;
 import com.example.tournamentmanager.model.Player;
 import com.example.tournamentmanager.model.Title;
@@ -11,6 +11,8 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -18,11 +20,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.example.tournamentmanager.helper.DialogHelper.error;
@@ -89,6 +95,7 @@ public class StartListHelper {
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
+                    ArrayList<Player> found = new ArrayList<>();
                     for (int i = 0; i < n; i++) {
                         Player player = getTournament().getPlayersObs().get(i);
 
@@ -98,30 +105,40 @@ public class StartListHelper {
                         ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
                         if (players.size() == 1) {
                             Player playerFide = players.get(0);
-                            if (playerFide.getTitle() != Title.bk &&
-                                    PZSzachCalculation.getTitleValue(playerFide.getTitle(), playerFide.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
-                                player.setTitle(playerFide.getTitle());
-                            }
-                            player.setFederation(playerFide.getFederation());
-                            player.setFideRating(playerFide.getFideRating());
-                            player.setFideId(playerFide.getFideId());
+                            found.add(playerFide);
                         } else {
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
                                     .collect(Collectors.toList());
                             if (players.size() == 1) {
                                 Player playerFide = players.get(0);
-                                if (playerFide.getTitle() != Title.bk &&
-                                        PZSzachCalculation.getTitleValue(playerFide.getTitle(), playerFide.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
-                                    player.setTitle(playerFide.getTitle());
-                                }
-                                player.setFederation(playerFide.getFederation());
-                                player.setFideRating(playerFide.getFideRating());
-                                player.setFideId(playerFide.getFideId());
+                                found.add(playerFide);
+                            } else {
+                                found.add(null);
                             }
                         }
                     }
-                    getPlayersListTable().refresh();
+                    Platform.runLater(() -> {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(PlayerCorrectionController.class.getResource("PlayerCorrection.fxml"));
+
+                            PlayerCorrectionController controller = new PlayerCorrectionController(getTournament().getPlayersObs(), found, playersListTable::refresh);
+                            loader.setController(controller);
+
+                            VBox root = loader.load();
+                            Stage newStage = new Stage();
+                            Scene scene = new Scene(root);
+                            newStage.setScene(scene);
+                            newStage.setTitle("Player Correction");
+                            newStage.show();
+                            newStage.setMaximized(true);
+                            controller.initialize();
+
+                        } catch (IOException e) {
+                            System.err.println("Error loading PlayerCorrection.fxml: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
                     return null;
                 }
             };
@@ -140,6 +157,7 @@ public class StartListHelper {
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
+                    ArrayList<Player> found = new ArrayList<>();
                     for (int i = 0; i < n; i++) {
                         Player player = getTournament().getPlayersObs().get(i);
 
@@ -149,68 +167,48 @@ public class StartListHelper {
                         ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
                         if (players.size() == 1) {
                             Player playerPl = players.get(0);
-                            player.setName(playerPl.getName());
-                            if (playerPl.getTitle() != Title.bk &&
-                                    PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
-                                player.setTitle(playerPl.getTitle());
-                            }
-                            player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
-                            player.setClub(playerPl.getClub());
-                            player.setYearOfBirth(playerPl.getYearOfBirth());
-                            player.setMonthOfBirth(playerPl.getMonthOfBirth());
-                            player.setDayOfBirth(playerPl.getDayOfBirth());
-                            player.setSex(playerPl.getSex());
-                            player.setLocalId(playerPl.getLocalId());
-                            if (playerPl.getFideId() != null) {
-                                player.setFideId(playerPl.getFideId());
-                            }
+                            found.add(playerPl);
                         } else {
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
                                     .collect(Collectors.toList());
                             if (players.size() == 1) {
                                 Player playerPl = players.get(0);
-                                player.setName(playerPl.getName());
-                                if (playerPl.getTitle() != Title.bk &&
-                                        PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
-                                    player.setTitle(playerPl.getTitle());
-                                }
-                                player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
-                                player.setClub(playerPl.getClub());
-                                player.setYearOfBirth(playerPl.getYearOfBirth());
-                                player.setMonthOfBirth(playerPl.getMonthOfBirth());
-                                player.setDayOfBirth(playerPl.getDayOfBirth());
-                                player.setSex(playerPl.getSex());
-                                player.setLocalId(playerPl.getLocalId());
-                                if (playerPl.getFideId() != null) {
-                                    player.setFideId(playerPl.getFideId());
-                                }
+                                found.add(playerPl);
                             } else {
                                 players = (ArrayList<Player>) players.stream()
-                                        .filter(item -> item.getDateOfBirth() == player.getDateOfBirth())
+                                        .filter(item -> Objects.equals(item.getDateOfBirth(), player.getDateOfBirth()))
                                         .collect(Collectors.toList());
                                 if (players.size() == 1) {
                                     Player playerPl = players.get(0);
-                                    player.setName(playerPl.getName());
-                                    if (playerPl.getTitle() != Title.bk &&
-                                            PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()) > PZSzachCalculation.getTitleValue(player.getTitle(), player.getSex())) {
-                                        player.setTitle(playerPl.getTitle());
-                                    }
-                                    player.setLocalRating(PZSzachCalculation.getTitleValue(playerPl.getTitle(), playerPl.getSex()));
-                                    player.setClub(playerPl.getClub());
-                                    player.setYearOfBirth(playerPl.getYearOfBirth());
-                                    player.setMonthOfBirth(playerPl.getMonthOfBirth());
-                                    player.setDayOfBirth(playerPl.getDayOfBirth());
-                                    player.setSex(playerPl.getSex());
-                                    player.setLocalId(playerPl.getLocalId());
-                                    if (playerPl.getFideId() != null) {
-                                        player.setFideId(playerPl.getFideId());
-                                    }
+                                    found.add(playerPl);
+                                } else {
+                                    found.add(null);
                                 }
                             }
                         }
                     }
-                    getPlayersListTable().refresh();
+                    Platform.runLater(() -> {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(PlayerCorrectionController.class.getResource("PlayerCorrection.fxml"));
+
+                            PlayerCorrectionController controller = new PlayerCorrectionController(getTournament().getPlayersObs(), found, playersListTable::refresh);
+                            loader.setController(controller);
+
+                            VBox root = loader.load();
+                            Stage newStage = new Stage();
+                            Scene scene = new Scene(root);
+                            newStage.setScene(scene);
+                            newStage.setTitle("Player Correction");
+                            newStage.show();
+                            newStage.setMaximized(true);
+                            controller.initialize();
+
+                        } catch (IOException e) {
+                            System.err.println("Error loading PlayerCorrection.fxml: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
                     return null;
                 }
             };

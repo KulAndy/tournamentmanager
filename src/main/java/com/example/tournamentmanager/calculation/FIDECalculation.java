@@ -318,9 +318,9 @@ public class FIDECalculation {
                 case WFM -> wfms++;
             }
 
-            switch (player.getRoundResult(game)){
+            switch (player.getRoundResult(game)) {
                 case WIN -> points++;
-                case LOSE -> points+=0.5f;
+                case LOSE -> points += 0.5f;
             }
 
             Federation opponentFed = opponent.getFederation();
@@ -340,7 +340,7 @@ public class FIDECalculation {
             }
         }
 
-        if (opponents.size() < minGames || points < opponents.size() * 0.35f){
+        if (opponents.size() < minGames || points < opponents.size() * 0.35f) {
             return null;
         }
 

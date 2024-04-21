@@ -246,7 +246,7 @@ public class PZSzachCalculation {
                     }
                 });
 
-        Title result =  results.parallelStream()
+        Title result = results.parallelStream()
                 .filter(title -> getTitleValue(title, player.getSex()) <= getTitleValue(ceil, player.getSex()))
                 .max(Comparator.comparingInt(title -> getTitleValue(title, player.getSex())))
                 .orElse(null);
@@ -286,12 +286,12 @@ public class PZSzachCalculation {
     }
 
     private static Title smallNorm(Player player) {
-        if (player.getPlayedGamedNumber() > 8){
+        if (player.getPlayedGamedNumber() > 8) {
             return null;
-        }else if (player.getPlayedGamedNumber() < 5){
+        } else if (player.getPlayedGamedNumber() < 5) {
             return null;
-        }else{
-            if (player.getPZSzachPoints()< player.getPZSzachRounds().size() / 3.0f){
+        } else {
+            if (player.getPZSzachPoints() < player.getPZSzachRounds().size() / 3.0f) {
                 return null;
             }
             return getNorm9Rounds(getRatingPerformance(player), player.getSex());
@@ -306,9 +306,9 @@ public class PZSzachCalculation {
         AtomicInteger sum = new AtomicInteger(0);
         AtomicReference<Title> title = new AtomicReference<>(null);
         ArrayList<Player> defeated = new ArrayList<>();
-        for (Game game: player.getRounds()){
-            if (!game.isForfeit()){
-                switch (player.getRoundResult(game)){
+        for (Game game : player.getRounds()) {
+            if (!game.isForfeit()) {
+                switch (player.getRoundResult(game)) {
                     case WIN -> defeated.add(player.getOpponent(game));
                     case DRAW, LOSE -> {
                         count.incrementAndGet();
@@ -323,7 +323,7 @@ public class PZSzachCalculation {
                     sum.addAndGet(opponent.getPZSzachRating());
                     count.getAndIncrement();
                     wins.getAndIncrement();
-                    if (wins.get() + draws * 0.5f >= count.get() / 3.0f){
+                    if (wins.get() + draws * 0.5f >= count.get() / 3.0f) {
                         int delta = getRatingDelta(count.get(), wins.get(), loses);
                         int avg = (sum.get() + player.getPZSzachRating()) / (count.get() + 1);
                         Title title1 = getNorm(delta + avg, count.get(), player.getSex());
@@ -338,7 +338,7 @@ public class PZSzachCalculation {
 
     public static Title getNorm(Player player, Tournament tournament) {
         Title ceil = tournament.getRating().getMaxTitle();
-        if (ceil == Title.bk || !tournament.getRating().getPZSzachRated())  {
+        if (ceil == Title.bk || !tournament.getRating().getPZSzachRated()) {
             return null;
         }
         Title title = player.getPlayerNorm();
@@ -403,7 +403,7 @@ public class PZSzachCalculation {
 
     public static String getNormRemarks(Player player, Tournament tournament) {
         Title ceil = tournament.getRating().getMaxTitle();
-        if (ceil == Title.bk || !tournament.getRating().getPZSzachRated())  {
+        if (ceil == Title.bk || !tournament.getRating().getPZSzachRated()) {
             return null;
         }
         Title title = player.getPlayerNorm();
@@ -412,7 +412,7 @@ public class PZSzachCalculation {
 
         if (
                 (!tournament.getRating().getPZSzach46() ||
-                tournament.getSystem() != Tournament.TournamentSystem.ROUND_ROBIN) &&
+                        tournament.getSystem() != Tournament.TournamentSystem.ROUND_ROBIN) &&
                         getTitleValue(player.getTitle(), player.getSex()) < getTitleValue(Title.M, player.getSex())
         ) {
             if (tournament.getRating().getPZSzach43()) {

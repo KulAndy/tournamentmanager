@@ -833,7 +833,7 @@ public class MainController implements Initializable {
                                                 result.append(buffer, 0, length);
                                             }
 
-                                            System.out.println(result.toString());
+                                            System.out.println(result);
                                             JsonObject jsonObject = JsonParser.parseString(result.toString()).getAsJsonObject();
                                             String insertedId = jsonObject.get("insertedId").getAsString();
 
@@ -896,7 +896,7 @@ public class MainController implements Initializable {
                         }));
         checkUpdates.setOnAction(e -> Platform.runLater(() -> {
             CommitViewer commitViewer = new CommitViewer();
-            commitViewer.displayCommitViewer();
+            commitViewer.display();
         }));
         downloadFideMenu.setOnAction(e -> CompletableFuture.runAsync(FIDEOperation::downloadFIDEList)
                 .exceptionally(ex -> null));
@@ -1088,6 +1088,7 @@ public class MainController implements Initializable {
     public ObservableList<File> getFiles() {
         return files;
     }
+
     public ShortcutsHelper getShortcutsHelper() {
         return shortcutsHelper;
     }
@@ -1486,6 +1487,7 @@ public class MainController implements Initializable {
     public Tab getEnterResultsTab() {
         return enterResultsTab;
     }
+
     public Tab getAllRoundsTab() {
         return allRoundsTab;
     }
