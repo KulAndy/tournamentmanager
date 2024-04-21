@@ -94,7 +94,6 @@ public class BasicInfoHelper {
         bindComboBox(getTourType(), getTournament(), "type", Tournament.Type.class);
         bindCheckBoxRated(getTourRtPZSzach(), getTournament(), "PZSzachRated");
         bindCheckBoxRated(getTourRtFIDE(), getTournament(), "FIDERated");
-
         bindDatePicker(getTourStartDate(), getTournament(), "startDate");
         bindDatePicker(getTourEndDate(), getTournament(), "endDate");
 

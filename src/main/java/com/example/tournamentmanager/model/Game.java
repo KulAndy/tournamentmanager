@@ -45,9 +45,9 @@ public class Game implements Serializable {
     }
 
     public Player getWinner() {
-        if (getWhiteName().equals("bye")) {
+        if (getWhite().getPlayerid().toString().equals("0000000000000000ffffffff")) {
             return getBlack();
-        } else if (getBlackName().equals("bye")) {
+        } else if (getBlack().getPlayerid().toString().equals("0000000000000000ffffffff")) {
             return getWhite();
         } else if (
                 getWhiteResult() == Result.WIN && getBlackResult() == Result.LOSE
@@ -61,14 +61,14 @@ public class Game implements Serializable {
     }
 
     public Float getPointsForWhite() {
-        switch (blackName) {
-            case "bye" -> {
+        switch (getBlack().getPlayerid().toString()) {
+            case "0000000000000000ffffffff" -> {
                 return Player.getByePoints();
             }
-            case "halfbye" -> {
+            case "0000000000000000fffffffe" -> {
                 return Player.getHalfByePoints();
             }
-            case "unpaired" -> {
+            case "0000000000000000fffffffd" -> {
                 return 0F;
             }
         }

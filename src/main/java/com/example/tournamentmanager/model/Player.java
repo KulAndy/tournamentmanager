@@ -431,9 +431,6 @@ public class Player implements Serializable, Cloneable {
     }
 
     public float getBucholzCut1() {
-        if (getOpponents().size() == 0) {
-            return 0;
-        }
         float bucholz = 0;
         float minPoints = Float.MAX_VALUE;
         for (int i = 0; i < getRounds().size(); i++) {
@@ -442,18 +439,15 @@ public class Player implements Serializable, Cloneable {
             Float addition;
             if (round.isForfeit()) {
                 if (i == getRounds().size() - 1 && (
-                        opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
+                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
+                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
                 )) {
                     addition = (float) (getStandardizedPointsInRound(i) + 0.5);
                 } else {
                     addition = (float) (getPointInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
                 }
-            } else if (
-                    opponent.getRounds().size() == opponent.getPlayedGamedNumber()
-            ) {
-                addition = opponent.getStandardizedPoints();
-            } else {
+            }  else {
                 addition = opponent.getStandardizedPoints();
             }
             if (!addition.isNaN()) {
@@ -469,9 +463,6 @@ public class Player implements Serializable, Cloneable {
     }
 
     public float getBucholz() {
-        if (getOpponents().size() == 0) {
-            return 0;
-        }
         float bucholz = 0;
         for (int i = 0; i < getRounds().size(); i++) {
             Game round = getRounds().get(i);
@@ -479,7 +470,8 @@ public class Player implements Serializable, Cloneable {
             Float addition;
             if (round.isForfeit()) {
                 if (i == getRounds().size() - 1 && (
-                        opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
+                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
+                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
                                 opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
                 )) {
                     addition = (float) (getStandardizedPointsInRound(i) + 0.5);
@@ -666,13 +658,18 @@ public class Player implements Serializable, Cloneable {
         float points = 0;
         for (int i = 0; i < n && i < getRounds().size(); i++) {
             Game round = getRounds().get(i);
-            Result result = getRoundResult(round);
-            if (result == null) {
-                return 0;
-            }
-            switch (result) {
-                case WIN -> points++;
-                case DRAW -> points += 0.5F;
+            Color color = getRoundColor(round);
+            switch (color){
+                case WHITE -> {
+                    if (!Float.isNaN(round.getPointsForWhite())){
+                        points += round.getPointsForWhite();
+                    }
+                }
+                case BLACK -> {
+                    if (!Float.isNaN(round.getPointsForBlack())){
+                        points += round.getPointsForBlack();
+                    }
+                }
             }
         }
         return points;
