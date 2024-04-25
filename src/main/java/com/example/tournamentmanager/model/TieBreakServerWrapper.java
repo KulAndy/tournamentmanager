@@ -108,12 +108,20 @@ public class TieBreakServerWrapper {
 
             for (int j = 0; j < calculationsArray.size(); j++) {
                 JsonObject calculation = calculationsArray.get(j).getAsJsonObject();
+                ArrayList<Integer> cuts = new ArrayList<>();
+                if (calculation.get("cut") != null){
+                    JsonArray jsonArray = (JsonArray) calculation.get("cut");
+                    for (int k = 0; k < jsonArray.size(); k++) {
+                        int value = jsonArray.get(k).getAsInt();
+                        cuts.add(value);
+                    }
+                }
                 float tb = 0f;
 
                 for (int k = 1; (k <= round && k != 0) || k < calculation.keySet().size(); k++) {
                     String key = String.valueOf(k);
 
-                    if (calculation.has(key)) {
+                    if (calculation.has(key) && !cuts.contains(k)) {
                         tb += calculation.get(key).getAsFloat();
                     }
                 }
