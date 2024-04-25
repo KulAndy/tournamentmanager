@@ -106,11 +106,11 @@ public class PlayerCardHelper {
         getPlayerCardSelect().valueProperty().addListener((ObservableValue<? extends Player> observable, Player oldValue, Player newValue) -> {
             if (newValue != null) {
                 getPlayerCardName().setText("\t" + newValue.getTitle() + " " + newValue.getName());
-                getPlayerCardTB1Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak1()).toString());
-                getPlayerCardTB2Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak2()).toString());
-                getPlayerCardTB3Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak3()).toString());
-                getPlayerCardTB4Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak4()).toString());
-                getPlayerCardTB5Value().setText(newValue.getTiebreak(getTournament().getTiebreak().getTiebreak5()).toString());
+                getPlayerCardTB1Value().setText(newValue.getTb1().toString());
+                getPlayerCardTB2Value().setText(newValue.getTb2().toString());
+                getPlayerCardTB3Value().setText(newValue.getTb3().toString());
+                getPlayerCardTB4Value().setText(newValue.getTb4().toString());
+                getPlayerCardTB5Value().setText(newValue.getTb5().toString());
                 getPlayerCardEloValue().setText(String.valueOf(newValue.getRatingPerformanceFide()));
                 getPlayerCardPZSzachValue().setText(String.valueOf(newValue.getRatingPerformancePZSzach()));
 

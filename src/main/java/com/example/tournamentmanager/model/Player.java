@@ -5,6 +5,8 @@ import com.example.tournamentmanager.calculation.PZSzachCalculation;
 import jakarta.xml.bind.annotation.XmlAnyElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
@@ -26,6 +28,11 @@ public class Player implements Serializable, Cloneable {
     private static Float forfeitLosePoints = 0F;
     private static Float byePoints = 1.0F;
     private static Float halfByePoints = 0.5F;
+    private transient final FloatProperty tb1 = new SimpleFloatProperty(0);
+    private transient final FloatProperty tb2 = new SimpleFloatProperty(0);
+    private transient final FloatProperty tb3 = new SimpleFloatProperty(0);
+    private transient final FloatProperty tb4 = new SimpleFloatProperty(0);
+    private transient final FloatProperty tb5 = new SimpleFloatProperty(0);
     private Federation federation;
     private String state;
     private String name;
@@ -47,11 +54,9 @@ public class Player implements Serializable, Cloneable {
     private byte DayOfBirth;
     private int randomValue;
 
-
     public Player() {
         this("");
     }
-
 
     public Player(String name) {
         this(
@@ -80,7 +85,6 @@ public class Player implements Serializable, Cloneable {
                 "", null, sex, null, null, null, null, null, null
         );
     }
-
 
     public Player(String name, Integer fiderating, Title title) {
         this(
@@ -187,12 +191,64 @@ public class Player implements Serializable, Cloneable {
         return phonePrefixesList;
     }
 
-    public void generateRandomValue() {
-        this.randomValue = new Random().nextInt();
+    public Float getTb1() {
+        return tb1.get();
     }
 
-    public int getRandomValue() {
-        return randomValue;
+    public void setTb1(float tb1) {
+        this.tb1.set(tb1);
+    }
+
+    public FloatProperty tb1Property() {
+        return tb1;
+    }
+
+    public Float getTb2() {
+        return tb2.get();
+    }
+
+    public void setTb2(float tb2) {
+        this.tb2.set(tb2);
+    }
+
+    public FloatProperty tb2Property() {
+        return tb2;
+    }
+
+    public Float getTb3() {
+        return tb3.get();
+    }
+
+    public void setTb3(float tb3) {
+        this.tb3.set(tb3);
+    }
+
+    public FloatProperty tb3Property() {
+        return tb3;
+    }
+
+    public Float getTb4() {
+        return tb4.get();
+    }
+
+    public void setTb4(float tb4) {
+        this.tb4.set(tb4);
+    }
+
+    public FloatProperty tb4Property() {
+        return tb4;
+    }
+
+    public Float getTb5() {
+        return tb5.get();
+    }
+
+    public void setTb5(float tb5) {
+        this.tb5.set(tb5);
+    }
+
+    public FloatProperty tb5Property() {
+        return tb5;
     }
 
     public int getColorPreference() {
@@ -218,7 +274,7 @@ public class Player implements Serializable, Cloneable {
     }
 
     public Color getLastColor() {
-        if (getRounds().size() != 0) {
+        if (!getRounds().isEmpty()) {
             for (int i = getRounds().size() - 1; i >= 0; i--) {
                 Game game = getRound(i);
                 if (!game.isForfeit()) {
@@ -227,62 +283,6 @@ public class Player implements Serializable, Cloneable {
             }
         }
         return null;
-    }
-
-    public Number getTiebreak(Tournament.Tiebreak.TbMethod tiebreak) {
-        switch (tiebreak) {
-            case KOYA -> {
-                return getKoya();
-            }
-            case WINS -> {
-                return getWinsNumber();
-            }
-            case POINTS -> {
-                return getPoints();
-            }
-            case BUCHOLZ -> {
-                return getBucholz();
-            }
-            case PROGRESS -> {
-                return getProgress();
-            }
-            case BUCHOLZ_CUT1 -> {
-                return getBucholzCut1();
-            }
-            case MEDIA_BUCHOLZ -> {
-                return getBucholzMedian();
-            }
-            case SONNEN_BERGER -> {
-                return getBerger();
-            }
-            case WINS_WITH_BLACK -> {
-                return getWinsWithBlackNumber();
-            }
-            case GAMES_WITH_BLACK -> {
-                return getGamesPlayedWithBlack();
-            }
-            case RATING_PERFORMENCE_FIDE -> {
-                return getRatingPerformanceFide();
-            }
-            case AVERAGE_OPPONENTS_RATING -> {
-                return getAverageFideRating();
-            }
-            case AVERAGE_OPPONENTS_RATING_CUT1 -> {
-                return getAverageFideRatingCut1();
-            }
-            case RATING_PERFORMENCE_PZSZACH -> {
-                return getRatingPerformancePZSzach();
-            }
-            case AVERAGE_OPPONENTS_LOCAL_RATING -> {
-                return getAverageRatingPZSzach();
-            }
-            case DUEL -> {
-                return getDuel();
-            }
-            default -> {
-                return 0;
-            }
-        }
     }
 
     public float getRatingPerformanceFide() {
@@ -328,35 +328,6 @@ public class Player implements Serializable, Cloneable {
         return FIDECalculation.getNorm(this, minGames, twoFeds);
     }
 
-    public float getDuel() {
-        float points = 0;
-        for (Game game : getRounds()) {
-            Player opponent = getOpponent(game);
-            if (!game.isForfeit() && Objects.equals(opponent.getPoints(), getPoints())) {
-                points += getRoundPoints(game);
-            }
-        }
-        return points;
-    }
-
-    public float getKoya() {
-        float koya = 0;
-        for (Game round : getRounds()) {
-            Player opponent = getOpponent(round);
-            if (opponent.getPoints() >= getRounds().size() / 2.0) {
-                Result result = getRoundResult(round);
-                if (result == Result.WIN) {
-                    koya++;
-                } else if (result == Result.DRAW) {
-                    koya += 0.5F;
-                }
-
-            }
-        }
-
-        return koya;
-    }
-
     public float getFideChange() {
         float chg = 0.0F;
         if (getFideRating() == FIDE_FLOOR) {
@@ -370,132 +341,15 @@ public class Player implements Serializable, Cloneable {
                 }
             }
         }
-
         return chg;
     }
 
-    public float getProgress() {
-        float progress = 0;
-        float points = 0;
-        for (Game round : getRounds()) {
-            Result result = getRoundResult(round);
-            if (result != null) {
-                switch (result) {
-                    case WIN -> points++;
-                    case DRAW -> points += 0.5F;
-                }
-            }
-            progress += points;
-        }
-
-        return progress;
+    public float getAverageFideRating() {
+        return FIDECalculation.getAverageRating(getFideOpponents());
     }
 
-    public float getBerger() {
-        float berger = 0;
-        for (Game round : getRounds()) {
-            Player opponent = getOpponent(round);
-            switch (opponent.getPlayerid().toString()) {
-                case "0000000000000000ffffffff", "0000000000000000fffffffe", "0000000000000000fffffffd" -> {
-                }
-                default -> {
-                    Result result = getRoundResult(round);
-                    if (result != null) {
-                        berger += opponent.getStandardizedPoints() * getRoundPoints(round);
-                    }
-
-                }
-            }
-        }
-
-        return berger;
-    }
-
-    public float getBucholzMedian() {
-        if (getOpponents().size() == 0) {
-            return 0;
-        }
-        float bucholz = getBucholz();
-        float minPoints = Float.MAX_VALUE;
-        float maxPoints = Float.MIN_VALUE;
-        for (Player player : getOpponents()) {
-            minPoints = Float.min(player.getStandardizedPoints(), minPoints);
-            maxPoints = Float.max(player.getStandardizedPoints(), minPoints);
-        }
-
-        if (minPoints == Float.MAX_VALUE || maxPoints == Float.MIN_VALUE) {
-            return bucholz;
-        } else {
-            return bucholz - minPoints - maxPoints;
-        }
-    }
-
-    public float getBucholzCut1() {
-        float bucholz = 0;
-        float minPoints = Float.MAX_VALUE;
-        for (int i = 0; i < getRounds().size(); i++) {
-            Game round = getRounds().get(i);
-            Player opponent = getOpponent(round);
-            Float addition;
-            if (round.isForfeit()) {
-                if (i == getRounds().size() - 1 && (
-                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
-                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
-                                opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
-                )) {
-                    addition = (float) (getStandardizedPointsInRound(i) + 0.5);
-                } else {
-                    addition = (float) (getPointInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
-                }
-            }  else {
-                addition = opponent.getStandardizedPoints();
-            }
-            if (!addition.isNaN()) {
-                minPoints = Float.min(minPoints, addition);
-                bucholz += addition;
-            }
-        }
-        if (minPoints == Float.MAX_VALUE) {
-            return 0;
-        } else {
-            return bucholz - minPoints;
-        }
-    }
-
-    public float getBucholz() {
-        float bucholz = 0;
-        for (int i = 0; i < getRounds().size(); i++) {
-            Game round = getRounds().get(i);
-            Player opponent = getOpponent(round);
-            Float addition;
-            if (round.isForfeit()) {
-                if (i == getRounds().size() - 1 && (
-                        opponent.getPlayerid().toString().equals("0000000000000000ffffffff") ||
-                                opponent.getPlayerid().toString().equals("0000000000000000fffffffe") ||
-                                opponent.getPlayerid().toString().equals("0000000000000000fffffffd")
-                )) {
-                    addition = (float) (getStandardizedPointsInRound(i) + 0.5);
-                } else {
-                    addition = (float) (getPointInRound(i) + 1 - getPointInGame(round) + (0.5 * (getRounds().size() - i - 1)));
-                }
-            } else {
-                addition = opponent.getStandardizedPoints();
-            }
-            if (!addition.isNaN()) {
-                bucholz += addition;
-            }
-        }
-        return bucholz;
-    }
-
-    public int getWinsWithBlackNumber() {
-        int wons = 0;
-        for (Game round : getRounds()) {
-            if (isRoundWon(round) && getRoundColor(round) == Color.BLACK) {
-                wons++;
-            }
-        }
-        return wons;
+    public int getAverageRatingPZSzach() {
+        return PZSzachCalculation.getAverageRating(this);
     }
 
     public int getWinsNumber() {
@@ -530,19 +384,6 @@ public class Player implements Serializable, Cloneable {
         return draws;
     }
 
-    public int getGamesPlayedWithBlack() {
-        int blacks = 0;
-        for (Game round : getRounds()) {
-            if (
-                    round.getBlack().getPlayerid() == this.getPlayerid()
-                            && !round.isForfeit()
-            ) {
-                blacks++;
-            }
-        }
-        return blacks;
-    }
-
     public Float getFidePoints() {
         float points = 0;
         for (Game game : getFideRounds()) {
@@ -574,40 +415,6 @@ public class Player implements Serializable, Cloneable {
             if (!Float.isNaN(roundPoints)) {
                 points += roundPoints;
             }
-        }
-        return points;
-    }
-
-    public Float getStandardizedPoints() {
-        float points = 0f;
-        for (Game round : getRounds()) {
-            if (round.isForfeit()) {
-                if (round.getWhiteResult() != null && round.getBlackResult() != null) {
-                    points += 0.5;
-                }
-            } else {
-                float roundPoints = getRoundPoints(round);
-                if (!Float.isNaN(roundPoints)) {
-                    points += roundPoints;
-                }
-            }
-        }
-        return points;
-    }
-
-    public Float getStandardizedPointsInRound(int n) {
-        float points = 0f;
-        for (int i = 0; i < getRounds().size() && i < n; i++) {
-            Game round = getRounds().get(i);
-            if (round.isForfeit()) {
-                points += 0.5;
-            } else {
-                float roundPoints = getRoundPoints(round);
-                if (!Float.isNaN(roundPoints)) {
-                    points += roundPoints;
-                }
-            }
-
         }
         return points;
     }
@@ -659,30 +466,20 @@ public class Player implements Serializable, Cloneable {
         for (int i = 0; i < n && i < getRounds().size(); i++) {
             Game round = getRounds().get(i);
             Color color = getRoundColor(round);
-            switch (color){
+            switch (color) {
                 case WHITE -> {
-                    if (!Float.isNaN(round.getPointsForWhite())){
+                    if (!Float.isNaN(round.getPointsForWhite())) {
                         points += round.getPointsForWhite();
                     }
                 }
                 case BLACK -> {
-                    if (!Float.isNaN(round.getPointsForBlack())){
+                    if (!Float.isNaN(round.getPointsForBlack())) {
                         points += round.getPointsForBlack();
                     }
                 }
             }
         }
         return points;
-    }
-
-    public float getRoundPoints(int n) {
-        Game round = getRound(n);
-        Color color = getRoundColor(n);
-        if (color == Color.WHITE) {
-            return round.getPointsForWhite();
-        } else {
-            return round.getPointsForBlack();
-        }
     }
 
     public float getRoundPoints(Game round) {
@@ -704,17 +501,6 @@ public class Player implements Serializable, Cloneable {
         }
     }
 
-    public ArrayList<Player> getOpponents() {
-        ArrayList<Player> opponents = new ArrayList<>();
-        for (Game round : getRounds()) {
-            if (!round.isForfeit()) {
-                opponents.add(getOpponent(round));
-            }
-        }
-
-        return opponents;
-    }
-
     public ArrayList<Player> getFideOpponents() {
         ArrayList<Player> opponents = new ArrayList<>();
         for (Game round : getRounds()) {
@@ -725,18 +511,6 @@ public class Player implements Serializable, Cloneable {
         }
 
         return opponents;
-    }
-
-    public boolean isRoundWon(Game round) {
-        Color color = getRoundColor(round);
-        if (color == Color.WHITE && round.getPointsForWhite() == 1.0) {
-            return true;
-        } else return color == Color.BLACK && round.getPointsForBlack() == 1.0;
-    }
-
-    public boolean hasRoundBeenPlayed(int n) {
-        Game round = getRound(n);
-        return !round.isForfeit();
     }
 
     public Result getRoundResult(Game round) {
@@ -767,30 +541,6 @@ public class Player implements Serializable, Cloneable {
             }
         }
         return null;
-    }
-
-    public Game getLastRound() {
-        return getRound(getRounds().size() - 1);
-    }
-
-    public void updateRoundResults(Integer n, Result whiteResult, Result blackResult, Boolean forfeit) {
-        Game round = getRound(n);
-        round.setWhiteResult(whiteResult);
-        round.setBlackResult(blackResult);
-        round.setForfeit(forfeit);
-    }
-
-    public void updateLastRoundResult(Result whiteResult, Result blackResult, Boolean forfeit) {
-        updateRoundResults(getRounds().size() - 1, whiteResult, blackResult, forfeit);
-    }
-
-    public Color getRoundColor(int n) {
-        Game round = getRound(n);
-        if (round.getWhite().getPlayerid() == this.getPlayerid()) {
-            return Color.WHITE;
-        } else {
-            return Color.BLACK;
-        }
     }
 
     public Color getRoundColor(Game round) {
@@ -1058,10 +808,6 @@ public class Player implements Serializable, Cloneable {
         this.rounds = rounds;
     }
 
-    public void seteMail(String eMail) {
-        this.eMail = eMail;
-    }
-
     public ObjectId getPlayerid() {
         return playerid;
     }
@@ -1080,45 +826,8 @@ public class Player implements Serializable, Cloneable {
         setPlayerid(uuid);
     }
 
-    public void setPlayerid(String hexString) {
-        ObjectId uuid = new ObjectId(hexString);
-        setPlayerid(uuid);
-    }
-
     public int getRatingPerformancePZSzach() {
         return PZSzachCalculation.getRatingPerformance(this);
-    }
-
-    public int getRatingDelta() {
-        return PZSzachCalculation.getRatingDelta(this);
-    }
-
-    public int getAverageRatingPZSzach() {
-        return PZSzachCalculation.getAverageRating(this);
-    }
-
-    public float getAverageFideRatingCut1() {
-        float minRating = Float.MAX_VALUE;
-        int minIndex = -1;
-        ArrayList<Player> opponents = getFideOpponents();
-        for (int i = 0; i < opponents.size(); i++) {
-            Player player = opponents.get(i);
-            if (player.getFideRating() > FIDE_FLOOR) {
-                minRating = Float.min(minRating, player.getFideRating());
-                minIndex = i;
-            }
-
-        }
-        if (minRating == Float.MAX_VALUE) {
-            return 0;
-        } else {
-            opponents.remove(minIndex);
-            return FIDECalculation.getAverageRating(opponents);
-        }
-    }
-
-    public float getAverageFideRating() {
-        return FIDECalculation.getAverageRating(getFideOpponents());
     }
 
     public int getYearOfBirth() {
@@ -1167,6 +876,14 @@ public class Player implements Serializable, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    public void generateRandomValue() {
+        this.randomValue = new Random().nextInt();
+    }
+
+    public int getRandomValue() {
+        return randomValue;
     }
 
     public enum Sex {

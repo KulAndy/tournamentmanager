@@ -20,7 +20,6 @@ public class JavafoWrapper implements Engine {
         outputFile.delete();
         reportFile.delete();
         reportFile.createNewFile();
-        reportFile.createNewFile();
         outputFile.createNewFile();
         saveTrfReport(trfReport(tournament), reportFile);
         List<String> command = new ArrayList<>();

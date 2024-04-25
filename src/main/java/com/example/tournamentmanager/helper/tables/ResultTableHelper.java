@@ -1,12 +1,10 @@
 package com.example.tournamentmanager.helper.tables;
 
+import com.example.tournamentmanager.comparator.ResultsComparator;
 import com.example.tournamentmanager.model.*;
-import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
@@ -66,7 +64,7 @@ public class ResultTableHelper {
                 SortedList<Player> sortedList;
                 if (newValue && predicate != null) {
                     FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), predicate);
-                    sortedList = new SortedList<>(filteredList, getTournament().getResultsComparator());
+                    sortedList = new SortedList<>(filteredList, new ResultsComparator());
                     setSortedPlayers(sortedList);
                 } else {
                     setUnfilteredList();
@@ -80,7 +78,7 @@ public class ResultTableHelper {
                 SortedList<Player> sortedList;
                 if (getResultFiltered().isSelected()) {
                     FilteredList<Player> filteredList = new FilteredList<>(getTournament().getPlayersObs(), newValue);
-                    sortedList = new SortedList<>(filteredList, getTournament().getResultsComparator());
+                    sortedList = new SortedList<>(filteredList, new ResultsComparator());
                     setSortedPlayers(sortedList);
                 } else {
                     setUnfilteredList();
@@ -127,26 +125,22 @@ public class ResultTableHelper {
         getResultElo().setCellValueFactory(new PropertyValueFactory<>("fideRating"));
         getResultLocal().setCellValueFactory(new PropertyValueFactory<>("localRating"));
         getResultFed().setCellValueFactory(new PropertyValueFactory<>("federation"));
+        getResultTb1().setCellValueFactory(cellData -> cellData.getValue().tb1Property());
+        getResultTb2().setCellValueFactory(cellData -> cellData.getValue().tb2Property());
+        getResultTb3().setCellValueFactory(cellData -> cellData.getValue().tb3Property());
+        getResultTb4().setCellValueFactory(cellData -> cellData.getValue().tb4Property());
+        getResultTb5().setCellValueFactory(cellData -> cellData.getValue().tb5Property());
 
         setUnfilteredList();
-
         getResultsTable().setItems(getSortedPlayers());
-
         getTournament().getPlayersObs().addListener((ListChangeListener<? super Player>) change -> setUnfilteredList());
-
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> setUnfilteredList());
 
     }
 
     public void setUnfilteredList() {
-        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs(), getTournament().getResultsComparator());
+        SortedList<Player> sortedList = new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator());
         setSortedPlayers(sortedList);
-    }
-
-    public void refreshList() {
-        getSortedPlayers().setComparator(getTournament().getResultsComparator());
-        ObservableList<Player> playersObs = FXCollections.observableArrayList(getSortedPlayers());
-        setSortedPlayers(new SortedList<>(playersObs, getTournament().getResultsComparator()));
     }
 
     public SortedList<Player> getSortedPlayers() {
@@ -155,27 +149,7 @@ public class ResultTableHelper {
 
     public void setSortedPlayers(SortedList<Player> sortedPlayers) {
         this.sortedPlayers = sortedPlayers;
-        getResultsTable().setItems(sortedPlayers);
-        getResultTb1().setCellValueFactory(cellData -> {
-            Player player = cellData.getValue();
-            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria1()).floatValue());
-        });
-        getResultTb2().setCellValueFactory(cellData -> {
-            Player player = cellData.getValue();
-            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria2()).floatValue());
-        });
-        getResultTb3().setCellValueFactory(cellData -> {
-            Player player = cellData.getValue();
-            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria3()).floatValue());
-        });
-        getResultTb4().setCellValueFactory(cellData -> {
-            Player player = cellData.getValue();
-            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria4()).floatValue());
-        });
-        getResultTb5().setCellValueFactory(cellData -> {
-            Player player = cellData.getValue();
-            return new SimpleFloatProperty(player.getTiebreak(getTournament().getResultsComparator().getCriteria5()).floatValue());
-        });
+        getResultsTable().setItems(this.sortedPlayers);
         getResultsTable().refresh();
     }
 

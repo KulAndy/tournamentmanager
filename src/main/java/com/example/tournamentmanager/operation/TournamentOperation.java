@@ -9,6 +9,7 @@ import com.example.tournamentmanager.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.bson.types.ObjectId;
@@ -108,13 +109,21 @@ public class TournamentOperation {
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria3().setValue(tournament.getPlayers().getComparator().getCriteria3());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria4().setValue(tournament.getPlayers().getComparator().getCriteria4());
             controller.getPlayersHelper().getPlayersSortHelper().getCriteria5().setValue(tournament.getPlayers().getComparator().getCriteria5());
-            if (tournament.getRounds().size() > 0) {
+            if (!tournament.getRounds().isEmpty()) {
                 controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(tournament.getRounds().size());
             } else {
                 controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(null);
             }
             controller.getHomeTabHelper().getTiebreakHelper().getTourFIDEMode().setSelected(tournament.getTiebreak().isFIDEMode());
         }
+
+        Platform.runLater(() -> {
+            try {
+                TieBreakServerWrapper.generateTiebreak(controller.getTournament(), controller.getTournament().calculateEndedRound());
+            } catch (IOException | InterruptedException ignored) {
+            }
+        });
+
     }
 
     public static void saveAs(MainController controller) {

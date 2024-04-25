@@ -1,5 +1,6 @@
 package com.example.tournamentmanager;
 
+import com.example.tournamentmanager.comparator.ResultsComparator;
 import com.example.tournamentmanager.comparator.StartListComparator;
 import com.example.tournamentmanager.helper.*;
 import com.example.tournamentmanager.model.*;
@@ -16,6 +17,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -619,6 +621,17 @@ public class MainController implements Initializable {
     @FXML
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
+        tournament.endedRoundProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            if (!Objects.equals(oldValue, newValue)) {
+                Platform.runLater(() -> {
+                    try {
+                        TieBreakServerWrapper.generateTiebreak(getTournament(), newValue.intValue());
+                    } catch (IOException | InterruptedException ignored) {
+                    }
+                    getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+                });
+            }
+        });
         setHomeTabHelper(new HomeTabHelper(
                 tournament, tourName, tourStartDate, tourEndDate, tourPlace, tourGameTime,
                 tourIncrement, tourControlMove, tourControlAddition, tourType, tourRtPZSzach, tourRtFIDE,
@@ -630,8 +643,8 @@ public class MainController implements Initializable {
                 minInitGames, ratingFloor, PZSzach43Cb, PZSzach44Cb, PZSzach45Cb, PZSzach46Cb, PZSzach47Cb, maxTitle, twoOtherFeds, minTitleGames,
                 scheduleTable, scheduleName, scheduleDate
         ));
-        tourRtPZSzach.selectedProperty().addListener(e->rtgPolTable.refresh());
-        tourRtFIDE.selectedProperty().addListener(e->rtgFideTable.refresh());
+        tourRtPZSzach.selectedProperty().addListener(e -> rtgPolTable.refresh());
+        tourRtFIDE.selectedProperty().addListener(e -> rtgFideTable.refresh());
 
         setPlayersHelper(new PlayersHelper(
                 tournament,
@@ -744,9 +757,9 @@ public class MainController implements Initializable {
         fideReg.setOnAction(e -> ExcelOperation.createApplication(tournament, getProgramName()));
         trfRaport.setOnAction(e -> FIDEOperation.selectTrfReport(getTournament()));
         about.setOnAction(e -> {
-            Task<Void> openPdfTask = new Task<Void>() {
+            Task<Void> openPdfTask = new Task<>() {
                 @Override
-                protected Void call() throws Exception {
+                protected Void call() {
                     try {
                         Desktop.getDesktop().open(new File(Objects.requireNonNull(getClass().getResource("man.pdf")).toURI()));
                     } catch (IOException | URISyntaxException ex) {
@@ -804,7 +817,7 @@ public class MainController implements Initializable {
                             }
 
 
-                            if (lines.size() >= 1) {
+                            if (!lines.isEmpty()) {
                                 String token = lines.get(0);
 
                                 httpPost.setHeader("token", token);
@@ -855,10 +868,8 @@ public class MainController implements Initializable {
                                 }
                             } catch (SSLPeerUnverifiedException ex) {
                                 DialogHelper.error("Couldn't connect - insecure connection");
-                                ex.printStackTrace();
                             } catch (IOException ex) {
                                 DialogHelper.error("Connection error");
-                                ex.printStackTrace();
                             }
                         } else {
                             DialogHelper.error("File not found");
@@ -997,7 +1008,7 @@ public class MainController implements Initializable {
         });
 
         tourTB1.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
-            getTournament().getResultsComparator().setCriteria1(newValue);
+            getTournament().getTiebreak().setTiebreak1(newValue);
             String tiebreak;
             if (newValue != null) {
                 tiebreak = newValue.prettyText();
@@ -1007,15 +1018,21 @@ public class MainController implements Initializable {
             playerCardTB1.setText(tiebreak);
             Player player = playerCardSelect.getValue();
             if (player != null && newValue != null) {
-                playerCardTB1Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+                playerCardTB1Value.setText(playerCardSelect.getValue().getTb1().toString());
             } else {
                 playerCardTB1Value.setText("");
             }
             resultTb1.setText(tiebreak);
-            tablesHelper.getResultTableHelper().refreshList();
+            Platform.runLater(() -> {
+                try {
+                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
+                } catch (IOException | InterruptedException ignored) {
+                }
+                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+            });
         });
         tourTB2.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
-            getTournament().getResultsComparator().setCriteria2(newValue);
+            getTournament().getTiebreak().setTiebreak2(newValue);
             String tiebreak;
             if (newValue != null) {
                 tiebreak = newValue.prettyText();
@@ -1025,15 +1042,21 @@ public class MainController implements Initializable {
             playerCardTB2.setText(tiebreak);
             Player player = playerCardSelect.getValue();
             if (player != null && newValue != null) {
-                playerCardTB2Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+                playerCardTB2Value.setText(playerCardSelect.getValue().getTb2().toString());
             } else {
                 playerCardTB2Value.setText("");
             }
             resultTb2.setText(tiebreak);
-            tablesHelper.getResultTableHelper().refreshList();
+            Platform.runLater(() -> {
+                try {
+                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
+                } catch (IOException | InterruptedException ignored) {
+                }
+                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+            });
         });
         tourTB3.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
-            getTournament().getResultsComparator().setCriteria3(newValue);
+            getTournament().getTiebreak().setTiebreak3(newValue);
             String tiebreak;
             if (newValue != null) {
                 tiebreak = newValue.prettyText();
@@ -1043,15 +1066,21 @@ public class MainController implements Initializable {
             playerCardTB3.setText(tiebreak);
             Player player = playerCardSelect.getValue();
             if (player != null && newValue != null) {
-                playerCardTB3Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+                playerCardTB3Value.setText(playerCardSelect.getValue().getTb3().toString());
             } else {
                 playerCardTB3Value.setText("");
             }
             resultTb3.setText(tiebreak);
-            tablesHelper.getResultTableHelper().refreshList();
+            Platform.runLater(() -> {
+                try {
+                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
+                } catch (IOException | InterruptedException ignored) {
+                }
+                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+            });
         });
         tourTB4.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
-            getTournament().getResultsComparator().setCriteria4(newValue);
+            getTournament().getTiebreak().setTiebreak4(newValue);
             String tiebreak;
             if (newValue != null) {
                 tiebreak = newValue.prettyText();
@@ -1061,15 +1090,21 @@ public class MainController implements Initializable {
             playerCardTB4.setText(tiebreak);
             Player player = playerCardSelect.getValue();
             if (player != null && newValue != null) {
-                playerCardTB4Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+                playerCardTB4Value.setText(playerCardSelect.getValue().getTb4().toString());
             } else {
                 playerCardTB4Value.setText("");
             }
             resultTb4.setText(tiebreak);
-            tablesHelper.getResultTableHelper().refreshList();
+            Platform.runLater(() -> {
+                try {
+                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
+                } catch (IOException | InterruptedException ignored) {
+                }
+                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+            });
         });
         tourTB5.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
-            getTournament().getResultsComparator().setCriteria5(newValue);
+            getTournament().getTiebreak().setTiebreak5(newValue);
             String tiebreak;
             if (newValue != null) {
                 tiebreak = newValue.prettyText();
@@ -1079,12 +1114,18 @@ public class MainController implements Initializable {
             playerCardTB5.setText(tiebreak);
             Player player = playerCardSelect.getValue();
             if (player != null && newValue != null) {
-                playerCardTB5Value.setText(playerCardSelect.getValue().getTiebreak(newValue).toString());
+                playerCardTB5Value.setText(playerCardSelect.getValue().getTb5().toString());
             } else {
                 playerCardTB5Value.setText("");
             }
             resultTb5.setText(tiebreak);
-            tablesHelper.getResultTableHelper().refreshList();
+            Platform.runLater(() -> {
+                try {
+                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
+                } catch (IOException | InterruptedException ignored) {
+                }
+                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+            });
         });
     }
 

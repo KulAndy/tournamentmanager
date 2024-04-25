@@ -3,6 +3,7 @@ package com.example.tournamentmanager.helper.round;
 import com.example.tournamentmanager.comparator.PairingComparator;
 import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -194,11 +195,11 @@ public class ResultEnterHelper {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
-                    content.setPadding(new Insets(0, 0, 0, 25)); // Apply left margin
+                    content.setPadding(new Insets(0, 0, 0, 25));
                     label.setText(null);
                 } else {
                     label.setText(item);
-                    content.setPadding(new Insets(0, 0, 0, 10)); // Apply left margin
+                    content.setPadding(new Insets(0, 0, 0, 10));
                 }
             }
         });
@@ -246,6 +247,8 @@ public class ResultEnterHelper {
                             game.setWhiteResult(whiteResult);
                             game.setBlackResult(blackResult);
                             game.setForfeit(forfeit);
+
+                            Platform.runLater(tournament::calculateEndedRound);
                         }
                     });
                     setStyle("-fx-alignment: center;");

@@ -1,0 +1,3 @@
+[submodule "tiebreak_server"]
+	path = tiebreak_server
+	url = https://github.com/ottomilvang/TieBreakServer.git

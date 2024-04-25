@@ -491,23 +491,23 @@ public class ShortcutsHelper {
                     headerFED.setHorizontalAlignment(Element.ALIGN_CENTER);
                     headerFED.setVerticalAlignment(Element.ALIGN_CENTER);
                     PdfPHeaderCell headerTb1 = new PdfPHeaderCell();
-                    headerTb1.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria1().prettyText()));
+                    headerTb1.addElement(new Phrase(controller.getTournament().getTiebreak().getTiebreak1().prettyText()));
                     headerTb1.setHorizontalAlignment(Element.ALIGN_CENTER);
                     headerTb1.setVerticalAlignment(Element.ALIGN_CENTER);
                     PdfPHeaderCell headerTb2 = new PdfPHeaderCell();
-                    headerTb2.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria2().prettyText()));
+                    headerTb2.addElement(new Phrase(controller.getTournament().getTiebreak().getTiebreak2().prettyText()));
                     headerTb2.setHorizontalAlignment(Element.ALIGN_CENTER);
                     headerTb2.setVerticalAlignment(Element.ALIGN_CENTER);
                     PdfPHeaderCell headerTb3 = new PdfPHeaderCell();
-                    headerTb3.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria3().prettyText()));
+                    headerTb3.addElement(new Phrase(controller.getTournament().getTiebreak().getTiebreak3().prettyText()));
                     headerTb3.setHorizontalAlignment(Element.ALIGN_CENTER);
                     headerTb3.setVerticalAlignment(Element.ALIGN_CENTER);
                     PdfPHeaderCell headerTb4 = new PdfPHeaderCell();
-                    headerTb4.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria4().prettyText()));
+                    headerTb4.addElement(new Phrase(controller.getTournament().getTiebreak().getTiebreak4().prettyText()));
                     headerTb4.setHorizontalAlignment(Element.ALIGN_CENTER);
                     headerTb4.setVerticalAlignment(Element.ALIGN_CENTER);
                     PdfPHeaderCell headerTb5 = new PdfPHeaderCell();
-                    headerTb5.addElement(new Phrase(controller.getTournament().getResultsComparator().getCriteria5().prettyText()));
+                    headerTb5.addElement(new Phrase(controller.getTournament().getTiebreak().getTiebreak5().prettyText()));
                     headerTb5.setHorizontalAlignment(Element.ALIGN_CENTER);
                     headerTb5.setVerticalAlignment(Element.ALIGN_CENTER);
                     pdfPTable.addCell(headerPlace);
@@ -530,11 +530,11 @@ public class ShortcutsHelper {
                         pdfPTable.addCell(String.valueOf(player.getFideRating()));
                         pdfPTable.addCell(String.valueOf(player.getLocalRating()));
                         pdfPTable.addCell(String.valueOf(player.getFederation()));
-                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria1()).toString());
-                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria2()).toString());
-                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria3()).toString());
-                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria4()).toString());
-                        pdfPTable.addCell(player.getTiebreak(controller.getTournament().getResultsComparator().getCriteria5()).toString());
+                        pdfPTable.addCell(String.valueOf(player.getTb1()));
+                        pdfPTable.addCell(String.valueOf(player.getTb2()));
+                        pdfPTable.addCell(String.valueOf(player.getTb3()));
+                        pdfPTable.addCell(String.valueOf(player.getTb4()));
+                        pdfPTable.addCell(String.valueOf(player.getTb4()));
                     }
                 }
                 case START_LIST -> {
