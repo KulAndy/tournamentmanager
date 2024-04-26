@@ -68,7 +68,6 @@ public class CommitViewer {
         fetchAndDisplayTask.setOnFailed(event -> {
             Throwable exception = fetchAndDisplayTask.getException();
             error("Failed to fetch updates into the temporary repository: " + exception.getMessage());
-            exception.printStackTrace();
         });
 
         return fetchAndDisplayTask;
@@ -123,7 +122,6 @@ public class CommitViewer {
             }
         } catch (IOException | GitAPIException e) {
             error("Couldn't display commits");
-            e.printStackTrace();
         }
     }
 
@@ -167,10 +165,12 @@ public class CommitViewer {
             git.fetch().call();
             git.pull().call();
 
+            git.submoduleInit().call();
+            git.submoduleUpdate().call();
+
             info("Update successful!");
         } catch (IOException | GitAPIException e) {
             error("Update failed");
-            e.printStackTrace();
         }
     }
 
