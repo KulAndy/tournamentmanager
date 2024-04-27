@@ -2,6 +2,7 @@ package com.example.tournamentmanager.helper;
 
 import com.example.tournamentmanager.model.Tournament;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -143,14 +144,14 @@ public class GeneralHelper {
     }
 
     public static <T extends Enum<T>> void setupComboBox(ComboBox<T> cb, T[] enumValues) {
-        cb.getItems().addAll(enumValues);
+        cb.setItems(FXCollections.observableArrayList(enumValues));
         if (enumValues.length > 0) {
             cb.setValue(enumValues[0]);
         }
     }
 
     public static <T> void setupComboBox(ComboBox<T> cb, T[] enumValues) {
-        cb.getItems().addAll(enumValues);
+        cb.setItems(FXCollections.observableArrayList(enumValues));
         if (enumValues.length > 0) {
             cb.setValue(enumValues[0]);
         }
