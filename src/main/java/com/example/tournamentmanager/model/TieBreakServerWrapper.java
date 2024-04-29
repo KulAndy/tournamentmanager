@@ -36,7 +36,7 @@ public class TieBreakServerWrapper {
         List<String> command = buildCommand(tournament, round, reportFile, outputFile);
 
         executeProcess(command);
-        processCompetitors(outputFile, tournament, round);
+        processCompetitors(outputFile, tournament, Integer.min(round, tournament.getRoundsObs().size()));
         if (outputFile.exists()) {
             outputFile.delete();
         }
@@ -97,12 +97,14 @@ public class TieBreakServerWrapper {
         JsonObject statusObject = rootObject.getAsJsonObject("status");
         JsonArray competitorsArray = statusObject.getAsJsonArray("competitors");
 
+        PlayerList players = tournament.getPlayers();
+        players.sort(players.getComparator());
         for (int i = 0; i < competitorsArray.size(); i++) {
             JsonObject competitor = competitorsArray.get(i).getAsJsonObject();
             List<Float> tiebreaks = new ArrayList<>();
 
             int startno = competitor.get("startno").getAsInt();
-            Player player = tournament.getPlayersObs().get(startno - 1);
+            Player player = players.get(startno - 1);
 
             JsonArray calculationsArray = competitor.getAsJsonArray("calculations");
 

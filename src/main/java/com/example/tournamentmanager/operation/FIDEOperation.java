@@ -502,8 +502,6 @@ public class FIDEOperation {
         fideTitles.add(Title.WFM);
         fideTitles.add(Title.WCM);
 
-        SortedList<Player> sortedList = new SortedList<>(tournament.getPlayersObs(), new ResultsComparator());
-
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
             trf.append("\n001 ")
