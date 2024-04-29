@@ -999,6 +999,13 @@ public class MainController implements Initializable {
                 if (newValue != oldValue && newValue != getFile()) {
                     importJson(tournamentSelect.getValue(), this);
                 }
+                Platform.runLater(() -> {
+                    try {
+                        TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
+                    } catch (IOException | InterruptedException ignored) {
+                    }
+                    getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+                });
             }
         });
 
