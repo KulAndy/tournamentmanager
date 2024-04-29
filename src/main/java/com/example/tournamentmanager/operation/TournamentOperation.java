@@ -171,6 +171,10 @@ public class TournamentOperation {
             }
             importJson(selectedFiles.get(selectedFiles.size() - 1), controller);
             controller.getTournamentSelect().setValue(selectedFiles.get(selectedFiles.size() - 1));
+            try {
+                TieBreakServerWrapper.generateTiebreak(controller.getTournament(), controller.getTournament().getRoundsObs().size());
+            } catch (IOException | InterruptedException ignored) {
+            }
         }
 
     }
