@@ -81,28 +81,7 @@ public class ExcelOperation {
                 addRow(sheet, rowsNum++, "Age limit", "NONE");
                 addRow(sheet, rowsNum++, "All digital clocks", true);
                 addRow(sheet, rowsNum++, "Internet transmission", false);
-                Tournament.Tiebreak.TbMethod tbMethod;
-                if (tournament.getTiebreak().getTiebreak1() == Tournament.Tiebreak.TbMethod.POINTS) {
-                    if (tournament.getTiebreak().getTiebreak2() == Tournament.Tiebreak.TbMethod.POINTS) {
-                        if (tournament.getTiebreak().getTiebreak3() == Tournament.Tiebreak.TbMethod.POINTS) {
-                            if (tournament.getTiebreak().getTiebreak4() == Tournament.Tiebreak.TbMethod.POINTS) {
-                                if (tournament.getTiebreak().getTiebreak5() == Tournament.Tiebreak.TbMethod.POINTS) {
-                                    tbMethod = Tournament.Tiebreak.TbMethod.BUCHOLZ;
-                                } else {
-                                    tbMethod = tournament.getTiebreak().getTiebreak5();
-                                }
-                            } else {
-                                tbMethod = tournament.getTiebreak().getTiebreak4();
-                            }
-                        } else {
-                            tbMethod = tournament.getTiebreak().getTiebreak3();
-                        }
-                    } else {
-                        tbMethod = tournament.getTiebreak().getTiebreak2();
-                    }
-                } else {
-                    tbMethod = tournament.getTiebreak().getTiebreak1();
-                }
+                Tournament.Tiebreak.TbMethod tbMethod = getTbMethod(tournament);
                 addRow(sheet, rowsNum++, "Tiebreak method", tbMethod.toString());
                 addRow(sheet, rowsNum++, "Software", "OTHER");
                 addRow(sheet, rowsNum++, "", programName);
@@ -122,10 +101,35 @@ public class ExcelOperation {
 
             } catch (IOException e) {
                 System.out.println(e.getMessage());
-                e.printStackTrace();
                 error("Nie można utworzyć dokumentu");
             }
         }
+    }
+
+    private static Tournament.Tiebreak.TbMethod getTbMethod(Tournament tournament) {
+        Tournament.Tiebreak.TbMethod tbMethod;
+        if (tournament.getTiebreak().getTiebreak1() == Tournament.Tiebreak.TbMethod.POINTS) {
+            if (tournament.getTiebreak().getTiebreak2() == Tournament.Tiebreak.TbMethod.POINTS) {
+                if (tournament.getTiebreak().getTiebreak3() == Tournament.Tiebreak.TbMethod.POINTS) {
+                    if (tournament.getTiebreak().getTiebreak4() == Tournament.Tiebreak.TbMethod.POINTS) {
+                        if (tournament.getTiebreak().getTiebreak5() == Tournament.Tiebreak.TbMethod.POINTS) {
+                            tbMethod = Tournament.Tiebreak.TbMethod.BUCHOLZ;
+                        } else {
+                            tbMethod = tournament.getTiebreak().getTiebreak5();
+                        }
+                    } else {
+                        tbMethod = tournament.getTiebreak().getTiebreak4();
+                    }
+                } else {
+                    tbMethod = tournament.getTiebreak().getTiebreak3();
+                }
+            } else {
+                tbMethod = tournament.getTiebreak().getTiebreak2();
+            }
+        } else {
+            tbMethod = tournament.getTiebreak().getTiebreak1();
+        }
+        return tbMethod;
     }
 
     public static void addRow(Sheet sheet, int rowNo, String key, Tournament.Type value) {

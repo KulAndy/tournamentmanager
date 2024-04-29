@@ -590,6 +590,7 @@ public class Player implements Serializable, Cloneable {
         if (title != null) {
             this.title = title;
         }
+        setLocalRating(getPZSzachRating());
     }
 
     public Integer getLocalRating() {

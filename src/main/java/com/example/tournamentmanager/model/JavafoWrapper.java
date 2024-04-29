@@ -36,7 +36,7 @@ public class JavafoWrapper implements Engine {
         try (BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
             String line;
             //ignore numer of pairings
-            line = reader.readLine();
+            reader.readLine();
             ArrayList<Game> round = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 String[] ids = line.trim().split(" ");
@@ -76,8 +76,7 @@ public class JavafoWrapper implements Engine {
             }
             tournament.getRoundsObs().add(round);
             return round.size();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
         try {
             outputFile.delete();

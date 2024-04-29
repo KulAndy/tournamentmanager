@@ -142,7 +142,7 @@ public class FIDECalculation {
     }
 
     public static float getRatingPerformance(ArrayList<Player> players, float points) {
-        if (players.size() == 0) {
+        if (players.isEmpty()) {
             return 0;
         } else {
             float averageRating = getAverageRating(players);
@@ -152,7 +152,7 @@ public class FIDECalculation {
     }
 
     public static float getInitRating(ArrayList<Player> players, float points) {
-        if (players.size() == 0) {
+        if (players.isEmpty()) {
             return 0;
         }
         float averageRating = getAverageRating(players);

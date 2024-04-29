@@ -425,7 +425,6 @@ public class ResultEnterHelper {
                     }
                 } catch (IOException | InterruptedException ex) {
                     DialogHelper.error("An error occurred during pairing");
-                    ex.printStackTrace();
                     System.out.println(ex.getMessage());
                 }
             } else {

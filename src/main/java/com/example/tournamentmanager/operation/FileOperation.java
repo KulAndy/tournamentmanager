@@ -50,7 +50,7 @@ public class FileOperation {
     }
 
     public static String[] searchProvince(Federation countryCode) {
-        Connection connection = null;
+        Connection connection;
         try {
             Class.forName("org.sqlite.JDBC");
             String url = "jdbc:sqlite:" + FileOperation.class.getResource("provinces.db");
@@ -166,7 +166,6 @@ public class FileOperation {
             createTablePol(connection);
             insertDataFromCsv(connection, csvPath);
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println(e.getMessage());
             rollbackTransaction(connection);
             throw new RuntimeException();
@@ -312,8 +311,7 @@ public class FileOperation {
         if (connection != null) {
             try {
                 connection.rollback();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ignored) {
             }
         }
     }
@@ -322,8 +320,7 @@ public class FileOperation {
         if (connection != null) {
             try {
                 connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ignored) {
             }
         }
     }
@@ -370,11 +367,9 @@ public class FileOperation {
                 }
             } catch (IOException e) {
                 DialogHelper.error("An error occurred while downloading");
-                e.printStackTrace();
             }
         } catch (IOException e) {
             DialogHelper.error("An error occurred");
-            e.printStackTrace();
             return;
         }
 
@@ -383,7 +378,6 @@ public class FileOperation {
             DialogHelper.info("Pl list downloaded successfully");
         } catch (RuntimeException e) {
             DialogHelper.error("An error occurred during conversion to SQLite");
-            e.printStackTrace();
         }
     }
 
@@ -395,60 +389,23 @@ public class FileOperation {
             String asciiChar = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
             switch (asciiChar) {
-                case "ą":
-                    sb.append("a");
-                    break;
-                case "ć":
-                    sb.append("c");
-                    break;
-                case "ę":
-                    sb.append("e");
-                    break;
-                case "ł":
-                    sb.append("l");
-                    break;
-                case "ń":
-                    sb.append("n");
-                    break;
-                case "ó":
-                    sb.append("o");
-                    break;
-                case "ś":
-                    sb.append("s");
-                    break;
-                case "ź":
-                    sb.append("z");
-                    break;
-                case "ż":
-                    sb.append("z");
-                    break;
-                case "Ą":
-                    sb.append("A");
-                    break;
-                case "Ć":
-                    sb.append("C");
-                    break;
-                case "Ę":
-                    sb.append("E");
-                    break;
-                case "Ł":
-                    sb.append("L");
-                    break;
-                case "Ń":
-                    sb.append("N");
-                    break;
-                case "Ó":
-                    sb.append("O");
-                    break;
-                case "Ś":
-                    sb.append("S");
-                    break;
-                case "Ź", "Ż":
-                    sb.append("Z");
-                    break;
-                default:
-                    sb.append(asciiChar);
-                    break;
+                case "ą" -> sb.append("a");
+                case "ć" -> sb.append("c");
+                case "ę" -> sb.append("e");
+                case "ł" -> sb.append("l");
+                case "ń" -> sb.append("n");
+                case "ó" -> sb.append("o");
+                case "ś" -> sb.append("s");
+                case "ź", "ż" -> sb.append("z");
+                case "Ą" -> sb.append("A");
+                case "Ć" -> sb.append("C");
+                case "Ę" -> sb.append("E");
+                case "Ł" -> sb.append("L");
+                case "Ń" -> sb.append("N");
+                case "Ó" -> sb.append("O");
+                case "Ś" -> sb.append("S");
+                case "Ź", "Ż" -> sb.append("Z");
+                default -> sb.append(asciiChar);
             }
         }
 
@@ -510,8 +467,7 @@ public class FileOperation {
 
             zip(tempDirPath, zipFile);
             deleteDirectory(new File(tempDirPath));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 
@@ -555,8 +511,7 @@ public class FileOperation {
                             zos.putNextEntry(zipEntry);
                             Files.copy(path, zos);
                             zos.closeEntry();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException ignored) {
                         }
                     });
         }

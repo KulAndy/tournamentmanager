@@ -68,7 +68,6 @@ public class MainController implements Initializable {
     private Tournament tournament;
     private File file;
     private boolean saving = false;
-    private FileOperation fileOperation;
     private ShortcutsHelper shortcutsHelper;
     @FXML
     private Tab playersTab;
@@ -726,9 +725,8 @@ public class MainController implements Initializable {
     public void init(Scene scene, String programName, String programExtension) {
         setProgramName(programName);
         setProgramExtension(programExtension);
-        setFileOperation(new FileOperation());
         setupEvents();
-        setShortcutsHelper(new ShortcutsHelper(scene, getFileOperation(), roundsHelper, this));
+        setShortcutsHelper(new ShortcutsHelper(scene, roundsHelper, this));
 
     }
 
@@ -888,7 +886,6 @@ public class MainController implements Initializable {
                                     TournamentOperation.exportPgn(getTournament());
                                     DialogHelper.info("Exported games to pgn successfully");
                                 } catch (Exception ex) {
-                                    ex.printStackTrace();
                                     System.out.println(ex.getMessage());
                                     DialogHelper.error("Error during exporting rounds");
                                 }
@@ -901,7 +898,6 @@ public class MainController implements Initializable {
                                         TournamentOperation.exportRoundPgn(getTournament().getRound(currentRound - 1), getTournament());
                                         DialogHelper.info("Export round %d successfully".formatted(currentRound));
                                     } catch (IOException ex) {
-                                        ex.printStackTrace();
                                         System.out.println(ex.getMessage());
                                         DialogHelper.error("Error during export round %d".formatted(currentRound));
                                     }
@@ -983,7 +979,6 @@ public class MainController implements Initializable {
                     DialogHelper.info("Imported successfully");
                 } catch (Exception ex) {
                     DialogHelper.error("An error eccured");
-                    ex.printStackTrace();
                     System.out.println(ex.getMessage());
                 }
             } else {
@@ -1133,10 +1128,6 @@ public class MainController implements Initializable {
         return files;
     }
 
-    public ShortcutsHelper getShortcutsHelper() {
-        return shortcutsHelper;
-    }
-
     public void setShortcutsHelper(ShortcutsHelper shortcutsHelper) {
         this.shortcutsHelper = shortcutsHelper;
     }
@@ -1171,14 +1162,6 @@ public class MainController implements Initializable {
         }
     }
 
-    public FileOperation getFileOperation() {
-        return fileOperation;
-    }
-
-    public void setFileOperation(FileOperation fileOperation) {
-        this.fileOperation = fileOperation;
-    }
-
     public ComboBox<File> getTournamentSelect() {
         return tournamentSelect;
     }
@@ -1189,10 +1172,6 @@ public class MainController implements Initializable {
 
     public MenuItem getOpenMenu() {
         return openMenu;
-    }
-
-    public MenuItem getCloseMenu() {
-        return closeMenu;
     }
 
     public MenuItem getSaveMenu() {
@@ -1295,136 +1274,68 @@ public class MainController implements Initializable {
         return tourTB1;
     }
 
-    public void setTourTB1(ComboBox<Tournament.Tiebreak.TbMethod> tourTB1) {
-        this.tourTB1 = tourTB1;
-    }
-
     public ComboBox<Tournament.Tiebreak.TbMethod> getTourTB2() {
         return tourTB2;
-    }
-
-    public void setTourTB2(ComboBox<Tournament.Tiebreak.TbMethod> tourTB2) {
-        this.tourTB2 = tourTB2;
     }
 
     public ComboBox<Tournament.Tiebreak.TbMethod> getTourTB3() {
         return tourTB3;
     }
 
-    public void setTourTB3(ComboBox<Tournament.Tiebreak.TbMethod> tourTB3) {
-        this.tourTB3 = tourTB3;
-    }
-
     public ComboBox<Tournament.Tiebreak.TbMethod> getTourTB4() {
         return tourTB4;
-    }
-
-    public void setTourTB4(ComboBox<Tournament.Tiebreak.TbMethod> tourTB4) {
-        this.tourTB4 = tourTB4;
     }
 
     public ComboBox<Tournament.Tiebreak.TbMethod> getTourTB5() {
         return tourTB5;
     }
 
-    public void setTourTB5(ComboBox<Tournament.Tiebreak.TbMethod> tourTB5) {
-        this.tourTB5 = tourTB5;
-    }
-
     public TextField getPointsWin() {
         return pointsWin;
-    }
-
-    public void setPointsWin(TextField pointsWin) {
-        this.pointsWin = pointsWin;
     }
 
     public TextField getPointsDraw() {
         return pointsDraw;
     }
 
-    public void setPointsDraw(TextField pointsDraw) {
-        this.pointsDraw = pointsDraw;
-    }
-
     public TextField getPointsLose() {
         return pointsLose;
-    }
-
-    public void setPointsLose(TextField pointsLose) {
-        this.pointsLose = pointsLose;
     }
 
     public TextField getPointsForfeitWin() {
         return pointsForfeitWin;
     }
 
-    public void setPointsForfeitWin(TextField pointsForfeitWin) {
-        this.pointsForfeitWin = pointsForfeitWin;
-    }
-
     public TextField getPointsForfeitLose() {
         return pointsForfeitLose;
-    }
-
-    public void setPointsForfeitLose(TextField pointsForfeitLose) {
-        this.pointsForfeitLose = pointsForfeitLose;
     }
 
     public TextField getPointsBye() {
         return pointsBye;
     }
 
-    public void setPointsBye(TextField pointsBye) {
-        this.pointsBye = pointsBye;
-    }
-
     public TextField getPointsHalfBye() {
         return pointsHalfBye;
-    }
-
-    public void setPointsHalfBye(TextField pointsHalfBye) {
-        this.pointsHalfBye = pointsHalfBye;
     }
 
     public TextField getMinInitGames() {
         return minInitGames;
     }
 
-    public void setMinInitGames(TextField minInitGames) {
-        this.minInitGames = minInitGames;
-    }
-
     public TextField getRatingFloor() {
         return ratingFloor;
-    }
-
-    public void setRatingFloor(TextField ratingFloor) {
-        this.ratingFloor = ratingFloor;
     }
 
     public CheckBox getPZSzach43Cb() {
         return PZSzach43Cb;
     }
 
-    public void setPZSzach43Cb(CheckBox PZSzach43Cb) {
-        this.PZSzach43Cb = PZSzach43Cb;
-    }
-
     public CheckBox getPZSzach44Cb() {
         return PZSzach44Cb;
     }
 
-    public void setPZSzach44Cb(CheckBox PZSzach44Cb) {
-        this.PZSzach44Cb = PZSzach44Cb;
-    }
-
     public CheckBox getPZSzach45Cb() {
         return PZSzach45Cb;
-    }
-
-    public void setPZSzach45Cb(CheckBox PZSzach45Cb) {
-        this.PZSzach45Cb = PZSzach45Cb;
     }
 
 
@@ -1432,40 +1343,20 @@ public class MainController implements Initializable {
         return PZSzach46Cb;
     }
 
-    public void setPZSzach46Cb(CheckBox PZSzach46Cb) {
-        this.PZSzach46Cb = PZSzach46Cb;
-    }
-
     public CheckBox getPZSzach47Cb() {
         return PZSzach47Cb;
-    }
-
-    public void setPZSzach47Cb(CheckBox PZSzach47Cb) {
-        this.PZSzach47Cb = PZSzach47Cb;
     }
 
     public ComboBox<Title> getMaxTitle() {
         return maxTitle;
     }
 
-    public void setMaxTitle(ComboBox<Title> maxTitle) {
-        this.maxTitle = maxTitle;
-    }
-
     public CheckBox getTwoOtherFeds() {
         return twoOtherFeds;
     }
 
-    public void setTwoOtherFeds(CheckBox twoOtherFeds) {
-        this.twoOtherFeds = twoOtherFeds;
-    }
-
     public TextField getMinTitleGames() {
         return minTitleGames;
-    }
-
-    public void setMinTitleGames(TextField minTitleGames) {
-        this.minTitleGames = minTitleGames;
     }
 
     public PlayersHelper getPlayersHelper() {
@@ -1482,14 +1373,6 @@ public class MainController implements Initializable {
 
     public void setHomeTabHelper(HomeTabHelper homeTabHelper) {
         this.homeTabHelper = homeTabHelper;
-    }
-
-    public TableColumn<Player, Void> getDeleteCol() {
-        return deleteCol;
-    }
-
-    public void setDeleteCol(TableColumn<Player, Void> deleteCol) {
-        this.deleteCol = deleteCol;
     }
 
     public RoundsHelper getRoundsHelper() {

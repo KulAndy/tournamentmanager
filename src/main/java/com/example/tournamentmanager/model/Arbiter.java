@@ -42,16 +42,8 @@ public class Arbiter {
         this.title = title;
     }
 
-    public String getLicense() {
-        return license;
-    }
-
     public void setLicense(String license) {
         this.license = license;
-    }
-
-    public String getWorkDescription() {
-        return workDescription;
     }
 
     public void setWorkDescription(String workDescription) {

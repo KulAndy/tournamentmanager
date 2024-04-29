@@ -136,7 +136,6 @@ public class StartListHelper {
 
                         } catch (IOException e) {
                             System.err.println("Error loading PlayerCorrection.fxml: " + e.getMessage());
-                            e.printStackTrace();
                         }
                     });
                     return null;
@@ -206,7 +205,6 @@ public class StartListHelper {
 
                         } catch (IOException e) {
                             System.err.println("Error loading PlayerCorrection.fxml: " + e.getMessage());
-                            e.printStackTrace();
                         }
                     });
                     return null;

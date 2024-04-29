@@ -54,20 +54,7 @@ public class CupEngine implements Engine {
             }
         } else {
             round = createPairings(tournament.getPlayers());
-            Player.Color color;
-            if (tournament.getFirstColor() == null) {
-                SecureRandom secureRandom = new SecureRandom();
-                byte[] randomBytes = new byte[1];
-                secureRandom.nextBytes(randomBytes);
-                int randomValue = Math.abs(randomBytes[0] % 2);
-                if (randomValue == 0) {
-                    color = Player.Color.WHITE;
-                } else {
-                    color = Player.Color.BLACK;
-                }
-            } else {
-                color = tournament.getFirstColor();
-            }
+            Player.Color color = getColor(tournament);
             for (int j = 0; j < round.size(); j++) {
                 if (
                         color == Player.Color.BLACK && j % 2 == 0
@@ -87,13 +74,31 @@ public class CupEngine implements Engine {
         return paired;
     }
 
+    private static Player.Color getColor(Tournament tournament) {
+        Player.Color color;
+        if (tournament.getFirstColor() == null) {
+            SecureRandom secureRandom = new SecureRandom();
+            byte[] randomBytes = new byte[1];
+            secureRandom.nextBytes(randomBytes);
+            int randomValue = Math.abs(randomBytes[0] % 2);
+            if (randomValue == 0) {
+                color = Player.Color.WHITE;
+            } else {
+                color = Player.Color.BLACK;
+            }
+        } else {
+            color = tournament.getFirstColor();
+        }
+        return color;
+    }
+
     private static ArrayList<Game> createPairings(PlayerList players) {
         PlayerList playersCopy = new PlayerList();
         playersCopy.addAll(players);
         playersCopy.setBye(players.getBye());
         playersCopy.setUnpaired(players.getUnpaired());
         ArrayList<Game> pairing = new ArrayList<>();
-        if (playersCopy.size() == 0) {
+        if (playersCopy.isEmpty()) {
             return pairing;
         } else if (playersCopy.size() == 1) {
             pairing.add(new Game(playersCopy.get(0), players.getBye(), Result.WIN, Result.LOSE, true));
@@ -108,10 +113,10 @@ public class CupEngine implements Engine {
             groupA.add(playersCopy.remove(0));
             groupA.add(playersCopy.remove(playersCopy.size() - 1));
             byte flag = 1; //0 - A, 1 - B, 2 - B, 3 - A
-            while (playersCopy.size() > 0) {
+            while (!playersCopy.isEmpty()) {
                 if (flag == 0 || flag == 3) {
                     groupA.add(playersCopy.remove(0));
-                    if (playersCopy.size() > 0) {
+                    if (!playersCopy.isEmpty()) {
                         if (groupA.size() - 1 == groupB.size() && playersCopy.size() == 1) {
                             groupB.add(playersCopy.remove(0));
                         } else {
@@ -120,7 +125,7 @@ public class CupEngine implements Engine {
                     }
                 } else {
                     groupB.add(playersCopy.remove(0));
-                    if (playersCopy.size() > 0) {
+                    if (!playersCopy.isEmpty()) {
                         if (groupA.size() == groupB.size() - 1 && playersCopy.size() == 1) {
                             groupA.add(playersCopy.remove(0));
                         } else {
@@ -238,7 +243,6 @@ public class CupEngine implements Engine {
 
             return tournament;
         } catch (UnfinishedRound e) {
-            e.printStackTrace();
             return tournament;
         }
     }

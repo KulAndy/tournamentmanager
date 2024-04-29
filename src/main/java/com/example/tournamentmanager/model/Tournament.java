@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -141,22 +142,7 @@ public class Tournament implements Serializable {
         PlayerList players = new PlayerList();
         ArrayList<ArrayList<ObjectId>> roundIds = new ArrayList<>();
         for (SwsxTournament.SwsxPlayer player : swsxPlayers) {
-            Player playerTmp = new Player(
-                    player.getFullName(),
-                    player.getSex(),
-                    player.getTitle(),
-                    (int) (getType() == Type.BLITZ ? player.getFideRatingBlitz() :
-                            getType() == Type.RAPID ? player.getFideRatingRapid() :
-                                    player.getFideRatingClassic()),
-                    player.getFederation(),
-                    player.getFideId(),
-                    player.getYearOfBorn(),
-                    player.getMonthOfBorn(),
-                    player.getDayOfBorn()
-            );
-            playerTmp.setLocalId(player.getPolId());
-            playerTmp.setPlayerid(player.getPlayerId());
-            playerTmp.setClub(player.getClub());
+            Player playerTmp = getPlayer(player);
 
             players.add(playerTmp);
             if (player.isWithdrawFromTournament()) {
@@ -345,6 +331,27 @@ public class Tournament implements Serializable {
         getPlayers().getComparator().setCriteria5(swsxTournament.getSort4());
         setPlayersObs(getPlayers());
         getScheduleElementsObs().addAll(getSchedule());
+    }
+
+    @NotNull
+    private Player getPlayer(SwsxTournament.SwsxPlayer player) {
+        Player playerTmp = new Player(
+                player.getFullName(),
+                player.getSex(),
+                player.getTitle(),
+                (int) (getType() == Type.BLITZ ? player.getFideRatingBlitz() :
+                        getType() == Type.RAPID ? player.getFideRatingRapid() :
+                                player.getFideRatingClassic()),
+                player.getFederation(),
+                player.getFideId(),
+                player.getYearOfBorn(),
+                player.getMonthOfBorn(),
+                player.getDayOfBorn()
+        );
+        playerTmp.setLocalId(player.getPolId());
+        playerTmp.setPlayerid(player.getPlayerId());
+        playerTmp.setClub(player.getClub());
+        return playerTmp;
     }
 
 

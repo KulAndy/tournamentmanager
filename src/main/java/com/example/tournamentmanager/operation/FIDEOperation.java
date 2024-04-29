@@ -8,6 +8,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -82,6 +83,17 @@ public class FIDEOperation {
         } catch (InterruptedException ignored) {
         }
 
+        StringBuilder importResult = getStringBuilder(standardProcessed, rapidProcessed, blitzProcessed);
+        if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0) {
+            DialogHelper.info(String.valueOf(importResult));
+        } else {
+            DialogHelper.error(String.valueOf(importResult));
+        }
+
+    }
+
+    @NotNull
+    private static StringBuilder getStringBuilder(int[] standardProcessed, int[] rapidProcessed, int[] blitzProcessed) {
         StringBuilder statment = new StringBuilder();
         switch (standardProcessed[0]) {
             case 0 -> statment.append("Standard list downloaded and converted succesfully\n");
@@ -101,17 +113,12 @@ public class FIDEOperation {
                     statment.append("Blitz list downloaded and unzipped successfully, but couldn't convert xml to local database");
             default -> statment.append("Couldn't download blitz list");
         }
-        if (standardProcessed[0] == 0 && rapidProcessed[0] == 0 && blitzProcessed[0] == 0) {
-            DialogHelper.info(String.valueOf(statment));
-        } else {
-            DialogHelper.error(String.valueOf(statment));
-        }
-
+        return statment;
     }
 
     public static ArrayList<Player> searchPlayer(String name, Tournament.Type type) {
         ArrayList<Player> players = new ArrayList<>();
-        if (name.trim().length() == 0) {
+        if (name.trim().isEmpty()) {
             return players;
         }
         name = unidecode(name);
@@ -125,7 +132,6 @@ public class FIDEOperation {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
         try {
             if (name.length() > 3) {
@@ -389,7 +395,7 @@ public class FIDEOperation {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create New File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("trf reports", "*.txt", "*.trf"));
-        if (tournament.getName().trim().length() == 0) {
+        if (tournament.getName().trim().isEmpty()) {
             fileChooser.setInitialFileName("raport.txt");
         } else {
             fileChooser.setInitialFileName(tournament.getName().replaceAll("[\\/ ]", "_"));
@@ -400,7 +406,6 @@ public class FIDEOperation {
             saveTrfReport(trfReport(tournament), newFile);
             DialogHelper.info("Created report");
         } catch (Exception e) {
-            e.printStackTrace();
             DialogHelper.error("Couldn't create trf report");
         }
     }
@@ -420,7 +425,6 @@ public class FIDEOperation {
                 writer.write(trf);
             } catch (IOException e) {
                 DialogHelper.error("Couldn't create trf report");
-                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         } else {
@@ -465,7 +469,7 @@ public class FIDEOperation {
             trf.append(" ".repeat(2));
         }
 
-        if (tournament.getRoundsObs().size() == 0) {
+        if (tournament.getRoundsObs().isEmpty()) {
             if (tournament.getFirstColor() == null) {
                 SecureRandom secureRandom = new SecureRandom();
                 byte[] randomBytes = new byte[1]; // Adjust byte array size as needed
@@ -524,7 +528,7 @@ public class FIDEOperation {
                     .append("%10s".formatted(player.getDateOfBirth()))
                     .append(" ")
                     .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
-                    .append(" %4d".formatted(sortedList.indexOf(player) + 1))
+                    .append("     ");
             ;
 
             ArrayList<Game> rounds = player.getRounds();
@@ -606,9 +610,7 @@ public class FIDEOperation {
             try {
                 Tournament tournament = new Tournament(new TrfTournament(selectedFile));
                 TournamentOperation.loadTournament(tournament, controller);
-                //info("Imported successfully");
             } catch (Exception e) {
-                e.printStackTrace();
                 DialogHelper.error("An error eccured");
             }
 

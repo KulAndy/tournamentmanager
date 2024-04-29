@@ -119,6 +119,7 @@ public class TournamentOperation {
 
         Platform.runLater(() -> {
             try {
+                assert controller != null;
                 TieBreakServerWrapper.generateTiebreak(controller.getTournament(), controller.getTournament().calculateEndedRound());
             } catch (IOException | InterruptedException ignored) {
             }
@@ -162,7 +163,7 @@ public class TournamentOperation {
         fileChooser.setTitle("Open File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(controller.getProgramName() + " files", "*." + controller.getProgramExtension()));
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(fileStage);
-        if (selectedFiles != null && selectedFiles.size() > 0) {
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
             for (File file : selectedFiles) {
                 if (!controller.getFiles().contains(file)) {
                     controller.getFiles().add(file);
@@ -252,8 +253,7 @@ public class TournamentOperation {
                             zipOut.putNextEntry(zipEntry);
                             Files.copy(path, zipOut);
                             zipOut.closeEntry();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException ignored) {
                         }
                     });
         } finally {
@@ -262,8 +262,7 @@ public class TournamentOperation {
                     .forEach(path -> {
                         try {
                             Files.deleteIfExists(path);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException ignored) {
                         }
                     });
         }
@@ -317,8 +316,7 @@ public class TournamentOperation {
                 }
             }
             controller.setFile(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 
@@ -475,7 +473,7 @@ public class TournamentOperation {
         }
     }
 
-    public static void exportPgn(Tournament tournament) throws IOException {
+    public static void exportPgn(Tournament tournament) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export to pgn");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("pgn files", "*.pgn"));

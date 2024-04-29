@@ -32,6 +32,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.*;
@@ -178,7 +179,6 @@ public class DialogHelper {
                     url = uri.toURL();
                 } catch (URISyntaxException | MalformedURLException ex) {
                     error("Couldn't connect with server");
-                    ex.printStackTrace();
                     return;
                 }
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -279,7 +279,6 @@ public class DialogHelper {
                             defaultTomlURL = uri.toURL();
                         } catch (URISyntaxException | MalformedURLException ex1) {
                             error("Couldn't connect with server");
-                            ex1.printStackTrace();
                             return;
                         }
                         byte[] defaultTomlBytes = Files.readAllBytes(Paths.get(defaultTomlURL.toURI()));
@@ -299,7 +298,6 @@ public class DialogHelper {
                         url = uri.toURL();
                     } catch (URISyntaxException | MalformedURLException ex) {
                         error("Couldn't connect with server");
-                        ex.printStackTrace();
                         return;
                     }
 
@@ -343,8 +341,7 @@ public class DialogHelper {
 
                     connection.disconnect();
 
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                } catch (IOException ignored) {
                 }
 
                 registerStage.close();
@@ -395,7 +392,7 @@ public class DialogHelper {
         }
 
 
-        if (lines.size() >= 1) {
+        if (!lines.isEmpty()) {
             String token = lines.get(0);
             httpPost = new HttpPost(serverUrl + toml.getTable("remote").getString("logged") + "/" + token);
         } else {
@@ -448,7 +445,6 @@ public class DialogHelper {
 
                                 remoteTournamentObservableList.add(remoteTournament);
                             } catch (ParseException e) {
-                                e.printStackTrace();
                                 throw new RuntimeException(e);
                             }
                         }
@@ -464,25 +460,7 @@ public class DialogHelper {
                             RemoteTournament remoteTournament = cellDate.getValue();
                             return new SimpleStringProperty(remoteTournament.name());
                         });
-                        TableColumn<RemoteTournament, String> rate = new TableColumn<>("Rate");
-                        rate.setCellValueFactory(cellDate -> {
-                            RemoteTournament remoteTournament = cellDate.getValue();
-                            StringBuilder builder1 = new StringBuilder(remoteTournament.gameTime() + "'");
-                            if (remoteTournament.controlMove() > 0 && remoteTournament.controlAddition() > 0) {
-                                builder1.append("/")
-                                        .append(remoteTournament.controlMove())
-                                        .append(" ")
-                                        .append(remoteTournament.controlAddition())
-                                        .append("'");
-                            }
-
-                            if (remoteTournament.increment() > 0) {
-                                builder1.append(" + ")
-                                        .append(remoteTournament.increment())
-                                        .append("''/move");
-                            }
-                            return new SimpleStringProperty(builder1.toString());
-                        });
+                        TableColumn<RemoteTournament, String> rate = getRemoteTournamentStringTableColumn();
                         TableColumn<RemoteTournament, String> startDate = new TableColumn<>("Start");
                         startDate.setCellValueFactory(cellDate -> {
                             RemoteTournament remoteTournament = cellDate.getValue();
@@ -566,8 +544,7 @@ public class DialogHelper {
                                                                     zipOut.putNextEntry(zipEntry);
                                                                     Files.copy(path, zipOut);
                                                                     zipOut.closeEntry();
-                                                                } catch (IOException ioException) {
-                                                                    ioException.printStackTrace();
+                                                                } catch (IOException ignored) {
                                                                 }
                                                             });
                                                 }
@@ -579,14 +556,12 @@ public class DialogHelper {
                                                         .sorted(Comparator.reverseOrder())
                                                         .map(Path::toFile)
                                                         .forEach(File::delete);
-                                            } catch (Exception ex) {
-                                                ex.printStackTrace();
+                                            } catch (Exception ignored) {
                                             }
 
 
                                         }
-                                    } catch (Exception ex) {
-                                        ex.printStackTrace();
+                                    } catch (Exception ignored) {
                                     }
 
                                 }
@@ -618,12 +593,34 @@ public class DialogHelper {
             }
         } catch (SSLPeerUnverifiedException ex) {
             error("Couldn't connect - insecure connection");
-            ex.printStackTrace();
         } catch (IOException ex) {
             error("Connection error");
-            ex.printStackTrace();
         }
 
+    }
+
+    @NotNull
+    private static TableColumn<RemoteTournament, String> getRemoteTournamentStringTableColumn() {
+        TableColumn<RemoteTournament, String> rate = new TableColumn<>("Rate");
+        rate.setCellValueFactory(cellDate -> {
+            RemoteTournament remoteTournament = cellDate.getValue();
+            StringBuilder builder1 = new StringBuilder(remoteTournament.gameTime() + "'");
+            if (remoteTournament.controlMove() > 0 && remoteTournament.controlAddition() > 0) {
+                builder1.append("/")
+                        .append(remoteTournament.controlMove())
+                        .append(" ")
+                        .append(remoteTournament.controlAddition())
+                        .append("'");
+            }
+
+            if (remoteTournament.increment() > 0) {
+                builder1.append(" + ")
+                        .append(remoteTournament.increment())
+                        .append("''/move");
+            }
+            return new SimpleStringProperty(builder1.toString());
+        });
+        return rate;
     }
 
     public static void showRemoteChessarbiter(MainController controller) {
@@ -672,7 +669,6 @@ public class DialogHelper {
                             DialogHelper.info("Imported successfully");
                         } catch (IOException | URISyntaxException e) {
                             error("Couldn't download or import file");
-                            e.printStackTrace();
                         }
                     }
                 } else {

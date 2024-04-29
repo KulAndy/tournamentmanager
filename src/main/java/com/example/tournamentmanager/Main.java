@@ -11,8 +11,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Main extends Application {
-    private final String programName = "andchess";
-    private final String programExtension = "and";
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -40,10 +38,10 @@ public class Main extends Application {
     }
 
     public String getProgramName() {
-        return programName;
+        return "andchess";
     }
 
     public String getProgramExtension() {
-        return programExtension;
+        return "and";
     }
 }

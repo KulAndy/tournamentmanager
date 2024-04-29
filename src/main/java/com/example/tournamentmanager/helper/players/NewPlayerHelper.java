@@ -97,7 +97,7 @@ public class NewPlayerHelper {
             if (player != null) {
                 getFedSelect().setValue(player.getFederation());
                 String state = player.getState();
-                getStateSelect().setValue(state.trim().length() == 0 ? null : state);
+                getStateSelect().setValue(state.trim().isEmpty() ? null : state);
                 getPlayerNameField().setText(player.getName());
                 getPlayerTitleSelect().setValue(player.getTitle());
                 getLocalRtgField().setText(String.valueOf(player.getLocalRating()));
@@ -213,10 +213,7 @@ public class NewPlayerHelper {
                             newPlayerHint.setItems(options);
                         }))
                         .exceptionallyAsync(ex -> {
-                            Platform.runLater(() -> {
-                                ex.printStackTrace();
-                                System.out.println(ex.getMessage());
-                            });
+                            Platform.runLater(() -> System.out.println(ex.getMessage()));
                             return null;
                         });
             } catch (Exception ignored) {

@@ -89,7 +89,7 @@ public class PgnGame {
         } catch (IOException ignored) {
         }
 
-        if (moves.length() == 0) {
+        if (moves.isEmpty()) {
             setMoves("1. *");
         }
 
@@ -136,7 +136,7 @@ public class PgnGame {
         } catch (IOException ignored) {
         }
 
-        if (moves.length() == 0) {
+        if (moves.isEmpty()) {
             setMoves("1. *");
         }
     }

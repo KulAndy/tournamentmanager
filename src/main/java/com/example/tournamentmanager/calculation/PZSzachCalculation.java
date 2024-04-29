@@ -270,8 +270,7 @@ public class PZSzachCalculation {
 
         try {
             allTasks.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException ignored) {
         } finally {
             executorService.shutdown();
         }
@@ -461,7 +460,6 @@ public class PZSzachCalculation {
                             getTitleValue(title1, player.getSex()) > getTitleValue(player.getTitle(), player.getSex()) &&
                                     getTitleValue(title1, player.getSex()) > getTitleValue(title, player.getSex())
                     ) {
-                        title = title1;
                         remarks = "4.7";
                     }
                 }

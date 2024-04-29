@@ -59,12 +59,10 @@ import static com.example.tournamentmanager.operation.TournamentOperation.*;
 public class ShortcutsHelper {
     private final MainController controller;
     private Scene scene;
-    private FileOperation fileOperation;
     private RoundsHelper roundsHelper;
 
-    public ShortcutsHelper(Scene scene, FileOperation fileOperation, RoundsHelper roundsHelper, MainController controller) {
+    public ShortcutsHelper(Scene scene, RoundsHelper roundsHelper, MainController controller) {
         setScene(scene);
-        setFileOperation(fileOperation);
         setRoundsHelper(roundsHelper);
         this.controller = controller;
         addShortcuts();
@@ -158,7 +156,7 @@ public class ShortcutsHelper {
                         }
 
 
-                        if (lines.size() >= 1) {
+                        if (!lines.isEmpty()) {
                             String token = lines.get(0);
 
                             httpPost.setHeader("token", token);
@@ -209,10 +207,8 @@ public class ShortcutsHelper {
                             }
                         } catch (SSLPeerUnverifiedException ex) {
                             DialogHelper.error("Couldn't connect - insecure connection");
-                            ex.printStackTrace();
                         } catch (IOException ex) {
                             DialogHelper.error("Connection error");
-                            ex.printStackTrace();
                         }
                     } else {
                         DialogHelper.error("File not found");
@@ -243,7 +239,6 @@ public class ShortcutsHelper {
                         DialogHelper.info("Imported successfully");
                     } catch (Exception ex) {
                         DialogHelper.error("An error eccured");
-                        ex.printStackTrace();
                         System.out.println(ex.getMessage());
                     }
                 } else {
@@ -327,8 +322,7 @@ public class ShortcutsHelper {
             addGamesList(games, round, document);
             document.close();
             outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return filename;
     }
@@ -432,8 +426,7 @@ public class ShortcutsHelper {
             }
             document.close();
             outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return filename;
     }
@@ -594,8 +587,7 @@ public class ShortcutsHelper {
             document.add(pdfPTable);
             document.close();
             outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return filename;
     }
@@ -606,14 +598,6 @@ public class ShortcutsHelper {
 
     public void setScene(Scene scene) {
         this.scene = scene;
-    }
-
-    public FileOperation getFileOperation() {
-        return fileOperation;
-    }
-
-    public void setFileOperation(FileOperation fileOperation) {
-        this.fileOperation = fileOperation;
     }
 
     public RoundsHelper getRoundsHelper() {
