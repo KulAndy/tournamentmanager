@@ -157,7 +157,7 @@ public class PlayerCorrectionController {
                         foundPlayer = foundPlayers.get(i);
                     }
 
-                    if (foundPlayer != null && !Objects.equals(player.getFideId(), foundPlayer.getFideId())) {
+                    if (foundPlayer != null && !Objects.equals(player.getLocalId(), foundPlayer.getLocalId())) {
                         tmpPlayers.get(i).setLocalId(foundPlayer.getLocalId());
                     } else {
                         tmpPlayers.get(i).setLocalId(player.getLocalId());
@@ -698,6 +698,11 @@ public class PlayerCorrectionController {
         for (int i = 0; i < tmpPlayers.size(); i++) {
             Player player = sourcePlayers.get(i);
             Player tmp = tmpPlayers.get(i);
+            if (!Objects.equals(player.toString(), tmp.toString())) {
+                System.out.println(player);
+                System.out.println(tmp);
+                System.out.println();
+            }
             player.setTitle(tmp.getTitle());
             player.setFideRating(tmp.getFideRating());
             player.setFideId(tmp.getFideId());
