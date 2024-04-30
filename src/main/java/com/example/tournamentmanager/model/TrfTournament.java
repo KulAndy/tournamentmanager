@@ -29,10 +29,6 @@ public class TrfTournament {
 
     private byte roundsNo = 0;
 
-    public TrfTournament(String trfPath) {
-        this(new File(trfPath));
-    }
-
     public TrfTournament(File trfFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(trfFile))) {
             String line;
@@ -101,7 +97,6 @@ public class TrfTournament {
                         setRoundsNo((byte) roundDatesArray.length);
                     }
                     case "001" -> {
-                        int startNo = Integer.parseInt(line.substring(4, 8).trim());
                         Player.Sex playerSex = line.charAt(9) == 'w' ? Player.Sex.FEMALE : Player.Sex.MALE;
                         Title playerTitle = Title.getTitle(line.substring(10, 13).trim());
                         String playerName = line.substring(14, 47).trim();

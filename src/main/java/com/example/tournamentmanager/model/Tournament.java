@@ -506,6 +506,10 @@ public class Tournament implements Serializable {
                         case '\0' -> game.setWhiteResult(null);
                         case '+', 'W', '1', 'U', 'F' -> game.setWhiteResult(Result.WIN);
                         case '=', 'H' -> game.setWhiteResult(Result.DRAW);
+                        case 'Z' -> {
+                            game.setWhiteResult(Result.LOSE);
+                            getWithdrawsObs().add(new Withdraw(players.get(player.getStartRank() - 1), Withdraw.WithdrawType.ROUND, (byte) (i+1)));
+                        }
                         default -> game.setWhiteResult(Result.LOSE);
                     }
                     switch (whiteResult) {
