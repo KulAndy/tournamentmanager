@@ -120,7 +120,7 @@ public class TieBreakServerWrapper {
                 }
                 float tb = 0f;
 
-                for (int k = 1; (k <= round && k != 0) || k < calculation.keySet().size(); k++) {
+                for (int k = 1; k <= round && k != 0 && k < calculation.keySet().size(); k++) {
                     String key = String.valueOf(k);
 
                     if (calculation.has(key) && !cuts.contains(k)) {

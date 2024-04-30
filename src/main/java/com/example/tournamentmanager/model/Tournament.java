@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -626,7 +627,13 @@ public class Tournament implements Serializable {
             return false;
         }
         for (Game game : getRoundsObs().get(n - 1)) {
-            if (game.getWhiteResult() == null || game.getBlackResult() == null) {
+            if (
+                    (game.getWhiteResult() == null ||
+                    game.getBlackResult() == null) &&
+                    !(Objects.equals(game.getBlackName(), "bye") ||
+                    Objects.equals(game.getBlackName(), "halfbye") ||
+                    Objects.equals(game.getBlackName(), "unpaired"))
+            ) {
                 return false;
             }
         }
