@@ -16,6 +16,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
@@ -620,7 +621,7 @@ public class MainController implements Initializable {
     @FXML
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
-        tournament.endedRoundProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+        getTournament().endedRoundProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             if (!Objects.equals(oldValue, newValue)) {
                 Platform.runLater(() -> {
                     try {
@@ -631,6 +632,10 @@ public class MainController implements Initializable {
                 });
             }
         });
+        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
+                Platform.runLater(() -> getTournament().calculateEndedRound());
+        });
+
         setHomeTabHelper(new HomeTabHelper(
                 tournament, tourName, tourStartDate, tourEndDate, tourPlace, tourGameTime,
                 tourIncrement, tourControlMove, tourControlAddition, tourType, tourRtPZSzach, tourRtFIDE,
