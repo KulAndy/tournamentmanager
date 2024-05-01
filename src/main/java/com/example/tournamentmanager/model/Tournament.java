@@ -334,28 +334,6 @@ public class Tournament implements Serializable {
         getScheduleElementsObs().addAll(getSchedule());
     }
 
-    @NotNull
-    private Player getPlayer(SwsxTournament.SwsxPlayer player) {
-        Player playerTmp = new Player(
-                player.getFullName(),
-                player.getSex(),
-                player.getTitle(),
-                (int) (getType() == Type.BLITZ ? player.getFideRatingBlitz() :
-                        getType() == Type.RAPID ? player.getFideRatingRapid() :
-                                player.getFideRatingClassic()),
-                player.getFederation(),
-                player.getFideId(),
-                player.getYearOfBorn(),
-                player.getMonthOfBorn(),
-                player.getDayOfBorn()
-        );
-        playerTmp.setLocalId(player.getPolId());
-        playerTmp.setPlayerid(player.getPlayerId());
-        playerTmp.setClub(player.getClub());
-        return playerTmp;
-    }
-
-
     public Tournament(TrfTournament trfTournament) {
         initTournament();
         setName(trfTournament.getName());
@@ -509,7 +487,7 @@ public class Tournament implements Serializable {
                         case '=', 'H' -> game.setWhiteResult(Result.DRAW);
                         case 'Z' -> {
                             game.setWhiteResult(Result.LOSE);
-                            getWithdrawsObs().add(new Withdraw(players.get(player.getStartRank() - 1), Withdraw.WithdrawType.ROUND, (byte) (i+1)));
+                            getWithdrawsObs().add(new Withdraw(players.get(player.getStartRank() - 1), Withdraw.WithdrawType.ROUND, (byte) (i + 1)));
                         }
                         default -> game.setWhiteResult(Result.LOSE);
                     }
@@ -565,6 +543,7 @@ public class Tournament implements Serializable {
 
     }
 
+
     Tournament(
             String name,
             Date startDate,
@@ -602,6 +581,27 @@ public class Tournament implements Serializable {
         FXCollections.sort(getPlayersObs(), getPlayers().getComparator());
     }
 
+    @NotNull
+    private Player getPlayer(SwsxTournament.SwsxPlayer player) {
+        Player playerTmp = new Player(
+                player.getFullName(),
+                player.getSex(),
+                player.getTitle(),
+                (int) (getType() == Type.BLITZ ? player.getFideRatingBlitz() :
+                        getType() == Type.RAPID ? player.getFideRatingRapid() :
+                                player.getFideRatingClassic()),
+                player.getFederation(),
+                player.getFideId(),
+                player.getYearOfBorn(),
+                player.getMonthOfBorn(),
+                player.getDayOfBorn()
+        );
+        playerTmp.setLocalId(player.getPolId());
+        playerTmp.setPlayerid(player.getPlayerId());
+        playerTmp.setClub(player.getClub());
+        return playerTmp;
+    }
+
     private void initTournament() {
         setRoundsObs(new ArrayList<>());
         setWithdrawsObs(new ArrayList<>());
@@ -629,10 +629,10 @@ public class Tournament implements Serializable {
         for (Game game : getRoundsObs().get(n - 1)) {
             if (
                     (game.getWhiteResult() == null ||
-                    game.getBlackResult() == null) &&
-                    !(Objects.equals(game.getBlackName(), "bye") ||
-                    Objects.equals(game.getBlackName(), "halfbye") ||
-                    Objects.equals(game.getBlackName(), "unpaired"))
+                            game.getBlackResult() == null) &&
+                            !(Objects.equals(game.getBlackName(), "bye") ||
+                                    Objects.equals(game.getBlackName(), "halfbye") ||
+                                    Objects.equals(game.getBlackName(), "unpaired"))
             ) {
                 return false;
             }

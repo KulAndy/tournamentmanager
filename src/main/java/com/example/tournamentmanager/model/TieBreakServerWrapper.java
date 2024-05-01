@@ -37,12 +37,12 @@ public class TieBreakServerWrapper {
 
         executeProcess(command);
         processCompetitors(outputFile, tournament, Integer.min(round, tournament.getRoundsObs().size()));
-        if (outputFile.exists()) {
-            outputFile.delete();
-        }
-        if (reportFile.exists()) {
-            reportFile.delete();
-        }
+//        if (outputFile.exists()) {
+//            outputFile.delete();
+//        }
+//        if (reportFile.exists()) {
+//            reportFile.delete();
+//        }
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
         System.out.println("Elapsed time in milliseconds: " + elapsedTime);
@@ -101,45 +101,15 @@ public class TieBreakServerWrapper {
         players.sort(players.getComparator());
         for (int i = 0; i < competitorsArray.size(); i++) {
             JsonObject competitor = competitorsArray.get(i).getAsJsonObject();
-            List<Float> tiebreaks = new ArrayList<>();
-
+            JsonArray tiebreaks = competitor.getAsJsonArray("tieBreak");
             int startno = competitor.get("startno").getAsInt();
             Player player = players.get(startno - 1);
 
-            JsonArray calculationsArray = competitor.getAsJsonArray("calculations");
-
-            for (int j = 0; j < calculationsArray.size(); j++) {
-                JsonObject calculation = calculationsArray.get(j).getAsJsonObject();
-                ArrayList<Integer> cuts = new ArrayList<>();
-                if (calculation.get("cut") != null) {
-                    JsonArray jsonArray = (JsonArray) calculation.get("cut");
-                    for (int k = 0; k < jsonArray.size(); k++) {
-                        int value = jsonArray.get(k).getAsInt();
-                        cuts.add(value);
-                    }
-                }
-                float tb = 0f;
-
-                for (int k = 1; k <= round && k != 0 && k < calculation.keySet().size(); k++) {
-                    String key = String.valueOf(k);
-
-                    if (calculation.has(key) && !cuts.contains(k)) {
-                        tb += calculation.get(key).getAsFloat();
-                    }
-                }
-
-                tiebreaks.add(tb);
-            }
-
-            while (tiebreaks.size() < 5) {
-                tiebreaks.add(0f);
-            }
-
-            player.setTb1(tiebreaks.get(0));
-            player.setTb2(tiebreaks.get(1));
-            player.setTb3(tiebreaks.get(2));
-            player.setTb4(tiebreaks.get(3));
-            player.setTb5(tiebreaks.get(4));
+            player.setTb1(tiebreaks.get(0).getAsFloat());
+            player.setTb2(tiebreaks.get(1).getAsFloat());
+            player.setTb3(tiebreaks.get(2).getAsFloat());
+            player.setTb4(tiebreaks.get(3).getAsFloat());
+            player.setTb5(tiebreaks.get(4).getAsFloat());
         }
     }
 
@@ -155,8 +125,8 @@ public class TieBreakServerWrapper {
             case WINS_WITH_BLACK -> "BWG";
             case PROGRESS -> "PS";
             case BUCHOLZ -> "BH";
-            case BUCHOLZ_CUT1 -> "BH!C1";
-            case MEDIA_BUCHOLZ -> "BH!M1";
+            case BUCHOLZ_CUT1 -> "BH/C1";
+            case MEDIA_BUCHOLZ -> "BH/M1";
             case FORE_BUCHOLZ -> "FB";
             case SONNEN_BERGER -> "SB";
             case KOYA -> "KS";

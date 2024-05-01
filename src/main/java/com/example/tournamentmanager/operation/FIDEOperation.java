@@ -1,10 +1,8 @@
 package com.example.tournamentmanager.operation;
 
 import com.example.tournamentmanager.MainController;
-import com.example.tournamentmanager.comparator.ResultsComparator;
 import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
-import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -527,7 +525,6 @@ public class FIDEOperation {
                     .append(" ")
                     .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
                     .append("     ");
-            ;
 
             ArrayList<Game> rounds = player.getRounds();
             for (Game game : rounds) {
@@ -592,8 +589,26 @@ public class FIDEOperation {
             trf.append(withdrawed);
         }
         trf.append("\n");
-        trf.append("XCC rank");
-        trf.append("\n");
+        trf.append("XCC rank\n");
+        trf.append("XXS WW ").append(Player.getWinPoints()).append("\n");
+        trf.append("XXS BW ").append(Player.getWinPoints()).append("\n");
+
+        trf.append("XXS WD ").append(Player.getDrawPoints()).append("\n");
+        trf.append("XXS BD ").append(Player.getDrawPoints()).append("\n");
+
+        trf.append("XXS WW ").append(Player.getWinPoints()).append("\n");
+        trf.append("XXS BW ").append(Player.getWinPoints()).append("\n");
+
+        trf.append("XXS WL ").append(Player.getLosePoints()).append("\n");
+        trf.append("XXS BL ").append(Player.getLosePoints()).append("\n");
+
+        trf.append("XXS FPB ").append(Player.getByePoints()).append("\n");
+        trf.append("XXS HBP ").append(Player.getHalfByePoints()).append("\n");
+        trf.append("XXS ZBP ").append(Player.getForfeitLosePoints()).append("\n");
+
+        trf.append("XXS FW ").append(Player.getForfeitWinPoints()).append("\n");
+        trf.append("XXS LW ").append(Player.getForfeitLosePoints()).append("\n");
+
         return trf.toString();
     }
 

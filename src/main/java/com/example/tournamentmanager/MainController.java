@@ -623,17 +623,11 @@ public class MainController implements Initializable {
         this.tournament = tournament;
         getTournament().endedRoundProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             if (!Objects.equals(oldValue, newValue)) {
-                Platform.runLater(() -> {
-                    try {
-                        TieBreakServerWrapper.generateTiebreak(getTournament(), newValue.intValue());
-                    } catch (IOException | InterruptedException ignored) {
-                    }
-                    getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-                });
+                recalculateTieBreak();
             }
         });
         getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
-                Platform.runLater(() -> getTournament().calculateEndedRound());
+            Platform.runLater(() -> getTournament().calculateEndedRound());
         });
 
         setHomeTabHelper(new HomeTabHelper(
@@ -1014,7 +1008,7 @@ public class MainController implements Initializable {
             }
         });
 
-        tourTB1.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+        getTourTB1().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak1(newValue);
             String tiebreak;
             if (newValue != null) {
@@ -1030,15 +1024,9 @@ public class MainController implements Initializable {
                 playerCardTB1Value.setText("");
             }
             resultTb1.setText(tiebreak);
-            Platform.runLater(() -> {
-                try {
-                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
-                } catch (IOException | InterruptedException ignored) {
-                }
-                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-            });
+            recalculateTieBreak();
         });
-        tourTB2.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+        getTourTB2().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak2(newValue);
             String tiebreak;
             if (newValue != null) {
@@ -1054,15 +1042,9 @@ public class MainController implements Initializable {
                 playerCardTB2Value.setText("");
             }
             resultTb2.setText(tiebreak);
-            Platform.runLater(() -> {
-                try {
-                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
-                } catch (IOException | InterruptedException ignored) {
-                }
-                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-            });
+            recalculateTieBreak();
         });
-        tourTB3.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+        getTourTB3().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak3(newValue);
             String tiebreak;
             if (newValue != null) {
@@ -1078,15 +1060,9 @@ public class MainController implements Initializable {
                 playerCardTB3Value.setText("");
             }
             resultTb3.setText(tiebreak);
-            Platform.runLater(() -> {
-                try {
-                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
-                } catch (IOException | InterruptedException ignored) {
-                }
-                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-            });
+            recalculateTieBreak();
         });
-        tourTB4.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+        getTourTB4().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak4(newValue);
             String tiebreak;
             if (newValue != null) {
@@ -1102,15 +1078,9 @@ public class MainController implements Initializable {
                 playerCardTB4Value.setText("");
             }
             resultTb4.setText(tiebreak);
-            Platform.runLater(() -> {
-                try {
-                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
-                } catch (IOException | InterruptedException ignored) {
-                }
-                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-            });
+            recalculateTieBreak();
         });
-        tourTB5.valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
+        getTourTB5().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak5(newValue);
             String tiebreak;
             if (newValue != null) {
@@ -1126,13 +1096,25 @@ public class MainController implements Initializable {
                 playerCardTB5Value.setText("");
             }
             resultTb5.setText(tiebreak);
-            Platform.runLater(() -> {
-                try {
-                    TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
-                } catch (IOException | InterruptedException ignored) {
-                }
-                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-            });
+            recalculateTieBreak();
+        });
+
+        getPointsWin().textProperty().addListener(change -> recalculateTieBreak());
+        getPointsDraw().textProperty().addListener(change -> recalculateTieBreak());
+        getPointsLose().textProperty().addListener(change -> recalculateTieBreak());
+        getPointsForfeitWin().textProperty().addListener(change -> recalculateTieBreak());
+        getPointsForfeitLose().textProperty().addListener(change -> recalculateTieBreak());
+        getPointsBye().textProperty().addListener(change -> recalculateTieBreak());
+        getPointsHalfBye().textProperty().addListener(change -> recalculateTieBreak());
+    }
+
+    private void recalculateTieBreak() {
+        Platform.runLater(() -> {
+            try {
+                TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().getEndedRound());
+            } catch (IOException | InterruptedException ignored) {
+            }
+            getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
         });
     }
 

@@ -32,3 +32,12 @@
 /auth.txt
 /rapid_rating_list_xml.zip
 /tiebreak.json
+/tiebreak_server/.idea/.gitignore
+/tiebreak_server/.idea/misc.xml
+/.idea/modules.xml
+/tiebreak_server/.idea/modules.xml
+/tiebreak_server/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/tiebreak_server/.idea/tiebreak_server.iml
+/tournamentmanager.iml
+/tiebreak_server/.idea/vcs.xml

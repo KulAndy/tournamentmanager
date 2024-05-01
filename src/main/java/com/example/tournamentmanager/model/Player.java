@@ -466,7 +466,7 @@ public class Player implements Serializable, Cloneable {
         for (int i = 0; i < n && i < getRounds().size(); i++) {
             Game round = getRounds().get(i);
             Color color = getRoundColor(round);
-            if (color != null){
+            if (color != null) {
                 switch (color) {
                     case WHITE -> {
                         if (!Float.isNaN(round.getPointsForWhite())) {
