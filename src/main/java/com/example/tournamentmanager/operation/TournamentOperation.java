@@ -4,14 +4,11 @@ import com.example.tournamentmanager.MainController;
 import com.example.tournamentmanager.adapter.DateAdapter;
 import com.example.tournamentmanager.adapter.LocalDateAdapter;
 import com.example.tournamentmanager.adapter.ObjectIdAdapter;
-import com.example.tournamentmanager.comparator.ResultsComparator;
 import com.example.tournamentmanager.helper.DialogHelper;
 import com.example.tournamentmanager.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import javafx.application.Platform;
-import javafx.collections.transformation.SortedList;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.bson.types.ObjectId;
@@ -119,14 +116,6 @@ public class TournamentOperation {
             controller.getHomeTabHelper().getTiebreakHelper().getTourFIDEMode().setSelected(tournament.getTiebreak().isFIDEMode());
         }
 
-        Platform.runLater(() -> {
-            try {
-                assert controller != null;
-                TieBreakServerWrapper.generateTiebreak(controller.getTournament(), controller.getTournament().calculateEndedRound());
-            } catch (IOException | InterruptedException ignored) {
-            }
-        });
-
     }
 
     public static void saveAs(MainController controller) {
@@ -173,13 +162,6 @@ public class TournamentOperation {
             }
             importJson(selectedFiles.get(selectedFiles.size() - 1), controller);
             controller.getTournamentSelect().setValue(selectedFiles.get(selectedFiles.size() - 1));
-            Platform.runLater(() -> {
-                try {
-                    TieBreakServerWrapper.generateTiebreak(controller.getTournament(), 0);
-                } catch (IOException | InterruptedException ignored) {
-                }
-                controller.getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(controller.getTournament().getPlayersObs(), new ResultsComparator()));
-            });
         }
 
     }

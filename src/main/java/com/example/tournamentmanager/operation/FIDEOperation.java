@@ -590,24 +590,18 @@ public class FIDEOperation {
         }
         trf.append("\n");
         trf.append("XCC rank\n");
-        trf.append("XXS WW ").append(Player.getWinPoints()).append("\n");
-        trf.append("XXS BW ").append(Player.getWinPoints()).append("\n");
-
-        trf.append("XXS WD ").append(Player.getDrawPoints()).append("\n");
-        trf.append("XXS BD ").append(Player.getDrawPoints()).append("\n");
-
-        trf.append("XXS WW ").append(Player.getWinPoints()).append("\n");
-        trf.append("XXS BW ").append(Player.getWinPoints()).append("\n");
-
-        trf.append("XXS WL ").append(Player.getLosePoints()).append("\n");
-        trf.append("XXS BL ").append(Player.getLosePoints()).append("\n");
-
-        trf.append("XXS FPB ").append(Player.getByePoints()).append("\n");
-        trf.append("XXS HBP ").append(Player.getHalfByePoints()).append("\n");
-        trf.append("XXS ZBP ").append(Player.getForfeitLosePoints()).append("\n");
-
-        trf.append("XXS FW ").append(Player.getForfeitWinPoints()).append("\n");
-        trf.append("XXS LW ").append(Player.getForfeitLosePoints()).append("\n");
+        trf
+                .append("XXS W=").append(Player.getWinPoints())
+                .append(" D=").append(Player.getDrawPoints())
+                .append(" WW=").append(Player.getWinPoints())
+                .append(" BW=").append(Player.getWinPoints())
+                .append(" WL=").append(Player.getLosePoints())
+                .append(" BL=").append(Player.getLosePoints())
+                .append(" FPB=").append(Player.getByePoints())
+                .append(" HBP=").append(Player.getHalfByePoints())
+                .append(" ZBP=").append(Player.getForfeitLosePoints())
+                .append(" FW=").append(Player.getForfeitWinPoints())
+                .append(" LW=").append(Player.getForfeitLosePoints()).append("\n");
 
         return trf.toString();
     }

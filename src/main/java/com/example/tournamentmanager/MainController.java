@@ -16,7 +16,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
@@ -39,6 +38,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClients;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import java.awt.*;
@@ -57,6 +57,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
+import static com.example.tournamentmanager.helper.DialogHelper.error;
 import static com.example.tournamentmanager.operation.FileOperation.updateTomlInZip;
 import static com.example.tournamentmanager.operation.TournamentOperation.*;
 
@@ -621,15 +622,6 @@ public class MainController implements Initializable {
     @FXML
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
-        getTournament().endedRoundProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            if (!Objects.equals(oldValue, newValue)) {
-                recalculateTieBreak();
-            }
-        });
-        getTournament().getRoundsObs().addListener((ListChangeListener<? super ArrayList<Game>>) change -> {
-            Platform.runLater(() -> getTournament().calculateEndedRound());
-        });
-
         setHomeTabHelper(new HomeTabHelper(
                 tournament, tourName, tourStartDate, tourEndDate, tourPlace, tourGameTime,
                 tourIncrement, tourControlMove, tourControlAddition, tourType, tourRtPZSzach, tourRtFIDE,
@@ -760,12 +752,12 @@ public class MainController implements Initializable {
                     try {
                         Desktop.getDesktop().open(new File(Objects.requireNonNull(getClass().getResource("man.pdf")).toURI()));
                     } catch (IOException | URISyntaxException ex) {
-                        DialogHelper.error("Could not open manual");
+                        error("Could not open manual");
                         try {
                             URI uri = new URI("https://github.com/KulAndy/tournamentmanager");
                             Desktop.getDesktop().browse(uri);
                         } catch (IOException | URISyntaxException ex2) {
-                            DialogHelper.error("Could not open project page");
+                            error("Could not open project page");
                         }
                     }
                     return null;
@@ -793,13 +785,13 @@ public class MainController implements Initializable {
                             toml = new Toml().read(defaultTomlContent);
                             serverUrl = toml.getTable("remote").getString("api");
                         } catch (IOException | URISyntaxException ex1) {
-                            DialogHelper.error("Couldn't read server location");
+                            error("Couldn't read server location");
                             return;
                         }
                     }
 
                     if (file == null) {
-                        DialogHelper.error("Can not upload unsaved tournament");
+                        error("Can not upload unsaved tournament");
                     } else {
                         if (file.exists()) {
 
@@ -809,7 +801,7 @@ public class MainController implements Initializable {
                             try {
                                 lines = (ArrayList<String>) Files.readAllLines(Paths.get("auth.txt"), StandardCharsets.UTF_8);
                             } catch (IOException ex) {
-                                DialogHelper.error("You aren't log in or session expired");
+                                error("You aren't log in or session expired");
                                 return;
                             }
 
@@ -819,7 +811,7 @@ public class MainController implements Initializable {
 
                                 httpPost.setHeader("token", token);
                             } else {
-                                DialogHelper.error("Corrupted auth file");
+                                error("Corrupted auth file");
                                 return;
                             }
 
@@ -854,22 +846,22 @@ public class MainController implements Initializable {
                                         }
                                         DialogHelper.info("Sucessfully upload tournament");
                                     } else {
-                                        DialogHelper.error("Error  - no tournament ID returned");
+                                        error("Error  - no tournament ID returned");
                                     }
                                 } else if (statusCode >= 400 && statusCode < 500) {
-                                    DialogHelper.error("Corrupted file - couldn't save on server");
+                                    error("Corrupted file - couldn't save on server");
                                 } else if (statusCode >= 500 && statusCode < 600) {
-                                    DialogHelper.error("Internal server error");
+                                    error("Internal server error");
                                 } else {
                                     DialogHelper.warning("Unknown status code: " + statusCode);
                                 }
                             } catch (SSLPeerUnverifiedException ex) {
-                                DialogHelper.error("Couldn't connect - insecure connection");
+                                error("Couldn't connect - insecure connection");
                             } catch (IOException ex) {
-                                DialogHelper.error("Connection error");
+                                error("Connection error");
                             }
                         } else {
-                            DialogHelper.error("File not found");
+                            error("File not found");
                         }
                     }
                 })
@@ -886,7 +878,7 @@ public class MainController implements Initializable {
                                     DialogHelper.info("Exported games to pgn successfully");
                                 } catch (Exception ex) {
                                     System.out.println(ex.getMessage());
-                                    DialogHelper.error("Error during exporting rounds");
+                                    error("Error during exporting rounds");
                                 }
                             } else if (choice.equals("B")) {
                                 Integer currentRound = getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().getValue();
@@ -898,7 +890,7 @@ public class MainController implements Initializable {
                                         DialogHelper.info("Export round %d successfully".formatted(currentRound));
                                     } catch (IOException ex) {
                                         System.out.println(ex.getMessage());
-                                        DialogHelper.error("Error during export round %d".formatted(currentRound));
+                                        error("Error during export round %d".formatted(currentRound));
                                     }
                                 }
                             }
@@ -933,7 +925,7 @@ public class MainController implements Initializable {
                 getRoundsHelper().getManualPairingHelper().setRoundsNumbersObs(FXCollections.observableArrayList(rounds));
                 getRoundsHelper().getManualPairingHelper().getRoundUpdateSelect().setItems(getRoundsHelper().getManualPairingHelper().getRoundsNumbersObs());
             } catch (IOException | InterruptedException ex) {
-                DialogHelper.error("Couldn't generate random tournament");
+                error("Couldn't generate random tournament");
             }
         });
 
@@ -945,13 +937,13 @@ public class MainController implements Initializable {
                     RoundRobinEngine.checkPairing(getTournament(), (byte) 0);
                 }
             } catch (IOException | InterruptedException ex) {
-                DialogHelper.error("An error occurred during validate");
+                error("An error occurred during validate");
             }
         });
 
         roundValidation.setOnAction(e -> {
                     if (roundsViewSelect.getValue() == null) {
-                        DialogHelper.error("No round selected");
+                        error("No round selected");
                     } else {
                         try {
                             if (getTournament().getSystem() == Tournament.TournamentSystem.SWISS) {
@@ -960,7 +952,7 @@ public class MainController implements Initializable {
                                 RoundRobinEngine.checkPairing(getTournament(), roundsViewSelect.getValue().byteValue());
                             }
                         } catch (IOException | InterruptedException ex) {
-                            DialogHelper.error("An error occurred during validate");
+                            error("An error occurred during validate");
                         }
                     }
                 }
@@ -977,7 +969,7 @@ public class MainController implements Initializable {
                     TournamentOperation.loadTournament(tournament, this);
                     DialogHelper.info("Imported successfully");
                 } catch (Exception ex) {
-                    DialogHelper.error("An error eccured");
+                    error("An error eccured");
                     System.out.println(ex.getMessage());
                 }
             } else {
@@ -998,13 +990,6 @@ public class MainController implements Initializable {
                 if (newValue != oldValue && newValue != getFile()) {
                     importJson(tournamentSelect.getValue(), this);
                 }
-                Platform.runLater(() -> {
-                    try {
-                        TieBreakServerWrapper.generateTiebreak(getTournament(), 0);
-                    } catch (IOException | InterruptedException ignored) {
-                    }
-                    getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
-                });
             }
         });
 
@@ -1024,7 +1009,6 @@ public class MainController implements Initializable {
                 playerCardTB1Value.setText("");
             }
             resultTb1.setText(tiebreak);
-            recalculateTieBreak();
         });
         getTourTB2().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak2(newValue);
@@ -1042,7 +1026,6 @@ public class MainController implements Initializable {
                 playerCardTB2Value.setText("");
             }
             resultTb2.setText(tiebreak);
-            recalculateTieBreak();
         });
         getTourTB3().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak3(newValue);
@@ -1060,7 +1043,6 @@ public class MainController implements Initializable {
                 playerCardTB3Value.setText("");
             }
             resultTb3.setText(tiebreak);
-            recalculateTieBreak();
         });
         getTourTB4().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak4(newValue);
@@ -1078,7 +1060,6 @@ public class MainController implements Initializable {
                 playerCardTB4Value.setText("");
             }
             resultTb4.setText(tiebreak);
-            recalculateTieBreak();
         });
         getTourTB5().valueProperty().addListener((ObservableValue<? extends Tournament.Tiebreak.TbMethod> observable, Tournament.Tiebreak.TbMethod oldValue, Tournament.Tiebreak.TbMethod newValue) -> {
             getTournament().getTiebreak().setTiebreak5(newValue);
@@ -1096,26 +1077,32 @@ public class MainController implements Initializable {
                 playerCardTB5Value.setText("");
             }
             resultTb5.setText(tiebreak);
-            recalculateTieBreak();
         });
 
-        getPointsWin().textProperty().addListener(change -> recalculateTieBreak());
-        getPointsDraw().textProperty().addListener(change -> recalculateTieBreak());
-        getPointsLose().textProperty().addListener(change -> recalculateTieBreak());
-        getPointsForfeitWin().textProperty().addListener(change -> recalculateTieBreak());
-        getPointsForfeitLose().textProperty().addListener(change -> recalculateTieBreak());
-        getPointsBye().textProperty().addListener(change -> recalculateTieBreak());
-        getPointsHalfBye().textProperty().addListener(change -> recalculateTieBreak());
+        Thread tieBreakDaemonThread = getThread();
+        tieBreakDaemonThread.start();
     }
 
-    private void recalculateTieBreak() {
-        Platform.runLater(() -> {
-            try {
-                TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().getEndedRound());
-            } catch (IOException | InterruptedException ignored) {
+    @NotNull
+    private Thread getThread() {
+        Thread daemonThread = new Thread(() -> {
+            while (true) {
+                try {
+                    TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().calculateEndedRound());
+                } catch (IOException | InterruptedException ignored) {
+                }
+                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    error("Error in tie-break daemon - needed restart");
+                    break;
+                }
             }
-            getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
         });
+
+        daemonThread.setDaemon(true);
+        return daemonThread;
     }
 
     public ObservableList<File> getFiles() {

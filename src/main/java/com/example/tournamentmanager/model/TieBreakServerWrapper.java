@@ -1,5 +1,6 @@
 package com.example.tournamentmanager.model;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.tournamentmanager.operation.FIDEOperation.saveTrfReport;
 import static com.example.tournamentmanager.operation.FIDEOperation.trfReport;
@@ -19,9 +21,43 @@ public class TieBreakServerWrapper {
     private static final String tiebreakChecker = "tiebreak_server/tiebreakchecker.py";
     private static final String outputFilePath = "tiebreak.json";
     private static final String reportFilePath = "report.txt";
+    private static String tieBreakJSON = "";
+    private static Float winPoints = 1.0F;
+    private static Float drawPoints = 0.5F;
+    private static Float losePoints = 0.0F;
+    private static Float forfeitWinPoints = 1.0F;
+    private static Float forfeitLosePoints = 0F;
+    private static Float byePoints = 1.0F;
+    private static Float halfByePoints = 0.5F;
+    private static int currentRound = 0;
 
     public static void generateTiebreak(Tournament tournament, int round) throws IOException, InterruptedException {
         long startTime = System.currentTimeMillis();
+        Gson gson = new Gson();
+        String json = gson.toJson(tournament.getTiebreak());
+        if (
+                currentRound == round &&
+                        Objects.equals(json, tieBreakJSON) &&
+                        Objects.equals(winPoints, Player.getWinPoints()) &&
+                        Objects.equals(drawPoints, Player.getDrawPoints()) &&
+                        Objects.equals(losePoints, Player.getLosePoints()) &&
+                        Objects.equals(forfeitWinPoints, Player.getForfeitWinPoints()) &&
+                        Objects.equals(forfeitLosePoints, Player.getForfeitLosePoints()) &&
+                        Objects.equals(byePoints, Player.getByePoints()) &&
+                        Objects.equals(halfByePoints, Player.getHalfByePoints())
+        ) {
+            return;
+        } else {
+            currentRound = round;
+            tieBreakJSON = json;
+            winPoints = Player.getWinPoints();
+            drawPoints = Player.getDrawPoints();
+            losePoints = Player.getLosePoints();
+            forfeitWinPoints = Player.getForfeitWinPoints();
+            forfeitLosePoints = Player.getForfeitLosePoints();
+            byePoints = Player.getByePoints();
+            halfByePoints = Player.getHalfByePoints();
+        }
         File outputFile = new File(outputFilePath);
         File reportFile = new File(reportFilePath);
 
@@ -37,12 +73,12 @@ public class TieBreakServerWrapper {
 
         executeProcess(command);
         processCompetitors(outputFile, tournament, Integer.min(round, tournament.getRoundsObs().size()));
-//        if (outputFile.exists()) {
-//            outputFile.delete();
-//        }
-//        if (reportFile.exists()) {
-//            reportFile.delete();
-//        }
+        if (outputFile.exists()) {
+            outputFile.delete();
+        }
+        if (reportFile.exists()) {
+            reportFile.delete();
+        }
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
         System.out.println("Elapsed time in milliseconds: " + elapsedTime);
