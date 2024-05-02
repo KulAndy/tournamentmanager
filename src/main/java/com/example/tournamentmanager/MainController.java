@@ -1088,10 +1088,13 @@ public class MainController implements Initializable {
         Thread daemonThread = new Thread(() -> {
             while (true) {
                 try {
-                    TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().calculateEndedRound());
-                } catch (IOException | InterruptedException ignored) {
+                    if (TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().calculateEndedRound())){
+                        getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
+                    }
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
-                getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

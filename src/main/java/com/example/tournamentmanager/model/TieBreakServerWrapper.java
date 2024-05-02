@@ -22,41 +22,17 @@ public class TieBreakServerWrapper {
     private static final String outputFilePath = "tiebreak.json";
     private static final String reportFilePath = "report.txt";
     private static String tieBreakJSON = "";
-    private static Float winPoints = 1.0F;
-    private static Float drawPoints = 0.5F;
-    private static Float losePoints = 0.0F;
-    private static Float forfeitWinPoints = 1.0F;
-    private static Float forfeitLosePoints = 0F;
-    private static Float byePoints = 1.0F;
-    private static Float halfByePoints = 0.5F;
     private static int currentRound = 0;
 
-    public static void generateTiebreak(Tournament tournament, int round) throws IOException, InterruptedException {
+    public static boolean generateTiebreak(Tournament tournament, int round) throws IOException, InterruptedException {
         long startTime = System.currentTimeMillis();
         Gson gson = new Gson();
         String json = gson.toJson(tournament.getTiebreak());
         if (
                 currentRound == round &&
-                        Objects.equals(json, tieBreakJSON) &&
-                        Objects.equals(winPoints, Player.getWinPoints()) &&
-                        Objects.equals(drawPoints, Player.getDrawPoints()) &&
-                        Objects.equals(losePoints, Player.getLosePoints()) &&
-                        Objects.equals(forfeitWinPoints, Player.getForfeitWinPoints()) &&
-                        Objects.equals(forfeitLosePoints, Player.getForfeitLosePoints()) &&
-                        Objects.equals(byePoints, Player.getByePoints()) &&
-                        Objects.equals(halfByePoints, Player.getHalfByePoints())
+                        Objects.equals(json, tieBreakJSON)
         ) {
-            return;
-        } else {
-            currentRound = round;
-            tieBreakJSON = json;
-            winPoints = Player.getWinPoints();
-            drawPoints = Player.getDrawPoints();
-            losePoints = Player.getLosePoints();
-            forfeitWinPoints = Player.getForfeitWinPoints();
-            forfeitLosePoints = Player.getForfeitLosePoints();
-            byePoints = Player.getByePoints();
-            halfByePoints = Player.getHalfByePoints();
+            return false;
         }
         File outputFile = new File(outputFilePath);
         File reportFile = new File(reportFilePath);
@@ -71,8 +47,10 @@ public class TieBreakServerWrapper {
         saveTrfReport(trfReport(tournament), reportFile);
         List<String> command = buildCommand(tournament, round, reportFile, outputFile);
 
-        executeProcess(command);
-        processCompetitors(outputFile, tournament, Integer.min(round, tournament.getRoundsObs().size()));
+        if (executeProcess(command) != 0){
+            return false;
+        }
+        processCompetitors(outputFile, tournament);
         if (outputFile.exists()) {
             outputFile.delete();
         }
@@ -82,6 +60,9 @@ public class TieBreakServerWrapper {
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
         System.out.println("Elapsed time in milliseconds: " + elapsedTime);
+        currentRound = round;
+        tieBreakJSON = json;
+        return true;
     }
 
     private static List<String> buildCommand(Tournament tournament, int round, File reportFile, File outputFile) {
@@ -111,24 +92,24 @@ public class TieBreakServerWrapper {
         return methods;
     }
 
-    private static void executeProcess(List<String> command) throws IOException, InterruptedException {
+    private static int executeProcess(List<String> command) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
-        process.waitFor();
+        return process.waitFor();
     }
 
-    private static void processCompetitors(File outputFile, Tournament tournament, int round) throws IOException {
+    private static void processCompetitors(File outputFile, Tournament tournament) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
             StringBuilder jsonStringBuilder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonStringBuilder.append(line);
             }
-            parseAndProcessCompetitors(jsonStringBuilder.toString(), tournament, round);
+            parseAndProcessCompetitors(jsonStringBuilder.toString(), tournament);
         }
     }
 
-    private static void parseAndProcessCompetitors(String jsonString, Tournament tournament, int round) {
+    private static void parseAndProcessCompetitors(String jsonString, Tournament tournament) {
         JsonObject rootObject = JsonParser.parseString(jsonString).getAsJsonObject();
         JsonObject statusObject = rootObject.getAsJsonObject("status");
         JsonArray competitorsArray = statusObject.getAsJsonArray("competitors");
