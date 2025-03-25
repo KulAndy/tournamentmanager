@@ -526,7 +526,7 @@ public class FIDEOperation {
                     .append("%4.1f".formatted(Float.isNaN(player.getPoints()) ? 0.0 : player.getPoints()))
                     .append("     ");
 
-            ArrayList<Game> rounds = player.getRounds();
+            ArrayList<Game> rounds = new ArrayList<>(player.getRounds());
             for (Game game : rounds) {
                 Player opponent = player.getOpponent(game);
                 trf.append("  ");
