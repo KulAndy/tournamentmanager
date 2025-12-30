@@ -42,19 +42,19 @@ public class Schedule extends ArrayList<Schedule.ScheduleElement> implements Ser
                 }
             }
         }
-        if (getRounds().isEmpty()){
-            if (briefing == null){
+        if (getRounds().isEmpty()) {
+            if (briefing == null) {
                 setBriefing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0));
             }
-            if (closing == null){
+            if (closing == null) {
                 setClosing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0));
             }
-        }else{
-            if (briefing == null){
-                setBriefing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0, getRounds().get(0).getDate()));
+        } else {
+            if (briefing == null) {
+                setBriefing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0, getRounds().getFirst().getDate()));
             }
-            if (closing == null){
-                setClosing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0, getRounds().get(getRounds().size()-1).getDate()));
+            if (closing == null) {
+                setClosing(new ScheduleElement(ScheduleElement.Type.BRIEFING, (byte) 0, getRounds().getLast().getDate()));
             }
         }
     }
@@ -126,7 +126,7 @@ public class Schedule extends ArrayList<Schedule.ScheduleElement> implements Ser
             JsonArray jsonArray = json.getAsJsonArray();
             for (JsonElement element : jsonArray) {
                 ScheduleElement element1 = context.deserialize(element, ScheduleElement.class);
-                if (element1 == null){
+                if (element1 == null) {
                     continue;
                 }
                 switch (element1.getType()) {

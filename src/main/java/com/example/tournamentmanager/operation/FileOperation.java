@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -70,7 +71,7 @@ public class FileOperation {
             resultSet.close();
             statement.close();
             connection.close();
-            return provinces.toArray(new String[provinces.size()]);
+            return provinces.toArray(new String[0]);
 
         } catch (ClassNotFoundException | SQLException e) {
             return new String[]{};
@@ -502,8 +503,9 @@ public class FileOperation {
 
     public static void zip(String sourceDirPath, File zipFile) throws IOException {
         Path sourcePath = Paths.get(sourceDirPath);
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
-            Files.walk(sourcePath)
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
+             Stream<Path> files = Files.walk(sourcePath)) {
+            files
                     .filter(path -> !Files.isDirectory(path))
                     .forEach(path -> {
                         ZipEntry zipEntry = new ZipEntry(sourcePath.relativize(path).toString());

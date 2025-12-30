@@ -396,7 +396,7 @@ public class FIDEOperation {
         if (tournament.getName().trim().isEmpty()) {
             fileChooser.setInitialFileName("raport.txt");
         } else {
-            fileChooser.setInitialFileName(tournament.getName().replaceAll("[\\/ ]", "_"));
+            fileChooser.setInitialFileName(tournament.getName().replaceAll("[\\\\/ ]", "_"));
         }
         File newFile = fileChooser.showSaveDialog(new Stage());
 

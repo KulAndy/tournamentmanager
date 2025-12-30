@@ -59,21 +59,21 @@ public class FilterCreatorHelper {
         setFilterStateSelect(filterStateSelect);
 
         ObservableList<ResultPredicate.CompareOperator> allOperators = FXCollections.observableArrayList(ResultPredicate.CompareOperator.values());
-        allOperators.add(0, null);
+        allOperators.addFirst(null);
         ObservableList<ResultPredicate.CompareOperator> equalOperators = FXCollections.observableArrayList(ResultPredicate.CompareOperator.EQUAL, ResultPredicate.CompareOperator.UNEQUAL);
-        equalOperators.add(0, null);
+        equalOperators.addFirst(null);
 
         getFilterSexSelect().setItems(FXCollections.observableArrayList(Player.Sex.values()));
-        getFilterSexSelect().getItems().add(0, null);
+        getFilterSexSelect().getItems().addFirst(null);
         getFilterYearOperator().setItems(allOperators);
         getFilterTitleOperator().setItems(allOperators);
         getFilterTitleSelect().setItems(FXCollections.observableArrayList(Title.values()));
-        getFilterTitleSelect().getItems().add(0, null);
+        getFilterTitleSelect().getItems().addFirst(null);
         getFilterLocalRtgOperator().setItems(allOperators);
         getFilterFIDERtgOperator().setItems(allOperators);
         getFilterFedOperator().setItems(equalOperators);
         getFilterFedSelect().setItems(FXCollections.observableArrayList(Federation.values()));
-        getFilterFedSelect().getItems().add(0, null);
+        getFilterFedSelect().getItems().addFirst(null);
         getFilterStateOperator().setItems(equalOperators);
 
         getFilterFedSelect().valueProperty().addListener((ObservableValue<? extends Federation> observable, Federation oldValue, Federation newValue) -> {
@@ -83,7 +83,7 @@ public class FilterCreatorHelper {
                 String[] provinces = FileOperation.searchProvince(newValue);
                 getFilterStateSelect().getItems().clear();
                 setupComboBox(getFilterStateSelect(), provinces);
-                getFilterStateSelect().getItems().add(0, null);
+                getFilterStateSelect().getItems().addFirst(null);
                 getFilterStateSelect().setValue(null);
             }
         });
@@ -94,7 +94,7 @@ public class FilterCreatorHelper {
                 String[] provinces = FileOperation.searchProvince(getFilterFedSelect().getValue());
                 getFilterStateSelect().getItems().clear();
                 setupComboBox(getFilterStateSelect(), provinces);
-                getFilterStateSelect().getItems().add(0, null);
+                getFilterStateSelect().getItems().addFirst(null);
                 getFilterStateSelect().setValue(null);
             }
         });

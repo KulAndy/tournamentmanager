@@ -71,8 +71,7 @@ public class PlayerCorrectionController {
     @FXML
     public void initialize() {
         titleHeader.selectedProperty().addListener(e -> {
-            if (titleHeader.isIndeterminate()) {
-            } else if (titleHeader.isSelected()) {
+            if (!titleHeader.isIndeterminate() && titleHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;
@@ -100,8 +99,7 @@ public class PlayerCorrectionController {
             playersTable.refresh();
         });
         ratingHeader.selectedProperty().addListener(e -> {
-            if (ratingHeader.isIndeterminate()) {
-            } else if (ratingHeader.isSelected()) {
+            if (!ratingHeader.isIndeterminate() && ratingHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;
@@ -124,8 +122,7 @@ public class PlayerCorrectionController {
             playersTable.refresh();
         });
         fideIdHeader.selectedProperty().addListener(e -> {
-            if (fideIdHeader.isIndeterminate()) {
-            } else if (fideIdHeader.isSelected()) {
+            if (!fideIdHeader.isIndeterminate() && fideIdHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;
@@ -148,8 +145,7 @@ public class PlayerCorrectionController {
             playersTable.refresh();
         });
         localIdHeader.selectedProperty().addListener(e -> {
-            if (localIdHeader.isIndeterminate()) {
-            } else if (localIdHeader.isSelected()) {
+            if (!localIdHeader.isIndeterminate() && localIdHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;
@@ -172,8 +168,7 @@ public class PlayerCorrectionController {
             playersTable.refresh();
         });
         birthHeader.selectedProperty().addListener(e -> {
-            if (birthHeader.isIndeterminate()) {
-            } else if (birthHeader.isSelected()) {
+            if (!birthHeader.isIndeterminate() && birthHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;
@@ -201,8 +196,7 @@ public class PlayerCorrectionController {
             playersTable.refresh();
         });
         sexHeader.selectedProperty().addListener(e -> {
-            if (sexHeader.isIndeterminate()) {
-            } else if (sexHeader.isSelected()) {
+            if (!sexHeader.isIndeterminate() && sexHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;
@@ -225,8 +219,7 @@ public class PlayerCorrectionController {
             playersTable.refresh();
         });
         clubHeader.selectedProperty().addListener(e -> {
-            if (clubHeader.isIndeterminate()) {
-            } else if (clubHeader.isSelected()) {
+            if (!clubHeader.isIndeterminate() && clubHeader.isSelected()) {
                 for (int i = 0; i < tmpPlayers.size(); i++) {
                     Player player = sourcePlayers.get(i);
                     Player foundPlayer = null;

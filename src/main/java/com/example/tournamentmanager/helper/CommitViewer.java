@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import static com.example.tournamentmanager.helper.DialogHelper.error;
 import static com.example.tournamentmanager.helper.DialogHelper.info;
@@ -74,9 +75,7 @@ public class CommitViewer {
     }
 
     private Repository cloneRepoToTempDir() {
-        try {
-            Repository localRepository = new RepositoryBuilder().setGitDir(repo).build();
-
+        try(Repository localRepository = new RepositoryBuilder().setGitDir(repo).build()) {
             String remoteUrl = localRepository.getConfig().getString("remote", "origin", "url");
 
             if (remoteUrl == null || remoteUrl.isEmpty()) {
@@ -99,8 +98,9 @@ public class CommitViewer {
 
 
     private void displayNewerCommits(Repository repository) {
-        try (Git git = new Git(repository)) {
-            Repository local = new RepositoryBuilder().setGitDir(repo).build();
+        try (Git git = new Git(repository);
+             Repository local = new RepositoryBuilder().setGitDir(repo).build()
+        ) {
             ObjectId localCommitId = local.resolve("HEAD");
 
             if (localCommitId != null) {
@@ -175,8 +175,8 @@ public class CommitViewer {
     }
 
     private void removeTempDir() {
-        try {
-            Files.walk(tempDir)
+        try(Stream<Path> files = Files.walk(tempDir)) {
+            files
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);

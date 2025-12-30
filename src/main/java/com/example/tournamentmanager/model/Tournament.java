@@ -977,7 +977,7 @@ public class Tournament implements Serializable {
             while (change.next()) {
                 if (change.wasAdded()) {
                     getSchedule().addAll(change.getAddedSubList()
-                            .stream().filter(e -> e == null ||  e.getType() == Schedule.ScheduleElement.Type.ROUND)
+                            .stream().filter(e -> e == null || e.getType() == Schedule.ScheduleElement.Type.ROUND)
                             .toList()
                     );
                 }

@@ -24,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -160,8 +161,8 @@ public class TournamentOperation {
                     controller.getFiles().add(file);
                 }
             }
-            importJson(selectedFiles.get(selectedFiles.size() - 1), controller);
-            controller.getTournamentSelect().setValue(selectedFiles.get(selectedFiles.size() - 1));
+            importJson(selectedFiles.getLast(), controller);
+            controller.getTournamentSelect().setValue(selectedFiles.getLast());
         }
 
     }
@@ -235,8 +236,9 @@ public class TournamentOperation {
         }
 
         try (FileOutputStream fos = new FileOutputStream(file);
-             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-            Files.walk(tempDir)
+             ZipOutputStream zipOut = new ZipOutputStream(fos);
+             Stream<Path> files = Files.walk(tempDir)) {
+            files
                     .filter(path -> !Files.isDirectory(path))
                     .forEach(path -> {
                         ZipEntry zipEntry = new ZipEntry(tempDir.relativize(path).toString());
@@ -248,14 +250,16 @@ public class TournamentOperation {
                         }
                     });
         } finally {
-            Files.walk(tempDir)
-                    .sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        try {
-                            Files.deleteIfExists(path);
-                        } catch (IOException ignored) {
-                        }
-                    });
+            try(Stream<Path> files = Files.walk(tempDir)){
+                files
+                        .sorted(Comparator.reverseOrder())
+                        .forEach(path -> {
+                            try {
+                                Files.deleteIfExists(path);
+                            } catch (IOException ignored) {
+                            }
+                        });
+            }
         }
     }
 
@@ -379,8 +383,8 @@ public class TournamentOperation {
             }
             controller.getRoundsHelper().getResultEnterHelper().getRoundsViewSelect().setValue(Integer.valueOf(editedRounds.parallelStream().max(Byte::compare).orElse((byte) 0)));
             if (controller.getTournament().getName().isEmpty()) {
-                controller.getHomeTabHelper().getBasicInfoHelper().getTourName().setText(pgnGames.get(0).getEvent());
-                controller.getHomeTabHelper().getBasicInfoHelper().getTourPlace().setText(pgnGames.get(0).getSite());
+                controller.getHomeTabHelper().getBasicInfoHelper().getTourName().setText(pgnGames.getFirst().getEvent());
+                controller.getHomeTabHelper().getBasicInfoHelper().getTourPlace().setText(pgnGames.getFirst().getSite());
             }
             if (controller.getTournament().getRoundsObs().size() > controller.getTournament().getRoundsNumber()) {
                 controller.getHomeTabHelper().getBasicInfoHelper().getTourNoRounds().setText(String.valueOf(controller.getTournament().getRoundsObs().size()));

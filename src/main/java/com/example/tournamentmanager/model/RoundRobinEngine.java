@@ -16,7 +16,7 @@ public class RoundRobinEngine implements Engine {
         players.sort(new StartListComparator());
         int paired = 0;
 
-        Player lastPlayer = players.size() % 2 == 0 ? players.get(players.size() - 1) : players.getBye();
+        Player lastPlayer = players.size() % 2 == 0 ? players.getLast() : players.getBye();
         Player.Color lastPlayerColor = Player.Color.BLACK;
 
         ArrayList<Game> prevRound = new ArrayList<>();

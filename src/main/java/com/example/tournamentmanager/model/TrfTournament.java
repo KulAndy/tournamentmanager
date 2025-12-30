@@ -181,12 +181,10 @@ public class TrfTournament {
             }
 
             if (getRoundsNo() == 0) {
-                if (getRoundsNo() == 0) {
                     Optional<Integer> maxRounds = players.stream()
                             .map(player -> player.getRounds().size())
                             .max(Comparator.naturalOrder());
                     setRoundsNo((maxRounds.orElse(0)).byteValue());
-                }
             }
 
         } catch (IOException e) {

@@ -98,7 +98,7 @@ public class TiebreakHelper {
         bindTextFieldFloat(tf, obj, tbAttr);
         tf.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             getTournament().getPlayersObs().add(new Player());
-            getTournament().getPlayersObs().remove(getTournament().getPlayersObs().size() - 1);
+            getTournament().getPlayersObs().removeLast();
         });
     }
 

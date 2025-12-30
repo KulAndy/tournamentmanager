@@ -22,12 +22,12 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import org.apache.http.HttpEntity;
@@ -807,7 +807,7 @@ public class MainController implements Initializable {
 
 
                             if (!lines.isEmpty()) {
-                                String token = lines.get(0);
+                                String token = lines.getFirst();
 
                                 httpPost.setHeader("token", token);
                             } else {
@@ -1088,7 +1088,7 @@ public class MainController implements Initializable {
         Thread daemonThread = new Thread(() -> {
             while (true) {
                 try {
-                    if (TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().calculateEndedRound())){
+                    if (TieBreakServerWrapper.generateTiebreak(getTournament(), getTournament().calculateEndedRound())) {
                         getTablesHelper().getResultTableHelper().getResultsTable().setItems(new SortedList<>(getTournament().getPlayersObs(), new ResultsComparator()));
                     }
                 } catch (IOException | InterruptedException e) {

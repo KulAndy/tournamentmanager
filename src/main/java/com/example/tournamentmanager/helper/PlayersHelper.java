@@ -118,10 +118,6 @@ public class PlayersHelper {
         this.startListHelper = startListHelper;
     }
 
-    public NewPlayerHelper getNewPlayerHelper() {
-        return newPlayerHelper;
-    }
-
     public void setNewPlayerHelper(NewPlayerHelper newPlayerHelper) {
         this.newPlayerHelper = newPlayerHelper;
     }

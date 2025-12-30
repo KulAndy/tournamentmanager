@@ -47,7 +47,7 @@ public class TieBreakServerWrapper {
         saveTrfReport(trfReport(tournament), reportFile);
         List<String> command = buildCommand(tournament, round, reportFile, outputFile);
 
-        if (executeProcess(command) != 0){
+        if (executeProcess(command) != 0) {
             return false;
         }
         processCompetitors(outputFile, tournament);

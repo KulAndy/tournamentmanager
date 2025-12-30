@@ -281,7 +281,7 @@ public class PZSzachCalculation {
                 .sorted(Comparator.comparingInt(title -> getTitleValue(title, player.getSex())))
                 .toList();
 
-        return titles.isEmpty() ? null : titles.get(0);
+        return titles.isEmpty() ? null : titles.getFirst();
     }
 
     private static Title smallNorm(Player player) {

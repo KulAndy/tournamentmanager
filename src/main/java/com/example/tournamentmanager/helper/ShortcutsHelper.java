@@ -28,6 +28,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.apache.pdfbox.printing.PDFPrintable;
+import org.apache.pdfbox.Loader;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.print.PrintService;
@@ -71,7 +72,7 @@ public class ShortcutsHelper {
     public static void printPDF(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
-            try (PDDocument document = PDDocument.load(file)) {
+            try (PDDocument document = Loader.loadPDF(file)) {
                 PrinterJob job = PrinterJob.getPrinterJob();
 
                 PrintService printService = job.getPrintService();
@@ -157,7 +158,7 @@ public class ShortcutsHelper {
 
 
                         if (!lines.isEmpty()) {
-                            String token = lines.get(0);
+                            String token = lines.getFirst();
 
                             httpPost.setHeader("token", token);
                         } else {

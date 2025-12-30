@@ -90,7 +90,7 @@ public class ResultEnterHelper {
             roundsNumbersObs = FXCollections.observableArrayList(rounds);
             getRoundsViewSelect().setItems(roundsNumbersObs);
             if (getRoundsViewSelect().getValue() == null && !rounds.isEmpty()) {
-                getRoundsViewSelect().setValue(rounds.get(0));
+                getRoundsViewSelect().setValue(rounds.getFirst());
             }
         });
 

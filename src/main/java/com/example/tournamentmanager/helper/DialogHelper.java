@@ -47,6 +47,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -393,7 +394,7 @@ public class DialogHelper {
 
 
         if (!lines.isEmpty()) {
-            String token = lines.get(0);
+            String token = lines.getFirst();
             httpPost = new HttpPost(serverUrl + toml.getTable("remote").getString("logged") + "/" + token);
         } else {
             error("Corrupted auth file");
@@ -536,26 +537,30 @@ public class DialogHelper {
                                                 Path zipFilePath = Paths.get(newFile.getAbsolutePath());
                                                 try (OutputStream fos = Files.newOutputStream(zipFilePath);
                                                      ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-                                                    Files.walk(tempDir)
-                                                            .filter(path -> !Files.isDirectory(path))
-                                                            .forEach(path -> {
-                                                                ZipEntry zipEntry = new ZipEntry(tempDir.relativize(path).toString());
-                                                                try {
-                                                                    zipOut.putNextEntry(zipEntry);
-                                                                    Files.copy(path, zipOut);
-                                                                    zipOut.closeEntry();
-                                                                } catch (IOException ignored) {
-                                                                }
-                                                            });
+                                                    try(Stream<Path> files = Files.walk(tempDir)){
+                                                        files
+                                                                .filter(path -> !Files.isDirectory(path))
+                                                                .forEach(path -> {
+                                                                    ZipEntry zipEntry = new ZipEntry(tempDir.relativize(path).toString());
+                                                                    try {
+                                                                        zipOut.putNextEntry(zipEntry);
+                                                                        Files.copy(path, zipOut);
+                                                                        zipOut.closeEntry();
+                                                                    } catch (IOException ignored) {
+                                                                    }
+                                                                });
+                                                    }
                                                 }
 
                                                 importJson(newFile, controller);
                                                 info("File downloaded successfully");
 
-                                                Files.walk(tempDir)
-                                                        .sorted(Comparator.reverseOrder())
-                                                        .map(Path::toFile)
-                                                        .forEach(File::delete);
+                                                try(Stream<Path> files = Files.walk(tempDir)){
+                                                    files
+                                                            .sorted(Comparator.reverseOrder())
+                                                            .map(Path::toFile)
+                                                            .forEach(File::delete);
+                                                }
                                             } catch (Exception ignored) {
                                             }
 

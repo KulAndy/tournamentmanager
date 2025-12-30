@@ -107,10 +107,6 @@ public class HomeTabHelper {
         this.tiebreakHelper = tiebreakHelper;
     }
 
-    public RtgOptHelper getRtgOptHelper() {
-        return rtgOptHelper;
-    }
-
     public void setRtgOptHelper(RtgOptHelper rtgOptHelper) {
         this.rtgOptHelper = rtgOptHelper;
     }

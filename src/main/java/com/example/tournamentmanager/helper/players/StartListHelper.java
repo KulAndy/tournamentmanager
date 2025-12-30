@@ -104,14 +104,14 @@ public class StartListHelper {
 
                         ArrayList<Player> players = FIDEOperation.searchSimilarFide(player, getTournament().getType());
                         if (players.size() == 1) {
-                            Player playerFide = players.get(0);
+                            Player playerFide = players.getFirst();
                             found.add(playerFide);
                         } else {
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
-                                    .collect(Collectors.toList());
+                                    .toList();
                             if (players.size() == 1) {
-                                Player playerFide = players.get(0);
+                                Player playerFide = players.getFirst();
                                 found.add(playerFide);
                             } else {
                                 found.add(null);
@@ -165,21 +165,21 @@ public class StartListHelper {
 
                         ArrayList<Player> players = FIDEOperation.searchSimilarPol(player, getTournament().getType());
                         if (players.size() == 1) {
-                            Player playerPl = players.get(0);
+                            Player playerPl = players.getFirst();
                             found.add(playerPl);
                         } else {
                             players = (ArrayList<Player>) players.stream()
                                     .filter(item -> item.getYearOfBirth() == player.getYearOfBirth())
                                     .collect(Collectors.toList());
                             if (players.size() == 1) {
-                                Player playerPl = players.get(0);
+                                Player playerPl = players.getFirst();
                                 found.add(playerPl);
                             } else {
                                 players = (ArrayList<Player>) players.stream()
                                         .filter(item -> Objects.equals(item.getDateOfBirth(), player.getDateOfBirth()))
                                         .collect(Collectors.toList());
                                 if (players.size() == 1) {
-                                    Player playerPl = players.get(0);
+                                    Player playerPl = players.getFirst();
                                     found.add(playerPl);
                                 } else {
                                     found.add(null);

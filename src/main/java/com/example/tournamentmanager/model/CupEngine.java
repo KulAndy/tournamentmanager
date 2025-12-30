@@ -14,7 +14,7 @@ public class CupEngine implements Engine {
         ArrayList<Game> round = new ArrayList<>();
         int paired = 0;
         if (roundNo > 1) {
-            ArrayList<Game> prevRound = rounds.get(rounds.size() - 1);
+            ArrayList<Game> prevRound = rounds.getLast();
             for (int i = 0; i < prevRound.size(); i += 2) {
                 Player winner1 = prevRound.get(i).getWinner();
                 Player loser1 = prevRound.get(i).getLoser();
@@ -101,7 +101,7 @@ public class CupEngine implements Engine {
         if (playersCopy.isEmpty()) {
             return pairing;
         } else if (playersCopy.size() == 1) {
-            pairing.add(new Game(playersCopy.get(0), players.getBye(), Result.WIN, Result.LOSE, true));
+            pairing.add(new Game(playersCopy.getFirst(), players.getBye(), Result.WIN, Result.LOSE, true));
             return pairing;
         } else if (playersCopy.size() == 2) {
             pairing.add(new Game(playersCopy.get(0), playersCopy.get(1)));
@@ -110,26 +110,26 @@ public class CupEngine implements Engine {
             PlayerList groupA = new PlayerList();
             PlayerList groupB = new PlayerList();
 
-            groupA.add(playersCopy.remove(0));
-            groupA.add(playersCopy.remove(playersCopy.size() - 1));
+            groupA.add(playersCopy.removeFirst());
+            groupA.add(playersCopy.removeLast());
             byte flag = 1; //0 - A, 1 - B, 2 - B, 3 - A
             while (!playersCopy.isEmpty()) {
                 if (flag == 0 || flag == 3) {
-                    groupA.add(playersCopy.remove(0));
+                    groupA.add(playersCopy.removeFirst());
                     if (!playersCopy.isEmpty()) {
                         if (groupA.size() - 1 == groupB.size() && playersCopy.size() == 1) {
-                            groupB.add(playersCopy.remove(0));
+                            groupB.add(playersCopy.removeFirst());
                         } else {
-                            groupA.add(playersCopy.remove(playersCopy.size() - 1));
+                            groupA.add(playersCopy.removeLast());
                         }
                     }
                 } else {
-                    groupB.add(playersCopy.remove(0));
+                    groupB.add(playersCopy.removeFirst());
                     if (!playersCopy.isEmpty()) {
                         if (groupA.size() == groupB.size() - 1 && playersCopy.size() == 1) {
-                            groupA.add(playersCopy.remove(0));
+                            groupA.add(playersCopy.removeFirst());
                         } else {
-                            groupB.add(playersCopy.remove(playersCopy.size() - 1));
+                            groupB.add(playersCopy.removeLast());
                         }
                     }
 
