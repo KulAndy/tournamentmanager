@@ -58,12 +58,12 @@ Shortcuts:
 - Download and unzip this [project](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - Launch IntelliJ IDEA
 - File > Open and select the unzipped project folder
-- In File > Project Structure > Project, set the SDK to at least version 20 (otherwise, click the dropdown menu > Add SDK)
+- In File > Project Structure > Project, set the SDK to at least version 21 (otherwise, click the dropdown menu > Add SDK)
 - Run > Run 'Main' or right-click on Main > Run 'Main'
 
 ## 2. Java and Maven
 
-- Install the latest [Java](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 20
+- Install the latest [Java](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 21
 - Download and unzip this [project](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - Go to the unzipped directory
 - For Windows:
@@ -142,12 +142,12 @@ Skróty:
 - pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - uruchom Idee
 - File > Open i wybierz rozpakowany projekt folder
-- w File > Project Structure > Project musi być SDK w wersji min 20 (inaczej kiliknij menu rozwijane > Add SDK)
+- w File > Project Structure > Project musi być SDK w wersji min 21 (inaczej kiliknij menu rozwijane > Add SDK)
 - Run > Run 'Main' lub najechać na Main, PPM > Run 'Main'
 
 ## 2. Java i Maven
 
-- Zainstaluj najnowszą [Javę](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 20
+- Zainstaluj najnowszą [Javę](https://www.oracle.com/pl/java/technologies/downloads/), SDK min 21
 - pobierz i rozpakuj ten [projekt](https://github.com/KulAndy/tournamentmanager/archive/refs/heads/master.zip)
 - przejdź do rozpakowanego katalogu
 - w systemie windows
