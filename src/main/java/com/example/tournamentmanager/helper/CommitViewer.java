@@ -6,6 +6,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -68,6 +69,10 @@ public class CommitViewer {
 
         fetchAndDisplayTask.setOnFailed(event -> {
             Throwable exception = fetchAndDisplayTask.getException();
+            System.out.println(exception.getMessage());
+            String stackTrace = ExceptionUtils.getStackTrace(exception);
+            System.out.println(stackTrace);
+
             error("Failed to fetch updates into the temporary repository: " + exception.getMessage());
         });
 

@@ -7,7 +7,6 @@ module com.example.tournamentmanager {
     requires jakarta.xml.bind;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
-    requires org.apache.logging.log4j;
     requires java.sql;
     requires itextpdf;
     requires kernel;
@@ -23,6 +22,7 @@ module com.example.tournamentmanager {
     requires javafx.web;
     requires org.xerial.sqlitejdbc;
     requires org.apache.commons.lang3;
+    requires org.slf4j;
 
     opens com.example.tournamentmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
     opens com.example.tournamentmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;
