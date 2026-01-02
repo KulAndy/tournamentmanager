@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bson.types.ObjectId;
 
 import java.io.*;
@@ -100,7 +101,9 @@ public class TournamentOperation {
             controller.getTournament().getPredicatesObs().addAll(tournament.getPredicates());
             controller.getTournament().getScheduleElementsObs().clear();
             controller.getTournament().getScheduleElementsObs().addAll(tournament.getSchedule());
-            controller.getTournament().getScheduleElementsObs().set(0, tournament.getSchedule().getBriefing());
+            if (!controller.getTournament().getScheduleElementsObs().isEmpty()){
+                controller.getTournament().getScheduleElementsObs().set(0, tournament.getSchedule().getBriefing());
+            }
             controller.getTournament().getSchedule().setBriefing(tournament.getSchedule().getBriefing());
             controller.getTournament().getSchedule().setClosing(tournament.getSchedule().getClosing());
             controller.getTournament().setRoundsNumber(tournament.getRoundsNumber());
@@ -144,7 +147,10 @@ public class TournamentOperation {
             try {
                 exportTournament(controller.getTournament(), controller.getFile());
             } catch (IOException e) {
-                DialogHelper.error("An error occured");
+                System.out.println(e.getMessage());
+                String stackTrace = ExceptionUtils.getStackTrace(e);
+                System.out.println(stackTrace);
+                DialogHelper.error("An error occurred");
             }
 
         }

@@ -17,6 +17,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -239,8 +240,10 @@ public class ShortcutsHelper {
                         TournamentOperation.loadTournament(tournament, controller);
                         DialogHelper.info("Imported successfully");
                     } catch (Exception ex) {
-                        DialogHelper.error("An error eccured");
                         System.out.println(ex.getMessage());
+                        String stackTrace = ExceptionUtils.getStackTrace(ex);
+                        System.out.println(stackTrace);
+                        DialogHelper.error("An error occurred");
                     }
                 } else {
                     DialogHelper.warning("No file selected");

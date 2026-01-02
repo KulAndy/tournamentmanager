@@ -17,7 +17,7 @@ import static com.example.tournamentmanager.operation.FIDEOperation.saveTrfRepor
 import static com.example.tournamentmanager.operation.FIDEOperation.trfReport;
 
 public class TieBreakServerWrapper {
-    private static final String pythonPath = "python3";
+    private static final String pythonPath = "python_venv/bin/python";
     private static final String tiebreakChecker = "tiebreak_server/tiebreakchecker.py";
     private static final String outputFilePath = "tiebreak.json";
     private static final String reportFilePath = "report.txt";

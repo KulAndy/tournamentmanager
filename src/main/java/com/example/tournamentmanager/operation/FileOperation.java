@@ -6,6 +6,7 @@ import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -370,6 +371,9 @@ public class FileOperation {
                 DialogHelper.error("An error occurred while downloading");
             }
         } catch (IOException e) {
+            System.out.println(e.getMessage());
+            String stackTrace = ExceptionUtils.getStackTrace(e);
+            System.out.println(stackTrace);
             DialogHelper.error("An error occurred");
             return;
         }
@@ -378,6 +382,9 @@ public class FileOperation {
             convertCsvToSqlite("rejestr_czlonkow.csv", "rejestr_czlonkow.db");
             DialogHelper.info("Pl list downloaded successfully");
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            String stackTrace = ExceptionUtils.getStackTrace(e);
+            System.out.println(stackTrace);
             DialogHelper.error("An error occurred during conversion to SQLite");
         }
     }

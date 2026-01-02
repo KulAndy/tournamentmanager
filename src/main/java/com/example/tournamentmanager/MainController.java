@@ -30,6 +30,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -937,6 +938,9 @@ public class MainController implements Initializable {
                     RoundRobinEngine.checkPairing(getTournament(), (byte) 0);
                 }
             } catch (IOException | InterruptedException ex) {
+                System.out.println(ex.getMessage());
+                String stackTrace = ExceptionUtils.getStackTrace(ex);
+                System.out.println(stackTrace);
                 error("An error occurred during validate");
             }
         });
@@ -952,6 +956,9 @@ public class MainController implements Initializable {
                                 RoundRobinEngine.checkPairing(getTournament(), roundsViewSelect.getValue().byteValue());
                             }
                         } catch (IOException | InterruptedException ex) {
+                            System.out.println(ex.getMessage());
+                            String stackTrace = ExceptionUtils.getStackTrace(ex);
+                            System.out.println(stackTrace);
                             error("An error occurred during validate");
                         }
                     }
@@ -969,8 +976,10 @@ public class MainController implements Initializable {
                     TournamentOperation.loadTournament(tournament, this);
                     DialogHelper.info("Imported successfully");
                 } catch (Exception ex) {
-                    error("An error eccured");
                     System.out.println(ex.getMessage());
+                    String stackTrace = ExceptionUtils.getStackTrace(ex);
+                    System.out.println(stackTrace);
+                    error("An error occurred");
                 }
             } else {
                 DialogHelper.warning("No file selected");

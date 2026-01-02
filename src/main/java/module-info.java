@@ -22,6 +22,7 @@ module com.example.tournamentmanager {
     requires org.eclipse.jgit;
     requires javafx.web;
     requires org.xerial.sqlitejdbc;
+    requires org.apache.commons.lang3;
 
     opens com.example.tournamentmanager to javafx.fxml, jakarta.xml.bind, com.google.gson;
     opens com.example.tournamentmanager.helper to com.google.gson, jakarta.xml.bind, javafx.fxml;

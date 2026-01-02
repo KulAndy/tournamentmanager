@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -424,8 +425,10 @@ public class ResultEnterHelper {
                         }
                     }
                 } catch (IOException | InterruptedException ex) {
-                    DialogHelper.error("An error occurred during pairing");
                     System.out.println(ex.getMessage());
+                    String stackTrace = ExceptionUtils.getStackTrace(ex);
+                    System.out.println(stackTrace);
+                    DialogHelper.error("An error occurred during pairing");
                 }
             } else {
                 DialogHelper.error("Unable to pairing - number of rounds in tournament reached");

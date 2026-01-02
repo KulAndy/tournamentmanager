@@ -6,6 +6,7 @@ import com.example.tournamentmanager.model.*;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
@@ -618,7 +619,10 @@ public class FIDEOperation {
                 Tournament tournament = new Tournament(new TrfTournament(selectedFile));
                 TournamentOperation.loadTournament(tournament, controller);
             } catch (Exception e) {
-                DialogHelper.error("An error eccured");
+                System.out.println(e.getMessage());
+                String stackTrace = ExceptionUtils.getStackTrace(e);
+                System.out.println(stackTrace);
+                DialogHelper.error("An error occurred");
             }
 
         } else {
